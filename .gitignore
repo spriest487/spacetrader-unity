@@ -1,6 +1,17 @@
 *.meta
+/*.sln
+*.userprefs
+*.suo
+/*.csproj
 
 /Library
 
 /Tests/obj
 /Tests/bin
+
+/obj
+/Temp
+
+/Tests/Properties
+
+/Assets/UnityVS/Editor/*.dll

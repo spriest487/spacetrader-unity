@@ -3,6 +3,8 @@ using System.Collections;
 
 public class FollowCamera : MonoBehaviour
 {
+	public bool ignoreTranslation;
+
 	public Vector3 offset;
 	public float thrustOffset;
 	public float rotationOffset;
@@ -45,21 +47,29 @@ public class FollowCamera : MonoBehaviour
 		transform.position = offset;
 		if (player)
 		{
-			var newPos = player.transform.TransformPoint(offset);
-			newPos -= currentSpeedOffset;
+			if (!ignoreTranslation)
+			{
+				var newPos = player.transform.TransformPoint(offset);
+				newPos -= currentSpeedOffset;
 
-			var dilutedShake = shake * 0.05f;
-			var shakePhase = shakeSpeed * Time.frameCount;
+				var dilutedShake = shake * 0.05f;
+				var shakePhase = shakeSpeed * Time.frameCount;
 
-			var shakeAmount = new Vector3(
-				shake * Mathf.Sin(shakePhase * shakeAngles.x),
-				shake * Mathf.Sin(shakePhase * shakeAngles.y),
-				shake * Mathf.Sin(shakePhase * shakeAngles.z));
-			newPos += transform.TransformDirection(shakeAmount);
-						
-			transform.position = newPos;
+				var shakeAmount = new Vector3(
+					shake * Mathf.Sin(shakePhase * shakeAngles.x),
+					shake * Mathf.Sin(shakePhase * shakeAngles.y),
+					shake * Mathf.Sin(shakePhase * shakeAngles.z));
+				newPos += transform.TransformDirection(shakeAmount);
+							
+				transform.position = newPos;
 
-			transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
+				transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
+			}
+			else
+			{
+				transform.position = Vector3.zero;
+				transform.LookAt(player.transform.forward * 1000, player.transform.up);
+			}
 
 			float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
 			var rotOffsetAmt = Quaternion.Euler(player.rigidbody.angularVelocity.x * rotationOffsetAmt,
@@ -69,7 +79,8 @@ public class FollowCamera : MonoBehaviour
 		}
 		else
 		{
-			transform.position = new Vector3(0, 0, 0);
+			transform.position = Vector3.zero;
+			transform.rotation = Quaternion.identity;
 		}		
 	}
 
