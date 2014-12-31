@@ -1,0 +1,6 @@
+*.meta
+
+/Library
+
+/Tests/obj
+/Tests/bin
