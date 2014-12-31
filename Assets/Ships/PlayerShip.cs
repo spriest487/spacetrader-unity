@@ -68,8 +68,8 @@ public class PlayerShip : MonoBehaviour
 		//roll is manual only
 		ship.roll = -Input.GetAxis("roll");
 
-		ship.thrust = Input.GetAxis("thrust");
-		ship.strafe = Input.GetAxis("strafe");
+		ship.thrust = Input.GetAxis("Vertical");
+		ship.strafe = Input.GetAxis("Horizontal");
 		ship.lift = Input.GetAxis("lift");
 
 		var loadout = GetComponent<ModuleLoadout>();
