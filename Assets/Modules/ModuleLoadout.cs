@@ -36,6 +36,11 @@ public class ModuleLoadout : MonoBehaviour
 				if (bulletBehaviour)
 				{
 					bulletBehaviour.owner = gameObject;
+
+                    if (rigidbody)
+                    {
+                        bulletBehaviour.baseVelocity = rigidbody.velocity;
+                    }
 				}
 
 				if (moduleConfig.bulletMuzzleFlash)
@@ -51,7 +56,7 @@ public class ModuleLoadout : MonoBehaviour
 
 	void Start()
 	{
-		var config = GameObject.FindGameObjectWithTag("WorldConfig");
+        var config = GameObject.Find("World Config");
 		moduleConfig = config.GetComponent<ModuleConfiguration>();
 
 		ship = GetComponent<Ship>();

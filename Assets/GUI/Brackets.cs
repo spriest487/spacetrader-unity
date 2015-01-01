@@ -47,7 +47,7 @@ public class Brackets : MonoBehaviour
 
 	void OnGUI()
 	{
-		if (brackets == null)
+		if (brackets == null || !Camera.main)
 		{
 			return;
 		}

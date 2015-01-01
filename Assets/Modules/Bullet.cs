@@ -9,30 +9,48 @@ public class Bullet : MonoBehaviour {
 	
 	public float velocity;
 	public float lifetime;
+
+    public Vector3 baseVelocity;
+    public bool applyBaseVelocity;
 	
 	private Vector3 lastPos;
 	
 	void FixedUpdate()
 	{
-		lastPos = transform.position;
+        lastPos = transform.position;
 
-		var frameSpeed = velocity * Time.deltaTime;
+		var frameSpeed = transform.forward * (velocity * Time.deltaTime);
 
-		bool dead = false;
+        if (applyBaseVelocity)
+        {
+            frameSpeed += baseVelocity * Time.deltaTime;
+        }
 
-		int raycastMask = ~LayerMask.GetMask("Bullets and Effects");
-		RaycastHit hit;
-		if (Physics.Raycast(lastPos, transform.forward, out hit, frameSpeed, raycastMask))
+        var frameDistance = frameSpeed.magnitude;
+        var frameDirection = frameSpeed / frameDistance;
+
+		int raycastMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
+        
+        Vector3 nextPos;
+        RaycastHit hit;
+        bool dead;
+
+		if (Physics.Raycast(lastPos, frameDirection, out hit, frameDistance, raycastMask))
 		{
-			var hitPos = hit.point;
+			nextPos = hit.point;
 			var hitObj = hit.collider.gameObject;
 
-			dead = Hit(hitObj, hitPos);
+            dead = Hit(hitObj, nextPos);
 		}
+        else
+        {
+            nextPos = lastPos + frameSpeed;
+            dead = false;
+        }
 
 		if (!dead)
 		{
-			transform.position += transform.forward * frameSpeed;
+            transform.position = nextPos;
 
 			lifetime -= Time.deltaTime;
 			if (lifetime < 0)

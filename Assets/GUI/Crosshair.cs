@@ -7,6 +7,11 @@ public class Crosshair : MonoBehaviour
 
 	private void DrawCrosshair(Vector3 worldPos, float alpha)
 	{
+        if (!Camera.main)
+        {
+            return;
+        }
+
 		var screenPos = Camera.main.WorldToScreenPoint(worldPos);
 		
 		Rect xhairRect = new Rect();
@@ -25,17 +30,22 @@ public class Crosshair : MonoBehaviour
 
 	void OnGUI()
 	{
-		var player = GameObject.FindGameObjectWithTag("Player");
+		var player = PlayerManager.Player;
+        if (!player)
+        {
+            return;
+        }
+
 		var ship = player.GetComponent<Ship>();
 
-		if (!player || !ship)
+		if (!ship)
 		{
 			return;
 		}
 
 		DrawCrosshair(ship.aim, 1);
 
-		int layerMask = ~LayerMask.GetMask("Bullets and Effects");
+		int layerMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
 		var between = ship.aim - player.transform.position;
 
 		RaycastHit rayHit;

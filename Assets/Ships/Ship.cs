@@ -7,7 +7,9 @@ public class Ship : MonoBehaviour
 	public Hitpoints _hitpoints;
 	public bool _targettable = true;
 
-	public FormationManager formationManager; 
+	public FormationManager formationManager;
+
+    public SpaceStation dockedIn;
 	
 	public ShipStats stats { get { return _stats; } }
 	public bool targettable { get { return _targettable; } }
@@ -43,13 +45,36 @@ public class Ship : MonoBehaviour
 		_hitpoints = null;
 	}
 
+    private static Vector3 InputAmountsToRequired(Vector3 input,
+        Vector3 localCurrentValue,
+        float maxSpeed)
+    {
+        var inputAdjusted = input;
+        for (int i = 0; i < 3; ++i)
+        {
+            var localAmt = localCurrentValue[i] / maxSpeed;
+            var inputAmt = input[i];
+            var sign = Mathf.Sign(inputAmt);
+
+            var localAmtAbs = Mathf.Abs(localAmt);
+            var inputAmtAbs = Mathf.Abs(inputAmt);
+
+            if (inputAmtAbs > Mathf.Epsilon)
+            {
+                inputAdjusted[i] = (inputAmtAbs - localAmtAbs) * sign;
+            }
+        }
+
+        return inputAdjusted;
+    }
+
 	private static Vector3 DecayRotation(Vector3 input,
-		Vector3 currentValue,
+		Vector3 localCurrentValue,
 		float decaySpeed,
 		float maxSpeed,
 		Transform currentTransform)
 	{
-		var inputAdjusted = input;
+         var inputAdjusted = input;
 
 		//input proportional to the largest individual value
 		var inputMax = Mathf.Max(Mathf.Abs(inputAdjusted.x), Mathf.Abs(inputAdjusted.y), Mathf.Abs(inputAdjusted.z));
@@ -64,9 +89,6 @@ public class Ship : MonoBehaviour
 			inputProportions = Vector3.zero;
 		}
 
-		//convert to pitch, yaw, roll
-		var localRot = currentTransform.InverseTransformDirection(currentValue);
-
 		var decayAmt = Time.deltaTime * decaySpeed;
 		var decay = new Vector3(decayAmt, decayAmt, decayAmt);
 		
@@ -77,21 +99,6 @@ public class Ship : MonoBehaviour
 		for (int i = 0; i < 3; ++i)
 		{
 			decay[i] *= 1 - (inputAdjusted[i] * inputProportions[i]);
-			//decay[i] = Mathf.Max(0, decay[i]);
-
-			/* if the speed in this direction is greater than the input though, double the decay! */
-			if (MathUtils.SameSign(localRot[i], inputAdjusted[i]))
-			{
-				//var currentSpeed = Mathf.Abs(localRot[i]) / maxSpeed;
-				//var pastTarget = currentSpeed - Mathf.Abs(input[i]);
-
-				//if (pastTarget > 0)
-				//{
-				//	//Debug.Log(currentSpeed.ToString("F4"));
-
-				//	decay[i] = decayAmt * (1 + pastTarget);
-				//}
-			}
 		}
 		
 		if (decay.sqrMagnitude <= Vector3.kEpsilon)
@@ -99,10 +106,10 @@ public class Ship : MonoBehaviour
 			decay = Vector3.zero;
 		}
 
-		var decayedRot = localRot;
+        var decayedRot = localCurrentValue;
 		for (int i = 0; i < 3; ++i) 
 		{
-			var absRot = Mathf.Abs(localRot[i]);
+            var absRot = Mathf.Abs(localCurrentValue[i]);
 
 			if (absRot > Vector3.kEpsilon)
 			{
@@ -115,56 +122,59 @@ public class Ship : MonoBehaviour
 			}
 		}
 
-		//Debug.Log(string.Format("{0} => {1} (decay: {2})", localRot.ToString("F3"), decayedRot.ToString("F3"), decay));
-
-		localRot = decayedRot;
-
-		return currentTransform.TransformDirection(localRot);
+        return currentTransform.TransformDirection(decayedRot);
 	}
 			
 	void FixedUpdate()
-	{
-		rigidbody.drag = 0;
-		rigidbody.angularDrag = 0;
-		rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
-		rigidbody.inertiaTensor = new Vector3(1, 1, 1);
-		
+	{			
 		formationManager.Update();
 		DebugDrawFollowerPositions();
 
-		if (!rigidbody)
+		if (rigidbody)
 		{
-			return;
+            rigidbody.drag = 0;
+            rigidbody.angularDrag = 0;
+            rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+            rigidbody.inertiaTensor = new Vector3(1, 1, 1);
+
+            //all movement vals must be within -1..1
+            thrust = Mathf.Clamp(thrust, -1, 1);
+            strafe = Mathf.Clamp(strafe, -1, 1);
+            lift = Mathf.Clamp(lift, -1, 1);
+            pitch = Mathf.Clamp(pitch, -1, 1);
+            yaw = Mathf.Clamp(yaw, -1, 1);
+            roll = Mathf.Clamp(roll, -1, 1);
+
+            var torqueMax = stats.maxTurnSpeed * Mathf.Deg2Rad;
+
+            var localRotation = rigidbody.transform.InverseTransformDirection(rigidbody.angularVelocity);
+            var localVelocity = rigidbody.transform.InverseTransformDirection(rigidbody.velocity);
+
+            var torqueInput = InputAmountsToRequired(new Vector3(pitch, yaw, roll),
+                localRotation,
+                torqueMax);            
+            var forceInput = InputAmountsToRequired(new Vector3(strafe, lift, thrust),
+                localVelocity,
+                stats.maxSpeed);           
+
+            rigidbody.angularVelocity = DecayRotation(torqueInput,
+                localRotation,
+                stats.agility * Mathf.Deg2Rad,
+                torqueMax,
+                rigidbody.transform);
+            rigidbody.velocity = DecayRotation(forceInput,
+                localVelocity,
+                stats.thrust,
+                stats.maxSpeed,
+                rigidbody.transform);
+
+            var force = forceInput.normalized * stats.thrust;
+            var torque = torqueInput.normalized * Mathf.Deg2Rad * stats.agility;
+
+            /* apply new forces */
+            rigidbody.AddRelativeTorque(torque);
+            rigidbody.AddRelativeForce(force);
 		}
-
-		//all movement vals must be within -1..1
-		thrust = Mathf.Clamp(thrust, -1, 1);
-		strafe = Mathf.Clamp(strafe, -1, 1);
-		lift = Mathf.Clamp(lift, -1, 1);
-		pitch = Mathf.Clamp(pitch, -1, 1);
-		yaw = Mathf.Clamp(yaw, -1, 1);
-		roll = Mathf.Clamp(roll, -1, 1);
-
-		var forceInput = new Vector3(strafe, lift, thrust);
-		var torqueInput = new Vector3(pitch, yaw, roll);
-
-		rigidbody.angularVelocity = DecayRotation(torqueInput,
-			rigidbody.angularVelocity,
-			stats.agility * Mathf.Deg2Rad,
-			stats.maxTurnSpeed * Mathf.Deg2Rad,
-			rigidbody.transform);
-		rigidbody.velocity = DecayRotation(forceInput,
-			rigidbody.velocity,
-			stats.thrust,
-			stats.maxSpeed,
-			rigidbody.transform);		
-		
-		var force = forceInput.normalized * stats.thrust;
-		var torque = torqueInput.normalized * Mathf.Deg2Rad * stats.agility;
-
-		/* apply new forces */
-		rigidbody.AddRelativeTorque(torque);
-		rigidbody.AddRelativeForce(force);
 	}
 
 	void LateUpdate()

@@ -5,6 +5,9 @@ using System.Collections;
 public class PlayerShip : MonoBehaviour
 {
 	private Ship ship;
+    private Moorable moorable;
+
+    private ScreenManager screenManager;
 
 	private Vector2? FindTouchPos()
 	{
@@ -26,24 +29,24 @@ public class PlayerShip : MonoBehaviour
 		return null;
 	}
 
-	private void RotateTowardsAimAngle(float currentVal, ref float angle)
-	{
-		//Debug.Log(string.Format("current {0:F3}, angle {1:F3}", currentVal, angle));
+    //private void RotateTowardsAimAngle(float currentVal, ref float angle)
+    //{
+    //    //Debug.Log(string.Format("current {0:F3}, angle {1:F3}", currentVal, angle));
 
-		if (MathUtils.SameSign(currentVal, angle) && Mathf.Abs(currentVal) > Mathf.Abs(angle))
-		{
-			angle = 0;
-		}
-	}
+    //    if (MathUtils.SameSign(currentVal, angle) && Mathf.Abs(currentVal) > Mathf.Abs(angle))
+    //    {
+    //        angle = 0;
+    //    }
+    //}
 
 	private void RotateTowardsAim(Vector2 screenAimPos)
 	{
 		var aimPitch = -Mathf.Clamp((2 * (screenAimPos.y / Screen.height)) - 1, -1, 1);
 		var aimYaw = Mathf.Clamp((2 * (screenAimPos.x / Screen.width)) - 1, -1, 1);
 
-		var currentRotAsAngles = transform.InverseTransformDirection(rigidbody.angularVelocity);
-		var currentPitch = (Mathf.Rad2Deg * currentRotAsAngles.x) / ship.stats.maxTurnSpeed;
-		var currentYaw = (Mathf.Rad2Deg * currentRotAsAngles.y) / ship.stats.maxTurnSpeed;
+		//var currentRotAsAngles = transform.InverseTransformDirection(rigidbody.angularVelocity);
+		//var currentPitch = (Mathf.Rad2Deg * currentRotAsAngles.x) / ship.stats.maxTurnSpeed;
+		//var currentYaw = (Mathf.Rad2Deg * currentRotAsAngles.y) / ship.stats.maxTurnSpeed;
 
 		/*RotateTowardsAimAngle(currentPitch, ref aimPitch);
 		RotateTowardsAimAngle(currentYaw, ref aimYaw);*/
@@ -51,35 +54,64 @@ public class PlayerShip : MonoBehaviour
 		ship.yaw = aimYaw;
 		ship.pitch = aimPitch;
 	}
+
+    void Update()
+    {
+        var touchPos = FindTouchPos();
+        if (touchPos.HasValue)
+        {
+            RotateTowardsAim(touchPos.Value);
+        }
+        else if (ship)
+        {
+            ship.pitch = Input.GetAxis("pitch");
+            ship.yaw = Input.GetAxis("yaw");
+        }
+
+        //roll is manual only
+        ship.roll = -Input.GetAxis("roll");
+
+        ship.thrust = Input.GetAxis("Vertical");
+        ship.strafe = Input.GetAxis("Horizontal");
+        ship.lift = Input.GetAxis("lift");
+
+        var loadout = GetComponent<ModuleLoadout>();
+        if (loadout)
+        {
+            if (Input.GetButton("fire"))
+            {
+                loadout.Activate(0);
+            }
+        }
+
+        if (Input.GetButtonDown("activate"))
+        {
+            if (moorable && moorable.spaceStation)
+            {
+                moorable.RequestMooring();
+            }
+        }
+    }
+
+    void OnMoored()
+    {
+        if (screenManager)
+        {
+            screenManager.ingameState = ScreenManager.IngameState.Docked;
+        }
+    }
+
+    void OnUnmoored()
+    {
+        if (screenManager)
+        {
+            screenManager.ingameState = ScreenManager.IngameState.Flight;
+        }
+    }
 	
 	void FixedUpdate ()
-	{	
-		var touchPos = FindTouchPos();
-		if (touchPos.HasValue)
-		{
-			RotateTowardsAim(touchPos.Value);
-		}
-		else if (ship)
-		{
-			ship.pitch = Input.GetAxis("pitch");
-			ship.yaw = Input.GetAxis("yaw");				
-		}
-
-		//roll is manual only
-		ship.roll = -Input.GetAxis("roll");
-
-		ship.thrust = Input.GetAxis("Vertical");
-		ship.strafe = Input.GetAxis("Horizontal");
-		ship.lift = Input.GetAxis("lift");
-
-		var loadout = GetComponent<ModuleLoadout>();
-		if (loadout)
-		{
-			if (Input.GetButton("fire"))
-			{
-				loadout.Activate(0);
-			}
-		}
+	{
+        var touchPos = FindTouchPos();
 
 		Vector2? mouseAimPos = null;
 
@@ -92,7 +124,7 @@ public class PlayerShip : MonoBehaviour
 			mouseAimPos = Input.mousePosition;
 		}
 
-		if (mouseAimPos.HasValue)
+		if (mouseAimPos.HasValue && Camera.main)
 		{
 			Vector3 mousePos = new Vector3(mouseAimPos.Value.x, mouseAimPos.Value.y, 1000);
 			var mouseRay = Camera.main.ScreenPointToRay(mousePos);
@@ -117,6 +149,13 @@ public class PlayerShip : MonoBehaviour
 	void Start()
 	{
 		ship = GetComponent<Ship>();
+        moorable = GetComponent<Moorable>();
+
+        var smObj = GameObject.Find("Screen Manager");
+        if (smObj)
+        {
+            screenManager = smObj.GetComponent<ScreenManager>();
+        }
 	}
 
 	void OnCollisionEnter(Collision collision)

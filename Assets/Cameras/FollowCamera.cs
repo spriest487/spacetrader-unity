@@ -42,7 +42,7 @@ public class FollowCamera : MonoBehaviour
 
 	void LateUpdate()
 	{
-		var player = GameObject.FindWithTag("Player");
+        var player = PlayerManager.Player;
 		
 		transform.position = offset;
 		if (player)
@@ -86,7 +86,7 @@ public class FollowCamera : MonoBehaviour
 
 	void FixedUpdate()
 	{		
-		var player = GameObject.FindWithTag("Player");
+		var player = PlayerManager.Player;
 		if (!player)
 		{
 			return;
