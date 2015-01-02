@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MathUtils : MonoBehaviour {
+public class MathUtils : MonoBehaviour
+{
 	public static float NextFloat(System.Random random)
 	{
 		return (float) random.NextDouble();

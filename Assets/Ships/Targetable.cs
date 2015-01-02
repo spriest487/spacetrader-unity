@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class Targetable : MonoBehaviour
+public class Targetable : MonoBehaviour
 {
-	public Faction faction;
+	public string faction;
 }

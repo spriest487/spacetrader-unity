@@ -7,8 +7,11 @@ public class Brackets : MonoBehaviour
 	[Serializable]
 	public class Bracket
 	{
-		public Ship ship;
+		public Targetable ship;
 	}
+
+    public Color friendlyColor;
+    public Color hostileColor;
 
 	public Bracket[] brackets = new Bracket[] { };
 
@@ -18,7 +21,7 @@ public class Brackets : MonoBehaviour
 
 	void LateUpdate()
 	{
-		var ships = FindObjectsOfType(typeof(Ship)) as Ship[];
+        var ships = FindObjectsOfType(typeof(Targetable)) as Targetable[];
 
 		if (ships != null)
 		{
@@ -27,10 +30,6 @@ public class Brackets : MonoBehaviour
 			for (int shipIt = 0; shipIt < ships.Length; ++shipIt)
 			{
 				var ship = ships[shipIt];
-				if (!ship.targettable)
-				{
-					continue;
-				}
 
 				var bracket = new Bracket();
 				bracket.ship = ship;
@@ -47,6 +46,11 @@ public class Brackets : MonoBehaviour
 
 	void OnGUI()
 	{
+        GUI.depth = -1;
+
+        var player = PlayerManager.Player;
+        var playerTargetable = player.GetComponent<Targetable>();
+
 		if (brackets == null || !Camera.main)
 		{
 			return;
@@ -54,7 +58,7 @@ public class Brackets : MonoBehaviour
 
 		foreach (var bracket in brackets)
 		{
-			var pos = Camera.main.WorldToScreenPoint(bracket.ship.rigidbody.transform.position);
+			var pos = Camera.main.WorldToScreenPoint(bracket.ship.transform.position);
 			//var pos = new Vector3(10, 10, 10);
 
 			var bracketSize = bracketTexture.width;
@@ -74,21 +78,37 @@ public class Brackets : MonoBehaviour
 				var bottomRight = new Rect(pos.x + bracketSize, pos.y + bracketSize, bracketSize, bracketSize);
 				var bottomRightUv = new Rect(1, 1, -1, -1);
 
-				GUI.DrawTexture(topLeft, bracketTexture);
-				GUI.DrawTextureWithTexCoords(topRight, bracketTexture, topRightUv);
-				GUI.DrawTextureWithTexCoords(bottomLeft, bracketTexture, bottomLeftUv);
-				GUI.DrawTextureWithTexCoords(bottomRight, bracketTexture, bottomRightUv);
+                var captionPos = new Rect();
+                var captionContent = new GUIContent(bracket.ship.name);
+                var captionSize = textStyle.CalcSize(captionContent);
+                var bracketWidth = topRight.xMax - topLeft.x;
+                captionPos.width = captionSize.x;
+                captionPos.height = captionSize.y;
+                captionPos.x = topLeft.x + (bracketWidth / 2 - captionSize.x / 2);
+                captionPos.y = topLeft.y - captionPos.height;
 
-				var captionPos = new Rect();
-				var captionContent = new GUIContent(bracket.ship.name);
-				var captionSize = textStyle.CalcSize(captionContent);
-				var bracketWidth = topRight.xMax - topLeft.x;
-				captionPos.width = captionSize.x;
-				captionPos.height = captionSize.y;
-				captionPos.x = topLeft.x + (bracketWidth / 2 - captionSize.x / 2);
-				captionPos.y = topLeft.y - captionPos.height;
+                GuiUtils.DrawOutlined(delegate(bool outlinePass)
+                {
+                    if (outlinePass)
+                    {
+                        GUI.color = Color.black;
+                    }
+                    else if (playerTargetable && string.Equals(playerTargetable.faction, bracket.ship.faction))
+                    {
+                        GUI.color = friendlyColor;
+                    }
+                    else
+                    {
+                        GUI.color = hostileColor;
+                    }
 
-				GUI.Label(captionPos, captionContent, textStyle);
+                    GUI.DrawTexture(topLeft, bracketTexture);
+                    GUI.DrawTextureWithTexCoords(topRight, bracketTexture, topRightUv);
+                    GUI.DrawTextureWithTexCoords(bottomLeft, bracketTexture, bottomLeftUv);
+                    GUI.DrawTextureWithTexCoords(bottomRight, bracketTexture, bottomRightUv);
+
+                    GUI.Label(captionPos, captionContent, textStyle);
+                }, 1);
 			}			
 		}
 	}

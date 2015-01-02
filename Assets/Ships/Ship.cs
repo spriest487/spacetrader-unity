@@ -5,14 +5,12 @@ public class Ship : MonoBehaviour
 {
 	public ShipStats _stats;
 	public Hitpoints _hitpoints;
-	public bool _targettable = true;
 
 	public FormationManager formationManager;
 
     public SpaceStation dockedIn;
 	
 	public ShipStats stats { get { return _stats; } }
-	public bool targettable { get { return _targettable; } }
 	public Hitpoints hitpoints { get { return _hitpoints;  } }
 	
 	public float thrust;

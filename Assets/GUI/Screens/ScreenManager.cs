@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ScreenManager : MonoBehaviour {
     public enum IngameState
@@ -8,8 +8,8 @@ public class ScreenManager : MonoBehaviour {
         Flight,
     }
 
-    public GameObject dockedScreen;
-    public GameObject flightScreen;
+    public GameObject[] dockedScreen;
+    public GameObject[] flightScreen;
 
     private IngameState _ingameState = IngameState.Flight;
     public IngameState ingameState
@@ -31,14 +31,30 @@ public class ScreenManager : MonoBehaviour {
         {
             case IngameState.Docked:
                 {
-                    dockedScreen.SetActive(true);
-                    flightScreen.SetActive(false);
+                    foreach (var dockedObj in dockedScreen)
+                    {
+                        dockedObj.SetActive(true);
+                    }
+
+                    foreach (var flightObj in flightScreen)
+                    {
+                        flightObj.SetActive(false);
+                    }
+                    
                     break;
                 }
             case IngameState.Flight:
                 {
-                    dockedScreen.SetActive(false);
-                    flightScreen.SetActive(true);
+                    foreach (var dockedObj in dockedScreen)
+                    {
+                        dockedObj.SetActive(false);
+                    }
+
+                    foreach (var flightObj in flightScreen)
+                    {
+                        flightObj.SetActive(true);
+                    }
+
                     break;
                 }
         }

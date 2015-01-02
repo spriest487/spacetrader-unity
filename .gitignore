@@ -15,3 +15,5 @@
 /Tests/Properties
 
 /Assets/UnityVS/Editor/*.dll
+
+*.unityproj

@@ -40,4 +40,14 @@ public class Moorable : MonoBehaviour
             spaceStation = null;
         }
     }
+
+    void OnMoored(SpaceStation station)
+    {
+        spaceStation = station;
+    }
+
+    void OnUnmoored(SpaceStation station)
+    {
+        spaceStation = null;
+    }
 }
