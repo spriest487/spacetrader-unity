@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Hitpoints
+public class Hitpoints : MonoBehaviour
 {
-    private class HitpointValue
+    [Serializable]
+    public class HitpointValue
     {
-        public int current;
-        public int max;
+        public int current = 1;
+        public int max = 1;
     }
 
-    private class ShieldValue : HitpointValue
+    [Serializable]
+    public class ShieldValue : HitpointValue
     {
         public float weight;
     }
 
-    private List<ShieldValue> shieldSectors;
-	private HitpointValue armor;
+    public ShieldValue[] shieldSectors;
+	public HitpointValue armor;
 
     public Hitpoints(int shieldSectorCount, int maxArmor, int maxShields)
     {
@@ -32,14 +33,14 @@ public class Hitpoints
 
 		int shieldPerSector = maxShields / shieldSectorCount;
 
-        shieldSectors = new List<ShieldValue>();        
+        shieldSectors = new ShieldValue[shieldSectorCount];  
         for (int sector = 0; sector < shieldSectorCount; ++sector)
         {
             var shieldValue = new ShieldValue();
 			shieldValue.current = shieldPerSector;
 			shieldValue.max = shieldPerSector;
 			shieldValue.weight = 1;
-            shieldSectors.Add(shieldValue);
+            shieldSectors[sector] = shieldValue;
         }
     }
 
@@ -69,7 +70,7 @@ public class Hitpoints
     }
 
     public void TakeDamage(int amount) {
-        var sectorCount = (int) shieldSectors.Count;
+        var sectorCount = shieldSectors.Length;
 	    var amountPerSector = Math.Max(0, amount / sectorCount);
 	    
         var damage = new List<int>();
@@ -122,7 +123,7 @@ public class Hitpoints
     {
         bool result = true;
 
-        for (int sectorIt = 0; sectorIt < shieldSectors.Count; ++sectorIt)
+        for (int sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt)
         {
             result &= IsSectorHealed(healed, sectorIt);
         }
@@ -140,7 +141,7 @@ public class Hitpoints
 		int newRemainder = 0;
 
 		int sectorIt;
-		for (sectorIt = 0; sectorIt < shieldSectors.Count; ++sectorIt) {
+		for (sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt) {
 			var shieldSector = shieldSectors[sectorIt];
 
 			healed[sectorIt] = Mathf.FloorToInt(amount * (shieldSectors[sectorIt].weight / weightTotal));
@@ -163,13 +164,13 @@ public class Hitpoints
 					++shieldSectors[sectorIt].current;
 				}
 
-				sectorIt = (sectorIt + 1) % shieldSectors.Count;
+				sectorIt = (sectorIt + 1) % shieldSectors.Length;
 			}
 		}
     }
 
     public void HealShield(int amount) {
-	    var healed = new List<int>(shieldSectors.Count);
+	    var healed = new List<int>(shieldSectors.Length);
         foreach (var shieldSector in shieldSectors)
         {
             healed.Add(0);
@@ -177,7 +178,7 @@ public class Hitpoints
 
 	    RecurseHealShield(0, healed, amount);
 
-	    for (int sectorIt = 0; sectorIt < shieldSectors.Count; ++sectorIt) {
+	    for (int sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt) {
 		    shieldSectors[sectorIt].current += healed[sectorIt];
 	    }
     }
@@ -212,9 +213,9 @@ public class Hitpoints
 
 	public int GetShield(int sector)
 	{
-		if (sector < 0 || sector >= shieldSectors.Count)
+		if (sector < 0 || sector >= shieldSectors.Length)
 		{
-			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Count));
+			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Length));
 		}
 
 	    return shieldSectors[sector].current;
@@ -226,9 +227,9 @@ public class Hitpoints
     }
 
     public int GetMaxShields(int sector) {
-		if (sector < 0 || sector >= shieldSectors.Count)
+		if (sector < 0 || sector >= shieldSectors.Length)
 		{
-			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Count));
+			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Length));
 		}
 
 	    return shieldSectors[sector].max;

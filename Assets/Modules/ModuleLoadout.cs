@@ -16,7 +16,7 @@ public class ModuleLoadout : MonoBehaviour
 	private ModuleConfiguration moduleConfig;
 	private Ship ship;
 
-	private WeaponHardpoint[] hardpoints;
+	public WeaponHardpoint[] hardpoints { get; private set; }
 	
 	public void Activate(int index)
 	{

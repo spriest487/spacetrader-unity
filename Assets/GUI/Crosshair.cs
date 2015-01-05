@@ -12,7 +12,7 @@ public class Crosshair : MonoBehaviour
             return;
         }
 
-		var screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        var screenPos = Camera.main.WorldToScreenPoint(worldPos);
 		
 		Rect xhairRect = new Rect();
 		xhairRect.width = crosshairTexture.width;
@@ -37,6 +37,7 @@ public class Crosshair : MonoBehaviour
         }
 
 		var ship = player.GetComponent<Ship>();
+        var loadout = player.GetComponent<ModuleLoadout>();
 
 		if (!ship)
 		{
@@ -46,15 +47,33 @@ public class Crosshair : MonoBehaviour
 		DrawCrosshair(ship.aim, 1);
 
 		int layerMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
-		var between = ship.aim - player.transform.position;
 
-		RaycastHit rayHit;
-		if (Physics.Raycast(player.transform.position, between.normalized, out rayHit, between.magnitude, layerMask))
-		{
-			if (!player.transform.IsChildOf(rayHit.transform))
-			{
-				DrawCrosshair(rayHit.point, 0.5f);
-			}
-		}
+        Vector3[] aimPoints;
+        if (loadout)
+        {
+            aimPoints = new Vector3[ loadout.hardpoints.Length ];
+            for (int hardpoint = 0; hardpoint < loadout.hardpoints.Length; ++hardpoint)
+            {
+                aimPoints[hardpoint] = loadout.hardpoints[hardpoint].transform.position;
+            }
+        }
+        else
+        {
+            aimPoints = new Vector3[] { player.transform.position };
+        }
+
+        foreach (var aimPoint in aimPoints)
+        {
+            var between = ship.aim - aimPoint;
+
+            RaycastHit rayHit;
+            if (Physics.Raycast(aimPoint, between.normalized, out rayHit, between.magnitude, layerMask))
+            {
+                if (!player.transform.IsChildOf(rayHit.transform))
+                {
+                    DrawCrosshair(rayHit.point, 0.5f);
+                }
+            }
+        }
 	}
 }

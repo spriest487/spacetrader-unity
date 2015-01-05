@@ -12,10 +12,12 @@ public class Brackets : MonoBehaviour
 
     public Color friendlyColor;
     public Color hostileColor;
+    public Color unselectedTint;
 
 	public Bracket[] brackets = new Bracket[] { };
 
 	public Texture bracketTexture;
+    public Texture bracketSelectedTexture;
 	
 	public GUIStyle textStyle;
 
@@ -30,6 +32,11 @@ public class Brackets : MonoBehaviour
 			for (int shipIt = 0; shipIt < ships.Length; ++shipIt)
 			{
 				var ship = ships[shipIt];
+
+                if (ship.hideBracket)
+                {
+                    continue;
+                }
 
 				var bracket = new Bracket();
 				bracket.ship = ship;
@@ -50,6 +57,7 @@ public class Brackets : MonoBehaviour
 
         var player = PlayerManager.Player;
         var playerTargetable = player.GetComponent<Targetable>();
+        var playerShip = player.GetComponent<Ship>();
 
 		if (brackets == null || !Camera.main)
 		{
@@ -65,18 +73,36 @@ public class Brackets : MonoBehaviour
 
 			if (pos.z > 0)
 			{
-				pos.y = Screen.height - pos.y;
+                //flip posY to gui coord space
+                pos.y = Screen.height - pos.y;
+                
+                //TODO: calculate screen size of object
+                float sizeX = 72;
+                float sizeY = 72;
+                
+                float halfSizeX = sizeX/2;
+                float halfSizeY = sizeY/2;
 
-				var topLeft = new Rect(pos.x - bracketSize, pos.y - bracketSize, bracketSize, bracketSize);
+				var topLeft = new Rect(pos.x - (halfSizeX),
+                    pos.y - halfSizeY,
+                    bracketSize,
+                    bracketSize);
+				var topRight = new Rect(pos.x + (halfSizeX - bracketSize),
+                    pos.y - halfSizeY,
+                    bracketSize,
+                    bracketSize);
+                var bottomLeft = new Rect(pos.x - halfSizeX,
+                    pos.y + (halfSizeY - bracketSize),
+                    bracketSize,
+                    bracketSize);                
+				var bottomRight = new Rect(pos.x + (halfSizeX - bracketSize),
+                    pos.y + (halfSizeY - bracketSize),
+                    bracketSize,
+                    bracketSize);
 
-				var topRight = new Rect(pos.x + bracketSize, pos.y - bracketSize, bracketSize, bracketSize);
-				var topRightUv = new Rect(1, 0, -1, 1);
-
-				var bottomLeft = new Rect(pos.x - bracketSize, pos.y + bracketSize, bracketSize, bracketSize);
-				var bottomLeftUv = new Rect(0, 1, 1, -1);
-
-				var bottomRight = new Rect(pos.x + bracketSize, pos.y + bracketSize, bracketSize, bracketSize);
-				var bottomRightUv = new Rect(1, 1, -1, -1);
+                var topRightUv = new Rect(1, 0, -1, 1);
+                var bottomLeftUv = new Rect(0, 1, 1, -1);
+                var bottomRightUv = new Rect(1, 1, -1, -1);
 
                 var captionPos = new Rect();
                 var captionContent = new GUIContent(bracket.ship.name);
@@ -87,28 +113,41 @@ public class Brackets : MonoBehaviour
                 captionPos.x = topLeft.x + (bracketWidth / 2 - captionSize.x / 2);
                 captionPos.y = topLeft.y - captionPos.height;
 
-                GuiUtils.DrawOutlined(delegate(bool outlinePass)
+                bool isTarget = playerShip && playerShip.target == bracket.ship;
+                bool sameFaction  =playerTargetable && string.Equals(playerTargetable.faction, bracket.ship.faction);
+
+                Color reactionColor = sameFaction ? friendlyColor : hostileColor;
+
+                if (isTarget)
                 {
-                    if (outlinePass)
+                    GuiUtils.DrawOutlined(delegate(bool outlinePass)
                     {
-                        GUI.color = Color.black;
-                    }
-                    else if (playerTargetable && string.Equals(playerTargetable.faction, bracket.ship.faction))
-                    {
-                        GUI.color = friendlyColor;
-                    }
-                    else
-                    {
-                        GUI.color = hostileColor;
-                    }
+                        if (outlinePass)
+                        {
+                            GUI.color = Color.black;
+                        }
+                        else
+                        {
+                            GUI.color = reactionColor;
+                        }
+
+                        GUI.DrawTexture(topLeft, bracketSelectedTexture);
+                        GUI.DrawTextureWithTexCoords(topRight, bracketSelectedTexture, topRightUv);
+                        GUI.DrawTextureWithTexCoords(bottomLeft, bracketSelectedTexture, bottomLeftUv);
+                        GUI.DrawTextureWithTexCoords(bottomRight, bracketSelectedTexture, bottomRightUv);
+
+                        GUI.Label(captionPos, captionContent, textStyle);
+                    }, 1);
+                }
+                else
+                {
+                    GUI.color = reactionColor * unselectedTint;
 
                     GUI.DrawTexture(topLeft, bracketTexture);
                     GUI.DrawTextureWithTexCoords(topRight, bracketTexture, topRightUv);
                     GUI.DrawTextureWithTexCoords(bottomLeft, bracketTexture, bottomLeftUv);
                     GUI.DrawTextureWithTexCoords(bottomRight, bracketTexture, bottomRightUv);
-
-                    GUI.Label(captionPos, captionContent, textStyle);
-                }, 1);
+                }
 			}			
 		}
 	}

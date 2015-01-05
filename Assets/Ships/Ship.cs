@@ -3,15 +3,13 @@ using System.Collections.Generic;
 
 public class Ship : MonoBehaviour
 {
-	public ShipStats _stats;
-	public Hitpoints _hitpoints;
-
 	public FormationManager formationManager;
 
     public SpaceStation dockedIn;
-	
-	public ShipStats stats { get { return _stats; } }
-	public Hitpoints hitpoints { get { return _hitpoints;  } }
+
+    public ShipStats stats;
+
+    public Targetable target;
 	
 	public float thrust;
 	public float strafe;
@@ -40,7 +38,6 @@ public class Ship : MonoBehaviour
 	void Start()
 	{
 		formationManager = new FormationManager();
-		_hitpoints = null;
 	}
 
     private static Vector3 InputAmountsToRequired(Vector3 input,

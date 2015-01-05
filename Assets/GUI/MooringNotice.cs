@@ -8,7 +8,7 @@ public class MooringNotice : MonoBehaviour
     public string template = "Press {0} to dock with {1}";
 
     private Text text;
-
+    
     void Start()
     {
         text = GetComponent<Text>();
