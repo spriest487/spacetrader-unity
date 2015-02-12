@@ -30,7 +30,7 @@ public class Healthbar : MonoBehaviour
 
     void Update()
     {
-        var player = PlayerManager.Player;
+        var player = PlayerStart.activePlayer;
         var target = ship;
         if (target == null && player != null)
         {

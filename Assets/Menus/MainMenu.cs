@@ -4,14 +4,47 @@ using UnityEngine;
 public class MainMenu : MonoBehaviour
 {
     public string newGameScene;
+    public string worldCommonScene; 
+    
+    public string menuScene;
 
     public void NewGame()
     {
         Application.LoadLevel(newGameScene);
+        Application.LoadLevelAdditive(worldCommonScene);
+    }
+
+    public void EndGame()
+    {
+        var worldLifecycleListeners = GameObject.FindGameObjectsWithTag("WorldListener");
+        if (worldLifecycleListeners != null)
+        {
+            foreach (var worldListener in worldLifecycleListeners)
+            {
+                worldListener.SendMessage("OnWorldEnd");
+            }
+        }
+
+        Application.LoadLevel(menuScene);
     }
 
     public void Quit()
     {
         Application.Quit();
+    }
+
+    void Update()
+    {
+        var ingame = GameObject.Find("WorldCommon") != null;
+
+        foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyIngame"))
+        {
+            obj.SetActive(ingame);
+        }
+
+        foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyOutOfGame"))
+        {
+            obj.SetActive(!ingame);
+        }
     }
 }

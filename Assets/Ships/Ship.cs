@@ -29,7 +29,7 @@ public class Ship : MonoBehaviour
 	public static float EquivalentThrust(Ship from, Ship target)
 	{
 		var targetSpeed = target.rigidbody.velocity.magnitude;
-		var maxSpeed = from.stats.maxSpeed;
+		var maxSpeed = Mathf.Max(1, from.stats.maxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
 		return result;
@@ -182,7 +182,12 @@ public class Ship : MonoBehaviour
 			rigidbody.velocity = rigidbody.velocity.normalized * stats.maxSpeed;
 		}
 	}
-
+	
+	void OnCollisionEnter(Collision collision)
+	{
+		Debug.Log(string.Format("Ship collided with {0} with speed {1} (magnitude {2})", collision.collider.gameObject, collision.relativeVelocity, collision.relativeVelocity.magnitude));
+	}
+	
 	private Vector3 GetFormationPos(int followerId)
 	{
 		var shipPos = rigidbody.transform.position;
@@ -199,11 +204,6 @@ public class Ship : MonoBehaviour
 		{
 			return shipPos;
 		}
-	}
-
-	void OnCollisionEnter(Collision collision)
-	{
-		Debug.Log(string.Format("Ship collided with {0} with speed {1} (magnitude {2})", collision.collider.gameObject, collision.relativeVelocity, collision.relativeVelocity.magnitude));
 	}
 
 	public Vector3 GetFormationPos(Ship follower)

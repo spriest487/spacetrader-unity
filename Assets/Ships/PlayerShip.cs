@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Ship))]
+[RequireComponent(typeof(Ship), typeof(ContextInjector))]
+[ContextSingleton]
 public class PlayerShip : MonoBehaviour
 {
 	private Ship ship;
     private Moorable moorable;
 
-    private ScreenManager screenManager;
+    [Injected]
+    internal ContextComponent<ScreenManager> screenManager = null;
 
 	private Vector2? FindTouchPos()
 	{
@@ -28,33 +30,16 @@ public class PlayerShip : MonoBehaviour
 
 		return null;
 	}
-
-    //private void RotateTowardsAimAngle(float currentVal, ref float angle)
-    //{
-    //    //Debug.Log(string.Format("current {0:F3}, angle {1:F3}", currentVal, angle));
-
-    //    if (MathUtils.SameSign(currentVal, angle) && Mathf.Abs(currentVal) > Mathf.Abs(angle))
-    //    {
-    //        angle = 0;
-    //    }
-    //}
-
+    
 	private void RotateTowardsAim(Vector2 screenAimPos)
 	{
 		var aimPitch = -Mathf.Clamp((2 * (screenAimPos.y / Screen.height)) - 1, -1, 1);
 		var aimYaw = Mathf.Clamp((2 * (screenAimPos.x / Screen.width)) - 1, -1, 1);
 
-		//var currentRotAsAngles = transform.InverseTransformDirection(rigidbody.angularVelocity);
-		//var currentPitch = (Mathf.Rad2Deg * currentRotAsAngles.x) / ship.stats.maxTurnSpeed;
-		//var currentYaw = (Mathf.Rad2Deg * currentRotAsAngles.y) / ship.stats.maxTurnSpeed;
-
-		/*RotateTowardsAimAngle(currentPitch, ref aimPitch);
-		RotateTowardsAimAngle(currentYaw, ref aimYaw);*/
-
 		ship.yaw = aimYaw;
 		ship.pitch = aimPitch;
 	}
-
+    
     void Update()
     {
         var touchPos = FindTouchPos();
@@ -80,7 +65,10 @@ public class PlayerShip : MonoBehaviour
         {
             if (Input.GetButton("fire"))
             {
-                loadout.Activate(0);
+                if (loadout.FrontModules.Size > 0)
+                {
+                    loadout.Activate(0);
+                }
             }
         }
 
@@ -95,17 +83,17 @@ public class PlayerShip : MonoBehaviour
 
     void OnMoored()
     {
-        if (screenManager)
+        if (screenManager.HasValue)
         {
-            screenManager.ingameState = ScreenManager.IngameState.Docked;
+            screenManager.Value.ingameState = ScreenManager.IngameState.Docked;
         }
     }
 
     void OnUnmoored()
     {
-        if (screenManager)
+        if (screenManager.HasValue)
         {
-            screenManager.ingameState = ScreenManager.IngameState.Flight;
+            screenManager.Value.ingameState = ScreenManager.IngameState.Flight;
         }
     }
 	
@@ -130,7 +118,7 @@ public class PlayerShip : MonoBehaviour
 			var mouseRay = Camera.main.ScreenPointToRay(mousePos);
 
 			RaycastHit rayHit;
-			//Debug.Log(mouseRay);
+
 			if (Physics.Raycast(mouseRay, out rayHit))
 			{
 				ship.aim = rayHit.point;
@@ -150,12 +138,6 @@ public class PlayerShip : MonoBehaviour
 	{
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
-
-        var smObj = GameObject.Find("Screen Manager");
-        if (smObj)
-        {
-            screenManager = smObj.GetComponent<ScreenManager>();
-        }
 	}
 
 	void OnCollisionEnter(Collision collision)

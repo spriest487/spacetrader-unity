@@ -4,6 +4,9 @@
 TagManager:
   tags:
   - WorldConfig
+  - WorldCommon
+  - UIOnlyIngame
+  - UIOnlyOutOfGame
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

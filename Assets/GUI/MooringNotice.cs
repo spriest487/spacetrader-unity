@@ -16,7 +16,7 @@ public class MooringNotice : MonoBehaviour
 
     void Update()
     {
-        var player = PlayerManager.Player;
+        var player = PlayerStart.activePlayer;
 
         bool active = false;
         if (player)

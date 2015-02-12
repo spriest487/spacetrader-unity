@@ -234,4 +234,9 @@ public class Hitpoints : MonoBehaviour
 
 	    return shieldSectors[sector].max;
     }
+
+	void OnTakeDamage(HitDamage damage)
+	{
+		TakeDamageToArmor(damage.amount);
+	}
 }

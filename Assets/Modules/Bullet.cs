@@ -6,6 +6,8 @@ public class Bullet : MonoBehaviour {
 	public GameObject owner;
 	
 	public Transform hitEffect;
+
+	public int damage;
 	
 	public float velocity;
 	public float lifetime;
@@ -60,14 +62,6 @@ public class Bullet : MonoBehaviour {
 		}
 	}
 
-	void Start()
-	{
-		if (!collider.isTrigger)
-		{
-			//Debug.Log("Bullet objects should be triggers, not solid colliders");
-		}
-	}
-
 	void OnTriggerEnter(Collider triggered)
 	{
 		Hit(triggered.gameObject, transform.position);
@@ -83,6 +77,8 @@ public class Bullet : MonoBehaviour {
 			{
 				Instantiate(hitEffect, hitPos, Quaternion.LookRotation((lastPos - hitPos).normalized));
 			}
+
+			hitObject.gameObject.SendMessage("OnTakeDamage", new HitDamage(hitPos, damage), SendMessageOptions.DontRequireReceiver);
 
 			Destroy(gameObject);
 			return true;

@@ -42,7 +42,7 @@ public class FollowCamera : MonoBehaviour
 
 	void LateUpdate()
 	{
-        var player = PlayerManager.Player;
+        var player = PlayerStart.activePlayer;
 		
 		transform.position = offset;
 		if (player)
@@ -86,7 +86,7 @@ public class FollowCamera : MonoBehaviour
 
 	void FixedUpdate()
 	{		
-		var player = PlayerManager.Player;
+		var player = PlayerStart.activePlayer;
 		if (!player)
 		{
 			return;

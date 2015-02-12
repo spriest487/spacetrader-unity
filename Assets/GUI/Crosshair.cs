@@ -30,7 +30,7 @@ public class Crosshair : MonoBehaviour
 
 	void OnGUI()
 	{
-		var player = PlayerManager.Player;
+		var player = PlayerStart.activePlayer;
         if (!player)
         {
             return;
@@ -51,10 +51,10 @@ public class Crosshair : MonoBehaviour
         Vector3[] aimPoints;
         if (loadout)
         {
-            aimPoints = new Vector3[ loadout.hardpoints.Length ];
-            for (int hardpoint = 0; hardpoint < loadout.hardpoints.Length; ++hardpoint)
+            aimPoints = new Vector3[ loadout.Hardpoints.Length ];
+            for (int hardpoint = 0; hardpoint < loadout.Hardpoints.Length; ++hardpoint)
             {
-                aimPoints[hardpoint] = loadout.hardpoints[hardpoint].transform.position;
+                aimPoints[hardpoint] = loadout.Hardpoints[hardpoint].transform.position;
             }
         }
         else

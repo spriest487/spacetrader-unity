@@ -1,73 +1,74 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Ship))]
+[RequireComponent(typeof(Ship), typeof(ContextInjector))]
 public class ModuleLoadout : MonoBehaviour
 {
-	[System.Serializable]
-	public struct ModuleStatus
-	{
-		public string moduleName;
-		public float cooldown;
-	}
+    [SerializeField]
+    private ModuleGroup frontModules;
 
-	public ModuleStatus[] modules;
+    [Injected]
+    internal ContextComponent<ModuleConfiguration> moduleConfig = null;
 
-	private ModuleConfiguration moduleConfig;
-	private Ship ship;
+    private Ship ship;
 
-	public WeaponHardpoint[] hardpoints { get; private set; }
+    public WeaponHardpoint[] Hardpoints { get; private set; }
+    
+    public ModuleConfiguration ModuleConfiguration
+    {
+        get
+        {
+            return moduleConfig.Value;
+        }
+    }
+
+    public ModuleGroup FrontModules
+    {
+        get
+        {
+            if (frontModules == null)
+            {
+                frontModules = ScriptableObject.CreateInstance<ModuleGroup>();
+                frontModules.SetParent(this);
+            }
+
+            return frontModules;
+        }
+    }
 	
 	public void Activate(int index)
 	{
-		if (index < 0 || index >= modules.Length)
+		var module = frontModules[index];
+
+		if (!module.Empty)
 		{
-			throw new UnityException("Bad index in module loadout: " +index);
+			module.Activate(ship, Hardpoints[0]);
 		}
-
-		if (modules[index].cooldown <= Mathf.Epsilon) //cd check
+		else
 		{
-			foreach (var hardpoint in hardpoints)
-			{
-				var aimRot = Quaternion.LookRotation((ship.aim - hardpoint.transform.position).normalized);
-
-				var bullet = (Transform) Instantiate(moduleConfig.bullet, hardpoint.transform.position, aimRot);
-				var bulletBehaviour = bullet.GetComponent<Bullet>();
-				if (bulletBehaviour)
-				{
-					bulletBehaviour.owner = gameObject;
-
-                    if (rigidbody)
-                    {
-                        bulletBehaviour.baseVelocity = rigidbody.velocity;
-                    }
-				}
-
-				if (moduleConfig.bulletMuzzleFlash)
-				{
-					var flash = (Transform) Instantiate(moduleConfig.bulletMuzzleFlash, hardpoint.transform.position, hardpoint.transform.rotation);
-					flash.parent = hardpoint.transform;
-				}
-
-				modules[index].cooldown = 0.2f;
-			}
+			throw new System.ArgumentException("tried to activate an empty module slot");
 		}
 	}
 
 	void Start()
 	{
-        var config = GameObject.Find("World Config");
-		moduleConfig = config.GetComponent<ModuleConfiguration>();
-
 		ship = GetComponent<Ship>();
-		hardpoints = ship.GetComponentsInChildren<WeaponHardpoint>();
+		Hardpoints = ship.GetComponentsInChildren<WeaponHardpoint>();
+	}
+
+	void OnShipTypeChange()
+	{
+
 	}
 
 	void Update()
 	{
-		for (int module = 0; module < modules.Length; ++module)
+		foreach (var module in FrontModules)
 		{
-			modules[module].cooldown -= Time.deltaTime;
+			if (!module.Empty)
+			{
+				module.Update();
+			}
 		}
 	}
 }

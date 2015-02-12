@@ -10,7 +10,7 @@ public class StationMenu : MonoBehaviour
 
     private Moorable GetPlayerMoorable()
     {
-        var player = PlayerManager.Player;
+        var player = PlayerStart.activePlayer;
         if (player)
         {
             return player.GetComponent<Moorable>();
@@ -32,7 +32,7 @@ public class StationMenu : MonoBehaviour
 
     void Start()
     {
-        var header = transform.FindChild("header");
+        var header = transform.Find("Header");
         if (header)
         {
             headerText = header.gameObject.GetComponent<Text>();
