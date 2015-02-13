@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Moorable : MonoBehaviour
 {
+    public bool Moored { get; private set; }
     public SpaceStation spaceStation { get; private set; }
 
     public void RequestMooring()
@@ -41,13 +42,20 @@ public class Moorable : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        Moored = false;
+    }
+
     void OnMoored(SpaceStation station)
     {
         spaceStation = station;
+        Moored = true;
     }
 
     void OnUnmoored(SpaceStation station)
     {
         spaceStation = null;
+        Moored = false;
     }
 }

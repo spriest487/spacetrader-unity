@@ -508,10 +508,10 @@ GameObject:
   - 114: {fileID: 11438668}
   - 54: {fileID: 5438706}
   - 114: {fileID: 11438664}
+  - 114: {fileID: 11461386}
   - 114: {fileID: 11438662}
   - 114: {fileID: 11438660}
   - 114: {fileID: 11438658}
-  - 114: {fileID: 11442760}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1913,7 +1913,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 138582}
   m_LocalRotation: {x: 0, y: .770826459, z: 0, w: .637045264}
-  m_LocalPosition: {x: -48.60532, y: 54.1747093, z: 65.5436554}
+  m_LocalPosition: {x: 18.3278942, y: -2.64370203, z: -.435577393}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 438612}
@@ -2972,13 +2972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f7572549bb9ef40a3dcc6402eb3a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _frontModules:
-    modules:
-    - cooldown: 0
-      definitionName: Laser Gun
-      foldoutState: 1
-    foldoutState: 1
-  ship: {fileID: 11438666}
+  frontModules: {fileID: 0}
 --- !u!114 &11438666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3251,7 +3245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tintShaderProperty: _TintColor
   fadeTimeMs: 100
---- !u!114 &11442760
+--- !u!114 &11461386
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -3259,9 +3253,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 138582}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e5ca43cb73e09244a2a1cbc6cd1e80f, type: 3}
+  m_Script: {fileID: 11500000, guid: acf0773fea99804458c952657b1a7dd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frontModules:
+  - Laser Gun
 --- !u!198 &19838624
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -10,7 +10,7 @@ public class StationMenu : MonoBehaviour
 
     private Moorable GetPlayerMoorable()
     {
-        var player = PlayerStart.activePlayer;
+        var player = PlayerStart.ActivePlayer;
         if (player)
         {
             return player.GetComponent<Moorable>();

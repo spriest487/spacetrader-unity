@@ -13,7 +13,7 @@ public class WingmanCaptain : MonoBehaviour
 	private Ship FindLeader()
 	{
 		//TODO
-		var leaderObj = PlayerStart.activePlayer;
+		var leaderObj = PlayerStart.ActivePlayer;
 		var leaderShip = leaderObj.GetComponent<Ship>();
 		if (!leaderShip)
 		{

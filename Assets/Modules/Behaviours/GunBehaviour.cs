@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GunBehaviour : ModuleBehaviour
+public class GunBehaviour : ScriptableObject, ModuleBehaviour
 {
 	private Transform bulletType;
 	private Transform muzzleFlashType;

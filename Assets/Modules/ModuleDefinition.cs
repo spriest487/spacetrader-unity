@@ -1,26 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class ModuleDefinition
+public class ModuleDefinition : ScriptableObject
 {
 	[SerializeField]
-	private string _name;
+	private string moduleName;
 
 	[SerializeField]
-	private ModuleBehaviour _behaviour;
+	private ModuleBehaviour behaviour;
 
 	[SerializeField]
-	private float _cooldownLength;
+	private float cooldownLength;
 
-	public string name { get { return _name;  } }
-	public ModuleBehaviour behaviour { get { return _behaviour; } }
-	public float cooldownLength { get { return _cooldownLength; } }
+	public string Name { get { return moduleName;  } }
+	public ModuleBehaviour Behaviour { get { return behaviour; } }
+	public float CooldownLength { get { return cooldownLength; } }
 
 	public ModuleDefinition(string name, ModuleBehaviour behaviour, float cooldownLength)
 	{
-		_name = name;
-		_behaviour = behaviour;
-		_cooldownLength = cooldownLength;
+		this.moduleName = name;
+        this.behaviour = behaviour;
+        this.cooldownLength = cooldownLength;
 	}
 }

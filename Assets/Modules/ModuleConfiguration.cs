@@ -3,10 +3,15 @@ using System.Collections.Generic;
 
 public class ModuleConfiguration : MonoBehaviour
 {
-	private readonly Dictionary<string, ModuleDefinition> definitions;
+    [SerializeField]
+    private ModuleDefinition[] definitionsArray;
+
+    private Dictionary<string, ModuleDefinition> definitions;
 
 	public Transform bullet;
 	public Transform bulletMuzzleFlash;
+
+    public static ModuleConfiguration Instance { get; private set; }
 
 	public ModuleDefinition GetDefinition(string moduleType)
 	{
@@ -36,17 +41,48 @@ public class ModuleConfiguration : MonoBehaviour
 		}
 	}
     
-	ModuleConfiguration()
-	{
-		definitions = new Dictionary<string, ModuleDefinition>();
+    void Start()
+    {
+        if (definitionsArray == null || definitionsArray.Length == 0)
+        {
+            List<ModuleDefinition> definitionsList = new List<ModuleDefinition>();
 
-		definitions.Add("Laser Gun", new ModuleDefinition("Laser Gun",
-			new GunBehaviour(1, bullet, bulletMuzzleFlash),
-			0.5f
-		));
-		definitions.Add("Heavy Laser Gun", new ModuleDefinition("Heavy Laser Gun",
-			new GunBehaviour(2, bullet, bulletMuzzleFlash),
-			1.0f
-		));
+            definitionsList.Add(new ModuleDefinition("Laser Gun",
+                new GunBehaviour(1, bullet, bulletMuzzleFlash),
+                0.5f
+            ));
+            definitionsList.Add(new ModuleDefinition("Heavy Laser Gun",
+                new GunBehaviour(2, bullet, bulletMuzzleFlash),
+                1.0f
+            ));
+
+            definitionsArray = definitionsList.ToArray();
+        }
+
+        definitions = new Dictionary<string, ModuleDefinition>();
+        foreach (ModuleDefinition definition in definitionsArray)
+        {
+            definitions.Add(definition.Name, definition);
+        }
+    }
+    
+	void OnEnable()
+	{
+        if (Instance != null)
+        {
+            throw new UnityException("can't have more than one instance of ModuleConfiguration per scene");   
+        }
+
+        Instance = this;
 	}
+
+    void OnDisable()
+    {
+        if (Instance != this)
+        {
+            throw new UnityException("failed to remove ModuleConfiguration singleton, it's set to another instance");
+        }
+
+        Instance = null;
+    }
 }

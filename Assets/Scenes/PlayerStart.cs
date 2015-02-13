@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class PlayerStart : MonoBehaviour {
-    public static PlayerShip activePlayer
+    public static PlayerShip ActivePlayer
     {
         get;
         private set;
@@ -10,23 +10,23 @@ public class PlayerStart : MonoBehaviour {
 
     public PlayerShip playerPrefab;
 
-    void Start()
+    void OnEnable()
     {
-        if (GameObject.FindGameObjectWithTag("Player") == null)
+        if (!(ActivePlayer = FindObjectOfType<PlayerShip>()))
         {
             if (!playerPrefab)
             {
                 throw new UnityException("player start requires a player instance");
             }
 
-            activePlayer = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
+            ActivePlayer = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
 
             Application.LoadLevelAdditive("WorldCommon");
         }
     }
 
-    void OnWorldEnd()
+    void OnDisable() 
     {
-        activePlayer = null;
+        ActivePlayer = null;
     }
 }

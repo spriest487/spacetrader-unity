@@ -30,7 +30,7 @@ public class Crosshair : MonoBehaviour
 
 	void OnGUI()
 	{
-		var player = PlayerStart.activePlayer;
+		var player = PlayerStart.ActivePlayer;
         if (!player)
         {
             return;

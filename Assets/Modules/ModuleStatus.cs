@@ -29,7 +29,7 @@ public class ModuleStatus : ScriptableObject
         {
             return definition != null?
                 definition :
-                (definition = moduleGroup.ModuleConfiguration.GetDefinition(definitionName));
+                (definition = ModuleConfiguration.Instance.GetDefinition(definitionName));
         }
     }
 
@@ -76,8 +76,8 @@ public class ModuleStatus : ScriptableObject
     {
         if (cooldown <= Mathf.Epsilon) //cd check
         {
-            Definition.behaviour.Activate(activator, hardpoint);
-            cooldown = Definition.cooldownLength;
+            Definition.Behaviour.Activate(activator, hardpoint);
+            cooldown = Definition.CooldownLength;
         }
     }
 

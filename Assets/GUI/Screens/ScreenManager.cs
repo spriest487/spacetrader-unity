@@ -3,30 +3,55 @@ using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
-    public enum IngameState
+    public enum ScreenState
     {
         Docked,
         Flight,
     }
 
-    public bool menuState { get; private set; }
+    public static ScreenManager Instance { get; private set; }
+
     private GameObject mainMenuInstance;
 
     public GameObject[] dockedScreen;
     public GameObject[] flightScreen;
     public GameObject mainMenu;
 
-    private IngameState _ingameState = IngameState.Flight;
-    public IngameState ingameState
+    [SerializeField]
+    private ScreenState state;
+
+    public ScreenState State
     {
         get
         {
-            return _ingameState;
+            return state;
+        }
+        private set
+        {
+            if (state != value)
+            {
+                state = value;
+                Apply();
+            }
+        }
+    }
+
+    [SerializeField]
+    private bool menuState;
+
+    public bool MenuState
+    {
+        get
+        {
+            return menuState;
         }
         set
         {
-            _ingameState = value;
-            Apply();
+            if (value != menuState)
+            {
+                menuState = value;
+                Apply();
+            }
         }
     }
 
@@ -34,19 +59,19 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var dockedObj in dockedScreen)
         {
-            dockedObj.SetActive(ingameState == IngameState.Docked);
+            dockedObj.SetActive(state == ScreenState.Docked);
         }
 
         foreach (var flightObj in flightScreen)
         {
-            flightObj.SetActive(ingameState == IngameState.Flight);
+            flightObj.SetActive(state == ScreenState.Flight);
         }
 
-        mainMenu.SetActive(menuState);
+        mainMenu.SetActive(MenuState);
     }
 
     void Start()
-    {       
+    {      
         mainMenuInstance = GameObject.Find("MainMenu");
         if (mainMenuInstance == null)
         {
@@ -55,5 +80,42 @@ public class ScreenManager : MonoBehaviour
         }
 
         Apply();
+    }
+
+    void Update()
+    {
+        bool docked = false;
+
+        var player = PlayerStart.ActivePlayer;
+        if (player)
+        {
+            var moorable = player.GetComponent<Moorable>();
+            if (moorable && moorable.Moored)
+            {
+                docked = true;
+            }
+        }
+
+        State = docked? ScreenState.Docked : ScreenState.Flight;
+    }
+
+    void OnEnable()
+    {
+        if (Instance != null)
+        {
+            throw new UnityException("screen manager already active");
+        }
+
+        Instance = this;
+    }
+
+    void OnDisable()
+    {
+        if (Instance != this)
+        {
+            throw new UnityException("inactive screen manager being disabled");
+        }
+
+        Instance = null;
     }
 }

@@ -10,14 +10,6 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
     [SerializeField]
 	private ModuleStatus[] modules;
     
-    public ModuleConfiguration ModuleConfiguration
-    { 
-        get
-        { 
-            return loadout.ModuleConfiguration;
-        }
-    }
-
 	public int Size
 	{
 		get

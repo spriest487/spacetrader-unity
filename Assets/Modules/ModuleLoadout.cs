@@ -1,28 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Ship), typeof(ContextInjector))]
+[RequireComponent(typeof(Ship))]
 public class ModuleLoadout : MonoBehaviour
 {
     [SerializeField]
     private ModuleGroup frontModules;
-
-    [Injected]
-    internal ContextComponent<ModuleConfiguration> moduleConfig = null;
-
+    
     private Ship ship;
 
     public WeaponHardpoint[] Hardpoints { get; private set; }
     
-    public ModuleConfiguration ModuleConfiguration
-    {
-        get
-        {
-            return moduleConfig.Value;
-        }
-    }
-
-    public ModuleGroup FrontModules
+      public ModuleGroup FrontModules
     {
         get
         {

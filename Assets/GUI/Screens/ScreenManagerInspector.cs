@@ -9,26 +9,23 @@ using System.Collections.Generic;
 class ScreenManagerInspector : Editor
 {
     private ScreenManager screenManager;
-    private ScreenManager.IngameState selectedIngameState;
+    private ScreenManager.ScreenState selectedIngameState;
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        EditorGUILayout.LabelField("Ingame state: " +screenManager.ingameState);
+        //screenManager.State = (ScreenManager.ScreenState) EditorGUILayout.EnumPopup("Ingame state", screenManager.State);
+        EditorGUILayout.LabelField("Ingame state", screenManager.State.ToString());
+        screenManager.MenuState = EditorGUILayout.Toggle("Menu state", screenManager.MenuState);
 
-        selectedIngameState = (ScreenManager.IngameState)EditorGUILayout.EnumPopup("New ingame state", selectedIngameState);
-
-        if (GUILayout.Button("Apply"))
-        {
-            screenManager.ingameState = selectedIngameState;
-        }
+        selectedIngameState = (ScreenManager.ScreenState)EditorGUILayout.EnumPopup("New ingame state", selectedIngameState);
     }
 
     public void OnEnable()
     {
         screenManager = (ScreenManager)target;
-        selectedIngameState = screenManager.ingameState;
+        selectedIngameState = screenManager.State;
     }
 }
 

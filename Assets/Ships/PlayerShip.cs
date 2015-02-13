@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Ship), typeof(ContextInjector))]
-[ContextSingleton]
+[RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
 	private Ship ship;
     private Moorable moorable;
-
-    [Injected]
-    internal ContextComponent<ScreenManager> screenManager = null;
 
 	private Vector2? FindTouchPos()
 	{
@@ -83,18 +79,10 @@ public class PlayerShip : MonoBehaviour
 
     void OnMoored()
     {
-        if (screenManager.HasValue)
-        {
-            screenManager.Value.ingameState = ScreenManager.IngameState.Docked;
-        }
     }
 
     void OnUnmoored()
     {
-        if (screenManager.HasValue)
-        {
-            screenManager.Value.ingameState = ScreenManager.IngameState.Flight;
-        }
     }
 	
 	void FixedUpdate ()
