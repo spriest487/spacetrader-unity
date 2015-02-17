@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 54b0b550ff2612041b7399141ecdd274
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - moduleTemplate: {fileID: 11440612, guid: 9380097a210829c409aff49ebd211ff7, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

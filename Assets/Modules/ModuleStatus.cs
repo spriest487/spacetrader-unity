@@ -2,12 +2,11 @@
 
 public class ModuleStatus : ScriptableObject
 {
-    public static ModuleStatus EMPTY
+    public static ModuleStatus None { get; private set; }
+
+    static ModuleStatus()
     {
-        get
-        {
-            return new ModuleStatus() { Empty = true };
-        }
+        None = ScriptableObject.CreateInstance<ModuleStatus>();
     }
     
     [SerializeField]
@@ -65,11 +64,17 @@ public class ModuleStatus : ScriptableObject
     }
 
 
-    public ModuleStatus(string moduleName, ModuleGroup moduleGroup)
-        : this()
+    public static ModuleStatus Create(string moduleName, ModuleGroup moduleGroup)
     {
-        this.moduleGroup = moduleGroup;
-        this.definitionName = moduleName;
+        if (moduleName == null || moduleGroup == null)
+        {
+            throw new UnityException("bad arguments to Setup()");
+        }
+
+        ModuleStatus result = ScriptableObject.CreateInstance<ModuleStatus>();
+        result.moduleGroup = moduleGroup;
+        result.definitionName = moduleName;
+        return result;
     }
 
     public void Activate(Ship activator, WeaponHardpoint hardpoint)

@@ -1,24 +1,40 @@
 ﻿using System.Collections;
+using System;
 using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
+    public static ScreenManager Instance { get; private set; }
+
+    [Serializable]
+    public class HudOverlayMapping
+    {
+        public HudOverlayState state;
+        public GameObject overlay;
+    }
+
     public enum ScreenState
     {
         Docked,
         Flight,
     }
 
-    public static ScreenManager Instance { get; private set; }
-
-    private GameObject mainMenuInstance;
-
-    public GameObject[] dockedScreen;
-    public GameObject[] flightScreen;
-    public GameObject mainMenu;
+    public enum HudOverlayState
+    {
+        None,
+        Docked,
+        MainMenu,
+        Equipment
+    }    
 
     [SerializeField]
     private ScreenState state;
+
+    [SerializeField]
+    private HudOverlayState hudOverlay;
+
+    [SerializeField]
+    private HudOverlayMapping[] hudOverlays;
 
     public ScreenState State
     {
@@ -33,6 +49,19 @@ public class ScreenManager : MonoBehaviour
                 state = value;
                 Apply();
             }
+        }
+    }
+
+    public HudOverlayState HudOverlay
+    {
+        get
+        {
+            return hudOverlay;
+        }
+        set
+        {
+            hudOverlay = value;
+            Apply();
         }
     }
 
@@ -55,30 +84,30 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    public void Apply()
+    private void Apply()
     {
-        foreach (var dockedObj in dockedScreen)
+        foreach (var overlay in hudOverlays)
         {
-            dockedObj.SetActive(state == ScreenState.Docked);
+            overlay.overlay.SetActive(HudOverlay == overlay.state);
+        }
+    }
+
+    public void ToggleOverlay(HudOverlayState state)
+    {
+        if (HudOverlay == state)
+        {
+            HudOverlay = HudOverlayState.None;
+        }
+        else
+        {
+            HudOverlay = state;
         }
 
-        foreach (var flightObj in flightScreen)
-        {
-            flightObj.SetActive(state == ScreenState.Flight);
-        }
-
-        mainMenu.SetActive(MenuState);
+        Apply();
     }
 
     void Start()
     {      
-        mainMenuInstance = GameObject.Find("MainMenu");
-        if (mainMenuInstance == null)
-        {
-            mainMenuInstance = (GameObject) Instantiate(mainMenu);
-            mainMenuInstance.name = "MainMenu";
-        }
-
         Apply();
     }
 

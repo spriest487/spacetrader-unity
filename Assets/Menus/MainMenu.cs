@@ -28,6 +28,14 @@ public class MainMenu : MonoBehaviour
         Application.LoadLevel(menuScene);
     }
 
+    public void BackToGame()
+    {
+        if (ScreenManager.Instance)
+        {
+            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
+        }
+    }
+
     public void Quit()
     {
         Application.Quit();
@@ -35,7 +43,7 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        var ingame = GameObject.Find("WorldCommon") != null;
+        var ingame = ScreenManager.Instance != null;
 
         foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyIngame"))
         {

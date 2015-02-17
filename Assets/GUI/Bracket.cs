@@ -17,6 +17,10 @@ public class Bracket : MonoBehaviour
 	//owner bracket manager
 	public BracketManager bracketManager;
 
+    public int defaultWidth = 64;
+    public int defaultHeight = 64;
+    public float selectedExpand = 1.25f;
+
 	void Start()
 	{
 		canvasGroup = GetComponent<CanvasGroup>();
@@ -68,11 +72,17 @@ public class Bracket : MonoBehaviour
 			canvasGroup.alpha = 1;
 			
 			//todo: calculate screen size of object
-			var width = 72;
-			var height = 72;
+			var width = defaultWidth;
+			var height = defaultHeight;
 
 			bool isTarget = playerShip && playerShip.target == target;
 			bool sameFaction = playerTargetable && string.Equals(playerTargetable.faction, target.faction);
+
+            if (isTarget)
+            {
+                width = (int)(width * selectedExpand);
+                height = (int)(height * selectedExpand);
+            }
 			
 			Color reactionColor;
 			if (bracketManager)

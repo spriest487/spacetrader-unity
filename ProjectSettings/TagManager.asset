@@ -7,6 +7,7 @@ TagManager:
   - WorldCommon
   - UIOnlyIngame
   - UIOnlyOutOfGame
+  - WorldListener
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
@@ -49,7 +50,11 @@ TagManager:
     userID: 1
     uniqueID: 3216179791
     locked: 0
-  - name: UI flight overlay
+  - name: UI flight HUD
     userID: 2
     uniqueID: 1891149343
+    locked: 0
+  - name: UI flight overlays
+    userID: 3
+    uniqueID: 3068900753
     locked: 0

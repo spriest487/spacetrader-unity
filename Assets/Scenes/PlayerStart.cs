@@ -12,7 +12,7 @@ public class PlayerStart : MonoBehaviour {
 
     void OnEnable()
     {
-        if (!(ActivePlayer = FindObjectOfType<PlayerShip>()))
+        if (!(ActivePlayer = FindObjectOfType<PlayerShip>())) 
         {
             if (!playerPrefab)
             {
@@ -20,13 +20,14 @@ public class PlayerStart : MonoBehaviour {
             }
 
             ActivePlayer = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
-
-            Application.LoadLevelAdditive("WorldCommon");
         }
     }
 
-    void OnDisable() 
+    void OnLevelLoaded()
     {
-        ActivePlayer = null;
+        if (GameObject.Find("WorldCommonMarker") == null)
+        {
+            Application.LoadLevelAdditive("WorldCommon");
+        }
     }
 }

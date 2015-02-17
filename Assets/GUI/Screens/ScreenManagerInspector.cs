@@ -4,8 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
-[CustomEditor(typeof(ScreenManager))]
-[ExecuteInEditMode]
+//[CustomEditor(typeof(ScreenManager))]
+//[ExecuteInEditMode]
 class ScreenManagerInspector : Editor
 {
     private ScreenManager screenManager;

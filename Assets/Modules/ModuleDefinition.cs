@@ -16,10 +16,16 @@ public class ModuleDefinition : ScriptableObject
 	public ModuleBehaviour Behaviour { get { return behaviour; } }
 	public float CooldownLength { get { return cooldownLength; } }
 
-	public ModuleDefinition(string name, ModuleBehaviour behaviour, float cooldownLength)
+	public static ModuleDefinition Create(string name,
+        ModuleBehaviour behaviour,
+        float cooldownLength)
 	{
-		this.moduleName = name;
-        this.behaviour = behaviour;
-        this.cooldownLength = cooldownLength;
+        ModuleDefinition result = ScriptableObject.CreateInstance<ModuleDefinition>();
+
+        result.moduleName = name;
+        result.behaviour = behaviour;
+        result.cooldownLength = cooldownLength;
+
+        return result;
 	}
 }

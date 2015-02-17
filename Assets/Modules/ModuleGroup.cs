@@ -61,7 +61,7 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 			}
 			else
 			{
-				newModules[slot] = ModuleStatus.EMPTY;
+				newModules[slot] = ModuleStatus.None;
 			}
 		}
 
@@ -77,11 +77,11 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 
 		if (moduleType != null)
 		{
-			modules[slot] = new ModuleStatus(moduleType, this);
+			modules[slot] = ModuleStatus.Create(moduleType, this);
 		}
 		else
 		{
-			modules[slot] = ModuleStatus.EMPTY;
+			modules[slot] = ModuleStatus.None;
 		}
 
 	}

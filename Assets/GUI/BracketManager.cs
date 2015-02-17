@@ -46,7 +46,7 @@ public class BracketManager : MonoBehaviour
 				else
 				{
 					var newBracket = (Bracket) Instantiate(bracket);
-					newBracket.transform.parent = transform;
+					newBracket.transform.SetParent(transform, false);
 					newBracket.bracketManager = this;
 					newBracket.name = "Bracket for " + ship.name;
 					newBracket.target = ship;

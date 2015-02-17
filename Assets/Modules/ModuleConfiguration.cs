@@ -47,12 +47,13 @@ public class ModuleConfiguration : MonoBehaviour
         {
             List<ModuleDefinition> definitionsList = new List<ModuleDefinition>();
 
-            definitionsList.Add(new ModuleDefinition("Laser Gun",
-                new GunBehaviour(1, bullet, bulletMuzzleFlash),
-                0.5f
+            definitionsList.Add(ModuleDefinition.Create("Laser Gun",
+                GunBehaviour.Create(1, bullet, bulletMuzzleFlash),
+                0.1f
             ));
-            definitionsList.Add(new ModuleDefinition("Heavy Laser Gun",
-                new GunBehaviour(2, bullet, bulletMuzzleFlash),
+            
+            definitionsList.Add(ModuleDefinition.Create("Heavy Laser Gun",
+                GunBehaviour.Create(2, bullet, bulletMuzzleFlash),
                 1.0f
             ));
 

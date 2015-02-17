@@ -7,13 +7,15 @@ public class GunBehaviour : ScriptableObject, ModuleBehaviour
 
 	private int damagePerShot;
 
-	public GunBehaviour(int damagePerShot,
+	public static GunBehaviour Create(int damagePerShot,
 		Transform bullet,
 		Transform muzzleFlash)
 	{
-		this.damagePerShot = damagePerShot;
-		this.bulletType = bullet;
-		this.muzzleFlashType = muzzleFlash;
+        GunBehaviour result = ScriptableObject.CreateInstance<GunBehaviour>();
+        result.damagePerShot = damagePerShot;
+        result.bulletType = bullet;
+        result.muzzleFlashType = muzzleFlash;
+        return result;
 	}
 
 	public void Activate(Ship activator, WeaponHardpoint hardpoint)

@@ -35,45 +35,27 @@ public class PlayerShip : MonoBehaviour
 		ship.yaw = aimYaw;
 		ship.pitch = aimPitch;
 	}
-    
-    void Update()
+
+    void TargetAimPoint()
     {
-        var touchPos = FindTouchPos();
-        if (touchPos.HasValue)
-        {
-            RotateTowardsAim(touchPos.Value);
-        }
-        else if (ship)
-        {
-            ship.pitch = Input.GetAxis("pitch");
-            ship.yaw = Input.GetAxis("yaw");
-        }
+        var screenAim = Camera.main.WorldToScreenPoint(ship.aim);
+        var ray = Camera.main.ScreenPointToRay(screenAim);
 
-        //roll is manual only
-        ship.roll = -Input.GetAxis("roll");
-
-        ship.thrust = Input.GetAxis("Vertical");
-        ship.strafe = Input.GetAxis("Horizontal");
-        ship.lift = Input.GetAxis("lift");
-
-        var loadout = GetComponent<ModuleLoadout>();
-        if (loadout)
+        bool targeted = false;
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
         {
-            if (Input.GetButton("fire"))
+            var targetable = hit.collider.GetComponent<Targetable>();
+            if (targetable)
             {
-                if (loadout.FrontModules.Size > 0)
-                {
-                    loadout.Activate(0);
-                }
+                ship.target = targetable;
+                targeted = true;
             }
         }
 
-        if (Input.GetButtonDown("activate"))
+        if (!targeted)
         {
-            if (moorable && moorable.spaceStation)
-            {
-                moorable.RequestMooring();
-            }
+            ship.target = null;
         }
     }
 
@@ -120,6 +102,48 @@ public class PlayerShip : MonoBehaviour
 		{
 			ship.aim = transform.position + transform.forward * 1000;
 		}
+
+        if (touchPos.HasValue)
+        {
+            RotateTowardsAim(touchPos.Value);
+        }
+        else if (ship)
+        {
+            ship.pitch = Input.GetAxis("pitch");
+            ship.yaw = Input.GetAxis("yaw");
+        }
+
+        //roll is manual only
+        ship.roll = -Input.GetAxis("roll");
+
+        ship.thrust = Input.GetAxis("Vertical");
+        ship.strafe = Input.GetAxis("Horizontal");
+        ship.lift = Input.GetAxis("lift");
+
+        var loadout = GetComponent<ModuleLoadout>();
+        if (loadout)
+        {
+            if (Input.GetButton("fire"))
+            {
+                if (loadout.FrontModules.Size > 0)
+                {
+                    loadout.Activate(0);
+                }
+            }
+        }
+
+        if (Input.GetButtonDown("activate"))
+        {
+            if (moorable && moorable.spaceStation)
+            {
+                moorable.RequestMooring();
+            }
+        }
+
+        if (Input.GetButtonDown("target"))
+        {
+            TargetAimPoint();
+        }
 	}
 
 	void Start()
