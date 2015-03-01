@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class ModuleStatus : ScriptableObject
 {
     public static ModuleStatus None { get; private set; }
@@ -20,21 +21,24 @@ public class ModuleStatus : ScriptableObject
 
     /* don't serialize the current definition, if we lose the instance
      just look it up in the global map again */
-    private ModuleDefinition definition;
+    private ModuleDefinition definition {get; set; }
 
     public ModuleDefinition Definition
     {
         get
         {
-            return definition != null?
-                definition :
-                (definition = ModuleConfiguration.Instance.GetDefinition(definitionName));
+            if (definition == null) 
+            {
+                definition = ModuleConfiguration.Instance.GetDefinition(definitionName);
+            }
+
+            return ModuleConfiguration.Instance.GetDefinition(definitionName); ;
         }
     }
 
     public float Cooldown
     {
-        get
+        get 
         {
             return cooldown;
         }
@@ -75,19 +79,24 @@ public class ModuleStatus : ScriptableObject
         result.moduleGroup = moduleGroup;
         result.definitionName = moduleName;
         return result;
-    }
+    } 
 
     public void Activate(Ship activator, WeaponHardpoint hardpoint)
     {
         if (cooldown <= Mathf.Epsilon) //cd check
         {
             Definition.Behaviour.Activate(activator, hardpoint);
-            cooldown = Definition.CooldownLength;
+            cooldown = Definition.CooldownLength; 
         }
     }
-
+     
     public void Update()
     {
-        cooldown -= Time.deltaTime;
+        cooldown -= Time.deltaTime; 
+    }
+
+    void OnEnable()
+    {
+        definition = null;
     }
 }

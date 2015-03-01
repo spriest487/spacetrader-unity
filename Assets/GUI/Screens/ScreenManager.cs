@@ -9,8 +9,29 @@ public class ScreenManager : MonoBehaviour
     [Serializable]
     public class HudOverlayMapping
     {
-        public HudOverlayState state;
-        public GameObject overlay;
+        [SerializeField]
+        private HudOverlayState state;
+        
+        [SerializeField]
+        private GameObject overlay;
+
+        [HideInInspector]
+        private GameObject overlayInstance;
+
+        public GameObject Overlay
+        {
+            get
+            {
+                if (!overlayInstance)
+                {
+                    overlayInstance = (GameObject) Instantiate(overlay);
+                }
+
+                return overlayInstance;
+            }
+        }
+
+        public HudOverlayState State { get { return state; } }
     }
 
     public enum ScreenState
@@ -88,7 +109,7 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var overlay in hudOverlays)
         {
-            overlay.overlay.SetActive(HudOverlay == overlay.state);
+            overlay.Overlay.SetActive(HudOverlay == overlay.State);
         }
     }
 

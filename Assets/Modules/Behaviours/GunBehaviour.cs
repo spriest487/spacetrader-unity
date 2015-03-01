@@ -2,7 +2,10 @@
 
 public class GunBehaviour : ScriptableObject, ModuleBehaviour
 {
+    [SerializeField]
 	private Transform bulletType;
+
+    [SerializeField]
 	private Transform muzzleFlashType;
 
 	private int damagePerShot;

@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 
-struct HitDamage
+class HitDamage
 {
-	public Vector3 source;
-	public int amount;
+	public Vector3 Location;
+	public int Amount;
+    public GameObject Owner;
 
-	public HitDamage(Vector3 source, int amount)
+    public HitDamage(Vector3 location, int amount, GameObject owner)
 	{
-		this.source = source;
-		this.amount = amount;
+		this.Location = location;
+		this.Amount = amount;
+        this.Owner = owner;
 	}
 }

@@ -237,6 +237,6 @@ public class Hitpoints : MonoBehaviour
 
 	void OnTakeDamage(HitDamage damage)
 	{
-		TakeDamageToArmor(damage.amount);
+		TakeDamageToArmor(damage.Amount);
 	}
 }

@@ -16,3 +16,4 @@
 /Assets/UnityVS/Editor/*.dll
 
 *.unityproj
+/Windows-x86

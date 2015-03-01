@@ -36,7 +36,7 @@ public class PlayerShip : MonoBehaviour
 		ship.pitch = aimPitch;
 	}
 
-    void TargetAimPoint()
+    private void TargetAimPoint()
     {
         var screenAim = Camera.main.WorldToScreenPoint(ship.aim);
         var ray = Camera.main.ScreenPointToRay(screenAim);
@@ -66,9 +66,25 @@ public class PlayerShip : MonoBehaviour
     void OnUnmoored()
     {
     }
+
+    bool HasControl()
+    {
+        if (Network.isClient || Network.isServer)
+        {
+            return networkView && networkView.isMine;
+        }
+        else {
+            return true;
+        }
+    }
 	
 	void FixedUpdate ()
 	{
+        if (!HasControl())
+        {
+            return;
+        }
+
         var touchPos = FindTouchPos();
 
 		Vector2? mouseAimPos = null;
@@ -84,19 +100,25 @@ public class PlayerShip : MonoBehaviour
 
 		if (mouseAimPos.HasValue && Camera.main)
 		{
-			Vector3 mousePos = new Vector3(mouseAimPos.Value.x, mouseAimPos.Value.y, 1000);
+            Vector3 mousePos = new Vector3(mouseAimPos.Value.x, mouseAimPos.Value.y, 1000);
 			var mouseRay = Camera.main.ScreenPointToRay(mousePos);
 
-			RaycastHit rayHit;
-
-			if (Physics.Raycast(mouseRay, out rayHit))
-			{
-				ship.aim = rayHit.point;
-			}
-			else
-			{
-				ship.aim = mouseRay.origin + mouseRay.direction * 1000;
-			}
+            bool hitSomething = false;
+			RaycastHit[] rayHits = Physics.RaycastAll(mouseRay);
+            
+            foreach (var rayHit in rayHits)
+            {
+                if (rayHit.collider != collider)
+                {
+                    ship.aim = rayHit.point;
+                    hitSomething = true;
+                    break;
+                }                    
+            }
+            if (!hitSomething)
+            {
+                ship.aim = mouseRay.origin + mouseRay.direction * 1000;
+            }
 		}
 		else
 		{
@@ -127,7 +149,10 @@ public class PlayerShip : MonoBehaviour
             {
                 if (loadout.FrontModules.Size > 0)
                 {
-                    loadout.Activate(0);
+                    for (var mod = 0; mod < loadout.FrontModules.Size; ++mod)
+                    {
+                        loadout.Activate(mod);
+                    }                        
                 }
             }
         }
@@ -154,10 +179,15 @@ public class PlayerShip : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)
 	{
-		var followCam = Camera.main ? Camera.main.GetComponent<FollowCamera>() : null;
-		if (followCam)
-		{
-			followCam.NotifyPlayerCollision(collision);
-		}
+        if (!HasControl())
+        {
+            return;
+        }
+
+        var followCam = Camera.main ? Camera.main.GetComponent<FollowCamera>() : null;
+        if (followCam)
+        {
+            followCam.NotifyPlayerCollision(collision);
+        }
 	}
 }

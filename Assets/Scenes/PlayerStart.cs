@@ -12,22 +12,23 @@ public class PlayerStart : MonoBehaviour {
 
     void OnEnable()
     {
-        if (!(ActivePlayer = FindObjectOfType<PlayerShip>())) 
+        /* if this client doesn't have a player object, try to create one */
+        if (!ActivePlayer && !(ActivePlayer = FindObjectOfType<PlayerShip>())) 
         {
             if (!playerPrefab)
-            {
+            { 
                 throw new UnityException("player start requires a player instance");
             }
 
-            ActivePlayer = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
-        }
-    }
-
-    void OnLevelLoaded()
-    {
-        if (GameObject.Find("WorldCommonMarker") == null)
-        {
-            Application.LoadLevelAdditive("WorldCommon");
+            if (Network.isClient || Network.isServer)
+            {
+                ActivePlayer = (PlayerShip)Network.Instantiate(playerPrefab, transform.position, transform.rotation, 0);
+                Debug.Log("spawning network player " + Network.player.guid);
+            }
+            else
+            {
+                ActivePlayer = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
+            }
         }
     }
 }

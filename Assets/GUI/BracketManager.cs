@@ -31,7 +31,7 @@ public class BracketManager : MonoBehaviour
 			{
 				var shipId = ship.GetInstanceID();
 
-                if (ship.hideBracket)
+                if (ship.BracketVisible)
                 {
                     continue;
                 }

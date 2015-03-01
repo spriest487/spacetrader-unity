@@ -72,13 +72,17 @@ public class Bullet : MonoBehaviour {
 		if (hitObject != owner && hitObject != gameObject) //bullets are never triggered by the person shooting them
 		{
 			//Debug.Log(string.Format("bullet with owner {0} hit non-owner object {1}", owner, hitObject));
+            
+            var hitDamage = new HitDamage(hitPos, damage, owner);
+			hitObject.gameObject.SendMessage("OnTakeDamage", hitDamage, SendMessageOptions.DontRequireReceiver);
 
-			if (hitEffect)
-			{
-				Instantiate(hitEffect, hitPos, Quaternion.LookRotation((lastPos - hitPos).normalized));
-			}
+            //if a handler changed it
+            hitPos = hitDamage.Location;
 
-			hitObject.gameObject.SendMessage("OnTakeDamage", new HitDamage(hitPos, damage), SendMessageOptions.DontRequireReceiver);
+            if (hitEffect)
+            {
+                Instantiate(hitEffect, hitPos, Quaternion.LookRotation((lastPos - hitPos).normalized));
+            }
 
 			Destroy(gameObject);
 			return true;

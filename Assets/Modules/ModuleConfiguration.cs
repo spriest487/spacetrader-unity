@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class ModuleConfiguration : MonoBehaviour
@@ -7,6 +8,22 @@ public class ModuleConfiguration : MonoBehaviour
     private ModuleDefinition[] definitionsArray;
 
     private Dictionary<string, ModuleDefinition> definitions;
+    private Dictionary<string, ModuleDefinition> Definitions
+    { 
+        get
+        {
+            if (definitions == null)
+            {
+                definitions = new Dictionary<string, ModuleDefinition>();
+                foreach (var definition in definitionsArray)
+                {
+                    definitions.Add(definition.Name, definition);
+                }
+            }
+
+            return definitions;
+        }
+    }
 
 	public Transform bullet;
 	public Transform bulletMuzzleFlash;
@@ -16,7 +33,7 @@ public class ModuleConfiguration : MonoBehaviour
 	public ModuleDefinition GetDefinition(string moduleType)
 	{
 		ModuleDefinition definition;
-		definitions.TryGetValue(moduleType, out definition);
+		Definitions.TryGetValue(moduleType, out definition);
 
 		if (definition == null)
 		{
@@ -24,15 +41,15 @@ public class ModuleConfiguration : MonoBehaviour
 		}
 
 		return definition;
-	}
+	} 
 
-	public string[] definitionNames
+	public string[] DefinitionNames
 	{
 		get
 		{
-            string[] names = new string[definitions.Count];
+            string[] names = new string[Definitions.Count];
 			int i = 0;
-			foreach (var name in definitions.Keys)
+			foreach (var name in Definitions.Keys)
 			{
 				names[i++] = name;
 			}
@@ -40,8 +57,8 @@ public class ModuleConfiguration : MonoBehaviour
 			return names;
 		}
 	}
-    
-    void Start()
+        
+    void Start() 
     {
         if (definitionsArray == null || definitionsArray.Length == 0)
         {
@@ -56,15 +73,9 @@ public class ModuleConfiguration : MonoBehaviour
                 GunBehaviour.Create(2, bullet, bulletMuzzleFlash),
                 1.0f
             ));
-
+             
             definitionsArray = definitionsList.ToArray();
-        }
-
-        definitions = new Dictionary<string, ModuleDefinition>();
-        foreach (ModuleDefinition definition in definitionsArray)
-        {
-            definitions.Add(definition.Name, definition);
-        }
+        }        
     }
     
 	void OnEnable()

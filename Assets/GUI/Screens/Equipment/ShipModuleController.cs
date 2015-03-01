@@ -10,20 +10,20 @@ public class ShipModuleController : MonoBehaviour
     [SerializeField]
     private Text caption;
 
-    public ModuleStatus Module { get; set; }
-
-    void Start()
-    {
-        var captionObj = transform.FindChild("Caption");
-        if (captionObj)
+    public ModuleStatus Module {
+        get
         {
-            caption = captionObj.GetComponent<Text>();
+            return moduleStatus;
+        }
+        set
+        {
+            moduleStatus = value;
         }
     }
 
     void Update()
     {
-        if (caption)
+        if (caption && moduleStatus)
         {
             caption.text = moduleStatus.Definition.Name;
         }

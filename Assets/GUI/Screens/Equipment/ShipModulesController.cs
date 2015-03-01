@@ -33,25 +33,27 @@ public class ShipModulesController : MonoBehaviour
             return;
         }
 
+        List<ModuleStatus> currentModules = new List<ModuleStatus>();
+        var group = Target.FRONT.Equals(target) ? loadout.FrontModules : loadout.FrontModules;
+
+        foreach (var module in group)
+        {
+            currentModules.Add(module);
+        }
+
         bool needsRefresh;
         if (lastModules != null)
         {
-            var currentModules = new List<ModuleStatus>();
+            var matching = lastModules.FindAll(m => currentModules.Contains(m));
 
-            var group = Target.FRONT.Equals(target)? loadout.FrontModules : loadout.FrontModules;
-
-            foreach (var module in group)
-            {
-                currentModules.Add(module);
-            }
-
-            needsRefresh = !currentModules.Equals(lastModules);
+            needsRefresh = matching.Count != currentModules.Count;
         }
         else
         {
-            lastModules = new List<ModuleStatus>();
             needsRefresh = true;
         }
+
+        lastModules = currentModules;
 
         if (needsRefresh)
         {
@@ -60,10 +62,12 @@ public class ShipModulesController : MonoBehaviour
                 Destroy(oldModule.gameObject);
             }
 
-            foreach (var newModule in lastModules)
+            foreach (var newModule in currentModules)
             {
                 var module = (ShipModuleController) Instantiate(moduleTemplate);
                 module.transform.parent = this.transform;
+
+                module.Module = newModule;
             }
         }
     }

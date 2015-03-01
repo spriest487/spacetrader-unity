@@ -11,8 +11,8 @@ public class ModuleLoadout : MonoBehaviour
 
     public WeaponHardpoint[] Hardpoints { get; private set; }
     
-      public ModuleGroup FrontModules
-    {
+    public ModuleGroup FrontModules
+    { 
         get
         {
             if (frontModules == null)
@@ -31,7 +31,9 @@ public class ModuleLoadout : MonoBehaviour
 
 		if (!module.Empty)
 		{
-			module.Activate(ship, Hardpoints[0]);
+            var hardpoint = Hardpoints[index % Hardpoints.Length];
+
+            module.Activate(ship, hardpoint);
 		}
 		else
 		{

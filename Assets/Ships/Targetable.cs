@@ -2,7 +2,29 @@
 
 public class Targetable : MonoBehaviour
 {
-	public string faction;
+    [SerializeField]
+	private string faction;
 
-    public bool hideBracket;
+    [SerializeField]
+    private bool hideBracket;
+
+    public bool BracketVisible
+    {
+        get
+        {
+            if (hideBracket)
+            {
+                return false;
+            }
+            else
+            {
+                var isPlayer = PlayerStart.ActivePlayer
+                    && PlayerStart.ActivePlayer.gameObject == this.gameObject;
+
+                return !isPlayer;
+            }
+        }
+    }
+
+    public string Faction { get { return faction; } }
 }
