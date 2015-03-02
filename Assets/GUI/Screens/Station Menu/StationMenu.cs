@@ -4,8 +4,10 @@ using System.Collections;
 
 public class StationMenu : MonoBehaviour
 {
-    public string headerFormat = "Docked at {0}";
+    [SerializeField]
+    private string headerFormat = "Docked at {0}";
 
+    [SerializeField]
     private Text headerText;
 
     private Moorable GetPlayerMoorable()
@@ -24,19 +26,14 @@ public class StationMenu : MonoBehaviour
     public void Undock()
     {
         var moorable = GetPlayerMoorable();
-        if (moorable && moorable.spaceStation)
+        if (moorable && moorable.SpaceStation)
         {
-            moorable.spaceStation.Unmoor(moorable);
+            moorable.SpaceStation.Unmoor(moorable);
         }
     }
 
     void Start()
     {
-        var header = transform.Find("Header");
-        if (header)
-        {
-            headerText = header.gameObject.GetComponent<Text>();
-        }
     }
 
     void Update()
@@ -45,7 +42,7 @@ public class StationMenu : MonoBehaviour
 
         if (headerText)
         {
-            headerText.text = string.Format(headerFormat, moorable.spaceStation.name);
+            headerText.text = string.Format(headerFormat, moorable.SpaceStation.name);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Hud : MonoBehaviour
+public class ScreenBar : MonoBehaviour
 {
     public void ShowOverlay(string name)
     {

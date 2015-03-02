@@ -77,8 +77,7 @@ public class MissionsMenu : MonoBehaviour
         foreach (var mission in missions)
         {
             var missionItem = (MissionMenuItem) Instantiate(missionElementPrefab);
-            missionItem.transform.SetParent(missionsLayout);
-            missionItem.transform.localScale = new Vector3(1, 1, 1);
+            missionItem.transform.SetParent(missionsLayout, false);
             missionItem.MissionDefinition = mission;
         }
     }

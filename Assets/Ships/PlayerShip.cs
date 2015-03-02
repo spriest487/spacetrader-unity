@@ -61,10 +61,18 @@ public class PlayerShip : MonoBehaviour
 
     void OnMoored()
     {
+        if (PlayerStart.ActivePlayer == this)
+        {
+            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.Docked;
+        }
     }
 
     void OnUnmoored()
     {
+        if (PlayerStart.ActivePlayer == this)
+        {
+            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
+        }
     }
 
     bool HasControl()
@@ -159,7 +167,7 @@ public class PlayerShip : MonoBehaviour
 
         if (Input.GetButtonDown("activate"))
         {
-            if (moorable && moorable.spaceStation)
+            if (moorable && moorable.SpaceStation)
             {
                 moorable.RequestMooring();
             }

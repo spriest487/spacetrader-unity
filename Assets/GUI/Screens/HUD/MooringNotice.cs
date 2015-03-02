@@ -24,11 +24,11 @@ public class MooringNotice : MonoBehaviour
             var moorable = player.GetComponent<Moorable>();
             if (moorable)
             {
-                if (moorable.spaceStation)
+                if (moorable.SpaceStation)
                 {
                     text.text = string.Format(template, 
                         "ACTIVATE",
-                        moorable.spaceStation.name);
+                        moorable.SpaceStation.name);
                     active = true;
                 }
             }

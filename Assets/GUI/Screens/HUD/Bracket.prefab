@@ -254,6 +254,9 @@ MonoBehaviour:
   - {fileID: 11448600}
   healthbar: {fileID: 11407068}
   bracketManager: {fileID: 0}
+  defaultWidth: 64
+  defaultHeight: 64
+  selectedExpand: 1.25
 --- !u!114 &11448598
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -40,48 +40,68 @@ public class FollowCamera : MonoBehaviour
 		shake = shakeCollisionConversion * 6;
 	}
 
+    void DockedCam(PlayerShip player, SpaceStation station)
+    {
+        transform.rotation = Quaternion.identity;
+        transform.position = station.transform.position;
+        transform.position -= new Vector3(0, 0, 100);
+    }
+
+    void FlightCam(PlayerShip player)
+    {
+        transform.position = offset;
+        if (player)
+        {
+            if (!ignoreTranslation)
+            {
+                var newPos = player.transform.TransformPoint(offset);
+                newPos -= currentSpeedOffset;
+
+                var dilutedShake = shake * 0.05f;
+                var shakePhase = shakeSpeed * Time.frameCount;
+
+                var shakeAmount = new Vector3(
+                    shake * Mathf.Sin(shakePhase * shakeAngles.x),
+                    shake * Mathf.Sin(shakePhase * shakeAngles.y),
+                    shake * Mathf.Sin(shakePhase * shakeAngles.z));
+                newPos += transform.TransformDirection(shakeAmount);
+
+                transform.position = newPos;
+
+                transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
+            }
+            else
+            {
+                transform.position = Vector3.zero;
+                transform.LookAt(player.transform.forward * 1000, player.transform.up);
+            }
+
+            float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
+            var rotOffsetAmt = Quaternion.Euler(player.rigidbody.angularVelocity.x * rotationOffsetAmt,
+                player.rigidbody.angularVelocity.y * rotationOffsetAmt,
+                player.rigidbody.angularVelocity.z * rotationOffsetAmt);
+            transform.rotation = rotOffsetAmt * transform.rotation;
+        }
+        else
+        {
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+        }		
+    }
+
 	void LateUpdate()
 	{
         var player = PlayerStart.ActivePlayer;
-		
-		transform.position = offset;
-		if (player)
-		{
-			if (!ignoreTranslation)
-			{
-				var newPos = player.transform.TransformPoint(offset);
-				newPos -= currentSpeedOffset;
 
-				var dilutedShake = shake * 0.05f;
-				var shakePhase = shakeSpeed * Time.frameCount;
-
-				var shakeAmount = new Vector3(
-					shake * Mathf.Sin(shakePhase * shakeAngles.x),
-					shake * Mathf.Sin(shakePhase * shakeAngles.y),
-					shake * Mathf.Sin(shakePhase * shakeAngles.z));
-				newPos += transform.TransformDirection(shakeAmount);
-							
-				transform.position = newPos;
-
-				transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
-			}
-			else
-			{
-				transform.position = Vector3.zero;
-				transform.LookAt(player.transform.forward * 1000, player.transform.up);
-			}
-
-			float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
-			var rotOffsetAmt = Quaternion.Euler(player.rigidbody.angularVelocity.x * rotationOffsetAmt,
-				player.rigidbody.angularVelocity.y * rotationOffsetAmt,
-				player.rigidbody.angularVelocity.z * rotationOffsetAmt);
-			transform.rotation = rotOffsetAmt * transform.rotation;
-		}
-		else
-		{
-			transform.position = Vector3.zero;
-			transform.rotation = Quaternion.identity;
-		}		
+        var moorable = player.GetComponent<Moorable>();
+        if (moorable && moorable.Moored)
+        {
+            DockedCam(player, moorable.SpaceStation);
+        }
+        else
+        {
+            FlightCam(player);
+        }
 	}
 
 	void FixedUpdate()

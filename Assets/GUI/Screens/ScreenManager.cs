@@ -25,6 +25,11 @@ public class ScreenManager : MonoBehaviour
                 if (!overlayInstance)
                 {
                     overlayInstance = (GameObject) Instantiate(overlay);
+
+                    //add the screenbar
+                    var bar = (ScreenBar) Instantiate(ScreenManager.Instance.screenBar);
+                    bar.transform.position = Vector3.zero;
+                    bar.transform.SetParent(overlayInstance.transform, false);
                 }
 
                 return overlayInstance;
@@ -56,6 +61,9 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private HudOverlayMapping[] hudOverlays;
+
+    [SerializeField]
+    private ScreenBar screenBar;
 
     public ScreenState State
     {
