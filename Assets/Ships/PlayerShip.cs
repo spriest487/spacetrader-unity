@@ -7,6 +7,8 @@ public class PlayerShip : MonoBehaviour
 	private Ship ship;
     private Moorable moorable;
 
+    private bool inputDragging = false;
+
 	private Vector2? FindTouchPos()
 	{
 		//mouse input takes priority!
@@ -26,6 +28,42 @@ public class PlayerShip : MonoBehaviour
 
 		return null;
 	}
+
+    private Vector2? FindAimPoint()
+    {
+        //decide whether to use touch or mouse
+        var touchPos = FindTouchPos();
+            
+        if (touchPos.HasValue)
+        {
+            return touchPos;
+        }
+        else if (Input.mousePresent)
+        {
+            return Input.mousePosition;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private void UpdateDrag(Vector2? aimPos)
+    {
+        //see whether we can start a new drag
+        if (aimPos.HasValue && Input.GetMouseButton(0) && !inputDragging)
+        {
+            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            {
+                inputDragging = true;
+            }
+        }
+
+        if (!Input.GetMouseButton(0))
+        {
+            inputDragging = false;
+        }
+    }
     
 	private void RotateTowardsAim(Vector2 screenAimPos)
 	{
@@ -63,7 +101,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (PlayerStart.ActivePlayer == this)
         {
-            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.Docked;
+            ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Docked);
         }
     }
 
@@ -71,7 +109,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (PlayerStart.ActivePlayer == this)
         {
-            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
+            ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Flight);
         }
     }
 
@@ -93,22 +131,12 @@ public class PlayerShip : MonoBehaviour
             return;
         }
 
-        var touchPos = FindTouchPos();
+        var aimPoint = FindAimPoint();
+        UpdateDrag(aimPoint);
 
-		Vector2? mouseAimPos = null;
-
-		if (touchPos.HasValue)
+        if (aimPoint.HasValue && Camera.main)
 		{
-			mouseAimPos = touchPos;
-		}
-		else if (Input.mousePresent)
-		{
-			mouseAimPos = Input.mousePosition;
-		}
-
-		if (mouseAimPos.HasValue && Camera.main)
-		{
-            Vector3 mousePos = new Vector3(mouseAimPos.Value.x, mouseAimPos.Value.y, 1000);
+            Vector3 mousePos = new Vector3(aimPoint.Value.x, aimPoint.Value.y, 1000);
 			var mouseRay = Camera.main.ScreenPointToRay(mousePos);
 
             bool hitSomething = false;
@@ -128,21 +156,21 @@ public class PlayerShip : MonoBehaviour
                 ship.aim = mouseRay.origin + mouseRay.direction * 1000;
             }
 		}
-		else
-		{
-			ship.aim = transform.position + transform.forward * 1000;
-		}
-
-        if (touchPos.HasValue)
+        else
         {
-            RotateTowardsAim(touchPos.Value);
+            ship.aim = transform.position + transform.forward * 1000;
         }
-        else if (ship)
+
+        if (inputDragging && aimPoint.HasValue)
+        {
+            RotateTowardsAim(aimPoint.Value);
+        }
+        else
         {
             ship.pitch = Input.GetAxis("pitch");
             ship.yaw = Input.GetAxis("yaw");
         }
-
+        
         //roll is manual only
         ship.roll = -Input.GetAxis("roll");
 

@@ -1746,8 +1746,8 @@ MonoBehaviour:
   - {fileID: 11412172}
   - {fileID: 11412178}
   - {fileID: 11412162}
-  connectingScreen: {fileID: 0}
-  emptySceneName: 
+  connectingScreen: {fileID: 11431594, guid: 768066d59489fc242bf793c7aa712b5e, type: 2}
+  emptySceneName: Empty
 --- !u!114 &11486288
 MonoBehaviour:
   m_ObjectHideFlags: 1

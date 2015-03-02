@@ -11,10 +11,13 @@ public class ScreenManager : MonoBehaviour
     {
         [SerializeField]
         private HudOverlayState state;
+
+        [SerializeField]
+        private ScreenState screenState;
         
         [SerializeField]
         private GameObject overlay;
-
+        
         [HideInInspector]
         private GameObject overlayInstance;
 
@@ -37,10 +40,12 @@ public class ScreenManager : MonoBehaviour
         }
 
         public HudOverlayState State { get { return state; } }
+        public ScreenState ScreenState { get { return screenState; } }
     }
 
     public enum ScreenState
     {
+        None,
         Docked,
         Flight,
     }
@@ -48,7 +53,6 @@ public class ScreenManager : MonoBehaviour
     public enum HudOverlayState
     {
         None,
-        Docked,
         MainMenu,
         Equipment
     }    
@@ -117,7 +121,11 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var overlay in hudOverlays)
         {
-            overlay.Overlay.SetActive(HudOverlay == overlay.State);
+            var overlayActive = HudOverlay == overlay.State;
+            var screenActive = State == overlay.ScreenState
+                || overlay.ScreenState == ScreenState.None;
+
+            overlay.Overlay.SetActive(overlayActive && screenActive);
         }
     }
 
@@ -132,6 +140,13 @@ public class ScreenManager : MonoBehaviour
             HudOverlay = state;
         }
 
+        Apply();
+    }
+
+    public void SetStates(HudOverlayState hudState, ScreenState state)
+    {
+        this.hudOverlay = hudState;
+        this.state = state;
         Apply();
     }
 
