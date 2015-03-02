@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[System.Serializable]
 public class ModuleStatus : ScriptableObject
 {
     public static ModuleStatus None { get; private set; }
@@ -54,19 +53,10 @@ public class ModuleStatus : ScriptableObject
 
     public bool Empty { get; private set; }   
 
-#if UNITY_EDITOR
-    public bool FoldoutState { get; set; }
-#endif
-
     public ModuleStatus()
     {
         cooldown = 0;
-
-#if UNITY_EDITOR
-        FoldoutState = true;
-#endif
     }
-
 
     public static ModuleStatus Create(string moduleName, ModuleGroup moduleGroup)
     {
@@ -88,6 +78,12 @@ public class ModuleStatus : ScriptableObject
             Definition.Behaviour.Activate(activator, hardpoint);
             cooldown = Definition.CooldownLength; 
         }
+    }
+
+    void Awake()
+    {
+        //make sure we have a ref to the definitoin after deserializing
+        definition = null;
     }
      
     public void Update()

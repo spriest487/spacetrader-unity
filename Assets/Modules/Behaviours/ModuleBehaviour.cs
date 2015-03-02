@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface ModuleBehaviour
+public abstract class ModuleBehaviour : ScriptableObject
 {
-	void Activate(Ship activator, WeaponHardpoint hardpoint);
+	public abstract void Activate(Ship activator, WeaponHardpoint hardpoint);
 }

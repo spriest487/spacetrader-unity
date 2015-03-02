@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GunBehaviour : ScriptableObject, ModuleBehaviour
+public class GunBehaviour : ModuleBehaviour
 {
     [SerializeField]
 	private Transform bulletType;
@@ -21,7 +21,7 @@ public class GunBehaviour : ScriptableObject, ModuleBehaviour
         return result;
 	}
 
-	public void Activate(Ship activator, WeaponHardpoint hardpoint)
+	public override void Activate(Ship activator, WeaponHardpoint hardpoint)
 	{
 		var aimRot = Quaternion.LookRotation((activator.aim - hardpoint.transform.position).normalized);
 
