@@ -308,13 +308,17 @@ MonoBehaviour:
   state: 0
   hudOverlay: 0
   hudOverlays:
-  - state: 1
+  - state: 0
+    screenState: 1
     overlay: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
-  - state: 2
+  - state: 1
+    screenState: 0
     overlay: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
   - state: 0
+    screenState: 2
     overlay: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
-  - state: 3
+  - state: 2
+    screenState: 0
     overlay: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
   screenBar: {fileID: 11407202, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
   menuState: 0

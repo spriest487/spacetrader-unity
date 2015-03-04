@@ -63,7 +63,7 @@ public class BracketManager : MonoBehaviour
 				Bracket.Destroy(bracket.Value.gameObject);
 			}
 		}
-
+        
 		brackets = newBrackets;
 	}
 }

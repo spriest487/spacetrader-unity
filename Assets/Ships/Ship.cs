@@ -10,6 +10,9 @@ public class Ship : MonoBehaviour
     public ShipStats stats;
 
     public Targetable target;
+
+    [SerializeField]
+    private Transform explosionEffect;
 	
 	public float thrust;
 	public float strafe;
@@ -223,4 +226,13 @@ public class Ship : MonoBehaviour
 			//Debug.Log("pos: " +pos);
 		}
 	}
+
+    void OnTakeDamage(HitDamage hd)
+    {
+        var hp = GetComponent<Hitpoints>();
+        if (hp && hp.armor.current - hd.Amount <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
