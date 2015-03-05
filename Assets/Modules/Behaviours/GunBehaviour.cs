@@ -32,9 +32,9 @@ public class GunBehaviour : ModuleBehaviour
 			bulletBehaviour.owner = activator.gameObject;
 			bulletBehaviour.damage = damagePerShot;
 
-			if (activator.rigidbody)
+			if (activator.GetComponent<Rigidbody>())
 			{
-				bulletBehaviour.baseVelocity = activator.rigidbody.velocity;
+				bulletBehaviour.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
 			}
 		}
 

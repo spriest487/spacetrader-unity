@@ -42,7 +42,7 @@ public class Moorable : MonoBehaviour
 
     void OnTriggerExit(Collider collider)
     {
-        if (spaceStation && spaceStation.mooringTrigger.collider == collider)
+        if (spaceStation && spaceStation.mooringTrigger.GetComponent<Collider>() == collider)
         {
             spaceStation = null;
         }

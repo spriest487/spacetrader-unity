@@ -75,7 +75,7 @@ public class Bracket : MonoBehaviour
 			var width = defaultWidth;
 			var height = defaultHeight;
 
-			bool isTarget = playerShip && playerShip.target == target;
+			bool isTarget = playerShip && playerShip.Target == target;
 			bool sameFaction = playerTargetable && string.Equals(playerTargetable.Faction, target.Faction);
 
             if (isTarget)

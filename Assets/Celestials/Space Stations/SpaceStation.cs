@@ -34,10 +34,10 @@ public class SpaceStation : MonoBehaviour
             
             moorable.transform.position = mooringTrigger.transform.position;
             moorable.transform.rotation = mooringTrigger.transform.rotation;
-            if (moorable.rigidbody)
+            if (moorable.GetComponent<Rigidbody>())
             {
-                moorable.rigidbody.angularVelocity = Vector3.zero;
-                moorable.rigidbody.velocity = Vector3.zero;
+                moorable.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                moorable.GetComponent<Rigidbody>().velocity = Vector3.zero;
             }
 
             moorable.gameObject.SetActive(true);

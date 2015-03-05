@@ -26,15 +26,15 @@ public class WingmanCaptain : MonoBehaviour
 	private void FlyInFormation(Ship leader)
 	{
 		//fly in same direction as leader
-		captain.destination = transform.position + (leader.transform.forward * ship.stats.maxSpeed);
+		captain.destination = transform.position + (leader.transform.forward * ship.Stats.maxSpeed);
 		
 		//keep adjusting to match our formation pos if possible
 		captain.adjustTarget = leader.GetFormationPos(ship);
 		
 		float angleDiffBetweenHeadings;		
-		if (leader.rigidbody.velocity.sqrMagnitude > Vector3.kEpsilon)
+		if (leader.GetComponent<Rigidbody>().velocity.sqrMagnitude > Vector3.kEpsilon)
 		{
-			angleDiffBetweenHeadings  = Mathf.Acos(Vector3.Dot(leader.rigidbody.velocity.normalized, leader.rigidbody.transform.forward));
+			angleDiffBetweenHeadings  = Mathf.Acos(Vector3.Dot(leader.GetComponent<Rigidbody>().velocity.normalized, leader.GetComponent<Rigidbody>().transform.forward));
 		}
 		else
 		{
@@ -73,7 +73,7 @@ public class WingmanCaptain : MonoBehaviour
 		captain.destination = leaderPos;
 
 		//throttle down as we approach the min formation distance
-		float throttleDownDist = ship.stats.maxSpeed * Time.deltaTime;
+		float throttleDownDist = ship.Stats.maxSpeed * Time.deltaTime;
 		float remainingDist = Mathf.Max(0, distance - minFormationDistance);
 
 		float catchupThrottle = Mathf.Min(1, remainingDist / throttleDownDist);
@@ -97,14 +97,14 @@ public class WingmanCaptain : MonoBehaviour
 			return;
 		}
 		
-		var myPos = rigidbody.transform.position;
+		var myPos = GetComponent<Rigidbody>().transform.position;
 		//var leaderBound = leader.rigidbody.ClosestPointOnBounds(transform.position);
 		var leaderPos = leader.GetFormationPos(ship);
 
 		//captain.adjustTarget = leaderPos;
 
 		var distance = (myPos - leaderPos).magnitude;
-		var minFormationDistance = rigidbody.collider.bounds.extents.magnitude * 1f;
+		var minFormationDistance = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 1f;
 
 		captain.targetUp = null;
 		captain.adjustTarget = null;

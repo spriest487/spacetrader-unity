@@ -34,9 +34,9 @@ public class Speedometer : MonoBehaviour
 			+"\nThrust: {1:P2}"
 			+"\nManeuver speed: {2:F2}deg/sec"
 			+"\nManeuver thrust: {3:P2}",
-			playerShip.rigidbody.velocity.magnitude,
+			playerShip.GetComponent<Rigidbody>().velocity.magnitude,
 			thrust,
-			playerShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg,
+			playerShip.GetComponent<Rigidbody>().angularVelocity.magnitude * Mathf.Rad2Deg,
 			maneuverThrust);
 
 		var ai = playerShip.GetComponent<AICaptain>();		
@@ -44,7 +44,7 @@ public class Speedometer : MonoBehaviour
 		{
 			var dest = ai.destination;
 
-			var dist = (dest - playerShip.rigidbody.position).magnitude;
+			var dist = (dest - playerShip.GetComponent<Rigidbody>().position).magnitude;
 			text += "\ndistance to target : " + dist;
 		}
 		

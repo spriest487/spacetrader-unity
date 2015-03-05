@@ -3,13 +3,17 @@ using System.Collections.Generic;
 
 public class Ship : MonoBehaviour
 {
-	public FormationManager formationManager;
+    [SerializeField]
+	private FormationManager formationManager;
 
-    public SpaceStation dockedIn;
+    [SerializeField]
+    private SpaceStation dockedIn;
 
-    public ShipStats stats;
+    [SerializeField]
+    private ShipStats stats;
 
-    public Targetable target;
+    [SerializeField]
+    private Targetable target;
 
     [SerializeField]
     private Transform explosionEffect;
@@ -24,6 +28,9 @@ public class Ship : MonoBehaviour
 
 	public Vector3 aim;
 
+    public ShipStats Stats { get { return stats; } }
+    public Targetable Target { get { return target; } set { target = value; } }
+
 	/**
 	 * Finds the equivalent thrust required for the "from" ship to match
 	 * the current speed of the "target" ship (value will not exceed 1, even
@@ -31,7 +38,7 @@ public class Ship : MonoBehaviour
 	 */
 	public static float EquivalentThrust(Ship from, Ship target)
 	{
-		var targetSpeed = target.rigidbody.velocity.magnitude;
+		var targetSpeed = target.GetComponent<Rigidbody>().velocity.magnitude;
 		var maxSpeed = Mathf.Max(1, from.stats.maxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
@@ -128,12 +135,12 @@ public class Ship : MonoBehaviour
 		formationManager.Update();
 		DebugDrawFollowerPositions();
 
-		if (rigidbody)
+		if (GetComponent<Rigidbody>())
 		{
-            rigidbody.drag = 0;
-            rigidbody.angularDrag = 0;
-            rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
-            rigidbody.inertiaTensor = new Vector3(1, 1, 1);
+            GetComponent<Rigidbody>().drag = 0;
+            GetComponent<Rigidbody>().angularDrag = 0;
+            GetComponent<Rigidbody>().maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+            GetComponent<Rigidbody>().inertiaTensor = new Vector3(1, 1, 1);
 
             //all movement vals must be within -1..1
             thrust = Mathf.Clamp(thrust, -1, 1);
@@ -145,8 +152,8 @@ public class Ship : MonoBehaviour
 
             var torqueMax = stats.maxTurnSpeed * Mathf.Deg2Rad;
 
-            var localRotation = rigidbody.transform.InverseTransformDirection(rigidbody.angularVelocity);
-            var localVelocity = rigidbody.transform.InverseTransformDirection(rigidbody.velocity);
+            var localRotation = GetComponent<Rigidbody>().transform.InverseTransformDirection(GetComponent<Rigidbody>().angularVelocity);
+            var localVelocity = GetComponent<Rigidbody>().transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity);
 
             var torqueInput = InputAmountsToRequired(new Vector3(pitch, yaw, roll),
                 localRotation,
@@ -155,23 +162,23 @@ public class Ship : MonoBehaviour
                 localVelocity,
                 stats.maxSpeed);           
 
-            rigidbody.angularVelocity = DecayRotation(torqueInput,
+            GetComponent<Rigidbody>().angularVelocity = DecayRotation(torqueInput,
                 localRotation,
                 stats.agility * Mathf.Deg2Rad,
                 torqueMax,
-                rigidbody.transform);
-            rigidbody.velocity = DecayRotation(forceInput,
+                GetComponent<Rigidbody>().transform);
+            GetComponent<Rigidbody>().velocity = DecayRotation(forceInput,
                 localVelocity,
                 stats.thrust,
                 stats.maxSpeed,
-                rigidbody.transform);
+                GetComponent<Rigidbody>().transform);
 
             var force = forceInput.normalized * stats.thrust;
             var torque = torqueInput.normalized * Mathf.Deg2Rad * stats.agility;
 
             /* apply new forces */
-            rigidbody.AddRelativeTorque(torque);
-            rigidbody.AddRelativeForce(force);
+            GetComponent<Rigidbody>().AddRelativeTorque(torque);
+            GetComponent<Rigidbody>().AddRelativeForce(force);
 		}
 	}
 
@@ -179,10 +186,10 @@ public class Ship : MonoBehaviour
 	{
 		//limit speed
 		//float maxCurrentSpeed = stats.maxSpeed - rigidbody.drag;
-		float speed = rigidbody.velocity.magnitude;
+		float speed = GetComponent<Rigidbody>().velocity.magnitude;
 		if (speed > stats.maxSpeed)
 		{
-			rigidbody.velocity = rigidbody.velocity.normalized * stats.maxSpeed;
+			GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * stats.maxSpeed;
 		}
 	}
 	
@@ -193,13 +200,13 @@ public class Ship : MonoBehaviour
 	
 	private Vector3 GetFormationPos(int followerId)
 	{
-		var shipPos = rigidbody.transform.position;
+		var shipPos = GetComponent<Rigidbody>().transform.position;
 
 		var posIndex = formationManager.IncludeFollower(followerId);
 		if (posIndex != 0)
 		{
-			var spacing = rigidbody.collider.bounds.extents.magnitude * 4;
-			var offset = rigidbody.transform.right * posIndex * spacing;
+			var spacing = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 4;
+			var offset = GetComponent<Rigidbody>().transform.right * posIndex * spacing;
 
 			return shipPos + offset;
 		}
@@ -220,7 +227,7 @@ public class Ship : MonoBehaviour
 		{
 			var pos = GetFormationPos(follower);
 
-			var debugOff = (rigidbody.transform.forward * rigidbody.collider.bounds.extents.magnitude * 0.5f);
+			var debugOff = (GetComponent<Rigidbody>().transform.forward * GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 0.5f);
 
 			Debug.DrawLine(pos - debugOff, pos + debugOff, Color.green, Time.deltaTime);
 			//Debug.Log("pos: " +pos);

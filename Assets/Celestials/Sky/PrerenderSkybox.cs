@@ -4,7 +4,7 @@ using System.Collections;
 public class PrerenderSkybox : MonoBehaviour {
 	void OnPreRender()
 	{
-		GL.ClearWithSkybox(true, camera);
+		GL.ClearWithSkybox(true, GetComponent<Camera>());
 	}
 
 	void OnPreCull()

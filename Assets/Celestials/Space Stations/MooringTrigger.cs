@@ -13,7 +13,7 @@ public class MooringTrigger : MonoBehaviour
             throw new UnityException("mooring trigger has no station");
         }
 
-        if (!collider.isTrigger)
+        if (!GetComponent<Collider>().isTrigger)
         {
             throw new UnityException("Mooring trigger set up with a non-trigger collider");
         }

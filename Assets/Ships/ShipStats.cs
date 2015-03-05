@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 [Serializable]
-public struct ShipStats
+public class ShipStats
 {
 	public float agility;
 	public float thrust;

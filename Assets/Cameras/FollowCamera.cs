@@ -57,7 +57,6 @@ public class FollowCamera : MonoBehaviour
                 var newPos = player.transform.TransformPoint(offset);
                 newPos -= currentSpeedOffset;
 
-                var dilutedShake = shake * 0.05f;
                 var shakePhase = shakeSpeed * Time.frameCount;
 
                 var shakeAmount = new Vector3(
@@ -77,9 +76,9 @@ public class FollowCamera : MonoBehaviour
             }
 
             float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
-            var rotOffsetAmt = Quaternion.Euler(player.rigidbody.angularVelocity.x * rotationOffsetAmt,
-                player.rigidbody.angularVelocity.y * rotationOffsetAmt,
-                player.rigidbody.angularVelocity.z * rotationOffsetAmt);
+            var rotOffsetAmt = Quaternion.Euler(player.GetComponent<Rigidbody>().angularVelocity.x * rotationOffsetAmt,
+                player.GetComponent<Rigidbody>().angularVelocity.y * rotationOffsetAmt,
+                player.GetComponent<Rigidbody>().angularVelocity.z * rotationOffsetAmt);
             transform.rotation = rotOffsetAmt * transform.rotation;
         }
         else
@@ -119,7 +118,7 @@ public class FollowCamera : MonoBehaviour
 		
 		if (playerRb && ship)
 		{
-			var speed = playerRb.velocity / Mathf.Max(1, ship.stats.maxSpeed);
+			var speed = playerRb.velocity / Mathf.Max(1, ship.Stats.maxSpeed);
 			var targetSpeedOffset = speed * thrustOffset;
 
 			currentSpeedOffset = Vector3.Lerp(currentSpeedOffset, targetSpeedOffset, 0.1f);

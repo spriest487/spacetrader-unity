@@ -16,7 +16,7 @@ public class AICaptain : MonoBehaviour
 
 		var ship = gameObject.GetComponent<Ship>();
 
-		Debug.DrawLine(rigidbody.transform.position, destination, Color.red, Time.deltaTime);
+		Debug.DrawLine(GetComponent<Rigidbody>().transform.position, destination, Color.red, Time.deltaTime);
 
 		if (!ship)
 		{
@@ -28,7 +28,7 @@ public class AICaptain : MonoBehaviour
 		var towards = between.normalized;
 		var localTowards = transform.InverseTransformDirection(towards);
 
-		Debug.DrawLine(rigidbody.transform.position, rigidbody.transform.position + (towards * 5), Color.cyan, Time.deltaTime);
+		Debug.DrawLine(GetComponent<Rigidbody>().transform.position, GetComponent<Rigidbody>().transform.position + (towards * 5), Color.cyan, Time.deltaTime);
 
 		//local rotation required to get to target
 		var rotateTo = Quaternion.LookRotation(localTowards, transform.up);
@@ -38,14 +38,14 @@ public class AICaptain : MonoBehaviour
 
 		//Debug.Log("angle to target: " + totalAngle);
 
-		var facingTowardsAngle = ship.stats.maxTurnSpeed;
+		var facingTowardsAngle = ship.Stats.maxTurnSpeed;
 		var facingTowards = totalAngle < facingTowardsAngle;
 		var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 			
-		var closeEnoughDistance = ship.stats.maxSpeed;
+		var closeEnoughDistance = ship.Stats.maxSpeed;
 		var closeEnough = between.sqrMagnitude < Mathf.Pow(closeEnoughDistance, 2);
 
-		var currentLocalRotation = transform.InverseTransformDirection(ship.rigidbody.angularVelocity) * Mathf.Rad2Deg;
+		var currentLocalRotation = transform.InverseTransformDirection(ship.GetComponent<Rigidbody>().angularVelocity) * Mathf.Rad2Deg;
 
 		if (!facingDirectlyTowards)
 		{
@@ -102,7 +102,7 @@ public class AICaptain : MonoBehaviour
 			for (int a = 0; a < 3; ++a)
 			{
 				var angle = currentLocalRotation[a];
-				counterThrust[a] = -(Mathf.Clamp01(angle / ship.stats.maxTurnSpeed));
+				counterThrust[a] = -(Mathf.Clamp01(angle / ship.Stats.maxTurnSpeed));
 			}
 
 			//Debug.Log(string.Format("Current rotation {0}, Counter {1}", currentLocalRotation.ToString("F5"), counterThrust.ToString("F5")));
@@ -131,7 +131,7 @@ public class AICaptain : MonoBehaviour
 					var distance = between.magnitude;
 
 					var desiredSpeed = Mathf.Clamp01(distance / closeEnoughDistance);
-					var currentThrust = rigidbody.velocity.magnitude / ship.stats.maxSpeed;
+					var currentThrust = GetComponent<Rigidbody>().velocity.magnitude / ship.Stats.maxSpeed;
 
 					//Debug.Log(string.Format("Accelerating to target, desired speed is {0} and current speed factor is {1}", desiredSpeed, currentThrust));
 
@@ -157,7 +157,7 @@ public class AICaptain : MonoBehaviour
 
 	private void ApplyAdjustThrust(Ship ship) 
 	{
-		var currentLocalSpeed = transform.InverseTransformDirection(rigidbody.velocity);
+		var currentLocalSpeed = transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity);
 
 		var maxAdjust = 1 - Mathf.Abs(ship.thrust);
 		if (adjustTarget.HasValue && maxAdjust > Vector3.kEpsilon)
@@ -166,7 +166,7 @@ public class AICaptain : MonoBehaviour
 
 			var adjustBetween = adjustTarget.Value - ship.transform.position;
 
-			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude / (Mathf.Pow(ship.stats.maxSpeed, 2)));
+			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude / (Mathf.Pow(ship.Stats.maxSpeed, 2)));
 			adjustPower = Mathf.Log10(1 + (adjustPower * 9)); //log10 slowdown instead of linear so we slow down more dramatically closer to the goal
 
 			adjustPower *= maxAdjust;
@@ -190,14 +190,14 @@ public class AICaptain : MonoBehaviour
 					/* if we're already moving in this direction, but we're going faster
 					 * than we're actually trying to thrust, let's assume we're going too
 					 fast and fire the opposite thruster to slow down a bit */
-					float thrustToCounteract = currentLocalSpeed[i] / ship.stats.maxSpeed;
+					float thrustToCounteract = currentLocalSpeed[i] / ship.Stats.maxSpeed;
 					if (MathUtils.SameSign(thrustToCounteract, localBetween[i]) && Mathf.Abs(thrustToCounteract) > adjustPower)
 					{
 						newThrust[i] = -thrustToCounteract;
 					}
 					else
 					{
-						float adjustThrust = adjustPower * ((localBetween[i] / betweenDimMax) / ship.stats.maxSpeed);
+						float adjustThrust = adjustPower * ((localBetween[i] / betweenDimMax) / ship.Stats.maxSpeed);
 
 						newThrust[i] = adjustThrust;
 					}

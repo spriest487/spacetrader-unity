@@ -10,9 +10,9 @@ public class SunTint : MonoBehaviour
 
     void Update()
     {
-        if (sunLight && renderer && renderer.material)
+        if (sunLight && GetComponent<Renderer>() && GetComponent<Renderer>().material)
         {
-            renderer.material.SetColor(tintAttributeName, baseTint * sunLight.color);
+            GetComponent<Renderer>().material.SetColor(tintAttributeName, baseTint * sunLight.color);
         }
     }
 }

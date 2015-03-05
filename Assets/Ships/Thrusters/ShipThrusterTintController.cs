@@ -33,11 +33,11 @@ public class ShipThrusterTintController : MonoBehaviour
 
 		foreach (var particle in particles)
 		{
-			particle.renderer.enabled = enable;
+			particle.GetComponent<Renderer>().enabled = enable;
 
 			if (enabled)
 			{
-				var material = particle.renderer.material;
+				var material = particle.GetComponent<Renderer>().material;
 				if (material)
 				{
 					var color = material.GetColor(tintShaderProperty);

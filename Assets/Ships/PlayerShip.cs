@@ -86,14 +86,14 @@ public class PlayerShip : MonoBehaviour
             var targetable = hit.collider.GetComponent<Targetable>();
             if (targetable)
             {
-                ship.target = targetable;
+                ship.Target = targetable;
                 targeted = true;
             }
         }
 
         if (!targeted)
         {
-            ship.target = null;
+            ship.Target = null;
         }
     }
 
@@ -117,7 +117,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (Network.isClient || Network.isServer)
         {
-            return networkView && networkView.isMine;
+            return GetComponent<NetworkView>() && GetComponent<NetworkView>().isMine;
         }
         else {
             return true;
@@ -144,7 +144,7 @@ public class PlayerShip : MonoBehaviour
             
             foreach (var rayHit in rayHits)
             {
-                if (rayHit.collider != collider)
+                if (rayHit.collider != GetComponent<Collider>())
                 {
                     ship.aim = rayHit.point;
                     hitSomething = true;

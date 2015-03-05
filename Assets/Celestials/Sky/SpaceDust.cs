@@ -64,7 +64,7 @@ public class SpaceDust : MonoBehaviour {
 				fadeAmt);
 		}
 
-		particleSystem.maxParticles = particles.Length;
-		particleSystem.SetParticles(particles, particles.Length);
+		GetComponent<ParticleSystem>().maxParticles = particles.Length;
+		GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
 	}
 }
