@@ -14,3 +14,8 @@ MonoBehaviour:
   sceneName: 5v5
   missionName: Combat Test
   description: Combat test mission with 5 players vs 5 AIs
+  playerSlots:
+  - status: 0
+    shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+  - status: 0
+    shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}

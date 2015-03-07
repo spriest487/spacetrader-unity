@@ -26,4 +26,12 @@ public class ShipType : ScriptableObject
 
         return ship;
     }
+
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Ship Type")]
+    public static void Create()
+    {
+        ScriptableObjectUtility.CreateAsset<ShipType>();
+    }
+#endif
 }
