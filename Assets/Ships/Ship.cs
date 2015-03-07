@@ -16,7 +16,7 @@ public class Ship : MonoBehaviour
     private Targetable target;
 
     [SerializeField]
-    private Transform explosionEffect;
+    private ScalableParticle explosionEffect;
 	
 	public float thrust;
 	public float strafe;
@@ -239,6 +239,12 @@ public class Ship : MonoBehaviour
         var hp = GetComponent<Hitpoints>();
         if (hp && hp.armor.current - hd.Amount <= 0)
         {
+            if (explosionEffect)
+            {
+                var explosion = (ScalableParticle) Instantiate(explosionEffect, transform.position, transform.rotation);
+                explosion.ParticleScale = 0.5f;
+            }
+
             Destroy(gameObject);
         }
     }
