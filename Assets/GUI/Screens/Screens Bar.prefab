@@ -11,6 +11,7 @@ GameObject:
   - 222: {fileID: 22223850}
   - 114: {fileID: 11423848}
   - 114: {fileID: 11423850}
+  - 114: {fileID: 11417102}
   m_Layer: 0
   m_Name: Menu Button
   m_TagString: Untagged
@@ -29,6 +30,7 @@ GameObject:
   - 222: {fileID: 22223846}
   - 114: {fileID: 11423842}
   - 114: {fileID: 11423844}
+  - 114: {fileID: 11410560}
   m_Layer: 0
   m_Name: EquipmentButton
   m_TagString: Untagged
@@ -97,6 +99,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbc51727256bc84caf9266890450427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11410560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 123846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051ec90f8c6677a45a3b9a954457a11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiresPlayer: 0
+--- !u!114 &11417102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 123844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051ec90f8c6677a45a3b9a954457a11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiresPlayer: 1
 --- !u!114 &11423842
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -421,4 +447,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 123852}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

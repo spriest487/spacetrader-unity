@@ -92,15 +92,23 @@ public class FollowCamera : MonoBehaviour
 	{
         var player = PlayerStart.ActivePlayer;
 
-        var moorable = player.GetComponent<Moorable>();
-        if (moorable && moorable.Moored)
+        if (player)
         {
-            DockedCam(player, moorable.SpaceStation);
+            var moorable = player.GetComponent<Moorable>();
+            if (moorable && moorable.Moored)
+            {
+                DockedCam(player, moorable.SpaceStation);
+            }
+            else
+            {
+                FlightCam(player);
+            }
         }
         else
         {
-            FlightCam(player);
-        }
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+        }        
 	}
 
 	void FixedUpdate()

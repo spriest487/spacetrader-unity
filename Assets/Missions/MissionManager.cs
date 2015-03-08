@@ -35,10 +35,7 @@ public class MissionManager : MonoBehaviour
     private static MissionManager instance;   
 
     public static MissionManager Instance { get {return instance; } }
-
-    [SerializeField]
-    private Transform missionPrepScreen;
-
+    
     [HideInInspector]
     [SerializeField]
     private bool missionStarted;
@@ -61,6 +58,7 @@ public class MissionManager : MonoBehaviour
     void Start()
     {
         missionStarted = false;
-        var prepScreen = (Transform)Instantiate(missionPrepScreen);
+
+        ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.MissionPrep, ScreenManager.ScreenState.None);
     }
 }
