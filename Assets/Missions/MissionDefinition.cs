@@ -2,24 +2,18 @@
 
 public class MissionDefinition : ScriptableObject
 {
-    public enum SlotStatus
-    {
-        Open,
-        Closed,
-        Human,
-        AI
-    }
+    
 
     [System.Serializable]
     public class PlayerSlot
     {
         [SerializeField]
-        private SlotStatus status;
+        private string id;
 
         [SerializeField]
         private ShipType shipType;
 
-        public SlotStatus Status { get { return status; } }
+        public string ID { get { return id; } }
         public ShipType ShipType { get { return shipType; } }
     }
 

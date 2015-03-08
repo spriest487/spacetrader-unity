@@ -9,13 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c9e4c95c18063d40ba7650558ccfdc2, type: 3}
-  m_Name: 5v5 Mission
+  m_Name: Station Test Mission
   m_EditorClassIdentifier: 
-  sceneName: 5v5
-  missionName: Combat Test
-  description: Combat test mission with 5 players vs 5 AIs
-  playerSlots:
-  - status: 0
-    shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-  - status: 0
-    shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+  sceneName: Station1
+  missionName: Station Test
+  description: Docking/undocking/station services test
+  playerSlots: []

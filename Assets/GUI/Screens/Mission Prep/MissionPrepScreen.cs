@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 public class MissionPrepScreen : MonoBehaviour {
-    private static MissionPrepScreen Instance { get; private set; }
+    public static MissionPrepScreen Instance { get; private set; }
 
     [SerializeField]
     private MissionDefinition currentMission;

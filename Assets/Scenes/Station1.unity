@@ -752,6 +752,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f2135e59808e85443ab1325c55692f7a, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &331094402
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11464902, guid: f095627447742a349badb1d9b29208ca,
+    type: 2}
+  m_PrefabInternal: {fileID: 1277890385}
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &335503483
 Prefab:
   m_ObjectHideFlags: 0
@@ -2405,6 +2411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd5a9be05ca7a0341b9726d2480de2a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentMission: {fileID: 0}
+  readyButton: {fileID: 331094402}
 --- !u!1 &1310972538
 GameObject:
   m_ObjectHideFlags: 0
