@@ -11,6 +11,7 @@ public class MissionManager : MonoBehaviour
         AI
     }
 
+    [System.Serializable]
     public class ActivePlayerSlot : MissionDefinition.PlayerSlot
     {
         [SerializeField]
@@ -28,13 +29,21 @@ public class MissionManager : MonoBehaviour
     {
         [SerializeField]
         private MissionDefinition missionDefinition;
+
+        [SerializeField]
+        private ActivePlayerSlot[] players;
     }
 
 
     [SerializeField]
-    private static MissionManager instance;   
+    private static MissionManager instance;
 
-    public static MissionManager Instance { get {return instance; } }
+    [SerializeField]
+    private ActiveMission mission;
+
+    public static MissionManager Instance { get { return instance; } }
+
+    public ActiveMission Mission { get { return mission; } }
     
     [HideInInspector]
     [SerializeField]

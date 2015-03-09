@@ -142,7 +142,16 @@ public class ScreenManager : MonoBehaviour
     {
         if (HudOverlay == state)
         {
-            HudOverlay = HudOverlayState.None;
+            /*if there's an active mission, and the player is not spawned, the default state 
+             is the mission prep screen instead */
+            if (MissionManager.Instance != null && !PlayerStart.ActivePlayer)
+            {
+                HudOverlay = HudOverlayState.MissionPrep;
+            }
+            else
+            {
+                HudOverlay = HudOverlayState.None;
+            }
         }
         else
         {
