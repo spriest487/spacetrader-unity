@@ -73,8 +73,23 @@ public class MissionManager : MonoBehaviour
 
     void Start()
     {
-        missionStarted = false;
+        phase = MissionPhase.Prep;
 
         ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.MissionPrep, ScreenManager.ScreenState.None);
+    }
+
+    void Update()
+    {
+        if (mission.)
+    }
+
+    void BeginMission()
+    {
+        phase = MissionPhase.Active;
+    }
+
+    void EndMission()
+    {
+        phase = MissionPhase.Finished;
     }
 }
