@@ -110,11 +110,14 @@ public class Bracket : MonoBehaviour
 					}
 				}
 			}
+
 			if (nameplate)
 			{
+                nameplate.gameObject.SetActive(isTarget);
 				nameplate.color = reactionColor;
 				nameplate.text = target.name;
 			}
+
 			if (healthbar)
 			{
 				if (targetHitpoints)
@@ -141,6 +144,10 @@ public class Bracket : MonoBehaviour
 
     public void SetPlayerTarget()
     {
-        
+        var player = PlayerStart.ActivePlayer;
+        if (player)
+        {
+            player.GetComponent<Ship>().Target = target;
+        }
     }
 }

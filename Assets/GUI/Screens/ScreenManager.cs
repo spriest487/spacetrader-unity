@@ -18,6 +18,9 @@ public class ScreenManager : MonoBehaviour
         [SerializeField]
         private GameObject overlay;
 
+        [SerializeField]
+        private bool screenBarVisible;
+
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
@@ -32,6 +35,8 @@ public class ScreenManager : MonoBehaviour
         public HudOverlayState State { get { return state; } }
         public ScreenState ScreenState { get { return screenState; } }
 
+        public bool ScreenBarVisible { get { return screenBarVisible; } }
+
         public void Init()
         {
             if (!overlayInstance)
@@ -39,7 +44,7 @@ public class ScreenManager : MonoBehaviour
                 overlayInstance = (GameObject)Instantiate(overlay);
             }
 
-            if (!barInstance)
+            if (!barInstance && screenBarVisible)
             {
                 //add the screenbar
                 barInstance = (ScreenBar)Instantiate(ScreenManager.Instance.screenBar);

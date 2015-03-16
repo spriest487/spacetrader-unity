@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 [RequireComponent(typeof(Ship))]
@@ -53,7 +54,7 @@ public class PlayerShip : MonoBehaviour
         //see whether we can start a new drag
         if (aimPos.HasValue && Input.GetMouseButton(0) && !inputDragging)
         {
-            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 inputDragging = true;
             }
@@ -169,6 +170,11 @@ public class PlayerShip : MonoBehaviour
         {
             ship.pitch = Input.GetAxis("pitch");
             ship.yaw = Input.GetAxis("yaw");
+        }
+
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+        {
+            ship.Target = null;
         }
         
         //roll is manual only
