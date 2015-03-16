@@ -138,4 +138,9 @@ public class Bracket : MonoBehaviour
 			canvasGroup.alpha = 0;
 		}
 	}
+
+    public void SetPlayerTarget()
+    {
+        
+    }
 }
