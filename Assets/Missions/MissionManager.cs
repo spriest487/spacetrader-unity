@@ -11,6 +11,13 @@ public class MissionManager : MonoBehaviour
         AI
     }
 
+    public enum MissionPhase
+    {
+        Prep,
+        Active,
+        Finished
+    }
+
     [System.Serializable]
     public class ActivePlayerSlot : MissionDefinition.PlayerSlot
     {
@@ -47,7 +54,7 @@ public class MissionManager : MonoBehaviour
     
     [HideInInspector]
     [SerializeField]
-    private bool missionStarted;
+    private MissionPhase phase;
 
     void OnWorldEnd()
     {
