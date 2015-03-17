@@ -10,6 +10,12 @@ public class MissionPrepScreen : MonoBehaviour {
     [SerializeField]
     private Button readyButton;
 
+    [SerializeField]
+    private Transform playerSlotElement;
+
+    [SerializeField]
+    private Transform playerSlotsList;
+
     public MissionDefinition CurrentMission { get { return currentMission; } }
 
     void OnEnable()
@@ -41,4 +47,11 @@ public class MissionPrepScreen : MonoBehaviour {
     {
         readyButton.interactable = true;
     }
+
+    void Start()
+    {
+
+    }
+
+
 }

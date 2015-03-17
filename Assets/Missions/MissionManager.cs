@@ -11,6 +11,14 @@ public class MissionManager : MonoBehaviour
         AI
     }
 
+    public enum MissionPhase
+    {
+        Prep,
+        Active,
+        Finished
+    }
+
+    [System.Serializable]
     public class ActivePlayerSlot : MissionDefinition.PlayerSlot
     {
         [SerializeField]
@@ -28,20 +36,25 @@ public class MissionManager : MonoBehaviour
     {
         [SerializeField]
         private MissionDefinition missionDefinition;
+
+        [SerializeField]
+        private ActivePlayerSlot[] players;
     }
 
 
     [SerializeField]
-    private static MissionManager instance;   
-
-    public static MissionManager Instance { get {return instance; } }
+    private static MissionManager instance;
 
     [SerializeField]
-    private Transform missionPrepScreen;
+    private ActiveMission mission;
 
+    public static MissionManager Instance { get { return instance; } }
+
+    public ActiveMission Mission { get { return mission; } }
+    
     [HideInInspector]
     [SerializeField]
-    private bool missionStarted;
+    private MissionPhase phase;
 
     void OnWorldEnd()
     {
@@ -60,7 +73,23 @@ public class MissionManager : MonoBehaviour
 
     void Start()
     {
-        missionStarted = false;
-        var prepScreen = (Transform)Instantiate(missionPrepScreen);
+        phase = MissionPhase.Prep;
+
+        ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.MissionPrep, ScreenManager.ScreenState.None);
+    }
+
+    void Update()
+    {
+        if (mission.)
+    }
+
+    void BeginMission()
+    {
+        phase = MissionPhase.Active;
+    }
+
+    void EndMission()
+    {
+        phase = MissionPhase.Finished;
     }
 }

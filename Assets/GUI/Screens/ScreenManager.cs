@@ -17,30 +17,41 @@ public class ScreenManager : MonoBehaviour
         
         [SerializeField]
         private GameObject overlay;
-        
+
+        [SerializeField]
+        private bool screenBarVisible;
+
         [HideInInspector]
+        [SerializeField]
         private GameObject overlayInstance;
 
-        public GameObject Overlay
-        {
-            get
-            {
-                if (!overlayInstance)
-                {
-                    overlayInstance = (GameObject) Instantiate(overlay);
+        [HideInInspector]
+        [SerializeField]
+        private ScreenBar barInstance;
 
-                    //add the screenbar
-                    var bar = (ScreenBar) Instantiate(ScreenManager.Instance.screenBar);
-                    bar.transform.position = Vector3.zero;
-                    bar.transform.SetParent(overlayInstance.transform, false);
-                }
-
-                return overlayInstance;
-            }
-        }
+        public GameObject Overlay { get { return overlayInstance; } }
+        public ScreenBar Bar { get { return barInstance; } }
 
         public HudOverlayState State { get { return state; } }
         public ScreenState ScreenState { get { return screenState; } }
+
+        public bool ScreenBarVisible { get { return screenBarVisible; } }
+
+        public void Init()
+        {
+            if (!overlayInstance)
+            {
+                overlayInstance = (GameObject)Instantiate(overlay);
+            }
+
+            if (!barInstance && screenBarVisible)
+            {
+                //add the screenbar
+                barInstance = (ScreenBar)Instantiate(ScreenManager.Instance.screenBar);
+                barInstance.transform.position = Vector3.zero;
+                barInstance.transform.SetParent(overlayInstance.transform, false);
+            }
+        }
     }
 
     public enum ScreenState
@@ -54,7 +65,8 @@ public class ScreenManager : MonoBehaviour
     {
         None,
         MainMenu,
-        Equipment
+        Equipment,
+        MissionPrep,
     }    
 
     [SerializeField]
@@ -121,11 +133,13 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var overlay in hudOverlays)
         {
+            overlay.Init();
+
             var overlayActive = HudOverlay == overlay.State;
             var screenActive = State == overlay.ScreenState
                 || overlay.ScreenState == ScreenState.None;
 
-            overlay.Overlay.SetActive(overlayActive && screenActive);
+            overlay.Overlay.gameObject.SetActive(overlayActive && screenActive);
         }
     }
 
@@ -133,7 +147,16 @@ public class ScreenManager : MonoBehaviour
     {
         if (HudOverlay == state)
         {
-            HudOverlay = HudOverlayState.None;
+            /*if there's an active mission, and the player is not spawned, the default state 
+             is the mission prep screen instead */
+            if (MissionManager.Instance != null && !PlayerStart.ActivePlayer)
+            {
+                HudOverlay = HudOverlayState.MissionPrep;
+            }
+            else
+            {
+                HudOverlay = HudOverlayState.None;
+            }
         }
         else
         {
