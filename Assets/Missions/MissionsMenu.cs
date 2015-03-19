@@ -5,9 +5,6 @@ using System.Collections;
 public class MissionsMenu : MonoBehaviour
 {
     [SerializeField]
-    private MissionDefinition[] missions;
-
-    [SerializeField]
     private Transform missionsLayout;
 
     [SerializeField]
@@ -29,8 +26,6 @@ public class MissionsMenu : MonoBehaviour
     private string emptySceneName;
     
     private MissionDefinition selectedMission;
-
-    public MissionDefinition[] Missions { get { return missions; } set { missions = value;  } }
 
     public void SelectMission(MissionDefinition mission)
     {
@@ -65,8 +60,7 @@ public class MissionsMenu : MonoBehaviour
 
     void Start()
     {
-        if (missions == null
-            || !missionsLayout
+        if (!missionsLayout
             || !missionElementPrefab
             || !selectedMissionDescription
             || !selectedMissionTitle)
@@ -74,7 +68,7 @@ public class MissionsMenu : MonoBehaviour
             throw new UnityException("invalid configuration for missions menu");
         }
 
-        foreach (var mission in missions)
+        foreach (var mission in MissionManager.Instance.Missions)
         {
             var missionItem = (MissionMenuItem) Instantiate(missionElementPrefab);
             missionItem.transform.SetParent(missionsLayout, false);

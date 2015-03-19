@@ -48,7 +48,7 @@ GameObject:
   - 114: {fileID: 11416938}
   - 114: {fileID: 11490308}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Ready Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,9 +202,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Ready
-
-'
+  m_Text: Ready
 --- !u!114 &11463274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -259,7 +257,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11416938}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11497364}
+        m_MethodName: Ready
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &11497364
@@ -275,6 +285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentMission: {fileID: 0}
   readyButton: {fileID: 11490308}
+  playerSlotElement: {fileID: 0}
+  playerSlotsList: {fileID: 0}
 --- !u!222 &22217390
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -310,7 +322,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0

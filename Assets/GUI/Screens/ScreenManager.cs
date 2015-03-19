@@ -67,7 +67,14 @@ public class ScreenManager : MonoBehaviour
         MainMenu,
         Equipment,
         MissionPrep,
-    }    
+    }
+
+    public enum MissionPhase
+    {
+        Briefing,
+        Active,
+        Finished
+    }
 
     [SerializeField]
     private ScreenState state;

@@ -87,6 +87,53 @@ NavMeshSettings:
     cellSize: .166666657
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &850154327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 850154329}
+  - 114: {fileID: 850154328}
+  m_Layer: 0
+  m_Name: Mission Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &850154328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 850154327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a72b2a1a1d55042bbc1d1a3ecbecbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missions:
+  - {fileID: 11400000, guid: 9f97b8f8439bd054ea64e1f9cce9b56a, type: 2}
+  - {fileID: 11400000, guid: ea6584153281baf40ae2cf2480f8fdee, type: 2}
+  mission:
+    missionDefinition: {fileID: 0}
+    players: []
+    Completed: 0
+  phase: 0
+--- !u!4 &850154329
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 850154327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 369.94928, y: 139.798676, z: 10.5612488}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
 --- !u!1001 &1507147730
 Prefab:
   m_ObjectHideFlags: 0
@@ -456,11 +503,51 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 112176, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 112178, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435986, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 189.889191
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435986, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 379.778381
+      objectReference: {fileID: 0}
+    - target: {fileID: 22486290, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 189.889191
+      objectReference: {fileID: 0}
+    - target: {fileID: 22486290, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 379.778381
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435992, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 189.889191
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435992, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 379.778381
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435996, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 189.889191
+      objectReference: {fileID: 0}
+    - target: {fileID: 22435996, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 379.778381
+      objectReference: {fileID: 0}
+    - target: {fileID: 22412182, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 189.889191
+      objectReference: {fileID: 0}
+    - target: {fileID: 22412182, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 379.778381
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}

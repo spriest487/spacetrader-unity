@@ -39,8 +39,12 @@ public class MissionManager : MonoBehaviour
 
         [SerializeField]
         private ActivePlayerSlot[] players;
+
+        public bool Completed = false;
     }
 
+    [SerializeField]
+    private MissionDefinition[] missions;
 
     [SerializeField]
     private static MissionManager instance;
@@ -49,6 +53,8 @@ public class MissionManager : MonoBehaviour
     private ActiveMission mission;
 
     public static MissionManager Instance { get { return instance; } }
+
+    public MissionDefinition[] Missions { get { return missions; } }
 
     public ActiveMission Mission { get { return mission; } }
     
@@ -63,7 +69,13 @@ public class MissionManager : MonoBehaviour
 
     void OnEnable()
     {
+        if (instance && instance != this)
+        {
+            Destroy(instance.gameObject);
+        }
+
         instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void OnDisable()
@@ -74,16 +86,17 @@ public class MissionManager : MonoBehaviour
     void Start()
     {
         phase = MissionPhase.Prep;
-
-        ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.MissionPrep, ScreenManager.ScreenState.None);
     }
 
     void Update()
     {
-        if (mission.)
+        if (mission.Completed)
+        {
+            EndMission();
+        }
     }
 
-    void BeginMission()
+    public void BeginMission()
     {
         phase = MissionPhase.Active;
     }

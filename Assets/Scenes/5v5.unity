@@ -114,10 +114,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a72b2a1a1d55042bbc1d1a3ecbecbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  missions: []
   mission:
-    missionDefinition: {fileID: 0}
+    missionDefinition: {fileID: 11400000, guid: 9f97b8f8439bd054ea64e1f9cce9b56a,
+      type: 2}
     players: []
-  missionStarted: 0
+    Completed: 0
+  phase: 0
 --- !u!4 &1045003377
 Transform:
   m_ObjectHideFlags: 0
@@ -209,7 +212,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22413858, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22413858, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -251,9 +254,9 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 22337542, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
-      propertyPath: m_PixelPerfect
-      value: 1
+    - target: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
