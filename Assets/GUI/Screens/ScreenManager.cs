@@ -183,6 +183,16 @@ public class ScreenManager : MonoBehaviour
     void Start()
     {      
         Apply();
+
+        var missionManager = MissionManager.Instance;
+        if (missionManager)
+        {
+            this.hudOverlay = HudOverlayState.MissionPrep;
+        }
+        else
+        {
+            this.hudOverlay = HudOverlayState.None;
+        }
     }
 
     void Update()
