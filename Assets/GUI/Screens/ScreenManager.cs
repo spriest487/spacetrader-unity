@@ -156,7 +156,7 @@ public class ScreenManager : MonoBehaviour
         {
             /*if there's an active mission, and the player is not spawned, the default state 
              is the mission prep screen instead */
-            if (MissionManager.Instance != null && !PlayerStart.ActivePlayer)
+            if (MissionManager.Instance != null && !PlayerShip.LocalPlayer)
             {
                 HudOverlay = HudOverlayState.MissionPrep;
             }
@@ -199,7 +199,7 @@ public class ScreenManager : MonoBehaviour
     {
         bool docked = false;
 
-        var player = PlayerStart.ActivePlayer;
+        var player = PlayerShip.LocalPlayer;
         if (player)
         {
             var moorable = player.GetComponent<Moorable>();

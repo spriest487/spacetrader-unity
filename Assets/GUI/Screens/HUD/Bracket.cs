@@ -55,10 +55,10 @@ public class Bracket : MonoBehaviour
         Targetable playerTargetable = null;
         Ship playerShip = null;
 
-        if (PlayerStart.ActivePlayer)
+        if (PlayerShip.LocalPlayer)
         {
-            playerTargetable = PlayerStart.ActivePlayer.GetComponent<Targetable>();
-            playerShip = PlayerStart.ActivePlayer.GetComponent<Ship>();
+            playerTargetable = PlayerShip.LocalPlayer.GetComponent<Targetable>();
+            playerShip = PlayerShip.LocalPlayer.GetComponent<Ship>();
         }		
 
 		var targetHitpoints = target.GetComponent<Hitpoints>();
@@ -144,7 +144,7 @@ public class Bracket : MonoBehaviour
 
     public void SetPlayerTarget()
     {
-        var player = PlayerStart.ActivePlayer;
+        var player = PlayerShip.LocalPlayer;
         if (player)
         {
             player.GetComponent<Ship>().Target = target;

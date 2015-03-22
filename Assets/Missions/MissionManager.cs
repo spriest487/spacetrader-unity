@@ -40,7 +40,8 @@ public class MissionManager : MonoBehaviour
         [SerializeField]
         private ActivePlayerSlot[] players;
 
-        public bool Completed = false;
+        public MissionDefinition Definition { get { return missionDefinition; } }
+        public ActivePlayerSlot[] Players { get { return players; } }
     }
 
     [SerializeField]
@@ -87,22 +88,24 @@ public class MissionManager : MonoBehaviour
     {
         phase = MissionPhase.Prep;
     }
-
-    void Update()
-    {
-        if (mission.Completed)
-        {
-            EndMission();
-        }
-    }
-
+    
     public void BeginMission()
     {
         phase = MissionPhase.Active;
+
+        foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
+        {
+            listener.SendMessage("OnBeginMission", SendMessageOptions.DontRequireReceiver);
+        }
     }
 
-    void EndMission()
+    public void EndMission()
     {
         phase = MissionPhase.Finished;
+
+        foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
+        {
+            listener.SendMessage("OnEndMission", SendMessageOptions.DontRequireReceiver);
+        }
     }
 }

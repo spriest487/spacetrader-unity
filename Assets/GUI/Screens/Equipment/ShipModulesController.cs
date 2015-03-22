@@ -20,7 +20,7 @@ public class ShipModulesController : MonoBehaviour
 
     void Update()
     {
-        var player = PlayerStart.ActivePlayer;
+        var player = PlayerShip.LocalPlayer;
 
         if (!player)
         {

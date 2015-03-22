@@ -18,8 +18,8 @@ public class Targetable : MonoBehaviour
             }
             else
             {
-                var isPlayer = PlayerStart.ActivePlayer
-                    && PlayerStart.ActivePlayer.gameObject == this.gameObject;
+                var isPlayer = PlayerShip.LocalPlayer
+                    && PlayerShip.LocalPlayer.gameObject == this.gameObject;
 
                 return !isPlayer;
             }

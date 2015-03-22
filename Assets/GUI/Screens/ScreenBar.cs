@@ -19,7 +19,7 @@ public class ScreenBar : MonoBehaviour
     void Update()
     {
         var missionActive = MissionManager.Instance != null;
-        var playerActive = PlayerStart.ActivePlayer != null;
+        var playerActive = PlayerShip.LocalPlayer != null;
 
         foreach (var button in missionOnlyButtons)
         {

@@ -5,10 +5,27 @@ using System.Collections;
 [RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
+    public static PlayerShip LocalPlayer { get; private set; }
+
 	private Ship ship;
     private Moorable moorable;
 
     private bool inputDragging = false;
+
+    public void MakeLocal()
+    {
+        if (LocalPlayer && LocalPlayer != this)
+        {
+            throw new UnityException("there is already an active local player");
+        }
+
+        LocalPlayer = this;
+    }
+
+    public static void ClearLocal()
+    {
+        LocalPlayer = null;
+    }
 
 	private Vector2? FindTouchPos()
 	{
@@ -100,7 +117,7 @@ public class PlayerShip : MonoBehaviour
 
     void OnMoored()
     {
-        if (PlayerStart.ActivePlayer == this)
+        if (LocalPlayer == this)
         {
             ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Docked);
         }
@@ -108,7 +125,7 @@ public class PlayerShip : MonoBehaviour
 
     void OnUnmoored()
     {
-        if (PlayerStart.ActivePlayer == this)
+        if (LocalPlayer == this)
         {
             ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Flight);
         }
@@ -218,6 +235,14 @@ public class PlayerShip : MonoBehaviour
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
 	}
+
+    void OnDestroy()
+    {
+        if (LocalPlayer == this)
+        {
+            ClearLocal();
+        }
+    }
 
 	void OnCollisionEnter(Collision collision)
 	{

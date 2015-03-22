@@ -16,6 +16,6 @@ public class ScreenBarButton : MonoBehaviour
 
     void Update()
     {
-        button.interactable = PlayerStart.ActivePlayer || !requiresPlayer;
+        button.interactable = PlayerShip.LocalPlayer || !requiresPlayer;
     }
 }

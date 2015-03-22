@@ -90,7 +90,7 @@ public class FollowCamera : MonoBehaviour
 
 	void LateUpdate()
 	{
-        var player = PlayerStart.ActivePlayer;
+        var player = PlayerShip.LocalPlayer;
 
         if (player)
         {
@@ -112,8 +112,8 @@ public class FollowCamera : MonoBehaviour
 	}
 
 	void FixedUpdate()
-	{		
-		var player = PlayerStart.ActivePlayer;
+	{
+        var player = PlayerShip.LocalPlayer;
 		if (!player)
 		{
 			return;
