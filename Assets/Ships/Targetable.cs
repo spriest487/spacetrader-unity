@@ -26,5 +26,5 @@ public class Targetable : MonoBehaviour
         }
     }
 
-    public string Faction { get { return faction; } }
+    public string Faction { get { return faction; } set { faction = value; } }
 }

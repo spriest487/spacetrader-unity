@@ -39,6 +39,12 @@ public class TeamSpawner : MonoBehaviour
                     playerShip.MakeLocal();
                     first = false;
                 }
+
+                var targetable = ship.GetComponent<Targetable>();
+                if (targetable)
+                {
+                    targetable.Faction = team.Name;
+                }
             }
         }
     }
