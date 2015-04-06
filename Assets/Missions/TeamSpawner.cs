@@ -14,36 +14,70 @@ public class TeamSpawner : MonoBehaviour
         [SerializeField]
         private Transform[] spawnPoints;
 
+        [HideInInspector]
+        [SerializeField]
+        private Ship[] spawnedShips;
+
         public string Name { get { return name; } }
         public Transform[] SpawnPoints { get { return spawnPoints; } }
+        public Ship[] SpawnedShips { get { return spawnedShips; } }
+
+        public void SpawnAll()
+        {
+            if (spawnedShips != null && spawnedShips.Length != 0)
+            {
+                throw new UnityException("already spawned this team once");
+            }
+
+            spawnedShips = new Ship[spawnPoints.Length];
+
+            for (int spawn = 0; spawn < spawnPoints.Length; ++spawn)
+            {
+                var spawnPoint = spawnPoints[spawn];
+
+                var ship = (Ship)Instantiate(shipPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+
+                var targetable = ship.GetComponent<Targetable>();
+                if (targetable)
+                {
+                    targetable.Faction = Name;
+                }
+
+                spawnedShips[spawn] = ship;
+            }
+        }
     }
 
     [SerializeField]
     private Team[] teams;
 
+    public Team[] Teams { get { return teams; } }
+
     void OnBeginMission()
     {
         var mission = MissionManager.Instance.Mission;
+        
+        foreach (var team in teams)
+        {
+            team.SpawnAll();
+        }
 
         bool first = true;
 
-        foreach (var team in teams)
+        foreach (var team in Teams)
         {
-            foreach (var spawnPoint in team.SpawnPoints)
+            foreach (var ship in team.SpawnedShips)
             {
-                var ship = (Ship) Instantiate(team.shipPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
-
                 if (first)
                 {
-                    var playerShip = ship.gameObject.AddComponent<PlayerShip>();
-                    playerShip.MakeLocal();
+                    var localPlayer = ship.gameObject.AddComponent<PlayerShip>();
+                    localPlayer.MakeLocal();
+
                     first = false;
                 }
-
-                var targetable = ship.GetComponent<Targetable>();
-                if (targetable)
+                else
                 {
-                    targetable.Faction = team.Name;
+                    ship.gameObject.AddComponent<AICaptain>();
                 }
             }
         }

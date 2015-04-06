@@ -53,15 +53,15 @@ public class MissionManager : MonoBehaviour
     [SerializeField]
     private ActiveMission mission;
 
+    [HideInInspector]
+    [SerializeField]
+    private MissionPhase phase; 
+    
     public static MissionManager Instance { get { return instance; } }
 
     public MissionDefinition[] Missions { get { return missions; } }
-
     public ActiveMission Mission { get { return mission; } }
-    
-    [HideInInspector]
-    [SerializeField]
-    private MissionPhase phase;
+    public MissionPhase Phase { get { return phase; } }
 
     void OnWorldEnd()
     {
