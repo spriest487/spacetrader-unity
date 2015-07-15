@@ -9,46 +9,59 @@ public class Hitpoints : MonoBehaviour
     {
         public int current = 1;
         public int max = 1;
+
+        public HitpointValue()
+        {
+        }
+        
+        public HitpointValue(int val)
+        {
+            this.current = this.max = val;
+        }
     }
 
     [Serializable]
     public class ShieldValue : HitpointValue
     {
-        public float weight;
-    }
+        public float weight = 1;
 
-    public ShieldValue[] shieldSectors;
-	public HitpointValue armor;
-
-    public Hitpoints(int shieldSectorCount, int maxArmor, int maxShields)
-    {
-		if (shieldSectorCount < 1)
-		{
-			throw new ArgumentException("Must have at least one sector");
-		}
-
-		armor = new HitpointValue();
-		armor.current = maxArmor;
-		armor.max = maxArmor;
-
-		int shieldPerSector = maxShields / shieldSectorCount;
-
-        shieldSectors = new ShieldValue[shieldSectorCount];  
-        for (int sector = 0; sector < shieldSectorCount; ++sector)
+        public ShieldValue()
         {
-            var shieldValue = new ShieldValue();
-			shieldValue.current = shieldPerSector;
-			shieldValue.max = shieldPerSector;
-			shieldValue.weight = 1;
-            shieldSectors[sector] = shieldValue;
+        }
+
+        public ShieldValue(int val, float weight) : base(val)
+        {
+            this.weight = weight;
         }
     }
 
-    public Hitpoints(int maxArmor, int maxShields):
-		this(1, maxArmor, maxShields)
-    {
-    }
+    [SerializeField]
+    private ShieldValue[] shieldSectors;
 
+    [SerializeField]
+	private HitpointValue armor;
+        
+    public void Reset(int armor, int[] shieldSectors)
+    {
+        this.armor = new HitpointValue(armor);
+
+		this.shieldSectors = new ShieldValue[shieldSectors.Length];
+
+        int shieldTotal = 0;
+        foreach (int sector in shieldSectors) 
+        {
+            shieldTotal += sector;
+        }
+
+        for (int sectorNo = 0; sectorNo < shieldSectors.Length; ++sectorNo)
+        {
+            int sectorVal = shieldSectors[sectorNo];
+            float weight = shieldTotal / (float) sectorVal;
+
+            this.shieldSectors[sectorNo] = new ShieldValue(sectorVal, weight);
+        }
+    }
+    
     public void SetShield(int sector, int value)
     {
 	    var shieldSector = shieldSectors[sector];
@@ -234,7 +247,7 @@ public class Hitpoints : MonoBehaviour
 
 	    return shieldSectors[sector].max;
     }
-
+    
 	void OnTakeDamage(HitDamage damage)
 	{
 		TakeDamageToArmor(damage.Amount);

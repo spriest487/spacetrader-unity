@@ -7,6 +7,9 @@ public class ShipType : ScriptableObject
     private Transform prefab;
 
     [SerializeField]
+    private ShipStats stats;
+
+    [SerializeField]
     private string typeName;
 
     [SerializeField]
@@ -15,14 +18,25 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private int modules;
 
-    public Ship CreateShip()
+    [SerializeField]
+    private int armor;
+
+    [SerializeField]
+    private int[] shieldSectors;
+
+    public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
-        var obj = (Transform) Instantiate(prefab);
+        var obj = (Transform) Instantiate(prefab, position, rotation);
 
         var ship = obj.gameObject.AddComponent<Ship>();
+        ship.Stats = stats;
+
         var loadout = obj.gameObject.AddComponent<ModuleLoadout>();
 
         var moorable = obj.gameObject.AddComponent<Moorable>();
+
+        var hp = obj.gameObject.AddComponent<Hitpoints>();
+        hp.Reset(armor, shieldSectors);
 
         return ship;
     }

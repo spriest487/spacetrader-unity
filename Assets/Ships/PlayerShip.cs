@@ -5,7 +5,24 @@ using System.Collections;
 [RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
-    public static PlayerShip LocalPlayer { get; private set; }
+    private static PlayerShip[] localPlayer;
+
+    public static PlayerShip LocalPlayer
+    {
+        get
+        {
+            if (localPlayer == null)
+            {
+                localPlayer = new PlayerShip[] { FindObjectOfType<PlayerShip>() };
+            }
+
+            return localPlayer[0];
+        }
+        private set
+        {
+            localPlayer = new PlayerShip[] {value};
+        }
+    }
 
 	private Ship ship;
     private Moorable moorable;

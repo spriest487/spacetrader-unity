@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Ship : MonoBehaviour
 {
     [SerializeField]
 	private FormationManager formationManager;
 
     [SerializeField]
-    private SpaceStation dockedIn;
-
-    [SerializeField]
     private ShipStats stats;
 
     [SerializeField]
     private Targetable target;
+
+    [SerializeField]
+    private SpaceStation dockedIn;
 
     [SerializeField]
     private ScalableParticle explosionEffect;
@@ -27,9 +28,13 @@ public class Ship : MonoBehaviour
 	public float roll;
 
 	public Vector3 aim;
-
-    public ShipStats Stats { get { return stats; } }
+    
+    public ShipStats Stats { get { return stats; } set {
+        stats = new ShipStats(value);
+    }}
     public Targetable Target { get { return target; } set { target = value; } }
+
+    private Vector3? bumpForce;
 
 	/**
 	 * Finds the equivalent thrust required for the "from" ship to match
@@ -45,10 +50,45 @@ public class Ship : MonoBehaviour
 		return result;
 	}
 
-	void Start()
+	void Awake()
 	{
-		formationManager = new FormationManager();
+        //default these members in for instances not created in the editor
+        if (formationManager == null)
+        {
+            formationManager = new FormationManager();
+        }
+
+        if (stats == null)
+        {
+            stats = new ShipStats();
+        }        
+   
+        dockedIn = null;
 	}
+
+    private void ApplyBump(Rigidbody rigidbody)
+    {
+        if (!bumpForce.HasValue)
+        {
+            return;
+        }
+
+        float bumpMag2 = bumpForce.Value.sqrMagnitude;
+        float bumpReduction = stats.maxSpeed * Time.deltaTime;
+        bumpReduction *= bumpReduction;
+
+        float reducedBumpMag = Mathf.Max(0, bumpMag2 - bumpReduction);
+        float reductionFactor = reducedBumpMag / bumpMag2;
+
+        bumpForce = bumpForce.Value * reductionFactor;
+
+        rigidbody.AddForce(bumpForce.Value);
+
+        if (bumpForce.Value.sqrMagnitude < bumpReduction)
+        {
+            bumpForce = null;
+        }
+    }
 
     private static Vector3 InputAmountsToRequired(Vector3 input,
         Vector3 localCurrentValue,
@@ -135,12 +175,13 @@ public class Ship : MonoBehaviour
 		formationManager.Update();
 		DebugDrawFollowerPositions();
 
-		if (GetComponent<Rigidbody>())
+        var rigidBody = GetComponent<Rigidbody>();
+        if (rigidBody)
 		{
-            GetComponent<Rigidbody>().drag = 0;
-            GetComponent<Rigidbody>().angularDrag = 0;
-            GetComponent<Rigidbody>().maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
-            GetComponent<Rigidbody>().inertiaTensor = new Vector3(1, 1, 1);
+            rigidBody.drag = 0;
+            rigidBody.angularDrag = 0;
+            rigidBody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+            rigidBody.inertiaTensor = new Vector3(1, 1, 1);
 
             //all movement vals must be within -1..1
             thrust = Mathf.Clamp(thrust, -1, 1);
@@ -152,8 +193,8 @@ public class Ship : MonoBehaviour
 
             var torqueMax = stats.maxTurnSpeed * Mathf.Deg2Rad;
 
-            var localRotation = GetComponent<Rigidbody>().transform.InverseTransformDirection(GetComponent<Rigidbody>().angularVelocity);
-            var localVelocity = GetComponent<Rigidbody>().transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity);
+            var localRotation = rigidBody.transform.InverseTransformDirection(rigidBody.angularVelocity);
+            var localVelocity = rigidBody.transform.InverseTransformDirection(rigidBody.velocity);
 
             var torqueInput = InputAmountsToRequired(new Vector3(pitch, yaw, roll),
                 localRotation,
@@ -162,23 +203,25 @@ public class Ship : MonoBehaviour
                 localVelocity,
                 stats.maxSpeed);           
 
-            GetComponent<Rigidbody>().angularVelocity = DecayRotation(torqueInput,
+            rigidBody.angularVelocity = DecayRotation(torqueInput,
                 localRotation,
                 stats.agility * Mathf.Deg2Rad,
                 torqueMax,
-                GetComponent<Rigidbody>().transform);
-            GetComponent<Rigidbody>().velocity = DecayRotation(forceInput,
+                rigidBody.transform);
+            rigidBody.velocity = DecayRotation(forceInput,
                 localVelocity,
                 stats.thrust,
                 stats.maxSpeed,
-                GetComponent<Rigidbody>().transform);
+                rigidBody.transform);
 
             var force = forceInput.normalized * stats.thrust;
             var torque = torqueInput.normalized * Mathf.Deg2Rad * stats.agility;
 
             /* apply new forces */
-            GetComponent<Rigidbody>().AddRelativeTorque(torque);
-            GetComponent<Rigidbody>().AddRelativeForce(force);
+            rigidBody.AddRelativeTorque(torque);
+            rigidBody.AddRelativeForce(force);
+
+            ApplyBump(rigidBody);
 		}
 	}
 
@@ -186,16 +229,38 @@ public class Ship : MonoBehaviour
 	{
 		//limit speed
 		//float maxCurrentSpeed = stats.maxSpeed - rigidbody.drag;
-		float speed = GetComponent<Rigidbody>().velocity.magnitude;
-		if (speed > stats.maxSpeed)
-		{
-			GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * stats.maxSpeed;
-		}
+        var rigidBody = GetComponent<Rigidbody>();
+        
+        float speed = rigidBody.velocity.magnitude;
+        if (speed > stats.maxSpeed)
+        {
+            rigidBody.velocity = rigidBody.velocity.normalized * stats.maxSpeed;
+        }
 	}
 	
-	void OnCollisionEnter(Collision collision)
+	void OnCollisionStay(Collision collision)
 	{
 		Debug.Log(string.Format("Ship collided with {0} with speed {1} (magnitude {2})", collision.collider.gameObject, collision.relativeVelocity, collision.relativeVelocity.magnitude));
+
+        //a little bump in the opposite direction
+        var rigidbody = GetComponent<Rigidbody>();
+        if (rigidbody)
+        {
+            var bumpPower = collision.relativeVelocity;
+            //bumpPower /= collision.contacts.Length;
+            var bumpPos = collision.collider.ClosestPointOnBounds(transform.position);
+
+            bumpPower *= -1;
+
+            this.bumpForce = bumpPower;
+
+            //rigidbody.AddForceAtPosition(bumpPower, collision.transform.position);
+
+            /*foreach (var contact in collision.contacts)
+            {
+                rigidbody.AddForceAtPosition(bumpPower, contact.point);
+            }*/
+        }
 	}
 	
 	private Vector3 GetFormationPos(int followerId)
@@ -237,7 +302,7 @@ public class Ship : MonoBehaviour
     void OnTakeDamage(HitDamage hd)
     {
         var hp = GetComponent<Hitpoints>();
-        if (hp && hp.armor.current - hd.Amount <= 0)
+        if (hp && hp.GetArmor() - hd.Amount <= 0)
         {
             if (explosionEffect)
             {

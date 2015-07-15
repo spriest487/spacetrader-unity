@@ -146,7 +146,11 @@ public class ScreenManager : MonoBehaviour
             var screenActive = State == overlay.ScreenState
                 || overlay.ScreenState == ScreenState.None;
 
-            overlay.Overlay.gameObject.SetActive(overlayActive && screenActive);
+            var overlayState = overlayActive && screenActive;
+
+            overlay.Overlay.gameObject.SetActive(overlayState);
+
+            overlay.Overlay.SendMessage(overlayState ? "OnScreenActive" : "OnScreenInactive", SendMessageOptions.DontRequireReceiver);
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AICaptain), typeof(Ship))]
 public class WingmanCaptain : MonoBehaviour
@@ -8,19 +8,37 @@ public class WingmanCaptain : MonoBehaviour
 	private const float FORMATION_MATCH_ANGLE = 15f;
 
 	private Ship ship;
+    private Targetable targetable;
 	private AICaptain captain;
+    private ModuleLoadout loadout;
+
+    private Vector3? immediateManeuver;
+    
+    struct PotentialTarget {
+        public int Threat;
+        public Targetable Target;
+    }
 	
 	private Ship FindLeader()
 	{
-		//TODO
-        var leaderObj = PlayerShip.LocalPlayer;
-		var leaderShip = leaderObj.GetComponent<Ship>();
-		if (!leaderShip)
-		{
-			throw new UnityException("Wingman's Leader is not a Ship");
-		}
+        if (PlayerShip.LocalPlayer 
+            && PlayerShip.LocalPlayer.GetComponent<Targetable>()
+            && targetable
+            && PlayerShip.LocalPlayer.GetComponent<Targetable>().Faction == targetable.Faction)
+        {
+            var leaderObj = PlayerShip.LocalPlayer;
+            var leaderShip = leaderObj.GetComponent<Ship>();
+            if (!leaderShip)
+            {
+                throw new UnityException("Wingman's Leader is not a Ship");
+            }
 
-		return leaderShip;
+            return leaderShip;
+        }
+        else
+        {
+            return null;
+        }
 	}
 
 	private void FlyInFormation(Ship leader)
@@ -83,41 +101,164 @@ public class WingmanCaptain : MonoBehaviour
 		captain.throttle = Mathf.Max(catchupThrottle, Ship.EquivalentThrust(ship, leader));
 	}
 
+    private void FollowLeader()
+    {
+        var leader = FindLeader();
+
+        if (!leader)
+        {
+            return;
+        }
+
+        var myPos = GetComponent<Rigidbody>().transform.position;
+        //var leaderBound = leader.rigidbody.ClosestPointOnBounds(transform.position);
+        var leaderPos = leader.GetFormationPos(ship);
+
+        //captain.adjustTarget = leaderPos;
+
+        var distance = (myPos - leaderPos).magnitude;
+        var minFormationDistance = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 1f;
+
+        captain.targetUp = null;
+        captain.adjustTarget = null;
+
+        if (distance < minFormationDistance)
+        {
+            FlyInFormation(leader);
+        }
+        else
+        {
+            captain.destination = leaderPos;
+            captain.throttle = 1;
+        }
+    }
+
+    private void ChaseTarget()
+    {
+        //try to get on their six
+        var TODO_CHASEDIST = 20;
+        var behindTarget = ship.Target.transform.TransformPoint(new Vector3(0, 0, -TODO_CHASEDIST));
+
+        captain.destination = behindTarget;
+        captain.throttle = 1;
+
+        var PANIC_DIST_FACTOR = 10;
+
+        //if we get too close, panic for a little bit and fly away
+        var between = transform.position - ship.Target.transform.position;
+        if (between.sqrMagnitude < captain.CloseDistanceSqr * PANIC_DIST_FACTOR)
+        {
+            var panicVec = Random.onUnitSphere * captain.CloseDistance * PANIC_DIST_FACTOR;
+            immediateManeuver = ship.Target.transform.position + panicVec;
+        }
+
+        if (loadout)
+        {
+            ship.aim = ship.Target.transform.position;
+
+            for (int module = 0; module < loadout.FrontModules.Size; ++module)
+            {
+                loadout.Activate(module);
+            }
+        }
+    }
+
+    private int CalculateThreat(Targetable target)
+    {
+        int threat = 1;
+
+        //invert threat for friendlies
+        if (targetable && target.Faction == targetable.Faction)
+        {
+            threat = -threat;
+        }
+
+        return threat;
+    }
+
+    private void AcquireTarget()
+    {
+        //look for a target
+
+        //todo: use saved local ships list
+        var targetables = FindObjectsOfType(typeof(Targetable)) as Targetable[];
+        if (targetables != null && targetables.Length > 0)
+        {
+            var potentialTargets = new List<PotentialTarget>(targetables.Length);
+
+            foreach (var targetable in targetables)
+            {
+                if (targetable.gameObject == this.gameObject)
+                {
+                    continue;
+                }
+
+                potentialTargets.Add(new PotentialTarget()
+                {
+                    Target = targetable,
+                    Threat = CalculateThreat(targetable)
+                });
+            }
+
+            if (potentialTargets.Count == 0)
+            {
+                ship.Target = null;
+            }
+            else
+            {
+                //highest threat comes first
+                potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
+
+                ship.Target = potentialTargets[0].Target;
+            }
+        }
+        else
+        {
+            ship.Target = null;
+        }
+    }
+
+    void FollowImmediateManeuver()
+    {
+        captain.destination = immediateManeuver.Value;
+        captain.throttle = 1;
+
+        if (captain.IsCloseTo(immediateManeuver.Value))
+        {
+            immediateManeuver = null;
+        }
+    }
+
 	void Start()
 	{
 		ship = GetComponent<Ship>();
 		captain = GetComponent<AICaptain>();
+        targetable = GetComponent<Targetable>();
+        loadout = GetComponent<ModuleLoadout>();
 	}
 
-	void Update() {
-		var leader = FindLeader();
+	void Update()
+    {
+        if (immediateManeuver.HasValue)
+        {
+            FollowImmediateManeuver();
+        }
+        else
+        {
+            if (!ship.Target)
+            {
+                AcquireTarget();
+            }
 
-		if (!leader)
-		{
-			return;
-		}
-		
-		var myPos = GetComponent<Rigidbody>().transform.position;
-		//var leaderBound = leader.rigidbody.ClosestPointOnBounds(transform.position);
-		var leaderPos = leader.GetFormationPos(ship);
-
-		//captain.adjustTarget = leaderPos;
-
-		var distance = (myPos - leaderPos).magnitude;
-		var minFormationDistance = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 1f;
-
-		captain.targetUp = null;
-		captain.adjustTarget = null;
-
-		if (distance < minFormationDistance)
-		{
-			FlyInFormation(leader);
-		}
-		else
-		{
-			captain.destination = leaderPos;
-			captain.throttle = 1;
-		}
+            if (ship.Target)
+            {
+                ChaseTarget();
+            }
+            else
+            {
+                FollowLeader();
+            }
+        }
 
 		/*Debug.Log(string.Format("Min distance for formation flying is {0}, current distance {1}",
 			minFormationDistance,

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class TeamSpawner : MonoBehaviour
 {
@@ -8,8 +8,6 @@ public class TeamSpawner : MonoBehaviour
     {
         [SerializeField]
         private string name;
-
-        public Ship shipPrefab;
 
         [SerializeField]
         private Transform[] spawnPoints;
@@ -24,18 +22,46 @@ public class TeamSpawner : MonoBehaviour
 
         public void SpawnAll()
         {
+            var mission = MissionManager.Instance.Mission;
+
             if (spawnedShips != null && spawnedShips.Length != 0)
             {
                 throw new UnityException("already spawned this team once");
             }
 
-            spawnedShips = new Ship[spawnPoints.Length];
-
-            for (int spawn = 0; spawn < spawnPoints.Length; ++spawn)
+            /* find the team in the mission definition that matches the team name of 
+             * this team in the spawner 
+             */
+            MissionDefinition.TeamDefinition missionTeam = null;
+            foreach (var team in mission.Definition.Teams)
             {
-                var spawnPoint = spawnPoints[spawn];
+                if (team.Name == Name)
+                {
+                    missionTeam = team;
+                    break;
+                }
+            }
 
-                var ship = (Ship)Instantiate(shipPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+            if (missionTeam == null)
+            {
+                Debug.LogError("mission had no matching team for name " +Name);
+                return;
+            }
+
+            var spawned = new List<Ship>();
+
+            /* loop around slots, spawning players at each slot in turn until there are
+             * no more players 
+             */
+            var slotsCount = missionTeam.Slots.Length;
+            var spawnsCount = spawnPoints.Length;
+
+            for (int slotIndex = 0; slotIndex < slotsCount; ++slotIndex)
+            {
+                var slot = missionTeam.Slots[slotIndex];
+                var spawnPoint = spawnPoints[slotIndex % spawnsCount];
+
+                var ship = slot.ShipType.CreateShip(spawnPoint.transform.position, spawnPoint.transform.rotation);
 
                 var targetable = ship.GetComponent<Targetable>();
                 if (targetable)
@@ -43,14 +69,19 @@ public class TeamSpawner : MonoBehaviour
                     targetable.Faction = Name;
                 }
 
-                spawnedShips[spawn] = ship;
+                spawned.Add(ship);
             }
+
+            spawnedShips = spawned.ToArray();
         }
     }
 
     [SerializeField]
     private Team[] teams;
 
+    /// <summary>
+    /// spawn point list for each team
+    /// </summary>
     public Team[] Teams { get { return teams; } }
 
     void OnBeginMission()
@@ -66,6 +97,7 @@ public class TeamSpawner : MonoBehaviour
 
         foreach (var team in Teams)
         {
+            var shipNum = 1;
             foreach (var ship in team.SpawnedShips)
             {
                 if (first)
@@ -78,7 +110,10 @@ public class TeamSpawner : MonoBehaviour
                 else
                 {
                     ship.gameObject.AddComponent<AICaptain>();
+                    ship.gameObject.AddComponent<WingmanCaptain>();
                 }
+
+                ship.name = "Team " + team.Name + " ship #" + shipNum++;
             }
         }
     }

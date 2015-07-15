@@ -2,19 +2,26 @@
 
 public class MissionDefinition : ScriptableObject
 {
-    
-
     [System.Serializable]
     public class PlayerSlot
     {
         [SerializeField]
-        private string id;
-
-        [SerializeField]
         private ShipType shipType;
 
-        public string ID { get { return id; } }
         public ShipType ShipType { get { return shipType; } }
+    }
+
+    [System.Serializable]
+    public class TeamDefinition
+    {
+        [SerializeField]
+        private string name;
+
+        [SerializeField]
+        private PlayerSlot[] slots;
+
+        public string Name { get { return name; } }
+        public PlayerSlot[] Slots { get { return slots; } }
     }
 
     [SerializeField]
@@ -28,13 +35,13 @@ public class MissionDefinition : ScriptableObject
     private string description;
 
     [SerializeField]
-    private PlayerSlot[] playerSlots;
+    private TeamDefinition[] teams;
 
     public string SceneName { get { return sceneName; } }
     public string MissionName { get { return missionName; } }
     public string Description { get { return description; } }
 
-    public PlayerSlot[] PlayerSlots { get { return playerSlots; } }
+    public TeamDefinition[] Teams { get { return teams; } }
 
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Mission Definition")]

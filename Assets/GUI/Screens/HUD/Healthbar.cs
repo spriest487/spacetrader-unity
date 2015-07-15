@@ -57,7 +57,7 @@ public class Healthbar : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Tried to update a healthbar with no ship ref");
+            Debug.Log("Tried to update a healthbar with no ship ref");
         }
     }
 }

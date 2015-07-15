@@ -11,7 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b9b35c56399ef4faa1890285f37814, type: 3}
   m_Name: Jovum Patroller
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 405804, guid: 0b0851bea097c0b40ba32a9237ffba85, type: 2}
+  stats:
+    agility: 45
+    thrust: 10
+    maxTurnSpeed: 90
+    maxSpeed: 20
   typeName: Jovum Patroller
   hardpoints: 2
   modules: 2
+  armor: 20
+  shieldSectors: 2800000028000000

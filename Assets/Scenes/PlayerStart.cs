@@ -2,18 +2,21 @@
 using System.Collections;
 
 public class PlayerStart : MonoBehaviour {
-    public PlayerShip playerPrefab;
+    [SerializeField]
+    private Ship playerPrefab;
     
     void Start()
     {
-        if (!PlayerShip.LocalPlayer)
+        if (PlayerShip.LocalPlayer)
         {
-            var player = (PlayerShip)Instantiate(playerPrefab, transform.position, transform.rotation);
-            player.MakeLocal();
+            Debug.LogError("there's already a player spawned");
         }
         else
         {
-            Debug.LogWarning("playerstart tried to spawn a player, but there was already one active");
+            var playerObj = (Ship)Instantiate(playerPrefab, transform.position, transform.rotation);
+            var player = playerObj.gameObject.AddComponent<PlayerShip>();
+
+            player.MakeLocal();
         }
     }
 }
