@@ -1506,10 +1506,6 @@ GameObject:
   - 4: {fileID: 405804}
   - 64: {fileID: 6405620}
   - 54: {fileID: 5405620}
-  - 114: {fileID: 11405684}
-  - 114: {fileID: 11405682}
-  - 114: {fileID: 11405680}
-  - 148: {fileID: 14895950}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3155,62 +3151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 5
---- !u!114 &11405680
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89116cee0a7f6c04e889f84f14173108, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shieldSectors:
-  - current: 1
-    max: 1
-    weight: 0
-  armor:
-    current: 0
-    max: 0
---- !u!114 &11405682
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02737b6f59e574eb760004b4dcef28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  faction: player
-  hideBracket: 0
---- !u!114 &11405684
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4f7579953002b84c96da93a35b2e482, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moored: 0
-  spaceStation: {fileID: 0}
---- !u!148 &14895950
-NetworkView:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105804}
-  m_Enabled: 1
-  m_StateSynchronization: 1
-  m_Observed: {fileID: 405804}
-  m_ViewID:
-    m_ID: 0
-    m_Type: 0
 --- !u!198 &19805620
 ParticleSystem:
   m_ObjectHideFlags: 1

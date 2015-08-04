@@ -61,13 +61,7 @@ public class TeamSpawner : MonoBehaviour
                 var slot = missionTeam.Slots[slotIndex];
                 var spawnPoint = spawnPoints[slotIndex % spawnsCount];
 
-                var ship = slot.ShipType.CreateShip(spawnPoint.transform.position, spawnPoint.transform.rotation);
-
-                var targetable = ship.GetComponent<Targetable>();
-                if (targetable)
-                {
-                    targetable.Faction = Name;
-                }
+                var ship = slot.SpawnShip(spawnPoint.position, spawnPoint.rotation, missionTeam);
 
                 spawned.Add(ship);
             }

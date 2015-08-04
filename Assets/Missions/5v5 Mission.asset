@@ -17,9 +17,9 @@ MonoBehaviour:
   teams:
   - name: Red
     slots:
-    - id: 
-      shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
   - name: Blue
     slots:
-    - id: 
-      shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}

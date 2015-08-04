@@ -1,14 +1,25 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(ModuleLoadout))]
-public class ModulePreset : MonoBehaviour
+public class ModulePreset : ScriptableObject
 {
-    public string[] frontModules;
-
-    void Start()
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Module Preset")]
+    public static void CreateModulePreset()
     {
-        var moduleLoadout = GetComponent<ModuleLoadout>();
+        ScriptableObjectUtility.CreateAsset<ModulePreset>();
+    }
+#endif
 
+    [SerializeField]
+    private string[] frontModules;
+
+    public string[] FrontModules
+    {
+        get { return frontModules; }
+    }
+
+    public void Apply(ModuleLoadout moduleLoadout)
+    {
         moduleLoadout.FrontModules.Resize(frontModules.Length);
         for (int module = 0; module < frontModules.Length; ++module)
         {

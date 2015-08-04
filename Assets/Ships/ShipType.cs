@@ -24,6 +24,9 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private int[] shieldSectors;
 
+    [SerializeField]
+    private bool moorable;
+
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
         var obj = (Transform) Instantiate(prefab, position, rotation);
@@ -33,7 +36,10 @@ public class ShipType : ScriptableObject
 
         var loadout = obj.gameObject.AddComponent<ModuleLoadout>();
 
-        var moorable = obj.gameObject.AddComponent<Moorable>();
+        if (moorable)
+        {
+            obj.gameObject.AddComponent<Moorable>();
+        }
 
         var hp = obj.gameObject.AddComponent<Hitpoints>();
         hp.Reset(armor, shieldSectors);

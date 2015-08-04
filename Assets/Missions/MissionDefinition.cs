@@ -2,13 +2,41 @@
 
 public class MissionDefinition : ScriptableObject
 {
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Mission Definition")]
+    public static void CreateMissionDefiniton()
+    {
+        ScriptableObjectUtility.CreateAsset<MissionDefinition>();
+    }
+#endif
+
     [System.Serializable]
     public class PlayerSlot
     {
         [SerializeField]
         private ShipType shipType;
 
+        [SerializeField]
+        private ModulePreset modulePreset;
+
         public ShipType ShipType { get { return shipType; } }
+        public ModulePreset ModulePreset { get { return modulePreset; } }
+
+        public Ship SpawnShip(Vector3 pos, Quaternion rot, TeamDefinition team)
+        {
+            var ship = ShipType.CreateShip(pos, rot);
+
+            var targetable = ship.gameObject.AddComponent<Targetable>();
+            targetable.Faction = team.Name;
+
+            var modules = ship.GetComponent<ModuleLoadout>();
+            if (modulePreset && modules)
+            {
+                modulePreset.Apply(modules);
+            }
+
+            return ship;
+        }
     }
 
     [System.Serializable]
@@ -42,14 +70,7 @@ public class MissionDefinition : ScriptableObject
     public string Description { get { return description; } }
 
     public TeamDefinition[] Teams { get { return teams; } }
-
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Mission Definition")]
-    public static void CreateMissionDefiniton() {
-        ScriptableObjectUtility.CreateAsset<MissionDefinition>();
-    }
-#endif
-
+    
     public void LoadMission()
     {
         Application.LoadLevel(SceneName);
