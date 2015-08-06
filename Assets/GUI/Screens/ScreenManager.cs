@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
-    public static ScreenManager Instance { get; private set; }
-
     [Serializable]
     public class HudOverlayMapping
     {
@@ -41,7 +39,7 @@ public class ScreenManager : MonoBehaviour
         {
             if (!overlayInstance)
             {
-                overlayInstance = (GameObject)Instantiate(overlay);
+                overlayInstance = Instantiate(overlay);
             }
 
             if (!barInstance && screenBarVisible)
@@ -88,6 +86,11 @@ public class ScreenManager : MonoBehaviour
     [SerializeField]
     private ScreenBar screenBar;
 
+    [SerializeField]
+    private bool menuState;
+
+    public static ScreenManager Instance { get; private set; }
+
     public ScreenState State
     {
         get
@@ -115,10 +118,7 @@ public class ScreenManager : MonoBehaviour
             hudOverlay = value;
             Apply();
         }
-    }
-
-    [SerializeField]
-    private bool menuState;
+    }    
 
     public bool MenuState
     {

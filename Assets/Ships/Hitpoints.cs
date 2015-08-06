@@ -40,6 +40,9 @@ public class Hitpoints : MonoBehaviour
 
     [SerializeField]
 	private HitpointValue armor;
+
+    [SerializeField]
+    private float lastHealTick;
         
     public void Reset(int armor, int[] shieldSectors)
     {
@@ -60,6 +63,8 @@ public class Hitpoints : MonoBehaviour
 
             this.shieldSectors[sectorNo] = new ShieldValue(sectorVal, weight);
         }
+
+        lastHealTick = 0;
     }
     
     public void SetShield(int sector, int value)
@@ -83,28 +88,17 @@ public class Hitpoints : MonoBehaviour
     }
 
     public void TakeDamage(int amount) {
-        var sectorCount = shieldSectors.Length;
-	    var amountPerSector = Math.Max(0, amount / sectorCount);
-	    
-        var damage = new List<int>();
-        int sectorIt = 0;
-        for (sectorIt = 0; sectorIt < sectorCount; ++sectorIt)
+        if (amount == 0)
         {
-            damage.Add(amountPerSector);
+            return;
         }
 
-	    int remainder = amount % sectorCount;
-	
-        sectorIt = 0;
-	    while (remainder > 0) {
-		    ++damage[sectorIt];
-            --remainder;
-
-		    sectorIt = (int)((sectorIt + 1) % sectorCount);
-	    }
-
-	    for (sectorIt = 0; sectorIt < damage.Count; ++sectorIt) {
-		    TakeDamageInSector(damage[sectorIt], sectorIt);
+        //for now... uniform distribution across shields before any armor damage
+        var sectorCount = shieldSectors.Length;
+	    var amountPerSector = Math.Max(1, amount / sectorCount);
+        	
+	    for (int sector = 0; sector < sectorCount; ++sector) {
+		    TakeDamageInSector(amountPerSector, sector);
 	    }
     }
 
@@ -250,6 +244,23 @@ public class Hitpoints : MonoBehaviour
     
 	void OnTakeDamage(HitDamage damage)
 	{
-		TakeDamageToArmor(damage.Amount);
+		TakeDamage(damage.Amount);
 	}
+
+    void Update()
+    {
+        const float HEAL_TICK_RATE = 1.0f;
+        
+        lastHealTick += Time.deltaTime;
+
+        if (lastHealTick > HEAL_TICK_RATE)
+        {
+            lastHealTick -= HEAL_TICK_RATE;
+
+            var healPerShield = 1;
+            var healAmount = shieldSectors.Length * healPerShield;
+
+            HealShield(healAmount);
+        }
+    }
 }

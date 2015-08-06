@@ -75,8 +75,8 @@ public class ModuleConfiguration : MonoBehaviour
             ));
 
             definitionsList.Add(ModuleDefinition.Create("Training Laser",
-                GunBehaviour.Create(0, bullet, bulletMuzzleFlash),
-                1.0f
+                GunBehaviour.Create(1, bullet, bulletMuzzleFlash),
+                0.2f
             ));
 
             definitionsArray = definitionsList.ToArray();

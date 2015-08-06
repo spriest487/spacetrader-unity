@@ -20,5 +20,6 @@ MonoBehaviour:
   typeName: Jovum Patroller
   hardpoints: 2
   modules: 2
-  armor: 20
+  armor: 200000
   shieldSectors: 2800000028000000
+  moorable: 1
