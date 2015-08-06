@@ -5,24 +5,38 @@ using System.Collections;
 [RequireComponent(typeof(CanvasGroup))]
 public class Bracket : MonoBehaviour
 {
-	public Targetable target;
+	[SerializeField] Targetable target;
 
-	public Text nameplate;
-	public Image[] childImages; 
-	public Healthbar healthbar;
+	[SerializeField] Text nameplate;
+    [SerializeField] Image[] childImages; 
+	[SerializeField] Healthbar healthbar;
 
-	private CanvasGroup canvasGroup;
-	private RectTransform rectTransform;
-	
-	//owner bracket manager
-	public BracketManager bracketManager;
+    [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] RectTransform rectTransform;
 
-    public int defaultWidth = 64;
-    public int defaultHeight = 64;
-    public float selectedExpand = 1.25f;
+    //owner bracket manager
+    [SerializeField] BracketManager bracketManager;
 
+    private Canvas canvas;
+
+    public Targetable Target { get { return target; } }
+
+    public static Bracket CreateFromPrefab(Bracket prefab,
+        BracketManager manager,
+        Targetable target)
+    {
+        var newBracket = Instantiate(prefab);
+                
+        newBracket.bracketManager = manager;
+        newBracket.name = "Bracket for " + target.name;
+        newBracket.target = target;
+
+        return newBracket;
+    }
+    
 	void Start()
 	{
+        canvas = GetComponentInParent<Canvas>();
 		canvasGroup = GetComponent<CanvasGroup>();
 		rectTransform = GetComponent<RectTransform>();
 
@@ -64,82 +78,104 @@ public class Bracket : MonoBehaviour
 		var targetHitpoints = target.GetComponent<Hitpoints>();
 		
 		var pos = Camera.main.WorldToScreenPoint(target.transform.position);
-		if (pos.z > 0)
-		{
-			transform.position = new Vector3(pos.x, pos.y, transform.position.z);
-			canvasGroup.interactable = true;
-			canvasGroup.blocksRaycasts = true;
-			canvasGroup.alpha = 1;
-			
-			//todo: calculate screen size of object
-			var width = defaultWidth;
-			var height = defaultHeight;
 
-			bool isTarget = playerShip && playerShip.Target == target;
-			bool sameFaction = playerTargetable && string.Equals(playerTargetable.Faction, target.Faction);
+        var canvasXform = canvas.GetComponent<RectTransform>();
+        var x = Mathf.Clamp(pos.x, 0, canvasXform.rect.width);
+        var y = Mathf.Clamp(pos.y, 0, canvasXform.rect.height);
 
-            if (isTarget)
+        /*if it's behind us...
+            -things above and behind stick to the top of the screen
+            -things below and behind stick to the bottom of the screen 
+        */
+        if (pos.z < 0)
+        {
+            var halfway = canvasXform.rect.height * 0.5f;
+            if (y < halfway)
             {
-                width = (int)(width * selectedExpand);
-                height = (int)(height * selectedExpand);
+                y = canvasXform.rect.height;
             }
+            else
+            {
+                y = 0;
+            }
+
+            x = canvasXform.rect.width - x;
+        }
+
+        transform.position = new Vector3(x, y, transform.position.z);
+		canvasGroup.interactable = true;
+		canvasGroup.blocksRaycasts = true;
+		canvasGroup.alpha = 1;
 			
-			Color reactionColor;
-			if (bracketManager)
-			{
-				reactionColor = sameFaction ? bracketManager.friendlyColor : bracketManager.hostileColor;
-			}
-			else
-			{
-				reactionColor = Color.white;
-			}
+		//todo: calculate screen size of object
+		var width = bracketManager.DefaultWidth;
+		var height = bracketManager.DefaultHeight;
 
-			if (childImages != null)
+		bool isTarget = playerShip && playerShip.Target == target;
+		bool sameFaction = playerTargetable && string.Equals(playerTargetable.Faction, target.Faction);
+
+        if (isTarget)
+        {
+            width = (int)(width * bracketManager.SelectedExpand);
+            height = (int)(height * bracketManager.SelectedExpand);
+        }
+			
+		Color reactionColor;
+		if (bracketManager)
+		{
+			reactionColor = sameFaction ? bracketManager.FriendlyColor : bracketManager.HostileColor;
+		}
+		else
+		{
+			reactionColor = Color.white;
+		}
+
+		if (childImages != null)
+		{
+			foreach (var childImage in childImages)
 			{
-				foreach (var childImage in childImages)
+				childImage.color = reactionColor;
+
+				if (isTarget)
 				{
-					childImage.color = reactionColor;
-
-					if (isTarget)
-					{
-						childImage.sprite = bracketManager.selectedCorner;
-					}
-					else
-					{
-						childImage.sprite = bracketManager.corner;
-					}
-				}
-			}
-
-			if (nameplate)
-			{
-                nameplate.gameObject.SetActive(isTarget);
-				nameplate.color = reactionColor;
-				nameplate.text = target.name;
-			}
-
-			if (healthbar)
-			{
-				if (targetHitpoints)
-				{
-					healthbar.gameObject.SetActive(true);
-					healthbar.ship = targetHitpoints;
+					childImage.sprite = bracketManager.SelectedCorner;
 				}
 				else
 				{
-					healthbar.gameObject.SetActive(false);
+					childImage.sprite = bracketManager.Corner;
 				}
 			}
-			
-			rectTransform.sizeDelta = new Vector2(width, height);
 		}
+
+		if (nameplate)
+		{
+            nameplate.gameObject.SetActive(isTarget);
+			nameplate.color = reactionColor;
+			nameplate.text = target.name;
+		}
+
+		if (healthbar)
+		{
+			if (targetHitpoints)
+			{
+				healthbar.gameObject.SetActive(true);
+				healthbar.ship = targetHitpoints;
+			}
+			else
+			{
+				healthbar.gameObject.SetActive(false);
+			}
+		}
+			
+		rectTransform.sizeDelta = new Vector2(width, height);
+		/*}
 		else
 		{
 			//not visible or interactible
 			canvasGroup.interactable = false;
 			canvasGroup.blocksRaycasts = false;
 			canvasGroup.alpha = 0;
-		}
+		}*/
 	}
 
     public void SetPlayerTarget()

@@ -247,19 +247,10 @@ public class Ship : MonoBehaviour
         if (rigidbody)
         {
             var bumpPower = collision.relativeVelocity;
-            //bumpPower /= collision.contacts.Length;
-            var bumpPos = collision.collider.ClosestPointOnBounds(transform.position);
 
             bumpPower *= -1;
 
             this.bumpForce = bumpPower;
-
-            //rigidbody.AddForceAtPosition(bumpPower, collision.transform.position);
-
-            /*foreach (var contact in collision.contacts)
-            {
-                rigidbody.AddForceAtPosition(bumpPower, contact.point);
-            }*/
         }
 	}
 	

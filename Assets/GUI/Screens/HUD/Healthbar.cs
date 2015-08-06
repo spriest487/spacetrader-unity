@@ -25,7 +25,7 @@ public class Healthbar : MonoBehaviour
     void Start()
     {
         this.animator = GetComponent<Animator>();
-        healthbarStatehash = Animator.StringToHash(stateName);
+        healthbarStatehash = Animator.StringToHash(stateName); 
     }
 
     void Update()

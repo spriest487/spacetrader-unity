@@ -33,9 +33,7 @@ public class ShipType : ScriptableObject
 
         var ship = obj.gameObject.AddComponent<Ship>();
         ship.Stats = stats;
-
-        var loadout = obj.gameObject.AddComponent<ModuleLoadout>();
-
+        
         if (moorable)
         {
             obj.gameObject.AddComponent<Moorable>();

@@ -4,26 +4,43 @@ using System;
 
 public class BracketManager : MonoBehaviour
 {
-	public Bracket bracket;
+    [SerializeField] Bracket bracket;
 
-    public Color friendlyColor;
-    public Color hostileColor;
-    public Color unselectedTint;
+    [SerializeField] Color friendlyColor;
+    [SerializeField] Color hostileColor;
+    [SerializeField] Color unselectedTint;
 
-	public Sprite corner;
-	public Sprite selectedCorner;
+    [SerializeField] Sprite corner;
+    [SerializeField] Sprite selectedCorner;
 
-	private Dictionary<int, Bracket> brackets;
+    [SerializeField] int defaultWidth = 64;
+    [SerializeField] int defaultHeight = 64;
+    [SerializeField] float selectedExpand = 1.25f;
 
-	void LateUpdate()
+    [HideInInspector, SerializeField] Bracket[] brackets;
+
+    public Color FriendlyColor { get { return friendlyColor; } }
+    public Color HostileColor { get { return hostileColor; } }
+    public Sprite Corner { get { return corner; } }
+    public Sprite SelectedCorner { get { return selectedCorner; } }
+
+    public int DefaultWidth { get { return defaultWidth; } }
+    public int DefaultHeight { get { return defaultHeight; } }
+    public float SelectedExpand { get { return selectedExpand; } }
+
+    void LateUpdate()
 	{
-		if (brackets == null)
-		{
-			brackets = new Dictionary<int, Bracket>();
-		}
-
         var ships = FindObjectsOfType(typeof(Targetable)) as Targetable[];
 
+        var existingBrackets = new Dictionary<int, Bracket>();
+        if (brackets != null)
+        {
+            foreach (var bracket in brackets)
+            {
+                existingBrackets.Add(bracket.Target.GetInstanceID(), bracket);
+            }
+        }
+        
 		var newBrackets = new Dictionary<int, Bracket>();
 		if (ships != null)
 		{
@@ -37,7 +54,7 @@ public class BracketManager : MonoBehaviour
                 }
 
 				Bracket existingBracket;
-				brackets.TryGetValue(shipId, out existingBracket);
+                existingBrackets.TryGetValue(shipId, out existingBracket);
 
 				if (existingBracket)
 				{
@@ -45,25 +62,23 @@ public class BracketManager : MonoBehaviour
 				}
 				else
 				{
-					var newBracket = (Bracket) Instantiate(bracket);
-					newBracket.transform.SetParent(transform, false);
-					newBracket.bracketManager = this;
-					newBracket.name = "Bracket for " + ship.name;
-					newBracket.target = ship;
+                    var newBracket = Bracket.CreateFromPrefab(bracket, this, ship);
+                    newBracket.transform.SetParent(transform, false);
 					newBrackets.Add(shipId, newBracket);
 				}
 			}
 		}
 
 		//remove all brackets that don't appear in the new list
-		foreach (var bracket in brackets)
+		foreach (var bracket in existingBrackets)
 		{
 			if (!newBrackets.ContainsKey(bracket.Key))
 			{
-				Bracket.Destroy(bracket.Value.gameObject);
+                Destroy(bracket.Value.gameObject);
 			}
 		}
         
-		brackets = newBrackets;
+		brackets = new Bracket[newBrackets.Count];
+        newBrackets.Values.CopyTo(brackets, 0);
 	}
 }

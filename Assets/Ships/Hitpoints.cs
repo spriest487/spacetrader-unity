@@ -121,12 +121,12 @@ public class Hitpoints : MonoBehaviour
 	    armor.current = Math.Max(armor.max, armor.current + amount);
     }
 
-    private bool IsSectorHealed(List<int> healed, int sectorIt)
+    private bool IsSectorHealed(int[] healed, int sectorIt)
     {
         return shieldSectors[sectorIt].current + healed[sectorIt] >= shieldSectors[sectorIt].max;
     }
 
-    private bool IsFullyHealed(List<int> healed)
+    private bool IsFullyHealed(int[] healed)
     {
         bool result = true;
 
@@ -138,7 +138,7 @@ public class Hitpoints : MonoBehaviour
         return result;
     }
 
-    private void RecurseHealShield(int previousRemainder, List<int> healed, int amount)
+    private void RecurseHealShield(int previousRemainder, int[] healed, int amount)
     {
         float weightTotal = 0;
 		foreach (var sector in shieldSectors) {
@@ -177,10 +177,10 @@ public class Hitpoints : MonoBehaviour
     }
 
     public void HealShield(int amount) {
-	    var healed = new List<int>(shieldSectors.Length);
-        foreach (var shieldSector in shieldSectors)
+        var healed = new int[shieldSectors.Length];
+        for (int sector = 0; sector < shieldSectors.Length; ++sector)
         {
-            healed.Add(0);
+            healed[sector] = 0;
         }
 
 	    RecurseHealShield(0, healed, amount);
