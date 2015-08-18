@@ -31,10 +31,18 @@ public class ModuleLoadout : MonoBehaviour
 
 		if (!module.Empty)
 		{
-            var hardpoint = Hardpoints[index % Hardpoints.Length];
+            WeaponHardpoint hardpoint;
+            if (Hardpoints.Length == 0)
+            {
+                hardpoint = null;                
+            }
+            else
+            {
+                hardpoint = Hardpoints[index % Hardpoints.Length];
+            }
 
             module.Activate(ship, hardpoint);
-		}
+        }
 		else
 		{
 			throw new System.ArgumentException("tried to activate an empty module slot");

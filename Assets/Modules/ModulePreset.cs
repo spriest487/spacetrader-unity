@@ -11,12 +11,13 @@ public class ModulePreset : ScriptableObject
 #endif
 
     [SerializeField]
-    private string[] frontModules;
+    string[] frontModules;
 
-    public string[] FrontModules
-    {
-        get { return frontModules; }
-    }
+    [SerializeField]
+    string[] cargoItems;
+
+    public string[] FrontModules { get { return frontModules; } }
+    public string[] CargoItems { get { return cargoItems; } }
 
     public void Apply(ModuleLoadout moduleLoadout)
     {
@@ -24,6 +25,13 @@ public class ModulePreset : ScriptableObject
         for (int module = 0; module < frontModules.Length; ++module)
         {
             moduleLoadout.FrontModules.Equip(module, frontModules[module]);
+        }
+
+        var cargo = moduleLoadout.GetComponent<CargoHold>();
+
+        if (cargo)
+        {
+            cargo.Items = cargoItems;
         }
     }
 }
