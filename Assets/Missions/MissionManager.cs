@@ -40,9 +40,9 @@ public class MissionManager : MonoBehaviour
         [SerializeField]
         private ActivePlayerSlot[] players;
 
-        public MissionObjective[] FindObjectives(string team)
+        public static MissionObjective[] FindObjectives(string team)
         {
-            var allObjectives = GameObject.FindGameObjectsWithTag("Mission Objective");
+            var allObjectives = GameObject.FindGameObjectsWithTag("MissionObjective");
 
             var teamCount = 0;
             var teamObjectives = new MissionObjective[allObjectives.Length];

@@ -26,8 +26,8 @@ MonoBehaviour:
   - name: Blue
     slots:
     - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
-      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      modulePreset: {fileID: 0}
     - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
-      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      modulePreset: {fileID: 0}
     - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
-      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      modulePreset: {fileID: 0}
