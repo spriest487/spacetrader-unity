@@ -17,7 +17,8 @@ MonoBehaviour:
     thrust: 1
     maxTurnSpeed: 1
     maxSpeed: 1
-  armor: 40
+  armor: 10
   shieldSectors: 
   cargoSize: 20
   moorable: 0
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}

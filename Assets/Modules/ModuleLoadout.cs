@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(Ship))]
 public class ModuleLoadout : MonoBehaviour
 {
     [SerializeField]
     private ModuleGroup frontModules;
+
+    private WeaponHardpoint[] hardpoints;
     
     private Ship ship;
 
-    public WeaponHardpoint[] Hardpoints { get; private set; }
+    public WeaponHardpoint[] Hardpoints
+    {
+        get { return hardpoints; }
+        private set { hardpoints = value; }
+    }
     
     public ModuleGroup FrontModules
     { 

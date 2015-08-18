@@ -17,10 +17,8 @@ MonoBehaviour:
     thrust: 10
     maxTurnSpeed: 90
     maxSpeed: 20
-  typeName: Jovum Patroller
-  hardpoints: 2
-  modules: 2
   armor: 200000
   shieldSectors: 2800000028000000
   cargoSize: 10
   moorable: 1
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}

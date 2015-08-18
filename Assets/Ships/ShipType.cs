@@ -29,17 +29,21 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private bool moorable;
 
+    [SerializeField]
+    private ScalableParticle explosionEffect;
+
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
         var obj = (Transform) Instantiate(prefab, position, rotation);
 
         var ship = obj.gameObject.AddComponent<Ship>();
         ship.Stats = stats;
-        
+        ship.ExplosionEffect = explosionEffect;
+
         if (moorable)
         {
             obj.gameObject.AddComponent<Moorable>();
-        }
+        }   
 
         var cargo = obj.gameObject.AddComponent<CargoHold>();
 

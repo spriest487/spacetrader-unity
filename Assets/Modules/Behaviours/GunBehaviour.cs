@@ -45,7 +45,7 @@ public class GunBehaviour : ModuleBehaviour
 		if (muzzleFlashType)
 		{
 			var flash = (Transform) Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
-            flash.SetParent(firedTransform, false);
+            flash.SetParent(firedTransform, true);
 		}
 	}
 }

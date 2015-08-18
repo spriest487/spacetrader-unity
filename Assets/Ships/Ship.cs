@@ -12,10 +12,7 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private Targetable target;
-
-    [SerializeField]
-    private SpaceStation dockedIn;
-
+    
     [SerializeField]
     private ScalableParticle explosionEffect;
 	
@@ -33,6 +30,12 @@ public class Ship : MonoBehaviour
         stats = new ShipStats(value);
     }}
     public Targetable Target { get { return target; } set { target = value; } }
+
+    public ScalableParticle ExplosionEffect
+    {
+        get { return explosionEffect; }
+        set { explosionEffect = value; }
+    }
 
     private Vector3? bumpForce;
 
@@ -61,9 +64,7 @@ public class Ship : MonoBehaviour
         if (stats == null)
         {
             stats = new ShipStats();
-        }        
-   
-        dockedIn = null;
+        }
 	}
 
     private void ApplyBump(Rigidbody rigidbody)
