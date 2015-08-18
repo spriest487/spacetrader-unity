@@ -13,7 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: 5v5
   missionName: Combat Test
-  description: Combat test mission with 5 players vs 5 AIs
+  description: 'Combat test mission with 5 players vs 5 AIs.
+
+
+    With up to 4 allied ships, take on a squadron of enemies. Destroy all enemies
+    to win the mission.'
   teams:
   - name: Red
     slots:
@@ -21,5 +25,9 @@ MonoBehaviour:
       modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
   - name: Blue
     slots:
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+    - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+    - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+    - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
       modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}

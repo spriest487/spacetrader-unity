@@ -29,9 +29,9 @@ public class MissionDefinition : ScriptableObject
             var targetable = ship.gameObject.AddComponent<Targetable>();
             targetable.Faction = team.Name;
 
-            var modules = ship.GetComponent<ModuleLoadout>();
-            if (modulePreset && modules)
+            if (modulePreset)
             {
+                var modules = ship.gameObject.AddComponent<ModuleLoadout>();
                 modulePreset.Apply(modules);
             }
 

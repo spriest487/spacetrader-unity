@@ -22,4 +22,5 @@ MonoBehaviour:
   modules: 2
   armor: 200000
   shieldSectors: 2800000028000000
+  cargoSize: 10
   moorable: 1

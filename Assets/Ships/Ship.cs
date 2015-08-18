@@ -167,7 +167,17 @@ public class Ship : MonoBehaviour
 			}
 		}
 
-        return currentTransform.TransformDirection(decayedRot);
+        var result = currentTransform.TransformDirection(decayedRot);
+
+        for (int component = 0; component < 3; ++component)
+        {
+            if (float.IsNaN(result[component]))
+            {
+                result[component] = 0;
+            }
+        }
+
+        return result;       
 	}
 			
 	void FixedUpdate()

@@ -3,26 +3,28 @@ using System.Collections;
 
 public class ShipType : ScriptableObject
 {
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Ship Type")]
+    public static void Create()
+    {
+        ScriptableObjectUtility.CreateAsset<ShipType>();
+    }
+#endif
+
     [SerializeField]
     private Transform prefab;
 
     [SerializeField]
     private ShipStats stats;
-
-    [SerializeField]
-    private string typeName;
-
-    [SerializeField]
-    private int hardpoints;
-
-    [SerializeField]
-    private int modules;
-
+    
     [SerializeField]
     private int armor;
 
     [SerializeField]
     private int[] shieldSectors;
+
+    [SerializeField]
+    private int cargoSize;
 
     [SerializeField]
     private bool moorable;
@@ -39,17 +41,11 @@ public class ShipType : ScriptableObject
             obj.gameObject.AddComponent<Moorable>();
         }
 
+        var cargo = obj.gameObject.AddComponent<CargoHold>();
+
         var hp = obj.gameObject.AddComponent<Hitpoints>();
         hp.Reset(armor, shieldSectors);
 
         return ship;
     }
-
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Ship Type")]
-    public static void Create()
-    {
-        ScriptableObjectUtility.CreateAsset<ShipType>();
-    }
-#endif
 }

@@ -4,7 +4,10 @@ using UnityEngine.UI;
 public class MissionPrepScreen : MonoBehaviour
 {
     [SerializeField]
-    private Transform slotItemPrefab;
+    private MissionTeamSlotItem slotItemPrefab;
+
+    [SerializeField]
+    private MissionTeamDividerItem teamDividerPrefab;
 
     [SerializeField]
     private Transform slotList;
@@ -15,11 +18,23 @@ public class MissionPrepScreen : MonoBehaviour
     [SerializeField]
     private Text missionTitleText;
 
+    private Button readyButton;
+    private Text readyText;
+    
     public void Ready()
     {
-        MissionManager.Instance.BeginMission();
+        if (MissionManager.Instance.Phase == MissionManager.MissionPhase.Prep)
+        {
+            MissionManager.Instance.BeginMission();
+        }
 
         ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Flight);
+    }
+
+    void Start()
+    {
+        readyButton = transform.Find("Ready Button").GetComponent<Button>();
+        readyText = readyButton.GetComponentInChildren<Text>();
     }
 
     void OnScreenActive()
@@ -29,18 +44,42 @@ public class MissionPrepScreen : MonoBehaviour
         if (mission != null)
         {
             missionDescriptionText.text = mission.Definition.Description;
-            missionTitleText.text = mission.Definition.MissionName;
+            missionTitleText.text = mission.Definition.MissionName.ToUpper();
 
-            for (int slot = slotList.childCount - 1; slot >= 0; --slot)
+            foreach (Transform listChild in slotList.transform)
             {
-                Destroy(slotList.GetChild(slot).gameObject);
+                Destroy(listChild.gameObject);
             }
 
-            foreach (var slot in mission.Players)
+            var teamCount = mission.Definition.Teams.Length;
+            for (int teamIndex = 0; teamIndex < teamCount; ++teamIndex)
             {
-                var slotObj = (Transform) Instantiate(slotItemPrefab);
-                slotObj.SetParent(slotList, false);
+                var team = mission.Definition.Teams[teamIndex];
+
+                var dividerObj = Instantiate(teamDividerPrefab);
+                dividerObj.transform.SetParent(slotList, false);
+                dividerObj.SetTeam(teamIndex);
+
+                var slotCount = team.Slots.Length;
+                for (int slotIndex = 0; slotIndex < slotCount; ++slotIndex)
+                {
+                    var slotObj = Instantiate(slotItemPrefab);
+                    slotObj.transform.SetParent(slotList, false);
+                    slotObj.SetSlot(teamIndex, slotIndex);
+                }
             }
+        }
+    }
+    
+    void Update()
+    {
+        if (MissionManager.Instance.Phase == MissionManager.MissionPhase.Prep)
+        {
+            readyText.text = "Ready";
+        }
+        else
+        {
+            readyText.text = "Close";
         }
     }
 }

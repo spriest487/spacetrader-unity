@@ -8,13 +8,15 @@ public class GunBehaviour : ModuleBehaviour
     [SerializeField]
 	private Transform muzzleFlashType;
 
+    [SerializeField]
+    [HideInInspector]
 	private int damagePerShot;
 
 	public static GunBehaviour Create(int damagePerShot,
 		Transform bullet,
 		Transform muzzleFlash)
 	{
-        GunBehaviour result = ScriptableObject.CreateInstance<GunBehaviour>();
+        GunBehaviour result = CreateInstance<GunBehaviour>();
         result.damagePerShot = damagePerShot;
         result.bulletType = bullet;
         result.muzzleFlashType = muzzleFlash;
@@ -23,9 +25,11 @@ public class GunBehaviour : ModuleBehaviour
 
 	public override void Activate(Ship activator, WeaponHardpoint hardpoint)
 	{
-		var aimRot = Quaternion.LookRotation((activator.aim - hardpoint.transform.position).normalized);
+        var firedTransform = hardpoint ? hardpoint.transform : activator.transform;
 
-		var bulletInstance = (Transform) GameObject.Instantiate(bulletType, hardpoint.transform.position, aimRot);
+        var aimRot = Quaternion.LookRotation((activator.aim - firedTransform.position).normalized);
+
+		var bulletInstance = (Transform) Instantiate(bulletType, firedTransform.position, aimRot);
 		var bulletBehaviour = bulletInstance.GetComponent<Bullet>();
 		if (bulletBehaviour)
 		{
@@ -40,8 +44,8 @@ public class GunBehaviour : ModuleBehaviour
 
 		if (muzzleFlashType)
 		{
-			var flash = (Transform) GameObject.Instantiate(muzzleFlashType, hardpoint.transform.position, hardpoint.transform.rotation);
-			flash.parent = hardpoint.transform;
+			var flash = (Transform) Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
+            flash.SetParent(firedTransform, false);
 		}
 	}
 }

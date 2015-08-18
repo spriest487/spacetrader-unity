@@ -95,11 +95,19 @@ public class Hitpoints : MonoBehaviour
 
         //for now... uniform distribution across shields before any armor damage
         var sectorCount = shieldSectors.Length;
-	    var amountPerSector = Math.Max(1, amount / sectorCount);
-        	
-	    for (int sector = 0; sector < sectorCount; ++sector) {
-		    TakeDamageInSector(amountPerSector, sector);
-	    }
+        if (sectorCount == 0)
+        {
+            TakeDamageToArmor(amount);
+        }
+        else
+        {
+            var amountPerSector = Math.Max(1, amount / sectorCount);
+
+            for (int sector = 0; sector < sectorCount; ++sector)
+            {
+                TakeDamageInSector(amountPerSector, sector);
+            }
+        }
     }
 
     public void TakeDamageInSector(int amount, int sector) {
