@@ -11,11 +11,21 @@ public class MissionObjective : MonoBehaviour
     [SerializeField]
     private string description;
 
+    public string[] Teams
+    {
+        get { return teams; }
+        set { teams = value; }
+    }
+
     public bool Complete
     {
         get { return complete; }
         set { complete = value; }
     }
-    public string[] Teams { get { return teams; } }
-    public string Description { get { return description; } }
+
+    public string Description
+    {
+        get { return description; }
+        set{ description = value; }
+    }
 }

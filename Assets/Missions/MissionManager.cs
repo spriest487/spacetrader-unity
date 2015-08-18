@@ -34,6 +34,8 @@ public class MissionManager : MonoBehaviour
     [System.Serializable]
     public class ActiveMission
     {
+        public const string MISSION_TAG = "MissionObjective";
+
         [SerializeField]
         private MissionDefinition missionDefinition;
 
@@ -42,7 +44,7 @@ public class MissionManager : MonoBehaviour
 
         public static MissionObjective[] FindObjectives(string team)
         {
-            var allObjectives = GameObject.FindGameObjectsWithTag("MissionObjective");
+            var allObjectives = GameObject.FindGameObjectsWithTag(MISSION_TAG);
 
             var teamCount = 0;
             var teamObjectives = new MissionObjective[allObjectives.Length];
