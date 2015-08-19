@@ -149,8 +149,9 @@ public class Bracket : MonoBehaviour
 		if (nameplate)
 		{
             nameplate.gameObject.SetActive(isTarget);
-			nameplate.color = reactionColor;
-			nameplate.text = target.name;
+			nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, 1);
+
+			nameplate.text = target.name.ToUpper();
 		}
 
 		if (healthbar)

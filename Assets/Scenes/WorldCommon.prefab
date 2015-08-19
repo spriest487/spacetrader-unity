@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   definitionsArray: []
-  bullet: {fileID: 400004, guid: 7fe2c02bc819f154289f7d27a5c41926, type: 2}
+  bullet: {fileID: 11400000, guid: 7fe2c02bc819f154289f7d27a5c41926, type: 2}
   bulletMuzzleFlash: {fileID: 400004, guid: 1e701cb88f09ad9409e9525b5939a121, type: 2}
 --- !u!114 &11443488
 MonoBehaviour:
@@ -375,7 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignoreTranslation: 0
-  offset: {x: 0, y: 4, z: -10}
+  offset: {x: 0, y: 2, z: -10}
   thrustOffset: .5
   rotationOffset: .0500000007
   shakeMax: .100000001

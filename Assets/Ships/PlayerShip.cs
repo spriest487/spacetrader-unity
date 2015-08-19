@@ -5,6 +5,9 @@ using System.Collections;
 [RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
+    private float? targetingClickStart = null;
+    private const float STICKY_TARGET_CLICK_DELAY = 0.1f;
+
     private static PlayerShip[] localPlayer;
 
     public static PlayerShip LocalPlayer
@@ -108,30 +111,7 @@ public class PlayerShip : MonoBehaviour
 		ship.yaw = aimYaw;
 		ship.pitch = aimPitch;
 	}
-
-    private void TargetAimPoint(Vector3 aimPoint)
-    {
-        //var screenAim = Camera.main.WorldToScreenPoint(ship.aim);
-        var ray = Camera.main.ScreenPointToRay(aimPoint);
-
-        bool targeted = false;
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            var targetable = hit.collider.GetComponent<Targetable>();
-            if (targetable)
-            {
-                ship.Target = targetable;
-                targeted = true;
-            }
-        }
-
-        if (!targeted)
-        {
-            ship.Target = null;
-        }
-    }
-
+    
     void OnMoored()
     {
         if (LocalPlayer == this)
@@ -245,7 +225,7 @@ public class PlayerShip : MonoBehaviour
         }
     }
 	
-	void FixedUpdate ()
+	void FixedUpdate()
 	{
         if (!HasControl())
         {
@@ -267,9 +247,18 @@ public class PlayerShip : MonoBehaviour
             ship.yaw = Input.GetAxis("yaw");
         }
 
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetMouseButtonDown(0))
+        {
+            targetingClickStart = Time.time;
+        }
+
+        if (Input.GetMouseButtonUp(0) 
+            && !EventSystem.current.IsPointerOverGameObject()
+            && (!targetingClickStart.HasValue 
+                || targetingClickStart.Value + STICKY_TARGET_CLICK_DELAY > Time.time))
         {
             ship.Target = null;
+            targetingClickStart = null;
         }
         
         //roll is manual only
@@ -300,11 +289,6 @@ public class PlayerShip : MonoBehaviour
             {
                 moorable.RequestMooring();
             }
-        }
-
-        if (aimPoint.HasValue && Input.GetButtonDown("target"))
-        {
-            TargetAimPoint(aimPoint.Value);
         }
 	}
 
