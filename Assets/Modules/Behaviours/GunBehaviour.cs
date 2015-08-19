@@ -25,25 +25,29 @@ public class GunBehaviour : ModuleBehaviour
 
 	public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
 	{
-        var firedTransform = hardpoint ? hardpoint.transform : activator.transform;
+        var aimingAt = module.Aim;
+        if (hardpoint.CanAimAt(aimingAt))
+        {
+            var firedTransform = hardpoint ? hardpoint.transform : activator.transform;
 
-        var aimRot = Quaternion.LookRotation((module.Aim - firedTransform.position).normalized);
+            var aimRot = Quaternion.LookRotation((module.Aim - firedTransform.position).normalized);
 
-		var bulletInstance = (Bullet) Instantiate(bulletType, firedTransform.position, aimRot);
+            var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
 
-        bulletInstance.owner = activator.gameObject;
-        bulletInstance.damage = damagePerShot;
+            bulletInstance.owner = activator.gameObject;
+            bulletInstance.damage = damagePerShot;
 
-		if (activator.GetComponent<Rigidbody>())
-		{
-            //bulletInstance.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
-		}
-        
-		if (muzzleFlashType)
-		{
-			var flash = (Transform) Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
-            flash.SetParent(firedTransform, true);
-		}
+            if (activator.GetComponent<Rigidbody>())
+            {
+                bulletInstance.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
+            }
+
+            if (muzzleFlashType)
+            {
+                var flash = (Transform)Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
+                flash.SetParent(firedTransform, true);
+            }
+        }        
 	}
     
     public override Vector3? PredictTarget(Ship activator, WeaponHardpoint hardpoint, Targetable target)

@@ -2790,6 +2790,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd7baf1691ad5814cb088be946e49dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arc: 35
 --- !u!114 &11405622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2801,6 +2802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd7baf1691ad5814cb088be946e49dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arc: 35
 --- !u!114 &11405624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -49229,6 +49231,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: arc
+      value: 35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
