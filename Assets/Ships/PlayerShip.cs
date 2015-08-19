@@ -109,10 +109,10 @@ public class PlayerShip : MonoBehaviour
 		ship.pitch = aimPitch;
 	}
 
-    private void TargetAimPoint()
+    private void TargetAimPoint(Vector3 aimPoint)
     {
-        var screenAim = Camera.main.WorldToScreenPoint(ship.aim);
-        var ray = Camera.main.ScreenPointToRay(screenAim);
+        //var screenAim = Camera.main.WorldToScreenPoint(ship.aim);
+        var ray = Camera.main.ScreenPointToRay(aimPoint);
 
         bool targeted = false;
         RaycastHit hit;
@@ -158,6 +158,92 @@ public class PlayerShip : MonoBehaviour
             return true;
         }
     }
+
+    private bool AutoaimSnapToPredictor(Vector3 mousePos, ModuleStatus module, WeaponHardpoint hardpoint)
+    {
+        if (!ship.Target)
+        {
+            return false;
+        }
+
+        /* mouse/touch auto-aim implementation
+           calculate predictor pos for this module and convert it to screen - if it's
+           within the snap distance, point this module directly at the predictor instead */
+        const float AUTOAIM_SNAP_DIST = 30;
+        const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
+
+        var behavior = module.Definition.Behaviour;
+        var predictedPos = behavior.PredictTarget(ship, hardpoint, ship.Target);
+        if (predictedPos.HasValue)
+        {
+            var screenPredicted = Camera.main.WorldToScreenPoint(predictedPos.Value);
+            screenPredicted.z = mousePos.z;
+
+            var predictedToActualDifference = screenPredicted - mousePos;
+
+            if (predictedToActualDifference.sqrMagnitude < AUTOAIM_SNAP_DIST_SQR)
+            {
+                module.Aim = predictedPos.Value;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void CalculateMouseAim(Vector3? aimPoint)
+    {
+        var loadout = GetComponent<ModuleLoadout>();
+        if (!loadout)
+        {
+            return;
+        }
+
+        for (int moduleIndex = 0; moduleIndex < loadout.FrontModules.Size; ++moduleIndex)
+        {
+            var module = loadout.FrontModules[moduleIndex];
+            var hardpoint = loadout.FindHardpoint(moduleIndex);
+
+            if (aimPoint.HasValue && Camera.main)
+            {
+                if (!AutoaimSnapToPredictor(aimPoint.Value, module, hardpoint))
+                {
+                    Vector3 mouseAim;
+
+                    Vector3 mousePos = new Vector3(aimPoint.Value.x, aimPoint.Value.y, 1000);
+
+                    var mouseRay = Camera.main.ScreenPointToRay(mousePos);
+
+                    Vector3? hitSomething = null;
+                    RaycastHit[] rayHits = Physics.RaycastAll(mouseRay);
+
+                    foreach (var rayHit in rayHits)
+                    {
+                        if (rayHit.collider != GetComponent<Collider>())
+                        {
+                            hitSomething = rayHit.point;
+                            break;
+                        }
+                    }
+
+                    if (!hitSomething.HasValue)
+                    {
+                        mouseAim = mouseRay.origin + mouseRay.direction * 1000;
+                    }
+                    else
+                    {
+                        mouseAim = hitSomething.Value;
+                    }
+
+                    module.Aim = mouseAim;
+                }
+            }
+            else
+            {
+                module.Aim = ship.transform.position + ship.transform.forward * 1000;
+            }
+        }
+    }
 	
 	void FixedUpdate ()
 	{
@@ -167,34 +253,9 @@ public class PlayerShip : MonoBehaviour
         }
 
         var aimPoint = FindAimPoint();
+
         UpdateDrag(aimPoint);
-
-        if (aimPoint.HasValue && Camera.main)
-		{
-            Vector3 mousePos = new Vector3(aimPoint.Value.x, aimPoint.Value.y, 1000);
-			var mouseRay = Camera.main.ScreenPointToRay(mousePos);
-
-            bool hitSomething = false;
-			RaycastHit[] rayHits = Physics.RaycastAll(mouseRay);
-            
-            foreach (var rayHit in rayHits)
-            {
-                if (rayHit.collider != GetComponent<Collider>())
-                {
-                    ship.aim = rayHit.point;
-                    hitSomething = true;
-                    break;
-                }                    
-            }
-            if (!hitSomething)
-            {
-                ship.aim = mouseRay.origin + mouseRay.direction * 1000;
-            }
-		}
-        else
-        {
-            ship.aim = transform.position + transform.forward * 1000;
-        }
+        CalculateMouseAim(aimPoint);
 
         if (inputDragging && aimPoint.HasValue)
         {
@@ -241,9 +302,9 @@ public class PlayerShip : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("target"))
+        if (aimPoint.HasValue && Input.GetButtonDown("target"))
         {
-            TargetAimPoint();
+            TargetAimPoint(aimPoint.Value);
         }
 	}
 

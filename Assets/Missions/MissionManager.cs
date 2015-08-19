@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
 
 public class MissionManager : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class MissionManager : MonoBehaviour
         Finished
     }
 
-    [System.Serializable]
+    [Serializable]
     public class ActivePlayerSlot : MissionDefinition.PlayerSlot
     {
         [SerializeField]
@@ -31,7 +31,7 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class ActiveMission
     {
         public const string MISSION_TAG = "MissionObjective";
@@ -41,6 +41,9 @@ public class MissionManager : MonoBehaviour
 
         [SerializeField]
         private ActivePlayerSlot[] players;
+
+        [SerializeField]
+        private string[] winningTeams;
 
         public static MissionObjective[] FindObjectives(string team)
         {
@@ -73,6 +76,12 @@ public class MissionManager : MonoBehaviour
 
         public MissionDefinition Definition { get { return missionDefinition; } }
         public ActivePlayerSlot[] Players { get { return players; } }
+
+        public string[] WinningTeams
+        {
+            get { return winningTeams; }
+            set { winningTeams = (string[])value.Clone(); }
+        }
     }
 
     [SerializeField]
@@ -115,6 +124,42 @@ public class MissionManager : MonoBehaviour
         instance = null;
     }
 
+    void Update()
+    {
+        if (phase == MissionPhase.Active)
+        {
+            var winners = new string[mission.Definition.Teams.Length];
+            int winnerCount = 0;
+
+            foreach (var team in mission.Definition.Teams)
+            {
+                var objectives = ActiveMission.FindObjectives(team.Name);
+
+                bool allComplete = true;
+                foreach (var objective in objectives)
+                {
+                    if (!objective.Complete)
+                    {
+                        allComplete = false;
+                        break;
+                    }
+                }
+
+                if (allComplete)
+                {
+                    winners[winnerCount] = team.Name;
+                    winnerCount++;
+                }
+            }
+
+            if (winnerCount > 0)
+            {
+                Array.Resize(ref winners, winnerCount);
+                EndMission(winners);               
+            }
+        }
+    }
+
     void Start()
     {
         phase = MissionPhase.Prep;
@@ -130,9 +175,10 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    public void EndMission()
+    public void EndMission(string[] winningTeams)
     {
         phase = MissionPhase.Finished;
+        mission.WinningTeams = winningTeams;
 
         foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
         {

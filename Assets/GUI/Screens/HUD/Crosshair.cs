@@ -38,40 +38,46 @@ public class Crosshair : MonoBehaviour
 		var ship = player.GetComponent<Ship>();
         var loadout = player.GetComponent<ModuleLoadout>();
 
-		if (!ship)
+        if (!ship || !loadout)
 		{
 			return;
 		}
 
-		DrawCrosshair(ship.aim, 1);
+        var moduleCount = loadout.FrontModules.Size;
+        foreach (var module in loadout.FrontModules)
+        {
+            DrawCrosshair(module.Aim, 1);
+        }
 
 		int layerMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
-
-        Vector3[] aimPoints;
-        if (loadout)
+                        
+        for (var moduleIndex = 0; moduleIndex < moduleCount; ++moduleIndex)
         {
-            aimPoints = new Vector3[ loadout.Hardpoints.Length ];
-            for (int hardpoint = 0; hardpoint < loadout.Hardpoints.Length; ++hardpoint)
+            var module = loadout.FrontModules[moduleIndex];
+
+            Vector3 aimFromPoint;
+            if (loadout.Hardpoints != null && loadout.Hardpoints.Length > 0)
             {
-                aimPoints[hardpoint] = loadout.Hardpoints[hardpoint].transform.position;
+                var hardpointIndex = moduleIndex & loadout.Hardpoints.Length;
+                aimFromPoint = loadout.Hardpoints[hardpointIndex].transform.position;
             }
-        }
-        else
-        {
-            aimPoints = new Vector3[] { player.transform.position };
-        }
-
-        foreach (var aimPoint in aimPoints)
-        {
-            var between = ship.aim - aimPoint;
+            else
+            {
+                aimFromPoint = ship.transform.position;
+            }
+            
+            var between = module.Aim - aimFromPoint;
 
             RaycastHit rayHit;
-            if (Physics.Raycast(aimPoint, between.normalized, out rayHit, between.magnitude, layerMask))
+            if (Physics.Raycast(aimFromPoint, between.normalized, out rayHit, between.magnitude, layerMask))
             {
                 if (!player.transform.IsChildOf(rayHit.transform))
                 {
                     DrawCrosshair(rayHit.point, 0.5f);
                 }
+            }
+            else {
+                DrawCrosshair(module.Aim, 1.0f);
             }
         }
 	}

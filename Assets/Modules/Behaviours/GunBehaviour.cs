@@ -3,7 +3,7 @@
 public class GunBehaviour : ModuleBehaviour
 {
     [SerializeField]
-	private Transform bulletType;
+	private Bullet bulletType;
 
     [SerializeField]
 	private Transform muzzleFlashType;
@@ -13,7 +13,7 @@ public class GunBehaviour : ModuleBehaviour
 	private int damagePerShot;
 
 	public static GunBehaviour Create(int damagePerShot,
-		Transform bullet,
+		Bullet bullet,
 		Transform muzzleFlash)
 	{
         GunBehaviour result = CreateInstance<GunBehaviour>();
@@ -23,29 +23,70 @@ public class GunBehaviour : ModuleBehaviour
         return result;
 	}
 
-	public override void Activate(Ship activator, WeaponHardpoint hardpoint)
+	public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
 	{
         var firedTransform = hardpoint ? hardpoint.transform : activator.transform;
 
-        var aimRot = Quaternion.LookRotation((activator.aim - firedTransform.position).normalized);
+        var aimRot = Quaternion.LookRotation((module.Aim - firedTransform.position).normalized);
 
-		var bulletInstance = (Transform) Instantiate(bulletType, firedTransform.position, aimRot);
-		var bulletBehaviour = bulletInstance.GetComponent<Bullet>();
-		if (bulletBehaviour)
+		var bulletInstance = (Bullet) Instantiate(bulletType, firedTransform.position, aimRot);
+
+        bulletInstance.owner = activator.gameObject;
+        bulletInstance.damage = damagePerShot;
+
+		if (activator.GetComponent<Rigidbody>())
 		{
-			bulletBehaviour.owner = activator.gameObject;
-			bulletBehaviour.damage = damagePerShot;
-
-			if (activator.GetComponent<Rigidbody>())
-			{
-				bulletBehaviour.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
-			}
+            //bulletInstance.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
 		}
-
+        
 		if (muzzleFlashType)
 		{
 			var flash = (Transform) Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
             flash.SetParent(firedTransform, true);
 		}
 	}
+    
+    public override Vector3? PredictTarget(Ship activator, WeaponHardpoint hardpoint, Targetable target)
+    {
+        Vector3 speedDiff;
+        var targetBody = target.GetComponent<Rigidbody>();
+        var activatorBody = activator.GetComponent<Rigidbody>();
+
+        if (bulletType.applyBaseVelocity)
+        {
+            if (targetBody && activatorBody)
+            {
+                speedDiff = targetBody.velocity - activatorBody.velocity;
+            }
+            else if (activatorBody)
+            {
+                speedDiff = -activatorBody.velocity;
+            }
+            else
+            {
+                speedDiff = Vector3.zero;
+            }
+        }
+        else
+        {
+            if (targetBody)
+            {
+                speedDiff = targetBody.velocity;
+            }
+            else
+            {
+                speedDiff = Vector3.zero;
+            }
+        }
+
+        float distToTarget = (target.transform.position - activator.transform.position).magnitude;
+        float timeToHit = distToTarget / bulletType.velocity;
+
+        speedDiff *= timeToHit;
+
+        var targetPos = target.transform.position;
+        targetPos += speedDiff;
+
+        return targetPos;
+    }
 }

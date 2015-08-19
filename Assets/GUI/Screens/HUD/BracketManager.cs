@@ -81,4 +81,11 @@ public class BracketManager : MonoBehaviour
 		brackets = new Bracket[newBrackets.Count];
         newBrackets.Values.CopyTo(brackets, 0);
 	}
+
+    public Color GetBracketColor(string forFaction, Targetable bracketTarget)
+    {
+        bool sameFaction = forFaction == bracketTarget.Faction;
+        
+        return sameFaction ? FriendlyColor : HostileColor;
+    }
 }

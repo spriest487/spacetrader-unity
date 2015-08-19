@@ -20,7 +20,7 @@ public class ModuleDefinition : ScriptableObject
         ModuleBehaviour behaviour,
         float cooldownLength)
 	{
-        ModuleDefinition result = ScriptableObject.CreateInstance<ModuleDefinition>();
+        ModuleDefinition result = CreateInstance<ModuleDefinition>();
 
         result.moduleName = name;
         result.behaviour = behaviour;

@@ -23,8 +23,6 @@ public class Ship : MonoBehaviour
 	public float pitch;
 	public float yaw;
 	public float roll;
-
-	public Vector3 aim;
     
     public ShipStats Stats { get { return stats; } set {
         stats = new ShipStats(value);

@@ -5,17 +5,24 @@ using System.Collections;
 [RequireComponent(typeof(CanvasGroup))]
 public class Bracket : MonoBehaviour
 {
-	[SerializeField] Targetable target;
+	[SerializeField]
+    private Targetable target;
 
-	[SerializeField] Text nameplate;
-    [SerializeField] Image[] childImages; 
-	[SerializeField] Healthbar healthbar;
+	[SerializeField]
+    private Text nameplate;
+    [SerializeField]
+    private Image[] childImages; 
+	[SerializeField]
+    private Healthbar healthbar;
 
-    [SerializeField] CanvasGroup canvasGroup;
-    [SerializeField] RectTransform rectTransform;
+    [SerializeField]
+    private CanvasGroup canvasGroup;
+    [SerializeField]
+    private RectTransform rectTransform;
 
     //owner bracket manager
-    [SerializeField] BracketManager bracketManager;
+    [SerializeField]
+    private BracketManager bracketManager;
 
     private Canvas canvas;
 
@@ -119,16 +126,8 @@ public class Bracket : MonoBehaviour
             width = (int)(width * bracketManager.SelectedExpand);
             height = (int)(height * bracketManager.SelectedExpand);
         }
-			
-		Color reactionColor;
-		if (bracketManager)
-		{
-			reactionColor = sameFaction ? bracketManager.FriendlyColor : bracketManager.HostileColor;
-		}
-		else
-		{
-			reactionColor = Color.white;
-		}
+		
+		Color reactionColor = bracketManager.GetBracketColor(playerTargetable.Faction, target);
 
 		if (childImages != null)
 		{

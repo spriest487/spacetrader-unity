@@ -54,6 +54,16 @@ public class ModuleLoadout : MonoBehaviour
 		}
 	}
 
+    public WeaponHardpoint FindHardpoint(int moduleIndex)
+    {
+        if (hardpoints == null || hardpoints.Length == 0)
+        {
+            return null;
+        }
+
+        return Hardpoints[moduleIndex % hardpoints.Length];
+    }
+
 	void Start()
 	{
 		ship = GetComponent<Ship>();

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class ModuleConfiguration : MonoBehaviour
@@ -25,7 +24,7 @@ public class ModuleConfiguration : MonoBehaviour
         }
     }
 
-	public Transform bullet;
+	public Bullet bullet;
 	public Transform bulletMuzzleFlash;
 
     public static ModuleConfiguration Instance { get; private set; }

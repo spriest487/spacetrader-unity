@@ -18,9 +18,18 @@ public class ModuleStatus : ScriptableObject
     [SerializeField]
     private ModuleGroup moduleGroup;
 
+    [SerializeField]
+    private Vector3 aim;
+
     /* don't serialize the current definition, if we lose the instance
      just look it up in the global map again */
     private ModuleDefinition definition {get; set; }
+
+    public Vector3 Aim
+    {
+        get { return aim; }
+        set { aim = value; }
+    }
 
     public ModuleDefinition Definition
     {
@@ -37,18 +46,12 @@ public class ModuleStatus : ScriptableObject
 
     public float Cooldown
     {
-        get 
-        {
-            return cooldown;
-        }
+        get { return cooldown; }
     }
 
     public string Name
     {
-        get
-        {
-            return definitionName;
-        }
+        get { return definitionName; }
     }
 
     public bool Empty { get; private set; }   
@@ -75,7 +78,7 @@ public class ModuleStatus : ScriptableObject
     {
         if (cooldown <= Mathf.Epsilon) //cd check
         {
-            Definition.Behaviour.Activate(activator, hardpoint);
+            Definition.Behaviour.Activate(activator, hardpoint, this);
             cooldown = Definition.CooldownLength; 
         }
     }

@@ -154,10 +154,10 @@ public class WingmanCaptain : MonoBehaviour
 
         if (loadout)
         {
-            ship.aim = ship.Target.transform.position;
-
             for (int module = 0; module < loadout.FrontModules.Size; ++module)
             {
+                loadout.FrontModules[module].Aim = ship.Target.transform.position;
+
                 loadout.Activate(module);
             }
         }

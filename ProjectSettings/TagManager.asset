@@ -10,6 +10,7 @@ TagManager:
   - UIOnlyOutOfGame
   - WorldListener
   - MissionListener
+  - MissionObjective
   layers:
   - Default
   - TransparentFX
