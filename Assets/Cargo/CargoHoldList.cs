@@ -9,9 +9,7 @@ public class CargoHoldList : MonoBehaviour
 
     [SerializeField]
     CargoHoldListItem listItem;
-
-    private Text group;
-    
+        
     void Update()
     {
         foreach (Transform child in transform)

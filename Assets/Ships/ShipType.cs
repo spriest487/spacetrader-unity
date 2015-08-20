@@ -46,6 +46,7 @@ public class ShipType : ScriptableObject
         }   
 
         var cargo = obj.gameObject.AddComponent<CargoHold>();
+        cargo.Size = cargoSize;
 
         var hp = obj.gameObject.AddComponent<Hitpoints>();
         hp.Reset(armor, shieldSectors);

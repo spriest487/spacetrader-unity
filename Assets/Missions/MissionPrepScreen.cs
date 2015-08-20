@@ -23,7 +23,7 @@ public class MissionPrepScreen : MonoBehaviour
     
     public void Ready()
     {
-        if (MissionManager.Instance.Phase == MissionManager.MissionPhase.Prep)
+        if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {
             MissionManager.Instance.BeginMission();
         }
@@ -73,7 +73,7 @@ public class MissionPrepScreen : MonoBehaviour
     
     void Update()
     {
-        if (MissionManager.Instance.Phase == MissionManager.MissionPhase.Prep)
+        if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {
             readyText.text = "Ready";
         }

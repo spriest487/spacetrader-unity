@@ -6,7 +6,7 @@ public class ModuleStatus : ScriptableObject
 
     static ModuleStatus()
     {
-        None = ScriptableObject.CreateInstance<ModuleStatus>();
+        None = CreateInstance<ModuleStatus>();
     }
     
     [SerializeField]

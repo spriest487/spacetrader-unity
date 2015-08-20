@@ -32,7 +32,7 @@ public class HudObjectivesList : MonoBehaviour
             if (targetable)
             {
                 var currentItems = gameObject.GetComponentsInChildren<HudObjectivesItem>();
-                var objectives = MissionManager.ActiveMission.FindObjectives(targetable.Faction);
+                var objectives = ActiveMission.FindObjectives(targetable.Faction);
 
                 var currentCount = currentItems.Length;
                 var newCount = objectives.Length;

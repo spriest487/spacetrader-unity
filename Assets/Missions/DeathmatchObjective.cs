@@ -35,7 +35,7 @@ public class DeathmatchObjective : MonoBehaviour
             objective.Complete = false;
             objective.Description = DESCRIPTION;
             objective.Teams = new []{ team.Name };
-            objective.tag = MissionManager.ActiveMission.MISSION_TAG;
+            objective.tag = ActiveMission.MISSION_TAG;
 
             var teamObjective = new TeamObjective();
             teamObjective.team = team.Name;

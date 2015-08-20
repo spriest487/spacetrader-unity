@@ -106,8 +106,6 @@ public class TeamSpawner : MonoBehaviour
                     ship.gameObject.AddComponent<AICaptain>();
                     ship.gameObject.AddComponent<WingmanCaptain>();
                 }
-
-                ship.name = "Team " + team.Name + " ship #" + shipNum++;
             }
         }
     }

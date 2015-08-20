@@ -19,12 +19,17 @@ public class MissionDefinition : ScriptableObject
         [SerializeField]
         private ModulePreset modulePreset;
 
+        [SerializeField]
+        private string name;
+
         public ShipType ShipType { get { return shipType; } }
         public ModulePreset ModulePreset { get { return modulePreset; } }
+        public string Name { get { return name; } }
 
         public Ship SpawnShip(Vector3 pos, Quaternion rot, TeamDefinition team)
         {
             var ship = ShipType.CreateShip(pos, rot);
+            ship.name = Name;
 
             var targetable = ship.gameObject.AddComponent<Targetable>();
             targetable.Faction = team.Name;
