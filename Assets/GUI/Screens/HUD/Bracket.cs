@@ -85,10 +85,9 @@ public class Bracket : MonoBehaviour
 		var targetHitpoints = target.GetComponent<Hitpoints>();
 		
 		var pos = Camera.main.WorldToScreenPoint(target.transform.position);
-
-        var canvasXform = canvas.GetComponent<RectTransform>();
-        var x = Mathf.Clamp(pos.x, 0, canvasXform.rect.width);
-        var y = Mathf.Clamp(pos.y, 0, canvasXform.rect.height);
+        
+        var x = Mathf.Clamp(pos.x, 0, Screen.width);
+        var y = Mathf.Clamp(pos.y, 0, Screen.height);
 
         /*if it's behind us...
             -things above and behind stick to the top of the screen
@@ -96,17 +95,17 @@ public class Bracket : MonoBehaviour
         */
         if (pos.z < 0)
         {
-            var halfway = canvasXform.rect.height * 0.5f;
+            var halfway = Screen.height * 0.5f;
             if (y < halfway)
             {
-                y = canvasXform.rect.height;
+                y = Screen.height;
             }
             else
             {
                 y = 0;
             }
 
-            x = canvasXform.rect.width - x;
+            x = Screen.width - x;
         }
 
         transform.position = new Vector3(x, y, transform.position.z);

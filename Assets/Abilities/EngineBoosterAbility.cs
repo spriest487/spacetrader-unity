@@ -18,7 +18,10 @@ public class EngineBoosterAbility : Ability
     private float boostAmount = 10;
 
     [SerializeField]
-    private float boostDuration = 3;
+    private float boostDuration = 5;
+
+    [SerializeField]
+    private float boostCooldown = 10;
 
     public override void Use(Ship ship)
     {
@@ -30,7 +33,7 @@ public class EngineBoosterAbility : Ability
             activeEffect.Expires = true;
             activeEffect.Lifetime = boostDuration;
 
-            Cooldown = activeEffect.Lifetime;
+            Cooldown = boostCooldown;
 
             ship.AddStatusEffect(activeEffect);
         }

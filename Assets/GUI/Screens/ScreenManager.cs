@@ -45,7 +45,7 @@ public class ScreenManager : MonoBehaviour
             if (!barInstance && screenBarVisible)
             {
                 //add the screenbar
-                barInstance = (ScreenBar)Instantiate(ScreenManager.Instance.screenBar);
+                barInstance = Instantiate(Instance.screenBar);
                 barInstance.transform.position = Vector3.zero;
                 barInstance.transform.SetParent(overlayInstance.transform, false);
             }

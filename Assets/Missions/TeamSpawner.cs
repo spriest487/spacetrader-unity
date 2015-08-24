@@ -20,7 +20,7 @@ public class TeamSpawner : MonoBehaviour
         public Transform[] SpawnPoints { get { return spawnPoints; } }
         public Ship[] SpawnedShips { get { return spawnedShips; } }
 
-        public void SpawnAll()
+        public void SpawnAll(MissionDefinition.TeamDefinition teamDefinition, ActiveTeam activeTeam)
         {
             var mission = MissionManager.Instance.Mission;
 
@@ -28,42 +28,40 @@ public class TeamSpawner : MonoBehaviour
             {
                 throw new UnityException("already spawned this team once");
             }
-
-            /* find the team in the mission definition that matches the team name of 
-             * this team in the spawner 
-             */
-            MissionDefinition.TeamDefinition missionTeam = null;
-            foreach (var team in mission.Definition.Teams)
-            {
-                if (team.Name == Name)
-                {
-                    missionTeam = team;
-                    break;
-                }
-            }
-
-            if (missionTeam == null)
-            {
-                Debug.LogError("mission had no matching team for name " +Name);
-                return;
-            }
-
+            
             var spawned = new List<Ship>();
 
             /* loop around slots, spawning players at each slot in turn until there are
              * no more players 
              */
-            var slotsCount = missionTeam.Slots.Length;
+            var slotsCount = teamDefinition.Slots.Length;
             var spawnsCount = spawnPoints.Length;
 
             for (int slotIndex = 0; slotIndex < slotsCount; ++slotIndex)
             {
-                var slot = missionTeam.Slots[slotIndex];
+                var slotDefinition = teamDefinition.Slots[slotIndex];
                 var spawnPoint = spawnPoints[slotIndex % spawnsCount];
 
-                var ship = slot.SpawnShip(spawnPoint.position, spawnPoint.rotation, missionTeam);
+                var activeSlot = activeTeam.Slots[slotIndex];
 
-                spawned.Add(ship);
+                if (activeSlot.Status != SlotStatus.Closed || activeSlot.Status == SlotStatus.Open)
+                {
+                    var ship = slotDefinition.SpawnShip(spawnPoint.position, spawnPoint.rotation, teamDefinition);
+
+                    switch(activeSlot.Status)
+                    {
+                        case SlotStatus.AI:
+                            ship.gameObject.AddComponent<AICaptain>();
+                            ship.gameObject.AddComponent<WingmanCaptain>();
+                            break;
+                        case SlotStatus.Human:
+                            var localPlayer = ship.gameObject.AddComponent<PlayerShip>();
+                            localPlayer.MakeLocal();
+                            break;
+                    }
+
+                    spawned.Add(ship);
+                }
             }
 
             spawnedShips = spawned.ToArray();
@@ -75,33 +73,33 @@ public class TeamSpawner : MonoBehaviour
     
     public Team[] Teams { get { return teams; } }
 
+    private Team FindTeam(string name)
+    {
+        foreach (var team in teams)
+        {
+            if (team.Name == name)
+            {
+                return team;
+            }
+        }
+
+        return null;
+    }
+
     void OnBeginMission()
     {
         var mission = MissionManager.Instance.Mission;
         
-        foreach (var team in teams)
+        for (int team = 0; team < mission.Teams.Length; ++team)
         {
-            team.SpawnAll();
-        }
+            var teamDefinition = mission.Definition.Teams[team];
+            var activeTeam = mission.Teams[team];
 
-        bool first = true;
+            var spawnedTeam = FindTeam(teamDefinition.Name);
 
-        foreach (var team in Teams)
-        {
-            foreach (var ship in team.SpawnedShips)
+            if (spawnedTeam != null)
             {
-                if (first)
-                {
-                    var localPlayer = ship.gameObject.AddComponent<PlayerShip>();
-                    localPlayer.MakeLocal();
-
-                    first = false;
-                }
-                else
-                {
-                    ship.gameObject.AddComponent<AICaptain>();
-                    ship.gameObject.AddComponent<WingmanCaptain>();
-                }
+                spawnedTeam.SpawnAll(teamDefinition, activeTeam);
             }
         }
     }

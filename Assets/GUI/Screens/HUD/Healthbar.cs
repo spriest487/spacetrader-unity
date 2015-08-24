@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 public class Healthbar : MonoBehaviour 
@@ -24,7 +23,7 @@ public class Healthbar : MonoBehaviour
 
     void Start()
     {
-        this.animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         healthbarStatehash = Animator.StringToHash(stateName); 
     }
 

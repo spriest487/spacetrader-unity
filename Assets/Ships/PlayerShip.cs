@@ -23,14 +23,19 @@ public class PlayerShip : MonoBehaviour
         }
         private set
         {
-            localPlayer = new PlayerShip[] {value};
+            localPlayer = new PlayerShip[] { value };
         }
     }
 
-	private Ship ship;
+    private Ship ship;
     private Moorable moorable;
 
     private bool inputDragging = false;
+
+    public Ship Ship
+    {
+        get { return ship; }
+    }
 
     public void MakeLocal()
     {

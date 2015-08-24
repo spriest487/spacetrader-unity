@@ -380,9 +380,7 @@ public class Ship : MonoBehaviour
 	
 	void OnCollisionStay(Collision collision)
 	{
-		Debug.Log(string.Format("Ship collided with {0} with speed {1} (magnitude {2})", collision.collider.gameObject, collision.relativeVelocity, collision.relativeVelocity.magnitude));
-
-        //a little bump in the opposite direction
+		//a little bump in the opposite direction
         var rigidbody = GetComponent<Rigidbody>();
         if (rigidbody)
         {

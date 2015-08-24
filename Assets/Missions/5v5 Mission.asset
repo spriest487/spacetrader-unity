@@ -53,18 +53,3 @@ MonoBehaviour:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 0}
       name: Blue Three
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-      modulePreset: {fileID: 0}
-      name: Blue Three
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-      modulePreset: {fileID: 0}
-      name: Blue Three
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-      modulePreset: {fileID: 0}
-      name: Blue Three
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-      modulePreset: {fileID: 0}
-      name: Blue Three
-    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
-      modulePreset: {fileID: 0}
-      name: Blue Three

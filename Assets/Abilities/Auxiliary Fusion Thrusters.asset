@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: Auxiliary Fusion Thrusters
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 53137ae653dba4547985f3cdd7a3554f, type: 3}
-  cooldown: 0
+  cooldown: 10
   activeEffect: {fileID: 0}
-  boostAmount: 20
-  boostDuration: 3
+  boostAmount: 50
+  boostDuration: 5
+  boostCooldown: 10

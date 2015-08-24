@@ -83,7 +83,10 @@ public class MissionManager : MonoBehaviour
     {
         phase = MissionPhase.Prep;
 
-        mission.Init();
+        if (mission.Definition != null)
+        {
+            mission.Init();
+        }
     }
     
     public void BeginMission()

@@ -13,8 +13,12 @@ public class WingmanCaptain : MonoBehaviour
     private ModuleLoadout loadout;
 
     private Vector3? immediateManeuver;
+
+    private float lastTargetCheck = 0;
+    const float TARGET_CHECK_INTERVAL = 1;
     
-    struct PotentialTarget {
+    struct PotentialTarget
+    {
         public int Threat;
         public Targetable Target;
     }
@@ -173,11 +177,28 @@ public class WingmanCaptain : MonoBehaviour
             threat = -threat;
         }
 
+        const float COMFORT_ZONE = 20;
+
+        var dist2 = (transform.position - target.transform.position).sqrMagnitude;
+        if (dist2 < (COMFORT_ZONE * COMFORT_ZONE))
+        {
+            threat *= 2;
+        }
+
         return threat;
     }
 
     private void AcquireTarget()
     {
+        var needsTarget = !ship.Target
+                || Time.time > (lastTargetCheck + TARGET_CHECK_INTERVAL);
+        lastTargetCheck = Time.time;
+
+        if (!needsTarget)
+        {
+            return;
+        }
+
         //look for a target
 
         //todo: use saved local ships list
@@ -188,7 +209,7 @@ public class WingmanCaptain : MonoBehaviour
 
             foreach (var targetable in targetables)
             {
-                if (targetable.gameObject == this.gameObject)
+                if (targetable.gameObject == gameObject)
                 {
                     continue;
                 }
@@ -199,6 +220,8 @@ public class WingmanCaptain : MonoBehaviour
                     Threat = CalculateThreat(targetable)
                 });
             }
+
+            potentialTargets.RemoveAll(t => t.Threat < 0);
 
             if (potentialTargets.Count == 0)
             {
@@ -245,10 +268,7 @@ public class WingmanCaptain : MonoBehaviour
         }
         else
         {
-            if (!ship.Target)
-            {
-                AcquireTarget();
-            }
+            AcquireTarget();
 
             if (ship.Target)
             {
@@ -259,9 +279,5 @@ public class WingmanCaptain : MonoBehaviour
                 FollowLeader();
             }
         }
-
-		/*Debug.Log(string.Format("Min distance for formation flying is {0}, current distance {1}",
-			minFormationDistance,
-			distance));*/
 	}
 }
