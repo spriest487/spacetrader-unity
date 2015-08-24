@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class Predictor : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class Predictor : MonoBehaviour
     private BracketManager brackets;
 
     /* doesn't need to be serialized as it's rebuilt if necessary */
-    private PredictorMarker[] markers;
+    private List<PredictorMarker> markers;
 
     private void ClearReticules()
     {
@@ -20,7 +20,7 @@ public class Predictor : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        markers = null;
+        markers = new List<PredictorMarker>();
     }
 
     void LateUpdate()
@@ -44,15 +44,12 @@ public class Predictor : MonoBehaviour
         }
 
         var modCount = loadout.FrontModules.Size;
-        var markerCount = 0;
 
-        var newMarkerPositions = new Vector3[modCount];
+        var newMarkerPositions = new List<Vector3>(modCount);
 
         var playerTargetable = player.GetComponent<Targetable>();
         var playerFaction = playerTargetable ? playerTargetable.Faction : null;
-
         
-
         /* one marker per active hardpoint module which returns true for
         IsPredictable. we get the prediction points from the module's 
         behaviour here too */
@@ -70,24 +67,26 @@ public class Predictor : MonoBehaviour
                 //PredictTarget returns world pos
                 predictPoint = camera.WorldToScreenPoint(predictPoint.Value);
 
-                int markerIndex = markerCount++;
-                newMarkerPositions[markerIndex] = predictPoint.Value;
+                if (predictPoint.HasValue && predictPoint.Value.z >= 0)
+                {
+                    newMarkerPositions.Add(predictPoint.Value);
+                }
             }
         }
 
         /* if the number of markers has changed, we need to drop all our
         children and rebuild the marker list */
-        if (markers == null || markers.Length != markerCount)
+        var markerCount = newMarkerPositions.Count;
+        if (markers == null || markers.Count != markerCount)
         {
             ClearReticules();
-            markers = new PredictorMarker[markerCount];
 
-            for (int marker = 0; marker < markerCount; ++marker)
+            for (int marker = 0; marker < newMarkerPositions.Count; ++marker)
             {
                 var newMarker = Instantiate(markerPrefab);
                 newMarker.transform.SetParent(transform, false);
 
-                markers[marker] = newMarker;                
+                markers.Add(newMarker);
             }
         }
 

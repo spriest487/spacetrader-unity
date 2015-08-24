@@ -12,13 +12,14 @@ public class AICaptain : MonoBehaviour
 	public Vector3? targetUp;
 	public Vector3? adjustTarget;
 
-	public float throttle;
+	public float Throttle;
+    public float MinimumThrust;
 
     public float CloseDistance
     {
         get
         {
-            return ship.Stats.maxSpeed;
+            return ship.BaseStats.thrust;
         }
     }
 
@@ -42,7 +43,7 @@ public class AICaptain : MonoBehaviour
         return IsCloseTo(point, between);
     }
 
-    private void RotateTo(bool danger, Vector3 between)
+    private void RotateTo(Vector3 between)
     {
         //direction vector towards dest, in local space
         var towards = between.normalized;
@@ -58,7 +59,7 @@ public class AICaptain : MonoBehaviour
 
         //Debug.Log("angle to target: " + totalAngle);
 
-        var facingTowardsAngle = ship.Stats.maxTurnSpeed;
+        var facingTowardsAngle = ship.BaseStats.maxTurnSpeed;
         var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 
@@ -121,7 +122,7 @@ public class AICaptain : MonoBehaviour
             for (int a = 0; a < 3; ++a)
             {
                 var angle = currentLocalRotation[a];
-                counterThrust[a] = -(Mathf.Clamp01(angle / ship.Stats.maxTurnSpeed));
+                counterThrust[a] = -(Mathf.Clamp01(angle / ship.BaseStats.maxTurnSpeed));
             }
 
             //Debug.Log(string.Format("Current rotation {0}, Counter {1}", currentLocalRotation.ToString("F5"), counterThrust.ToString("F5")));
@@ -131,7 +132,7 @@ public class AICaptain : MonoBehaviour
             ship.roll = counterThrust.z;
         }
 
-        if (!danger && !facingTowards)
+        if (!facingTowards)
         {
             //if not in danger, only thrust slowly when not facing target
             ship.thrust = 0.0f;
@@ -152,7 +153,7 @@ public class AICaptain : MonoBehaviour
                     var distance = between.magnitude;
 
                     var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
-                    var currentThrust = GetComponent<Rigidbody>().velocity.magnitude / ship.Stats.maxSpeed;
+                    var currentThrust = GetComponent<Rigidbody>().velocity.magnitude / ship.BaseStats.maxSpeed;
 
                     //Debug.Log(string.Format("Accelerating to target, desired speed is {0} and current speed factor is {1}", desiredSpeed, currentThrust));
 
@@ -168,6 +169,8 @@ public class AICaptain : MonoBehaviour
                 //Debug.Log("Full speed ahead");
             }
         }
+
+        ship.thrust = Mathf.Max(MinimumThrust, ship.thrust);
     }
 
     void Awake()
@@ -176,7 +179,7 @@ public class AICaptain : MonoBehaviour
     }
 					
 	void FixedUpdate () {
-		var danger = false;
+		//var danger = false;
         
 		Debug.DrawLine(GetComponent<Rigidbody>().transform.position, destination, Color.red, Time.deltaTime);
 
@@ -188,12 +191,12 @@ public class AICaptain : MonoBehaviour
 		var between = destination - transform.position;
         if (between.sqrMagnitude > Vector3.kEpsilon)
         {
-            RotateTo(danger, between);
+            RotateTo(/*danger, */between);
         }
 
-		ship.strafe = Mathf.Clamp(ship.strafe, -1, throttle);
-		ship.lift = Mathf.Clamp(ship.lift, -1, throttle);
-		ship.thrust = Mathf.Clamp(ship.thrust, -1, throttle);
+		ship.strafe = Mathf.Clamp(ship.strafe, -1, Throttle);
+		ship.lift = Mathf.Clamp(ship.lift, -1, Throttle);
+		ship.thrust = Mathf.Clamp(ship.thrust, -1, Throttle);
 
 		//adjustments are applied AFTER the clamping, so we can go beyond the throttle if necessary
 		ApplyAdjustThrust(ship);
@@ -210,7 +213,7 @@ public class AICaptain : MonoBehaviour
 
 			var adjustBetween = adjustTarget.Value - ship.transform.position;
 
-			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude / (Mathf.Pow(ship.Stats.maxSpeed, 2)));
+			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude / (Mathf.Pow(ship.BaseStats.maxSpeed, 2)));
 			adjustPower = Mathf.Log10(1 + (adjustPower * 9)); //log10 slowdown instead of linear so we slow down more dramatically closer to the goal
 
 			adjustPower *= maxAdjust;
@@ -234,14 +237,14 @@ public class AICaptain : MonoBehaviour
 					/* if we're already moving in this direction, but we're going faster
 					 * than we're actually trying to thrust, let's assume we're going too
 					 fast and fire the opposite thruster to slow down a bit */
-					float thrustToCounteract = currentLocalSpeed[i] / ship.Stats.maxSpeed;
+					float thrustToCounteract = currentLocalSpeed[i] / ship.BaseStats.maxSpeed;
 					if (MathUtils.SameSign(thrustToCounteract, localBetween[i]) && Mathf.Abs(thrustToCounteract) > adjustPower)
 					{
 						newThrust[i] = -thrustToCounteract;
 					}
 					else
 					{
-						float adjustThrust = adjustPower * ((localBetween[i] / betweenDimMax) / ship.Stats.maxSpeed);
+						float adjustThrust = adjustPower * ((localBetween[i] / betweenDimMax) / ship.BaseStats.maxSpeed);
 
 						newThrust[i] = adjustThrust;
 					}

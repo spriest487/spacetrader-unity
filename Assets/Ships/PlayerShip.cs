@@ -224,6 +224,40 @@ public class PlayerShip : MonoBehaviour
             }
         }
     }
+
+    private void UseAbility(int number)
+    {
+        if (number < ship.Abilities.Count)
+        {
+            ship.Abilities[number].Use(ship);
+        }
+    }
+
+    void Update()
+    {
+        if (HasControl())
+        {
+            if (Input.GetButtonDown("Use Ability 1"))
+            {
+                UseAbility(0);
+            }
+
+            if (Input.GetButtonDown("Use Ability 2"))
+            {
+                UseAbility(1);
+            }
+
+            if (Input.GetButtonDown("Use Ability 3"))
+            {
+                UseAbility(2);
+            }
+
+            if (Input.GetButtonDown("Use Ability 4"))
+            {
+                UseAbility(3);
+            }
+        }
+    }
 	
 	void FixedUpdate()
 	{

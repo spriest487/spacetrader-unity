@@ -14,11 +14,11 @@ public class ShipStats
 
     public ShipStats()
     {
-        agility = 1;
-        thrust = 1;
+        agility = 0;
+        thrust = 0;
 
-        maxTurnSpeed = 1;
-        maxSpeed = 1;
+        maxTurnSpeed = 0;
+        maxSpeed = 0;
     }
 
     public ShipStats(ShipStats other)
@@ -28,5 +28,21 @@ public class ShipStats
 
         maxTurnSpeed = other.maxTurnSpeed;
         maxSpeed = other.maxSpeed;
+    }
+
+    public void AddFlat(ShipStats other)
+    {
+        agility += other.agility;
+        thrust += other.thrust;
+        maxTurnSpeed += other.maxTurnSpeed;
+        maxSpeed += other.maxSpeed;
+    }
+
+    public void ApplyProportional(ShipStats other)
+    {
+        agility += agility * other.agility;
+        thrust += thrust * other.thrust;
+        maxTurnSpeed += maxTurnSpeed * other.maxTurnSpeed;
+        maxSpeed += maxSpeed * other.maxSpeed;
     }
 }

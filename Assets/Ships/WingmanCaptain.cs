@@ -44,7 +44,7 @@ public class WingmanCaptain : MonoBehaviour
 	private void FlyInFormation(Ship leader)
 	{
 		//fly in same direction as leader
-		captain.destination = transform.position + (leader.transform.forward * ship.Stats.maxSpeed);
+		captain.destination = transform.position + (leader.transform.forward * ship.BaseStats.maxSpeed);
 		
 		//keep adjusting to match our formation pos if possible
 		captain.adjustTarget = leader.GetFormationPos(ship);
@@ -66,14 +66,14 @@ public class WingmanCaptain : MonoBehaviour
 		if (angleDiffBetweenHeadings < FORMATION_MATCH_ANGLE)
 		{
 			//max speed is leader's speed
-			captain.throttle = Ship.EquivalentThrust(ship, leader);
+			captain.Throttle = Ship.EquivalentThrust(ship, leader);
 
 			//Debug.Log("Flying alongside leader: angle is " +angleDiffBetweenHeadings);
 		}
 		else
 		{
 			//leader is going in a different direction to the one they are facing, wait and see what they do
-			captain.throttle = 0;
+			captain.Throttle = 0;
 
 			//Debug.Log("Stopping to match leader's orientation: angle is " + angleDiffBetweenHeadings);
 		}
@@ -91,14 +91,14 @@ public class WingmanCaptain : MonoBehaviour
 		captain.destination = leaderPos;
 
 		//throttle down as we approach the min formation distance
-		float throttleDownDist = ship.Stats.maxSpeed * Time.deltaTime;
+		float throttleDownDist = ship.BaseStats.maxSpeed * Time.deltaTime;
 		float remainingDist = Mathf.Max(0, distance - minFormationDistance);
 
 		float catchupThrottle = Mathf.Min(1, remainingDist / throttleDownDist);
 
 		//minimum speed is the leader's current speed
 		//todo: take relative travel direction into account (facing away = full speed)		
-		captain.throttle = Mathf.Max(catchupThrottle, Ship.EquivalentThrust(ship, leader));
+		captain.Throttle = Mathf.Max(catchupThrottle, Ship.EquivalentThrust(ship, leader));
 	}
 
     private void FollowLeader()
@@ -129,7 +129,7 @@ public class WingmanCaptain : MonoBehaviour
         else
         {
             captain.destination = leaderPos;
-            captain.throttle = 1;
+            captain.Throttle = 1;
         }
     }
 
@@ -140,7 +140,7 @@ public class WingmanCaptain : MonoBehaviour
         var behindTarget = ship.Target.transform.TransformPoint(new Vector3(0, 0, -TODO_CHASEDIST));
 
         captain.destination = behindTarget;
-        captain.throttle = 1;
+        captain.Throttle = 1;
 
         var PANIC_DIST_FACTOR = 10;
 
@@ -221,7 +221,7 @@ public class WingmanCaptain : MonoBehaviour
     void FollowImmediateManeuver()
     {
         captain.destination = immediateManeuver.Value;
-        captain.throttle = 1;
+        captain.Throttle = 1;
 
         if (captain.IsCloseTo(immediateManeuver.Value))
         {

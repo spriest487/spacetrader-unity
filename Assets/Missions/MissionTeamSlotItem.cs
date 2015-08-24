@@ -19,56 +19,34 @@ public class MissionTeamSlotItem : MonoBehaviour
     [SerializeField]
     private int slotIndex = -1;
 
-    //non-serialized cache vars for the slots arrays
-    private MissionDefinition.TeamDefinition teamDefinition;
-    private MissionDefinition.PlayerSlot slotDefinition;
-    private ActiveTeam activeTeam;
-    private ActivePlayerSlot activeSlot;
-
     public void SetSlot(int team, int slot)
     {
         teamIndex = team;
         slotIndex = slot;
-
-        teamDefinition = null;
-        slotDefinition = null;
-        activeTeam = null;
-        activeSlot = null;
     }
-
-    private void UpdateSlotRefs()
-    {
-        if (teamDefinition == null
-            || slotDefinition == null
-            || activeTeam == null
-            || activeSlot == null)
-        {
-            var mission = MissionManager.Instance.Mission;
-
-            teamDefinition = mission.Definition.Teams[teamIndex];
-            slotDefinition = teamDefinition.Slots[slotIndex];
-
-            activeTeam = mission.Teams[teamIndex];
-            activeSlot = activeTeam.Slots[slotIndex];
-        }
-    }
-
+    
     void Update()
     {
         if (teamIndex >= 0 && slotIndex >= 0)
         {
-            UpdateSlotRefs();
+            var mission = MissionManager.Instance.Mission;
+
+            var teamDefinition = mission.Definition.Teams[teamIndex];
+            var slotDefinition = teamDefinition.Slots[slotIndex];
+
+            var activeTeam = mission.Teams[teamIndex];
+            var activeSlot = activeTeam.Slots[slotIndex];
 
             slotTypeLabel.text = slotDefinition.ShipType.name;
 
-            slotNameLabel.text = slotDefinition.Name;
+            slotNameLabel.text = slotDefinition.Name.ToUpper();
             slotStatusLabel.text = activeSlot.Status.ToString();
         }
     }
 
     private void ChangeStatus(bool next)
     {
-        UpdateSlotRefs();
+        var activeSlot = MissionManager.Instance.Mission.Teams[teamIndex].Slots[slotIndex];
 
         var newStatusIndex = (int)activeSlot.Status;
         newStatusIndex += next? 1 : -1;
@@ -85,6 +63,33 @@ public class MissionTeamSlotItem : MonoBehaviour
         }
 
         activeSlot.Status = (SlotStatus)newStatusIndex;
+
+        /*singleplayer - if human was selected, change any other slots
+        that are set to "human" back to "Open" */
+        if (activeSlot.Status == SlotStatus.Human)
+        {
+            var allTeams = MissionManager.Instance.Mission.Teams;
+            var teamCount = allTeams.Length;
+
+            for (int team = 0; team < teamCount; ++team)
+            {
+                var allSlots = allTeams[team].Slots;
+                var slotCount = allSlots.Length;
+
+                for (int slot = 0; slot < slotCount; ++slot)
+                {
+                    if (team == teamIndex && slot == slotIndex)
+                    {
+                        continue;
+                    }
+
+                    if (allSlots[slot].Status == SlotStatus.Human)
+                    {
+                        allSlots[slot].Status = SlotStatus.Open;
+                    }
+                }
+            }
+        }
     }
 
     public void NextStatus()

@@ -24,14 +24,47 @@ MonoBehaviour:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
       name: Red One
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      name: Red Two
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      name: Red Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      name: Red Four
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+      name: Red Five
   - name: Blue
     slots:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 0}
       name: Blue One
-    - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 0}
       name: Blue Two
-    - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 0}
+      name: Blue Three
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 0}
       name: Blue Three

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class ShipType : ScriptableObject
 {
@@ -30,6 +30,9 @@ public class ShipType : ScriptableObject
     private bool moorable;
 
     [SerializeField]
+    private List<Ability> abilities;
+
+    [SerializeField]
     private ScalableParticle explosionEffect;
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
@@ -37,8 +40,21 @@ public class ShipType : ScriptableObject
         var obj = (Transform) Instantiate(prefab, position, rotation);
 
         var ship = obj.gameObject.AddComponent<Ship>();
-        ship.Stats = stats;
+        ship.BaseStats = stats;
         ship.ExplosionEffect = explosionEffect;
+
+        var newAbilities = new List<Ability>();
+        foreach (var ability in abilities)
+        {
+            if (ability != null)
+            {
+                var abilityInstance = Instantiate(ability);
+                abilityInstance.name = ability.name;
+                abilityInstance.Cooldown = 0;
+                newAbilities.Add(abilityInstance);
+            }
+        }
+        ship.Abilities = newAbilities;
 
         if (moorable)
         {

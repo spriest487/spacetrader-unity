@@ -58,9 +58,18 @@ public class ActiveMission
     public void Init()
     {
         teams = new ActiveTeam[Definition.Teams.Length];
+
+        bool firstSlot = true;
+
         for (int team = 0; team < teams.Length; ++team)
         {
             var newTeam = new ActiveTeam(Definition.Teams[team]);
+            
+            foreach (var slot in newTeam.Slots)
+            {
+                slot.Status = firstSlot ? SlotStatus.Human : SlotStatus.AI;
+                firstSlot = false;
+            }
 
             teams[team] = newTeam;
         }

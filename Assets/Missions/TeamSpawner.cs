@@ -72,10 +72,7 @@ public class TeamSpawner : MonoBehaviour
 
     [SerializeField]
     private Team[] teams;
-
-    /// <summary>
-    /// spawn point list for each team
-    /// </summary>
+    
     public Team[] Teams { get { return teams; } }
 
     void OnBeginMission()
@@ -91,7 +88,6 @@ public class TeamSpawner : MonoBehaviour
 
         foreach (var team in Teams)
         {
-            var shipNum = 1;
             foreach (var ship in team.SpawnedShips)
             {
                 if (first)

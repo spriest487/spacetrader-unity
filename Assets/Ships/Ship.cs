@@ -8,26 +8,62 @@ public class Ship : MonoBehaviour
 	private FormationManager formationManager;
 
     [SerializeField]
-    private ShipStats stats;
+    private ShipStats baseStats;
 
     [SerializeField]
     private Targetable target;
     
     [SerializeField]
     private ScalableParticle explosionEffect;
-	
-	public float thrust;
-	public float strafe;
-	public float lift;
 
-	public float pitch;
-	public float yaw;
-	public float roll;
+    [SerializeField]
+    private List<Ability> abilities = new List<Ability>();
+
+    [SerializeField]
+    private List<StatusEffect> activeStatusEffects = new List<StatusEffect>();
+
+    [SerializeField]
+    private Vector3? bumpForce;
+
+    public float thrust;
+    public float strafe;
+    public float lift;
+
+    public float pitch;
+    public float yaw;
+    public float roll;
+
+    private ShipStats currentStats;
+
+    private ShipStats CurrentStats
+    {
+        get
+        {
+            if (currentStats == null)
+            {
+                RecalculateCurrentStats();
+            }
+            return currentStats;
+        }
+    }
     
-    public ShipStats Stats { get { return stats; } set {
-        stats = new ShipStats(value);
-    }}
-    public Targetable Target { get { return target; } set { target = value; } }
+    public ShipStats BaseStats
+    {
+        get { return baseStats; }
+        set { baseStats = new ShipStats(value); }
+    }
+
+    public Targetable Target
+    {
+        get { return target; }
+        set { target = value; }
+    }
+
+    public IList<Ability> Abilities
+    {
+        get { return abilities.AsReadOnly(); }
+        set { abilities = new List<Ability>(value); }
+    }
 
     public ScalableParticle ExplosionEffect
     {
@@ -35,8 +71,11 @@ public class Ship : MonoBehaviour
         set { explosionEffect = value; }
     }
 
-    private Vector3? bumpForce;
-
+    public IList<StatusEffect> StatusEffects
+    {
+        get { return activeStatusEffects.AsReadOnly(); }
+    }
+    
 	/**
 	 * Finds the equivalent thrust required for the "from" ship to match
 	 * the current speed of the "target" ship (value will not exceed 1, even
@@ -45,13 +84,63 @@ public class Ship : MonoBehaviour
 	public static float EquivalentThrust(Ship from, Ship target)
 	{
 		var targetSpeed = target.GetComponent<Rigidbody>().velocity.magnitude;
-		var maxSpeed = Mathf.Max(1, from.stats.maxSpeed);
+		var maxSpeed = Mathf.Max(1, from.CurrentStats.maxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
 		return result;
 	}
 
-	void Awake()
+    private void OnDestroy()
+    {
+        foreach (var effect in activeStatusEffects)
+        {
+            Destroy(effect);
+        }
+
+        foreach (var ability in abilities)
+        {
+            Destroy(ability);
+        }
+    }
+
+    private void RecalculateCurrentStats()
+    {
+        var result = new ShipStats(BaseStats);
+
+        ShipStats proportionalTotals = new ShipStats();
+
+        foreach (var statusEffect in activeStatusEffects)
+        {
+            result.AddFlat(statusEffect.FlatStats);
+            proportionalTotals.AddFlat(statusEffect.ProportionalStats);
+        }
+
+        result.ApplyProportional(proportionalTotals);
+
+        currentStats = result;
+    }
+
+    public void AddStatusEffect(StatusEffect effect)
+    {
+        if (effect == null)
+        {
+            Debug.LogErrorFormat("tried to add null status effect to {0}", name);
+        }
+
+        if (RemoveStatusEffect(effect))
+        {
+            Debug.LogWarningFormat("removed status effect {0} from {1} because it was added again", effect.name, name);
+        }
+
+        activeStatusEffects.Add(effect);
+    }
+
+    public bool RemoveStatusEffect(StatusEffect effect)
+    {
+        return activeStatusEffects.Remove(effect);        
+    }
+    
+    void Awake()
 	{
         //default these members in for instances not created in the editor
         if (formationManager == null)
@@ -59,10 +148,12 @@ public class Ship : MonoBehaviour
             formationManager = new FormationManager();
         }
 
-        if (stats == null)
+        if (baseStats == null)
         {
-            stats = new ShipStats();
+            baseStats = new ShipStats();
         }
+
+        activeStatusEffects.RemoveAll(e => e == null);
 	}
 
     private void ApplyBump(Rigidbody rigidbody)
@@ -73,17 +164,25 @@ public class Ship : MonoBehaviour
         }
 
         float bumpMag2 = bumpForce.Value.sqrMagnitude;
-        float bumpReduction = stats.maxSpeed * Time.deltaTime;
+        float bumpReduction = CurrentStats.maxSpeed * Time.deltaTime;
         bumpReduction *= bumpReduction;
 
         float reducedBumpMag = Mathf.Max(0, bumpMag2 - bumpReduction);
-        float reductionFactor = reducedBumpMag / bumpMag2;
 
-        bumpForce = bumpForce.Value * reductionFactor;
+        if (reducedBumpMag > 0 && bumpMag2 > 0)
+        {
+            float reductionFactor = reducedBumpMag / bumpMag2;
 
-        rigidbody.AddForce(bumpForce.Value);
+            bumpForce = bumpForce.Value * reductionFactor;
 
-        if (bumpForce.Value.sqrMagnitude < bumpReduction)
+            rigidbody.AddForce(bumpForce.Value);
+
+            if (bumpForce.Value.sqrMagnitude < bumpReduction)
+            {
+                bumpForce = null;
+            }
+        }
+        else
         {
             bumpForce = null;
         }
@@ -93,6 +192,11 @@ public class Ship : MonoBehaviour
         Vector3 localCurrentValue,
         float maxSpeed)
     {
+        if (maxSpeed < float.Epsilon)
+        {
+            return Vector3.zero;
+        }
+
         var inputAdjusted = input;
         for (int i = 0; i < 3; ++i)
         {
@@ -189,7 +293,7 @@ public class Ship : MonoBehaviour
 		{
             rigidBody.drag = 0;
             rigidBody.angularDrag = 0;
-            rigidBody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+            rigidBody.maxAngularVelocity = Mathf.Deg2Rad * CurrentStats.maxTurnSpeed;
             rigidBody.inertiaTensor = new Vector3(1, 1, 1);
 
             //all movement vals must be within -1..1
@@ -200,7 +304,7 @@ public class Ship : MonoBehaviour
             yaw = Mathf.Clamp(yaw, -1, 1);
             roll = Mathf.Clamp(roll, -1, 1);
 
-            var torqueMax = stats.maxTurnSpeed * Mathf.Deg2Rad;
+            var torqueMax = CurrentStats.maxTurnSpeed * Mathf.Deg2Rad;
 
             var localRotation = rigidBody.transform.InverseTransformDirection(rigidBody.angularVelocity);
             var localVelocity = rigidBody.transform.InverseTransformDirection(rigidBody.velocity);
@@ -210,21 +314,21 @@ public class Ship : MonoBehaviour
                 torqueMax);            
             var forceInput = InputAmountsToRequired(new Vector3(strafe, lift, thrust),
                 localVelocity,
-                stats.maxSpeed);           
+                CurrentStats.maxSpeed);           
 
             rigidBody.angularVelocity = DecayRotation(torqueInput,
                 localRotation,
-                stats.agility * Mathf.Deg2Rad,
+                CurrentStats.agility * Mathf.Deg2Rad,
                 torqueMax,
                 rigidBody.transform);
             rigidBody.velocity = DecayRotation(forceInput,
                 localVelocity,
-                stats.thrust,
-                stats.maxSpeed,
+                CurrentStats.thrust,
+                CurrentStats.maxSpeed,
                 rigidBody.transform);
 
-            var force = forceInput.normalized * stats.thrust;
-            var torque = torqueInput.normalized * Mathf.Deg2Rad * stats.agility;
+            var force = forceInput.normalized * CurrentStats.thrust;
+            var torque = torqueInput.normalized * Mathf.Deg2Rad * CurrentStats.agility;
 
             /* apply new forces */
             rigidBody.AddRelativeTorque(torque);
@@ -236,14 +340,41 @@ public class Ship : MonoBehaviour
 
 	void LateUpdate()
 	{
+        //force refresh of stats
+        currentStats = null;
+
+        //ability cooldowns
+        foreach (var ability in abilities)
+        {
+            if (ability.Cooldown > 0)
+            {
+                ability.Cooldown -= Time.deltaTime;
+            }
+        }
+
+        List<StatusEffect> newStatusEffects = new List<StatusEffect>(activeStatusEffects.Count);
+        foreach (var effect in activeStatusEffects)
+        {
+            effect.Lifetime -= Time.deltaTime;
+            if (!effect.Expires || effect.Lifetime > 0)
+            {
+                newStatusEffects.Add(effect);
+            }
+            else 
+            {
+                Destroy(effect);
+            }
+        }
+        activeStatusEffects = newStatusEffects;
+
 		//limit speed
 		//float maxCurrentSpeed = stats.maxSpeed - rigidbody.drag;
         var rigidBody = GetComponent<Rigidbody>();
         
         float speed = rigidBody.velocity.magnitude;
-        if (speed > stats.maxSpeed)
+        if (speed > CurrentStats.maxSpeed)
         {
-            rigidBody.velocity = rigidBody.velocity.normalized * stats.maxSpeed;
+            rigidBody.velocity = rigidBody.velocity.normalized * CurrentStats.maxSpeed;
         }
 	}
 	
@@ -259,7 +390,7 @@ public class Ship : MonoBehaviour
 
             bumpPower *= -1;
 
-            this.bumpForce = bumpPower;
+            bumpForce = bumpPower;
         }
 	}
 	
@@ -299,18 +430,23 @@ public class Ship : MonoBehaviour
 		}
 	}
 
+    public void Explode()
+    {
+        if (explosionEffect)
+        {
+            var explosion = (ScalableParticle)Instantiate(explosionEffect, transform.position, transform.rotation);
+            explosion.ParticleScale = 0.5f;
+        }
+
+        Destroy(gameObject);
+    }
+
     void OnTakeDamage(HitDamage hd)
     {
         var hp = GetComponent<Hitpoints>();
         if (hp && hp.GetArmor() - hd.Amount <= 0)
         {
-            if (explosionEffect)
-            {
-                var explosion = (ScalableParticle) Instantiate(explosionEffect, transform.position, transform.rotation);
-                explosion.ParticleScale = 0.5f;
-            }
-
-            Destroy(gameObject);
+            Explode();
         }
     }
 }
