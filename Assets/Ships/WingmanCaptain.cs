@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(AICaptain), typeof(Ship))]
+[RequireComponent(typeof(AICaptain), typeof(Ship), typeof(Seeker))]
 public class WingmanCaptain : MonoBehaviour
 {
 	private const float FORMATION_SPACING = 1.5f;
 	private const float FORMATION_MATCH_ANGLE = 15f;
 
 	private Ship ship;
-    private Targetable targetable;
-	private AICaptain captain;
-    private ModuleLoadout loadout;
+    private Seeker seeker;
+    private AICaptain captain;
+
+    private Targetable targetable;	
+    private ModuleLoadout loadout;    
 
     private Vector3? immediateManeuver;
+
+    private Pathfinding.Path currentPath;
+    private float lastPathStarted = 0;
+    const float MAX_PATH_AGE = 5f;
 
     private float lastTargetCheck = 0;
     const float TARGET_CHECK_INTERVAL = 1;
@@ -65,27 +71,16 @@ public class WingmanCaptain : MonoBehaviour
 		
 		angleDiffBetweenHeadings *= Mathf.Rad2Deg;
 
-		//Debug.Log("Leader's velocity is " +leader.rigidbody.velocity);
-
 		if (angleDiffBetweenHeadings < FORMATION_MATCH_ANGLE)
 		{
 			//max speed is leader's speed
 			captain.Throttle = Ship.EquivalentThrust(ship, leader);
-
-			//Debug.Log("Flying alongside leader: angle is " +angleDiffBetweenHeadings);
 		}
 		else
 		{
 			//leader is going in a different direction to the one they are facing, wait and see what they do
 			captain.Throttle = 0;
-
-			//Debug.Log("Stopping to match leader's orientation: angle is " + angleDiffBetweenHeadings);
 		}
-
-		/*Debug.Log(string.Format("Formation: leader's speed {0}, my speed/throttle {1}/{2}",
-			leader.rigidbody.velocity,
-			ship.rigidbody.velocity,
-			captain.throttle));*/
 	}
 
 	private void CatchUpToLeader(Ship leader, float distance, float minFormationDistance)
@@ -136,16 +131,77 @@ public class WingmanCaptain : MonoBehaviour
             captain.Throttle = 1;
         }
     }
+    
+    private void OnDisable()
+    {
+        seeker.pathCallback -= NavigatePathCallback;
+    }
+
+    private void NavigatePathCallback(Pathfinding.Path path)
+    {
+        if (!path.error)
+        {
+            currentPath = path;
+        }
+    }
+
+    private void NavigateTo(Vector3 pos)
+    {
+        /* if we have a really old path, discard it */
+        if (currentPath != null && Time.time > lastPathStarted + MAX_PATH_AGE)
+        {
+            currentPath = null;
+        }
+
+        /* if we're not currently following a path, wait until we
+        have one */
+        if (currentPath == null)
+        {
+            if (seeker.IsDone())
+            {
+                seeker.StartPath(transform.position, pos);
+                lastPathStarted = Time.time;
+            }
+            
+            return;
+        }
+        
+        var nextPoint = currentPath.vectorPath[0];
+
+        /* have we arrived at the next waypoint? if so, recalculate the
+        path (target might have changed, etc). if the points are reasonably
+        fine-grained we should be able to navigate obstacles without being
+        interrupted or getting confused.. */
+        if (captain.IsCloseTo(nextPoint) && currentPath.vectorPath.Count > 1)
+        {
+            seeker.StartPath(currentPath.vectorPath[1], pos);
+            currentPath = null;
+            return;
+        }
+        
+        /* if the end node's position is actually further away than the 
+        destination point, we just want to fly to the destination actually */
+        var distToNextPoint2 = (nextPoint - transform.position).sqrMagnitude;
+        var distToPos2 = (pos - transform.position).sqrMagnitude;
+
+        if (distToPos2 < distToNextPoint2)
+        {
+            captain.destination = pos;
+        }
+        else
+        {
+            captain.destination = nextPoint;
+        }
+
+        captain.Throttle = 1;
+    }
 
     private void ChaseTarget()
     {
         //try to get on their six
         var TODO_CHASEDIST = 20;
         var behindTarget = ship.Target.transform.TransformPoint(new Vector3(0, 0, -TODO_CHASEDIST));
-
-        captain.destination = behindTarget;
-        captain.Throttle = 1;
-
+        
         var PANIC_DIST_FACTOR = 10;
 
         //if we get too close, panic for a little bit and fly away
@@ -165,6 +221,8 @@ public class WingmanCaptain : MonoBehaviour
                 loadout.Activate(module);
             }
         }
+
+        NavigateTo(behindTarget);
     }
 
     private int CalculateThreat(Targetable target)
@@ -255,10 +313,14 @@ public class WingmanCaptain : MonoBehaviour
 	void Start()
 	{
 		ship = GetComponent<Ship>();
+        seeker = GetComponent<Seeker>();
 		captain = GetComponent<AICaptain>();
+
         targetable = GetComponent<Targetable>();
         loadout = GetComponent<ModuleLoadout>();
-	}
+
+        seeker.pathCallback += NavigatePathCallback;
+    }
 
 	void Update()
     {
