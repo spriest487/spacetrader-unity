@@ -81,6 +81,8 @@ public class MissionsMenu : MonoBehaviour
         Application.LoadLevel(selectedMission.SceneName);
     }
 
+#if !UNITY_WEBGL
+
     public void HostGame()
     {
         var error = Network.InitializeServer(8, 30001, true);
@@ -127,4 +129,8 @@ public class MissionsMenu : MonoBehaviour
         var mainMenu = GetComponentInParent<MainMenu>();
         mainMenu.EndGame();
     }
+#endif
+
 }
+
+

@@ -135,6 +135,9 @@ public class PlayerShip : MonoBehaviour
 
     bool HasControl()
     {
+#if UNITY_WEBGL
+        return true;
+#else
         if (Network.isClient || Network.isServer)
         {
             return GetComponent<NetworkView>() && GetComponent<NetworkView>().isMine;
@@ -142,6 +145,7 @@ public class PlayerShip : MonoBehaviour
         else {
             return true;
         }
+#endif
     }
 
     private bool AutoaimSnapToPredictor(Vector3 mousePos, ModuleStatus module, WeaponHardpoint hardpoint)

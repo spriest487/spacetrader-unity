@@ -38,6 +38,7 @@ public class ShipType : ScriptableObject
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
         var obj = (Transform) Instantiate(prefab, position, rotation);
+        obj.name = this.name;
 
         var ship = obj.gameObject.AddComponent<Ship>();
         ship.BaseStats = stats;

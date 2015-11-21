@@ -1,19 +1,31 @@
 ﻿using UnityEngine;
+using Pathfinding;
 using System.Collections;
 
-[RequireComponent(typeof(Ship))]
+[RequireComponent(typeof(Ship), typeof(Rigidbody))]
 public class AICaptain : MonoBehaviour
 {
 	private const float AIM_ACCURACY = 2f;
-
-    private Ship ship;
-
+    
 	public Vector3 destination;
+
+    /// <summary>
+    /// if set we will try to rotate until our up vector matches this one.
+    /// mostly for aesthetic purposes, ie flying in formation
+    /// </summary>
 	public Vector3? targetUp;
+
+    /// <summary>
+    /// Even if we're close to the destination, we'll use manual thruster control
+    /// to hit this point exactly
+    /// </summary>
 	public Vector3? adjustTarget;
 
 	public float Throttle;
     public float MinimumThrust;
+
+    private Ship ship;
+    private Rigidbody rigidbody;
 
     public float CloseDistance
     {
@@ -49,23 +61,21 @@ public class AICaptain : MonoBehaviour
         var towards = between.normalized;
         var localTowards = transform.InverseTransformDirection(towards);
 
-        Debug.DrawLine(GetComponent<Rigidbody>().transform.position, GetComponent<Rigidbody>().transform.position + (towards * 5), Color.cyan, Time.deltaTime);
+        Debug.DrawLine(transform.position, transform.position + (towards * 5), Color.cyan, Time.deltaTime);
 
         //local rotation required to get to target
         var rotateTo = Quaternion.LookRotation(localTowards, transform.up);
 
         var totalAngle = Vector3.Dot(towards, transform.forward);
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
-
-        //Debug.Log("angle to target: " + totalAngle);
-
+        
         var facingTowardsAngle = ship.BaseStats.maxTurnSpeed;
         var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 
         var closeEnough = IsCloseTo(destination, between);
 
-        var currentLocalRotation = transform.InverseTransformDirection(ship.GetComponent<Rigidbody>().angularVelocity) * Mathf.Rad2Deg;
+        var currentLocalRotation = transform.InverseTransformDirection(rigidbody.angularVelocity) * Mathf.Rad2Deg;
 
         if (!facingDirectlyTowards)
         {
@@ -112,8 +122,6 @@ public class AICaptain : MonoBehaviour
 
             ship.pitch = angles.x;
             ship.yaw = angles.y;
-            //ship.roll = angles.z;
-            //rigidbody.transform.rotation = rotateTo;
         }
         else
         {
@@ -124,8 +132,6 @@ public class AICaptain : MonoBehaviour
                 var angle = currentLocalRotation[a];
                 counterThrust[a] = -(Mathf.Clamp01(angle / ship.BaseStats.maxTurnSpeed));
             }
-
-            //Debug.Log(string.Format("Current rotation {0}, Counter {1}", currentLocalRotation.ToString("F5"), counterThrust.ToString("F5")));
 
             ship.pitch = counterThrust.x;
             ship.yaw = counterThrust.y;
@@ -145,45 +151,41 @@ public class AICaptain : MonoBehaviour
                 {
                     //if we know we're not rotating, and we're close to the target, use strafe and lift to adjust our pos towards the target
                     ship.thrust = 0;
-
-                    //Debug.Log(newThrust.ToString("F3"));
                 }
                 else
                 {
                     var distance = between.magnitude;
 
                     var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
-                    var currentThrust = GetComponent<Rigidbody>().velocity.magnitude / ship.BaseStats.maxSpeed;
-
-                    //Debug.Log(string.Format("Accelerating to target, desired speed is {0} and current speed factor is {1}", desiredSpeed, currentThrust));
+                    var currentThrust = rigidbody.velocity.magnitude / ship.BaseStats.maxSpeed;
 
                     ship.thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
-
-                    //Debug.Log(string.Format("Close enough! Distance is {0}, min is {1}", distance, closeEnoughDistance));
                 }
             }
             else
             {
                 ship.thrust = 1;
-
-                //Debug.Log("Full speed ahead");
             }
         }
 
         ship.thrust = Mathf.Max(MinimumThrust, ship.thrust);
     }
 
-    void Awake()
+    void Start()
     {
         ship = GetComponent<Ship>();
+        rigidbody = GetComponent<Rigidbody>();
     }
-					
-	void FixedUpdate () {
-		//var danger = false;
-        
-		Debug.DrawLine(GetComponent<Rigidbody>().transform.position, destination, Color.red, Time.deltaTime);
+    					
+	void FixedUpdate () {        
+		Debug.DrawLine(transform.position, destination, Color.red, Time.deltaTime);
 
-		if (!ship)
+        if (adjustTarget.HasValue)
+        {
+            Debug.DrawLine(transform.position, adjustTarget.Value, Color.magenta, Time.deltaTime);
+        }
+
+        if (!ship)
 		{
 			return;
 		}
@@ -191,7 +193,7 @@ public class AICaptain : MonoBehaviour
 		var between = destination - transform.position;
         if (between.sqrMagnitude > Vector3.kEpsilon)
         {
-            RotateTo(/*danger, */between);
+            RotateTo(between);
         }
 
 		ship.strafe = Mathf.Clamp(ship.strafe, -1, Throttle);
@@ -204,7 +206,7 @@ public class AICaptain : MonoBehaviour
 
 	private void ApplyAdjustThrust(Ship ship) 
 	{
-		var currentLocalSpeed = transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity);
+		var currentLocalSpeed = transform.InverseTransformDirection(rigidbody.velocity);
 
 		var maxAdjust = 1 - Mathf.Abs(ship.thrust);
 		if (adjustTarget.HasValue && maxAdjust > Vector3.kEpsilon)
@@ -213,15 +215,13 @@ public class AICaptain : MonoBehaviour
 
 			var adjustBetween = adjustTarget.Value - ship.transform.position;
 
-			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude / (Mathf.Pow(ship.BaseStats.maxSpeed, 2)));
+			float adjustPower = Mathf.Clamp01(adjustBetween.sqrMagnitude);
 			adjustPower = Mathf.Log10(1 + (adjustPower * 9)); //log10 slowdown instead of linear so we slow down more dramatically closer to the goal
 
 			adjustPower *= maxAdjust;
-
-			//Debug.Log(string.Format("Adjusting in direction {0}, with power {1}", adjustTarget.Value.ToString("F3"), maxAdjust));
-
+            
 			var localBetween = ship.transform.InverseTransformDirection(adjustBetween);
-
+            
 			float betweenDimMax = Mathf.Max(
 				Mathf.Abs(localBetween.x),
 				Mathf.Abs(localBetween.y),
@@ -230,23 +230,22 @@ public class AICaptain : MonoBehaviour
 			Vector3 newThrust = new Vector3(ship.strafe, ship.lift, ship.thrust);
 			if (betweenDimMax > Vector3.kEpsilon)
 			{
-				//Debug.Log(string.Format("Current speed {0}, local between {1}", currentLocalSpeed.ToString("F3"), localBetween.ToString("F3")));
-
 				for (var i = 0; i < 3; ++i)
 				{
 					/* if we're already moving in this direction, but we're going faster
 					 * than we're actually trying to thrust, let's assume we're going too
 					 fast and fire the opposite thruster to slow down a bit */
-					float thrustToCounteract = currentLocalSpeed[i] / ship.BaseStats.maxSpeed;
+					float thrustToCounteract = currentLocalSpeed[i];
+
 					if (MathUtils.SameSign(thrustToCounteract, localBetween[i]) && Mathf.Abs(thrustToCounteract) > adjustPower)
 					{
 						newThrust[i] = -thrustToCounteract;
 					}
 					else
 					{
-						float adjustThrust = adjustPower * ((localBetween[i] / betweenDimMax) / ship.BaseStats.maxSpeed);
+						float adjustThrust = (localBetween[i] / betweenDimMax);
 
-						newThrust[i] = adjustThrust;
+						newThrust[i] = adjustThrust * adjustPower;
 					}
 				}
 			}
