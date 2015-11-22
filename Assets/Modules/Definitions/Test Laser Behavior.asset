@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e06d8785c31df8943be4d0fd7ef9fe11, type: 3}
+  m_Name: Test Laser Behavior
+  m_EditorClassIdentifier: 
+  bulletType: {fileID: 11400000, guid: 7fe2c02bc819f154289f7d27a5c41926, type: 2}
+  muzzleFlashType: {fileID: 400004, guid: 1e701cb88f09ad9409e9525b5939a121, type: 2}
+  damagePerShot: 0

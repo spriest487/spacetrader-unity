@@ -3,7 +3,7 @@
 public class ModulePreset : ScriptableObject
 {
 #if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Module Preset")]
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Module Preset")]
     public static void CreateModulePreset()
     {
         ScriptableObjectUtility.CreateAsset<ModulePreset>();

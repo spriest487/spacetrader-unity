@@ -5,10 +5,7 @@ using System.Collections;
 public class CombatCaptain : MonoBehaviour
 {
     private AITaskFollower taskFollower;
-
-    [SerializeField]
-    private Targetable target;
-
+    
     //private Ship formationLeader;
 
     private void Start()
@@ -20,9 +17,11 @@ public class CombatCaptain : MonoBehaviour
     {
         if (taskFollower.Idle)
         {
+            var target = taskFollower.Captain.Ship.Target;
+
             if (target)
             {
-                taskFollower.AssignTask(ChaseTask.Create(target));
+                taskFollower.AssignTask(AttackTask.Create(target));
             }
 
             /*taskFollower.AssignTask(WaitTask.Create(2));

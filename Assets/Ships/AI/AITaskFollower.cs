@@ -84,15 +84,18 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 #if UNITY_EDITOR
         CheckRequiredTypes(task);
 #endif
+        task.Status = AITask.TaskStatus.NEW;
         task.TaskFollower = this;
         tasks.AddLast(task);
     }
 
     public void ClearTasks()
     {
-        while (tasks.Last != null)
+        LinkedListNode<AITask> last;
+        while ((last = tasks.Last) != null)
         {
-            tasks.Last.Value.End();
+            last.Value.Status = AITask.TaskStatus.FINISHED;
+            last.Value.End();
             tasks.RemoveLast();
         }
     }
@@ -104,14 +107,28 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     }
     
     void Update()
-    {
-        while(tasks.Count != 0)
+    {  
+        while(true)
         {
-            var nextTask = tasks.Last.Value;
-
-            if (!nextTask.InProgress)
+            /* a task execution can add new tasks itself, but during an update we
+            skip those at the end of the list that are marked NEW */
+            LinkedListNode<AITask> nextTaskNode = tasks.Last;
+            while(nextTaskNode != null && nextTaskNode.Value.Status == AITask.TaskStatus.NEW)
             {
-                nextTask.InProgress = true;
+                nextTaskNode = nextTaskNode.Previous;
+            }
+
+            if (nextTaskNode == null)
+            {
+                //no tasks remaining that aren't NEW
+                break;
+            }
+
+            var nextTask = nextTaskNode.Value;
+
+            if (nextTask.Status == AITask.TaskStatus.NOT_STARTED)
+            {
+                nextTask.Status = AITask.TaskStatus.IN_PROGRESS;
                 nextTask.Begin();
             }
 
@@ -119,14 +136,25 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 
             if (nextTask.Done)
             {
+                nextTask.Status = AITask.TaskStatus.FINISHED;
                 nextTask.End();
-                tasks.RemoveLast();
+                tasks.Remove(nextTaskNode);
             }
             else
             {
-                /* stop updating tasks as soon as we hit one
-                that isn't Done */
+                /* stop executing tasks as soon as there's at least one
+                non-NEW task that isn't DONE after one update */
                 break;
+            }
+        }
+
+        /* change status of tasks added during this update so they're not
+        skipped next update */
+        foreach (var task in tasks)
+        {
+            if (task.Status == AITask.TaskStatus.NEW)
+            {
+                task.Status = AITask.TaskStatus.NOT_STARTED;
             }
         }
     }

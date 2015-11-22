@@ -27,6 +27,14 @@ public class AICaptain : MonoBehaviour
     private Ship ship;
     private Rigidbody rigidbody;
 
+    public Ship Ship
+    {
+        get
+        {
+            return ship;
+        }
+    }
+
     public float CloseDistance
     {
         get

@@ -2,6 +2,14 @@
 
 public class GunBehaviour : ModuleBehaviour
 {
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Gun Behavior")]
+    public static void CreateModuleDefinition()
+    {
+        ScriptableObjectUtility.CreateAsset<GunBehaviour>();
+    }
+#endif
+
     [SerializeField]
 	private Bullet bulletType;
 

@@ -2,13 +2,6 @@
 
 public class ModuleStatus : ScriptableObject
 {
-    public static ModuleStatus None { get; private set; }
-
-    static ModuleStatus()
-    {
-        None = CreateInstance<ModuleStatus>();
-    }
-    
     [SerializeField]
     private float cooldown;
 
@@ -40,7 +33,7 @@ public class ModuleStatus : ScriptableObject
                 definition = ModuleConfiguration.Instance.GetDefinition(definitionName);
             }
 
-            return ModuleConfiguration.Instance.GetDefinition(definitionName); ;
+            return ModuleConfiguration.Instance.GetDefinition(definitionName);
         }
     }
 
@@ -63,12 +56,12 @@ public class ModuleStatus : ScriptableObject
 
     public static ModuleStatus Create(string moduleName, ModuleGroup moduleGroup)
     {
-        if (moduleName == null || moduleGroup == null)
+        if (moduleGroup == null)
         {
             throw new UnityException("bad arguments to Setup()");
         }
 
-        ModuleStatus result = ScriptableObject.CreateInstance<ModuleStatus>();
+        ModuleStatus result = CreateInstance<ModuleStatus>();
         result.moduleGroup = moduleGroup;
         result.definitionName = moduleName;
         return result;

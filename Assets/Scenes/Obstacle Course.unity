@@ -6154,6 +6154,7 @@ GameObject:
   - 4: {fileID: 264273115}
   - 114: {fileID: 264273114}
   - 114: {fileID: 264273116}
+  - 114: {fileID: 264273117}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -6275,6 +6276,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: afb274ad40da5fa4-d9a297d9ff3f050a
+--- !u!114 &264273117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 264273113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed964024f095b364088197ccee46647c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  definitionsArray:
+  - {fileID: 11400000, guid: c5676ea959a8bc94cb6d51ebbd8a0a14, type: 2}
+  bullet: {fileID: 0}
+  bulletMuzzleFlash: {fileID: 0}
 --- !u!1 &267950041
 GameObject:
   m_ObjectHideFlags: 0
@@ -24624,6 +24640,7 @@ GameObject:
   - 114: {fileID: 894714707}
   - 114: {fileID: 894714706}
   - 114: {fileID: 894714715}
+  - 114: {fileID: 894714716}
   m_Layer: 0
   m_Name: Test Ship
   m_TagString: Player
@@ -24657,7 +24674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050aebd1cbab8924dbfe2724b5384f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 216121814}
 --- !u!114 &894714707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24749,7 +24765,7 @@ MonoBehaviour:
     thrust: 10
     maxTurnSpeed: 90
     maxSpeed: 20
-  target: {fileID: 0}
+  target: {fileID: 216121814}
   explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
   abilities:
   - {fileID: 435397309}
@@ -24816,6 +24832,18 @@ MonoBehaviour:
     tagsChange: -1
     tagsSet: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+--- !u!114 &894714716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 894714704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f7572549bb9ef40a3dcc6402eb3a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontModules: {fileID: 1317975341}
 --- !u!1 &941306575
 GameObject:
   m_ObjectHideFlags: 0
@@ -33333,6 +33361,20 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &1317975341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb16774e2057f84e80ee68dbcf11f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadout: {fileID: 894714716}
+  modules:
+  - {fileID: 2084019330}
 --- !u!1 &1333515192
 GameObject:
   m_ObjectHideFlags: 0
@@ -48774,6 +48816,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2076998007}
   m_Mesh: {fileID: 4300000, guid: e366fe53a22f37545b40291b022dd65b, type: 3}
+--- !u!114 &2084019330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15364b2a10345a45b22046030069e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: .100000001
+  definitionName: Test Laser
+  moduleGroup: {fileID: 1317975341}
+  aim: {x: 0, y: 0, z: 0}
 --- !u!1 &2113634536
 GameObject:
   m_ObjectHideFlags: 0

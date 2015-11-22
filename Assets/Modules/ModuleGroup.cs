@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System;
 
 public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 {
@@ -27,7 +28,16 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 	}
 
 #if UNITY_EDITOR
-	public bool foldoutState = true;
+    public void PopulateSlots()
+    {
+        for (int i = 0; i < modules.Length; ++i)
+        {
+            if ((modules[i]) == null)
+            {
+                modules[i] = ModuleStatus.Create(null, this);
+            }
+        }
+    }
 #endif
 
 	public ModuleGroup()
@@ -49,19 +59,19 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 	{
 		if (size < 0)
 		{
-			throw new System.ArgumentException("size must be 0 or greater");
+			throw new ArgumentException("size must be 0 or greater");
 		}
 
 		ModuleStatus[] newModules = new ModuleStatus[size];
 		for (var slot = 0; slot < size; ++slot)
 		{
-			if (modules != null && slot < modules.Length)
+			if (slot < modules.Length)
 			{
 				newModules[slot] = modules[slot];
 			}
 			else
 			{
-				newModules[slot] = ModuleStatus.None;
+				newModules[slot] = null;
 			}
 		}
 
@@ -72,7 +82,7 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 	{
 		if (slot < 0 || slot >= modules.Length)
 		{
-			throw new System.ArgumentException("not a valid slot: " + slot);
+			throw new ArgumentException("not a valid slot: " + slot);
 		}
 
 		if (moduleType != null)
@@ -81,7 +91,7 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 		}
 		else
 		{
-			modules[slot] = ModuleStatus.None;
+			modules[slot] = null;
 		}
 
 	}
@@ -91,7 +101,7 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 		return ((IEnumerable<ModuleStatus>)modules).GetEnumerator();
 	}
 
-	System.Collections.IEnumerator IEnumerable.GetEnumerator()
+	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return modules.GetEnumerator();
 	}

@@ -2,17 +2,25 @@
 
 public abstract class AITask : ScriptableObject
 {
+    public enum TaskStatus
+    {
+        NEW,
+        NOT_STARTED,
+        IN_PROGRESS,
+        FINISHED
+    }
+
     [SerializeField]
     private AITaskFollower taskFollower;
 
-    private bool inProgress = false;
+    private TaskStatus status;
 
     public abstract bool Done { get; }
 
-    public bool InProgress
+    public TaskStatus Status
     {
-        get { return inProgress; }
-        set { inProgress = value; }
+        get { return status; }
+        set { status = value; }
     }
 
     public AITaskFollower TaskFollower
