@@ -3,19 +3,21 @@ using UnityEngine;
 
 public class AimAtTask : AITask
 {
-    private const float AIM_ACCURACY = 5.0f;
-
     [SerializeField]
     private Vector3 dest;
 
     [SerializeField]
     private Vector3 aimAtPos;
-
-    public static AimAtTask Create(Vector3 dest, Vector3 aimAtPos)
+    
+    [SerializeField]
+    private float accuracy;
+    
+    public static AimAtTask Create(Vector3 dest, Vector3 aimAtPos, float accuracy)
     {
         AimAtTask task = CreateInstance<AimAtTask>();
         task.dest = dest;
         task.aimAtPos = aimAtPos;
+        task.accuracy = Mathf.Deg2Rad * accuracy;
 
         return task;
     }
@@ -25,12 +27,12 @@ public class AimAtTask : AITask
         get
         {
             var forward = TaskFollower.transform.forward;
-            var between = dest - TaskFollower.transform.position;
+            var between = aimAtPos - TaskFollower.transform.position;
             var dotToDest = Vector3.Dot(TaskFollower.transform.forward, between.normalized);
 
-            var angleToDest = Mathf.Rad2Deg * Mathf.Acos(dotToDest);
+            var angleToDest = Mathf.Acos(dotToDest);
 
-            return angleToDest > AIM_ACCURACY;
+            return angleToDest < accuracy;
         }
     }
 

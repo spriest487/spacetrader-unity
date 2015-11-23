@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class AttackTask : FlyToPointTask
+public class AttackTask : AITask
 {
     private const float MINIMUM_THRUST = 0.25f;
     private const float FOLLOW_RANGE = 50;
@@ -12,6 +12,12 @@ public class AttackTask : FlyToPointTask
     
     [SerializeField]
     private bool aimCloseEnough;
+
+    [SerializeField]
+    private bool canSeeTarget;
+
+    [SerializeField]
+    private bool evasive;
 
     private Targetable Target
     {
@@ -30,39 +36,64 @@ public class AttackTask : FlyToPointTask
         {
             return;
         }
-        
-        //are we aiming in the same direction as the target
-        var dotToForward = Vector3.Dot(TaskFollower.transform.forward, Target.transform.forward);
-        aimCloseEnough = dotToForward > ANGLE_MATCH;
 
-        //is my ship behind the Target
-        var TargetToMe = (TaskFollower.transform.position - Target.transform.position).normalized;
-        var dotToMe = Vector3.Dot(Target.transform.forward, TargetToMe);
-        behind = dotToMe < 0;
-        
-        //a point directly behind them some way
-        var behindOffset = Target.transform.forward - (Target.transform.forward * FOLLOW_RANGE);
-        dest = Target.transform.position + behindOffset;
-
-        if (TaskFollower.Captain.IsCloseTo(dest))
+        var targetCollider = Target.GetComponent<Collider>();
+        if (targetCollider)
         {
-            /* we're close to where we want to be, now aim at them */
-            if (!aimCloseEnough)
-            {
-                TaskFollower.AssignTask(AimAtTask.Create(dest, Target.transform.position));
-            }
+            canSeeTarget = TaskFollower.Captain.CanSee(targetCollider);
         }
         else
         {
-            //keep trying to get behind them
-            base.Update();
-
-            //don't drop the speed too much in combat to keep dodging!
-            TaskFollower.Captain.MinimumThrust = MINIMUM_THRUST;
+            canSeeTarget = TaskFollower.Captain.CanSee(Target.transform.position);
         }
 
-        //pew pew pew
-        TaskFollower.AssignTask(FireWeaponsTask.Create());
+        if (!canSeeTarget)
+        {
+            /*there must be some obstacle in the way, 
+            let's follow the nav points directly to them
+            and see if that helps */
+            TaskFollower.AssignTask(NavigateTask.Create(Target.transform.position, 0));
+        }
+        else
+        {
+            //are we aiming in the same direction as the target
+            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, Target.transform.forward);
+            aimCloseEnough = dotToForward > ANGLE_MATCH;
+
+            //is my ship behind the Target
+            var TargetToMe = (TaskFollower.transform.position - Target.transform.position).normalized;
+            var dotToMe = Vector3.Dot(Target.transform.forward, TargetToMe);
+            behind = dotToMe < 0;
+
+            Vector3 dest = Target.transform.position;
+
+            if (evasive)
+            {
+                //try to get behind them
+                var behindOffset = Target.transform.forward - (Target.transform.forward * FOLLOW_RANGE);
+                dest += behindOffset;
+            }
+
+            if (TaskFollower.Captain.IsCloseTo(dest))
+            {
+                /* we're close to where we want to be, now aim at them */
+                if (!aimCloseEnough)
+                {
+                    TaskFollower.AssignTask(AimAtTask.Create(dest, Target.transform.position, 10));
+                }
+            }
+            else
+            {
+                //keep trying to get behind them
+                TaskFollower.AssignTask(NavigateTask.Create(dest));
+
+                //don't drop the speed too much in combat to keep dodging!
+                //TaskFollower.Captain.MinimumThrust = MINIMUM_THRUST;
+            }
+
+            //pew pew pew
+            TaskFollower.AssignTask(FireWeaponsTask.Create());
+        }        
     }
 
     public override bool Done
@@ -74,7 +105,9 @@ public class AttackTask : FlyToPointTask
                 return true;
             }
 
-            return behind && aimCloseEnough;
+            return (behind || !evasive)
+                && aimCloseEnough 
+                && canSeeTarget;
         }
     }
 }

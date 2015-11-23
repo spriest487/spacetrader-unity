@@ -2,21 +2,27 @@
 
 public class FlyToPointTask : AITask
 {
-    public static FlyToPointTask Create(Vector3 dest)
+    public static FlyToPointTask Create(Vector3 dest, float accuracy)
     {
         FlyToPointTask task = CreateInstance<FlyToPointTask>();
         task.dest = dest;
+        task.accuracy = accuracy;
         return task;
     }
 
     [SerializeField]
-    protected Vector3 dest;
+    private Vector3 dest;
+
+    [SerializeField]
+    private float accuracy;
 
     public override bool Done
     {
         get
         {
-            return TaskFollower.Captain.IsCloseTo(dest);
+            var toTarget = dest - TaskFollower.transform.position;
+            var sqrAccuracy = (accuracy * accuracy);
+            return toTarget.sqrMagnitude < sqrAccuracy;
         }
     }
 

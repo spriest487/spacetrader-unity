@@ -4,10 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(Seeker))]
 public class NavigateTask : AITask
 {
-    const float PATH_CHECK_INTERVAL = 1;
-
     [SerializeField]
     private Vector3 dest;
+
+    [SerializeField]
+    private int maxPathLength;
 
     [SerializeField]
     private Path path;
@@ -17,10 +18,18 @@ public class NavigateTask : AITask
 
     private Seeker seeker;
 
-    public static NavigateTask Create(Vector3 dest)
+    /// <summary>
+    /// Fly to a point, following the pathfinding grid as necessary
+    /// </summary>
+    /// <param name="dest">Destination point to move to</param>
+    /// <param name="maxSteps">If >0, only use this number of
+    /// steps in the path before stopping</param>
+    /// <returns></returns>
+    public static NavigateTask Create(Vector3 dest, int maxSteps = 0)
     {
         NavigateTask task = CreateInstance<NavigateTask>();
         task.dest = dest;
+        task.maxPathLength = maxSteps;
         return task;
     }
 
@@ -29,20 +38,54 @@ public class NavigateTask : AITask
         path = newPath;
         lastPathTime = Time.time;
 
+        var closeDistance = TaskFollower.Captain.Ship.BaseStats.maxSpeed * Time.fixedDeltaTime;
+        closeDistance += TaskFollower.Captain.CloseDistance;
+
+        var closeAngle = 15.0f;
+
         if (!newPath.error)
         {
-            TaskFollower.AssignTask(FlyToPointTask.Create(dest));
+            int pathLength = path.vectorPath.Count;
 
-            for (int i = path.vectorPath.Count - 1; i >= 0; --i)
+            int maxSteps = maxPathLength < 1 ? pathLength : maxPathLength;
+            maxSteps = System.Math.Min(pathLength, maxSteps);
+
+            /* if the maxsteps is less than the path length, skip
+                steps after maxsteps */
+            int skippedSteps = pathLength - maxSteps;
+
+            /* move as far as it takes to get to the max length
+            path, then stop */
+            dest = newPath.vectorPath[maxSteps - 1];
+            TaskFollower.AssignTask(FlyToPointTask.Create(dest, closeDistance));
+
+            for (int step = 0; step < maxSteps; ++step)
             {
-                TaskFollower.AssignTask(FlyToPointTask.Create(path.vectorPath[i]));
+                var pathIndex = (pathLength - 1) - (step + skippedSteps);
+                var pathPoint = path.vectorPath[pathIndex];
+
+                /* for every point except the first one, aim at
+                    the next point after arriving */
+                if (step > 0)
+                {
+                    var nextPoint = path.vectorPath[pathIndex + 1];                    
+                    TaskFollower.AssignTask(AimAtTask.Create(nextPoint, nextPoint, closeAngle));
+                }
+
+                /* for the final step, aim at the destination after moving */
+                if (step == 0)
+                {
+                    TaskFollower.AssignTask(AimAtTask.Create(dest, dest, closeAngle));
+                }
+                                
+                TaskFollower.AssignTask(FlyToPointTask.Create(pathPoint, closeDistance));
             }
         }
     }
 
     public override void Update()
     {
-        if (path == null || Time.time > lastPathTime + PATH_CHECK_INTERVAL)
+        if (path == null)
         {
             seeker.StartPath(TaskFollower.transform.position, dest);
         }

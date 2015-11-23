@@ -26,6 +26,7 @@ public class AICaptain : MonoBehaviour
 
     private Ship ship;
     private Rigidbody rigidbody;
+    private Collider collider;
 
     public Ship Ship
     {
@@ -39,7 +40,8 @@ public class AICaptain : MonoBehaviour
     {
         get
         {
-            return ship.BaseStats.thrust;
+            return collider.bounds.extents.z * 2;
+            //return ship.BaseStats.maxSpeed;
         }
     }
 
@@ -53,7 +55,7 @@ public class AICaptain : MonoBehaviour
 
     private bool IsCloseTo(Vector3 point, Vector3 between)
     {
-        return between.sqrMagnitude < Mathf.Pow(CloseDistance, 2);
+        return between.sqrMagnitude < CloseDistanceSqr;
     }
 
     public bool IsCloseTo(Vector3 point)
@@ -61,6 +63,16 @@ public class AICaptain : MonoBehaviour
         var between = point - transform.position;
 
         return IsCloseTo(point, between);
+    }
+
+    public bool CanSee(Collider target)
+    {
+        return false;
+    }
+
+    public bool CanSee(Vector3 target)
+    {
+        return false;
     }
 
     private void RotateTo(Vector3 between)
@@ -183,6 +195,7 @@ public class AICaptain : MonoBehaviour
     {
         ship = GetComponent<Ship>();
         rigidbody = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
     }
     					
 	void FixedUpdate () {        
@@ -192,12 +205,7 @@ public class AICaptain : MonoBehaviour
         {
             Debug.DrawLine(transform.position, adjustTarget.Value, Color.magenta, Time.deltaTime);
         }
-
-        if (!ship)
-		{
-			return;
-		}
-
+        
 		var between = destination - transform.position;
         if (between.sqrMagnitude > Vector3.kEpsilon)
         {
@@ -262,5 +270,11 @@ public class AICaptain : MonoBehaviour
 			ship.lift = newThrust.y;
 			ship.thrust = newThrust.z;
 		}
+        else
+        {
+            //we don't use these if we're not adjusting
+            ship.strafe = 0;
+            ship.lift = 0;
+        }
 	}
 }
