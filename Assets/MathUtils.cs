@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
 
 public class MathUtils : MonoBehaviour
 {
@@ -12,4 +12,17 @@ public class MathUtils : MonoBehaviour
 	{
 		return f1 * f2 >= 0.0f;
 	}
+
+    public static void OrderByDistance(Transform[] transforms, Vector3 point)
+    {
+        var result = new Transform[transforms.Length];
+        
+        Array.Sort(transforms, (a, b) =>
+        {
+            var aDist = (a.position - point).sqrMagnitude;
+            var bDist = (b.position - point).sqrMagnitude;
+
+            return (int) (aDist - bDist);
+        });
+    }
 }
