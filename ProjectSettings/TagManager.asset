@@ -11,7 +11,8 @@ TagManager:
   - WorldListener
   - MissionListener
   - MissionObjective
-  - Pathfinding
+  - WorldPathfinding
+  - LocalPathfinding
   layers:
   - Default
   - TransparentFX
