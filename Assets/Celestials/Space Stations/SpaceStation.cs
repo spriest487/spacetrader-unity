@@ -1,11 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class SpaceStation : MonoBehaviour
 {
-    public MooringTrigger mooringTrigger;
+    [SerializeField]
+    private MooringTrigger mooringTrigger;
 
+    [SerializeField]
     private List<Moorable> mooredShips;
+
+    [SerializeField]
+    private List<CrewMember> availableCrew;
+
+    public MooringTrigger MooringTrigger
+    {
+        get { return mooringTrigger; }
+    }
+
+    public List<CrewMember> AvailableCrew
+    {
+        get { return availableCrew; }
+        set
+        {
+            availableCrew = value == null ?
+                 new List<CrewMember>() :
+                 new List<CrewMember>(value);
+        }
+    }
 
     public void RequestMooring(Moorable moorable)
     {

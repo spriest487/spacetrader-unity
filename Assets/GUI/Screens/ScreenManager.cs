@@ -65,6 +65,7 @@ public class ScreenManager : MonoBehaviour
         MainMenu,
         Equipment,
         MissionPrep,
+        Recruitment
     }
 
     public enum MissionPhase

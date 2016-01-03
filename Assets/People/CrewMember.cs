@@ -2,16 +2,21 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-class CrewMember
+public class CrewMember : ScriptableObject
 {
-    [SerializeField]
-    private readonly string _name;
-
-    public string name { get { return _name; } }
-
-    public CrewMember(string name)
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew Member")]
+    public static void CreateFromMenu()
     {
-        this._name = name;
+        ScriptableObjectUtility.CreateAsset<CrewMember>();
+    }
+#endif
+
+    public static CrewMember Create(string name)
+    {
+        CrewMember result = CreateInstance<CrewMember>();
+        result.name = name;
+
+        return result;
     }
 }

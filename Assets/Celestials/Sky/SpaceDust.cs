@@ -17,8 +17,8 @@ public class SpaceDust : MonoBehaviour {
 		result.position = Random.insideUnitSphere * radius;
 	
 		var colorVal = 0.8f + 0.2f * Random.value;
-		result.color = new Color(colorVal, colorVal, colorVal);
-		result.size = size;
+		result.startColor = new Color(colorVal, colorVal, colorVal);
+		result.startSize = size;
 
 		result.position += center;
 
@@ -56,8 +56,8 @@ public class SpaceDust : MonoBehaviour {
 			float fadeAmt = 1-(sqrDist / fadeDistSqr);
 			fadeAmt = Mathf.Clamp(fadeAmt, 0, 1);
 
-			var color = particles[particleIt].color;
-			particles[particleIt].color = new Color(
+			var color = particles[particleIt].startColor;
+			particles[particleIt].startColor = new Color(
 				color.r,
 				color.g,
 				color.b,

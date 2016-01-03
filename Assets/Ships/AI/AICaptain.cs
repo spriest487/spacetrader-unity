@@ -25,8 +25,10 @@ public class AICaptain : MonoBehaviour
     public float MinimumThrust;
 
     private Ship ship;
-    private Rigidbody rigidbody;
-    private Collider collider;
+
+    //hiding the obsolete builtin Unity fields
+    new private Rigidbody rigidbody;
+    new private Collider collider;
 
     public Ship Ship
     {

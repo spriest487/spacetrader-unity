@@ -74,7 +74,7 @@ public class MooringEffect : MonoBehaviour
             var matProperties = new MaterialPropertyBlock();
             if (materialTintProperty != null)
             {
-                matProperties.AddColor("_TintColor", color);
+                matProperties.SetColor("_TintColor", color);
             }
 
             if (mesh)
