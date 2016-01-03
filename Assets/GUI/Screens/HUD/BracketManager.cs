@@ -82,6 +82,19 @@ public class BracketManager : MonoBehaviour
         newBrackets.Values.CopyTo(brackets, 0);
 	}
 
+    public Bracket FindBracket(GameObject obj)
+    {   
+        foreach (var bracket in brackets)
+        {
+            if (bracket.Target.gameObject == obj)
+            {
+                return bracket;
+            }
+        }
+
+        return null;
+    }
+
     public Color GetBracketColor(string forFaction, Targetable bracketTarget)
     {
         bool sameFaction = forFaction == bracketTarget.Faction;

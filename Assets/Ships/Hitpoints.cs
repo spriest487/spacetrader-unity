@@ -35,6 +35,8 @@ public class Hitpoints : MonoBehaviour
         }
     }
 
+    private bool inCamera;
+
     [SerializeField]
     private ShieldValue[] shieldSectors;
 
@@ -88,6 +90,15 @@ public class Hitpoints : MonoBehaviour
     }
 
     public void TakeDamage(int amount) {
+        if (ScreenManager.Instance)
+        {
+            ScreenManager.Instance.BroadcastScreenMessage(
+                ScreenManager.ScreenState.Flight,
+                ScreenManager.HudOverlayState.None,
+                "OnDamageNotification",
+                new DamageNotification(amount, this));
+        }
+
         if (amount == 0)
         {
             return;

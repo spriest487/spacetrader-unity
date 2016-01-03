@@ -137,6 +137,20 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    public void BroadcastScreenMessage(ScreenState screen,
+        HudOverlayState overlayState,
+        string message, 
+        object value)
+    {
+        foreach (var overlay in hudOverlays)
+        {
+            if (overlay.ScreenState == screen && overlay.State == overlayState)
+            {
+                overlay.Overlay.BroadcastMessage(message, value, SendMessageOptions.DontRequireReceiver);
+            }
+        }
+    }
+    
     private void Apply()
     {
         foreach (var overlay in hudOverlays)
