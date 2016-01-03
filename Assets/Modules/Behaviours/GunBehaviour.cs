@@ -17,19 +17,10 @@ public class GunBehaviour : ModuleBehaviour
 	private Transform muzzleFlashType;
 
     [SerializeField]
-    [HideInInspector]
-	private int damagePerShot;
+	private int minDamage;
 
-	public static GunBehaviour Create(int damagePerShot,
-		Bullet bullet,
-		Transform muzzleFlash)
-	{
-        GunBehaviour result = CreateInstance<GunBehaviour>();
-        result.damagePerShot = damagePerShot;
-        result.bulletType = bullet;
-        result.muzzleFlashType = muzzleFlash;
-        return result;
-	}
+    [SerializeField]
+    private int maxDamage;
 
 	public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
 	{
@@ -43,7 +34,7 @@ public class GunBehaviour : ModuleBehaviour
             var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
 
             bulletInstance.owner = activator.gameObject;
-            bulletInstance.damage = damagePerShot;
+            bulletInstance.damage = Random.Range(minDamage, maxDamage);
 
             if (activator.GetComponent<Rigidbody>())
             {

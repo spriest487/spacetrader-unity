@@ -56,33 +56,8 @@ public class ModuleConfiguration : MonoBehaviour
 			return names;
 		}
 	}
-        
-    void Start() 
-    {
-        if (definitionsArray == null || definitionsArray.Length == 0)
-        {
-            List<ModuleDefinition> definitionsList = new List<ModuleDefinition>();
 
-            definitionsList.Add(ModuleDefinition.Create("Laser Gun",
-                GunBehaviour.Create(1, bullet, bulletMuzzleFlash),
-                0.1f
-            ));
-            
-            definitionsList.Add(ModuleDefinition.Create("Heavy Laser Gun",
-                GunBehaviour.Create(2, bullet, bulletMuzzleFlash),
-                1.0f
-            ));
-
-            definitionsList.Add(ModuleDefinition.Create("Training Laser",
-                GunBehaviour.Create(1, bullet, bulletMuzzleFlash),
-                0.2f
-            ));
-
-            definitionsArray = definitionsList.ToArray();
-        }        
-    }
-    
-	void OnEnable()
+    void OnEnable()
 	{
         if (Instance != null)
         {
