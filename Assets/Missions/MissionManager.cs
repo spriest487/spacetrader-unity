@@ -3,12 +3,8 @@ using System;
 
 public class MissionManager : MonoBehaviour
 {
-    [SerializeField]
-    private MissionDefinition[] missions;
-
-    [SerializeField]
-    private static MissionManager instance;
-
+    public static MissionManager Instance { get; private set; }
+    
     [SerializeField]
     private ActiveMission mission;
 
@@ -16,34 +12,20 @@ public class MissionManager : MonoBehaviour
     [SerializeField]
     private MissionPhase phase; 
     
-    public static MissionManager Instance { get { return instance; } }
-
-    public MissionDefinition[] Missions { get { return missions; } }
     public ActiveMission Mission { get { return mission; } }
     public MissionPhase Phase { get { return phase; } }
 
-    void OnWorldEnd()
+    private void OnEnable()
     {
-        Destroy(gameObject);
+        Instance = this;
     }
 
-    void OnEnable()
+    private void OnDisable()
     {
-        if (instance && instance != this)
-        {
-            Destroy(instance.gameObject);
-        }
-
-        instance = this;
-        DontDestroyOnLoad(gameObject);
+        Instance = null;
     }
-
-    void OnDisable()
-    {
-        instance = null;
-    }
-
-    void Update()
+        
+    private void Update()
     {
         if (phase == MissionPhase.Active)
         {
@@ -74,12 +56,12 @@ public class MissionManager : MonoBehaviour
             if (winnerCount > 0)
             {
                 Array.Resize(ref winners, winnerCount);
-                EndMission(winners);               
+                EndMission(winners);
             }
         }
     }
 
-    void Start()
+    private void Awake()
     {
         phase = MissionPhase.Prep;
 

@@ -102,10 +102,7 @@ public class MainMenu : MonoBehaviour
 
     public void BackToGame()
     {
-        if (ScreenManager.Instance)
-        {
-            ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
-        }
+        ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
     }
     
     public void Quit()
@@ -115,7 +112,7 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        var ingame = ScreenManager.Instance != null;
+        var ingame = !!PlayerShip.LocalPlayer;
 
         foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyIngame"))
         {

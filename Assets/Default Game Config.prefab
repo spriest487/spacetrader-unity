@@ -1,0 +1,194 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &190862
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 415718}
+  - 114: {fileID: 11420148}
+  - 114: {fileID: 11450970}
+  m_Layer: 0
+  m_Name: Default Game Config
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &415718
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 190862}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.012331, y: 2.5402308, z: 5.7732496}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11420148
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 190862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b0c0cd5e10a0ba4e9e669262ee234ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crewConfig: {fileID: 11400000, guid: 6842b45ae68327a40aeae75aa689b914, type: 2}
+  cargoConfig: {fileID: 11400000, guid: 16667b47347b6a44c94e090aefe428c6, type: 2}
+  missionsConfig: {fileID: 11400000, guid: a32ad9dc69ee3764c8643f4f6a09c3cb, type: 2}
+--- !u!114 &11450970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 190862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f38a179bf6a2ef44b0f0b1787f9a9b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  hudOverlay: 0
+  hudOverlays:
+  - state: 1
+    screenState: 0
+    overlay: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+    screenBarVisible: 0
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  - state: 2
+    screenState: 0
+    overlay: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
+    screenBarVisible: 1
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  - state: 3
+    screenState: 0
+    overlay: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
+    screenBarVisible: 1
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  - state: 4
+    screenState: 0
+    overlay: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
+    screenBarVisible: 1
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  - state: 0
+    screenState: 1
+    overlay: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
+    screenBarVisible: 0
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  - state: 0
+    screenState: 2
+    overlay: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
+    screenBarVisible: 0
+    overlayInstance: {fileID: 0}
+    barInstance: {fileID: 0}
+  screenBar: {fileID: 11407202, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
+  menuState: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: missionsConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: a32ad9dc69ee3764c8643f4f6a09c3cb,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: screenBar
+      value: 
+      objectReference: {fileID: 11407202, guid: a65b64b9096d88645b5a0a834281058a,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[0].state
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[0].screenBarVisible
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[0].overlay
+      value: 
+      objectReference: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[1].state
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[1].overlay
+      value: 
+      objectReference: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[1].screenBarVisible
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[2].state
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[2].overlay
+      value: 
+      objectReference: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[2].screenBarVisible
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[3].state
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[3].overlay
+      value: 
+      objectReference: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[3].screenBarVisible
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[4].screenBarVisible
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[4].screenState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[4].overlay
+      value: 
+      objectReference: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[5].screenState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[5].overlay
+      value: 
+      objectReference: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 190862}
+  m_IsPrefabParent: 1

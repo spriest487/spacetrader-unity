@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CrewManager : MonoBehaviour
+public class CrewConfiguration : ScriptableObject
 {
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew/Crew configuration")]
+    public static void Create()
+    {
+        ScriptableObjectUtility.CreateAsset<CrewConfiguration>();
+    }
+#endif
+
     [SerializeField]
     private TextAsset forenameList;
 
@@ -17,7 +25,7 @@ public class CrewManager : MonoBehaviour
         return asset.text.Split('\n');
     }
 
-    void Start()
+    private void OnEnable()
     {
         forenames = LoadNamesFromTextAsset(forenameList);
         surnames = LoadNamesFromTextAsset(surnameList);

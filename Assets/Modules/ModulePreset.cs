@@ -24,7 +24,14 @@ public class ModulePreset : ScriptableObject
         moduleLoadout.FrontModules.Resize(frontModules.Length);
         for (int module = 0; module < frontModules.Length; ++module)
         {
-            moduleLoadout.FrontModules.Equip(module, frontModules[module]);
+            var moduleName = frontModules[module];
+            var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleName);
+
+            if (itemType == null || itemType.ModuleDefinition == null)
+            {
+                throw new UnityException("bad module item name: " +moduleName);
+            }
+            moduleLoadout.FrontModules.Equip(module, itemType.ModuleDefinition);
         }
 
         var cargo = moduleLoadout.GetComponent<CargoHold>();

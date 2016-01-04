@@ -90,7 +90,7 @@ public class Hitpoints : MonoBehaviour
     }
 
     public void TakeDamage(int amount) {
-        if (ScreenManager.Instance)
+        if (PlayerShip.LocalPlayer)
         {
             ScreenManager.Instance.BroadcastScreenMessage(
                 ScreenManager.ScreenState.Flight,

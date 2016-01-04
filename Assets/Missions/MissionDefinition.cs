@@ -3,7 +3,7 @@
 public class MissionDefinition : ScriptableObject
 {
 #if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Mission Definition")]
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Missions/Mission definition")]
     public static void CreateMissionDefiniton()
     {
         ScriptableObjectUtility.CreateAsset<MissionDefinition>();

@@ -25,7 +25,7 @@ public class ShipModuleController : MonoBehaviour
     {
         if (caption && moduleStatus)
         {
-            caption.text = moduleStatus.Definition.Name;
+            caption.text = moduleStatus.Definition.name;
         }
     }
 }

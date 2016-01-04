@@ -4,19 +4,12 @@ public class ModuleStatus : ScriptableObject
 {
     [SerializeField]
     private float cooldown;
-
-    [SerializeField]
-    private string definitionName;
-
-    [SerializeField]
-    private ModuleGroup moduleGroup;
-
+    
     [SerializeField]
     private Vector3 aim;
 
-    /* don't serialize the current definition, if we lose the instance
-     just look it up in the global map again */
-    private ModuleDefinition definition {get; set; }
+    [SerializeField]
+    private ModuleDefinition definition;
 
     public Vector3 Aim
     {
@@ -26,44 +19,24 @@ public class ModuleStatus : ScriptableObject
 
     public ModuleDefinition Definition
     {
-        get
-        {
-            if (definition == null) 
-            {
-                definition = ModuleConfiguration.Instance.GetDefinition(definitionName);
-            }
-
-            return ModuleConfiguration.Instance.GetDefinition(definitionName);
-        }
+        get { return definition; }
     }
 
     public float Cooldown
     {
         get { return cooldown; }
     }
-
-    public string Name
-    {
-        get { return definitionName; }
-    }
-
-    public bool Empty { get; private set; }   
-
+    
     public ModuleStatus()
     {
         cooldown = 0;
     }
 
-    public static ModuleStatus Create(string moduleName, ModuleGroup moduleGroup)
+    public static ModuleStatus Create(ModuleDefinition definition)
     {
-        if (moduleGroup == null)
-        {
-            throw new UnityException("bad arguments to Setup()");
-        }
-
         ModuleStatus result = CreateInstance<ModuleStatus>();
-        result.moduleGroup = moduleGroup;
-        result.definitionName = moduleName;
+        result.definition = definition;
+
         return result;
     } 
 
@@ -75,20 +48,9 @@ public class ModuleStatus : ScriptableObject
             cooldown = Definition.CooldownLength; 
         }
     }
-
-    void Awake()
-    {
-        //make sure we have a ref to the definitoin after deserializing
-        definition = null;
-    }
      
     public void Update()
     {
         cooldown -= Time.deltaTime; 
-    }
-
-    void OnEnable()
-    {
-        definition = null;
     }
 }

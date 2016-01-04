@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: Fighter 1
   m_EditorClassIdentifier: 
   frontModules:
-  - Training Laser
-  - Training Laser
+  - Test Laser
+  - Test Laser
   cargoItems:
   - Luxury Goods
   - Luxury Goods

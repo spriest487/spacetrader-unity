@@ -13,4 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: {fileID: 11400000, guid: 7fe2c02bc819f154289f7d27a5c41926, type: 2}
   muzzleFlashType: {fileID: 400004, guid: 1e701cb88f09ad9409e9525b5939a121, type: 2}
-  damagePerShot: 0
+  minDamage: 3
+  maxDamage: 5

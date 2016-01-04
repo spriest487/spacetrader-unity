@@ -6,9 +6,6 @@ using System;
 public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 {
     [SerializeField]
-    private ModuleLoadout loadout;
-
-    [SerializeField]
 	private ModuleStatus[] modules;
     
 	public int Size
@@ -28,33 +25,29 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 	}
 
 #if UNITY_EDITOR
-    public void PopulateSlots()
+    internal void PopulateSlots()
     {
+        var existingIds = new HashSet<int>();
+
         for (int i = 0; i < modules.Length; ++i)
         {
+            //remove duplicates
+            if (modules[i] != null && existingIds.Contains(modules[i].GetInstanceID()))
+            {
+                modules[i] = null;
+            }
+
+            //fill in blanks
             if ((modules[i]) == null)
             {
-                modules[i] = ModuleStatus.Create(null, this);
+                modules[i] = ModuleStatus.Create(null);
             }
+
+            existingIds.Add(modules[i].GetInstanceID());
         }
     }
 #endif
-
-	public ModuleGroup()
-	{
-		Resize(0);
-	}
-
-    public void SetParent(ModuleLoadout loadout)
-    {
-        if (this.loadout != null || loadout == null)
-        {
-            throw new UnityException("there is no currently associated loadout or the new loadout is null");
-        }
-
-        this.loadout = loadout;
-    }
-
+    
 	public void Resize(int size)
 	{
 		if (size < 0)
@@ -62,10 +55,12 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 			throw new ArgumentException("size must be 0 or greater");
 		}
 
+        int currentSize = modules != null ? modules.Length : 0;
+
 		ModuleStatus[] newModules = new ModuleStatus[size];
 		for (var slot = 0; slot < size; ++slot)
 		{
-			if (slot < modules.Length)
+			if (slot < currentSize)
 			{
 				newModules[slot] = modules[slot];
 			}
@@ -78,16 +73,16 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 		modules = newModules;
 	}
 	
-	public void Equip(int slot, string moduleType)
+	public void Equip(int slot, ModuleDefinition definition)
 	{
 		if (slot < 0 || slot >= modules.Length)
 		{
 			throw new ArgumentException("not a valid slot: " + slot);
 		}
 
-		if (moduleType != null)
+		if (definition != null)
 		{
-			modules[slot] = ModuleStatus.Create(moduleType, this);
+			modules[slot] = ModuleStatus.Create(definition);
 		}
 		else
 		{
@@ -106,3 +101,23 @@ public class ModuleGroup : ScriptableObject, IEnumerable<ModuleStatus>
 		return modules.GetEnumerator();
 	}
 }
+
+#if UNITY_EDITOR
+
+[UnityEditor.CustomEditor(typeof(ModuleGroup))]
+public class ModuleGroupInspector : UnityEditor.Editor
+{
+    public override void OnInspectorGUI()
+    {
+        var group = (ModuleGroup)target;
+
+        DrawDefaultInspector();
+
+        if (GUILayout.Button("Populate slots"))
+        {
+            group.PopulateSlots();
+        }
+    }
+}
+
+#endif

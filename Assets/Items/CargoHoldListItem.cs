@@ -4,13 +4,13 @@ using UnityEngine.UI;
 public class CargoHoldListItem : MonoBehaviour
 {
     [SerializeField]
-    Text label;
+    private Text label;
 
     [SerializeField]
-    string itemName;
+    private string itemName;
 
     [SerializeField]
-    int quantity;
+    private int quantity;
 
     public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab, string name, int quantity)
     {

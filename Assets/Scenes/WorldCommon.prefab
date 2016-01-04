@@ -45,6 +45,7 @@ GameObject:
   - 114: {fileID: 11443446}
   - 114: {fileID: 11443448}
   - 114: {fileID: 11493108}
+  - 114: {fileID: 11445090}
   m_Layer: 0
   m_Name: SceneSingletons
   m_TagString: Untagged
@@ -428,6 +429,19 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 5
+--- !u!114 &11445090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 143400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6beacb7af92f16a41b12d6b4d50740b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forenameList: {fileID: 4900000, guid: 280dc26b388a64342a705426d16bb39e, type: 3}
+  surnameList: {fileID: 4900000, guid: f97fb8b99106d8a458502fc396413549, type: 3}
 --- !u!114 &11493108
 MonoBehaviour:
   m_ObjectHideFlags: 1

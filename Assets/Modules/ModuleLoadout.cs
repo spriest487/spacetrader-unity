@@ -23,7 +23,6 @@ public class ModuleLoadout : MonoBehaviour
             if (frontModules == null)
             {
                 frontModules = ScriptableObject.CreateInstance<ModuleGroup>();
-                frontModules.SetParent(this);
             }
 
             return frontModules;
@@ -34,7 +33,7 @@ public class ModuleLoadout : MonoBehaviour
 	{
 		var module = frontModules[index];
 
-		if (!module.Empty)
+		if (module.Definition)
 		{
             WeaponHardpoint hardpoint;
             if (Hardpoints.Length == 0)
@@ -79,7 +78,7 @@ public class ModuleLoadout : MonoBehaviour
 	{
 		foreach (var module in FrontModules)
 		{
-			if (!module.Empty)
+			if (module.Definition)
 			{
 				module.Update();
 			}

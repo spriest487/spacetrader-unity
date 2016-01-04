@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
+    public static ScreenManager Instance { get; private set; }
+
     [Serializable]
-    public class HudOverlayMapping
+    private class HudOverlayMapping
     {
         [SerializeField]
         private HudOverlayState state;
@@ -35,7 +37,7 @@ public class ScreenManager : MonoBehaviour
 
         public bool ScreenBarVisible { get { return screenBarVisible; } }
 
-        public void Init()
+        public void Init(ScreenBar screenBarPrefab)
         {
             if (!overlayInstance)
             {
@@ -45,7 +47,7 @@ public class ScreenManager : MonoBehaviour
             if (!barInstance && screenBarVisible)
             {
                 //add the screenbar
-                barInstance = Instantiate(Instance.screenBar);
+                barInstance = Instantiate(screenBarPrefab);
                 barInstance.transform.position = Vector3.zero;
                 barInstance.transform.SetParent(overlayInstance.transform, false);
             }
@@ -89,8 +91,6 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private bool menuState;
-
-    public static ScreenManager Instance { get; private set; }
 
     public ScreenState State
     {
@@ -137,6 +137,16 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        Instance = this;
+    }
+
+    private void OnDisable()
+    {
+        Destroy(Instance);
+    }
+
     public void BroadcastScreenMessage(ScreenState screen,
         HudOverlayState overlayState,
         string message, 
@@ -155,7 +165,7 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var overlay in hudOverlays)
         {
-            overlay.Init();
+            overlay.Init(screenBar);
 
             var overlayActive = HudOverlay == overlay.State;
             var screenActive = State == overlay.ScreenState
@@ -175,7 +185,7 @@ public class ScreenManager : MonoBehaviour
         {
             /*if there's an active mission, and the player is not spawned, the default state 
              is the mission prep screen instead */
-            if (MissionManager.Instance != null && !PlayerShip.LocalPlayer)
+            if (!!MissionManager.Instance && !PlayerShip.LocalPlayer)
             {
                 HudOverlay = HudOverlayState.MissionPrep;
             }
@@ -199,12 +209,11 @@ public class ScreenManager : MonoBehaviour
         Apply();
     }
 
-    void Start()
+    private void Start()
     {      
         Apply();
-
-        var missionManager = MissionManager.Instance;
-        if (missionManager)
+        
+        if (!!MissionManager.Instance)
         {
             this.hudOverlay = HudOverlayState.MissionPrep;
         }
@@ -214,7 +223,7 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         bool docked = false;
 
@@ -229,25 +238,5 @@ public class ScreenManager : MonoBehaviour
         }
 
         State = docked? ScreenState.Docked : ScreenState.Flight;
-    }
-
-    void OnEnable()
-    {
-        if (Instance != null)
-        {
-            throw new UnityException("screen manager already active");
-        }
-
-        Instance = this;
-    }
-
-    void OnDisable()
-    {
-        if (Instance != this)
-        {
-            throw new UnityException("inactive screen manager being disabled");
-        }
-
-        Instance = null;
     }
 }

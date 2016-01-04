@@ -68,7 +68,7 @@ public class MissionsMenu : MonoBehaviour
             throw new UnityException("invalid configuration for missions menu");
         }
 
-        foreach (var mission in MissionManager.Instance.Missions)
+        foreach (var mission in SpaceTraderConfig.MissionsConfiguration.Missions)
         {
             var missionItem = Instantiate(missionElementPrefab);
             missionItem.transform.SetParent(missionsLayout, false);

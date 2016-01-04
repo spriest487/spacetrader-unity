@@ -19,7 +19,9 @@ public class MissionPrepScreen : MonoBehaviour
             MissionManager.Instance.BeginMission();
         }
 
-        ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Flight);
+        ScreenManager.Instance.SetStates(
+            hudState: ScreenManager.HudOverlayState.None, 
+            state: ScreenManager.ScreenState.Flight);
     }
 
     void Start()
