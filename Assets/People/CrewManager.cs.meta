@@ -1,8 +1,14 @@
 fileFormatVersion: 2
 guid: 6beacb7af92f16a41b12d6b4d50740b1
+timeCreated: 1451865888
+licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - forenameList: {fileID: 4900000, guid: 280dc26b388a64342a705426d16bb39e, type: 3}
+  - surnameList: {fileID: 4900000, guid: f97fb8b99106d8a458502fc396413549, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
