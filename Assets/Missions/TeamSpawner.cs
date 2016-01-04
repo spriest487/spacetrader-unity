@@ -35,12 +35,22 @@ public class TeamSpawner : MonoBehaviour
              * no more players 
              */
             var slotsCount = teamDefinition.Slots.Length;
-            var spawnsCount = spawnPoints.Length;
+
+            var allSpawnPoints = new List<Transform>();
+            foreach (Transform spawnRoot in spawnPoints)
+            {
+                foreach (Transform spawnPoint in spawnRoot)
+                {
+                    allSpawnPoints.Add(spawnPoint);
+                }
+            }
+
+            var spawnsCount = allSpawnPoints.Count;
 
             for (int slotIndex = 0; slotIndex < slotsCount; ++slotIndex)
             {
                 var slotDefinition = teamDefinition.Slots[slotIndex];
-                var spawnPoint = spawnPoints[slotIndex % spawnsCount];
+                var spawnPoint = allSpawnPoints[slotIndex % spawnsCount];
 
                 var activeSlot = activeTeam.Slots[slotIndex];
 
