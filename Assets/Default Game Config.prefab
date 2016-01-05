@@ -84,13 +84,13 @@ MonoBehaviour:
   - state: 0
     screenState: 1
     overlay: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
-    screenBarVisible: 0
+    screenBarVisible: 1
     overlayInstance: {fileID: 0}
     barInstance: {fileID: 0}
   - state: 0
     screenState: 2
     overlay: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
-    screenBarVisible: 0
+    screenBarVisible: 1
     overlayInstance: {fileID: 0}
     barInstance: {fileID: 0}
   screenBar: {fileID: 11407202, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
@@ -170,7 +170,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: hudOverlays.Array.data[4].screenBarVisible
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: hudOverlays.Array.data[4].screenState
@@ -188,6 +188,14 @@ Prefab:
       propertyPath: hudOverlays.Array.data[5].overlay
       value: 
       objectReference: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
+    - target: {fileID: 0}
+      propertyPath: menuState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hudOverlays.Array.data[5].screenBarVisible
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 190862}
