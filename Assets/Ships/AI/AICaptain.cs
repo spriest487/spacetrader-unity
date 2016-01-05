@@ -142,8 +142,8 @@ public class AICaptain : MonoBehaviour
                 angles[angleIt] = angle;
             }
 
-            ship.pitch = angles.x;
-            ship.yaw = angles.y;
+            ship.Pitch = angles.x;
+            ship.Yaw = angles.y;
         }
         else
         {
@@ -155,15 +155,15 @@ public class AICaptain : MonoBehaviour
                 counterThrust[a] = -(Mathf.Clamp01(angle / ship.BaseStats.maxTurnSpeed));
             }
 
-            ship.pitch = counterThrust.x;
-            ship.yaw = counterThrust.y;
-            ship.roll = counterThrust.z;
+            ship.Pitch = counterThrust.x;
+            ship.Yaw = counterThrust.y;
+            ship.Roll = counterThrust.z;
         }
 
         if (!facingTowards)
         {
             //if not in danger, only thrust slowly when not facing target
-            ship.thrust = 0.0f;
+            ship.Thrust = 0.0f;
         }
         else
         {
@@ -172,7 +172,7 @@ public class AICaptain : MonoBehaviour
                 if (facingDirectlyTowards)
                 {
                     //if we know we're not rotating, and we're close to the target, use strafe and lift to adjust our pos towards the target
-                    ship.thrust = 0;
+                    ship.Thrust = 0;
                 }
                 else
                 {
@@ -181,16 +181,16 @@ public class AICaptain : MonoBehaviour
                     var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
                     var currentThrust = rigidbody.velocity.magnitude / ship.BaseStats.maxSpeed;
 
-                    ship.thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
+                    ship.Thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
                 }
             }
             else
             {
-                ship.thrust = 1;
+                ship.Thrust = 1;
             }
         }
 
-        ship.thrust = Mathf.Max(MinimumThrust, ship.thrust);
+        ship.Thrust = Mathf.Max(MinimumThrust, ship.Thrust);
     }
 
     void Start()
@@ -214,9 +214,9 @@ public class AICaptain : MonoBehaviour
             RotateTo(between);
         }
 
-		ship.strafe = Mathf.Clamp(ship.strafe, -1, Throttle);
-		ship.lift = Mathf.Clamp(ship.lift, -1, Throttle);
-		ship.thrust = Mathf.Clamp(ship.thrust, -1, Throttle);
+		ship.Strafe = Mathf.Clamp(ship.Strafe, -1, Throttle);
+		ship.Lift = Mathf.Clamp(ship.Lift, -1, Throttle);
+		ship.Thrust = Mathf.Clamp(ship.Thrust, -1, Throttle);
 
 		//adjustments are applied AFTER the clamping, so we can go beyond the throttle if necessary
 		ApplyAdjustThrust(ship);
@@ -226,7 +226,7 @@ public class AICaptain : MonoBehaviour
 	{
 		var currentLocalSpeed = transform.InverseTransformDirection(rigidbody.velocity);
 
-		var maxAdjust = 1 - Mathf.Abs(ship.thrust);
+		var maxAdjust = 1 - Mathf.Abs(ship.Thrust);
 		if (adjustTarget.HasValue && maxAdjust > Vector3.kEpsilon)
 		{
 			/* if we have an adjustment target, let's use any remaining thrust to move toward it */
@@ -245,7 +245,7 @@ public class AICaptain : MonoBehaviour
 				Mathf.Abs(localBetween.y),
 				Mathf.Abs(localBetween.z));
 
-			Vector3 newThrust = new Vector3(ship.strafe, ship.lift, ship.thrust);
+			Vector3 newThrust = new Vector3(ship.Strafe, ship.Lift, ship.Thrust);
 			if (betweenDimMax > Vector3.kEpsilon)
 			{
 				for (var i = 0; i < 3; ++i)
@@ -268,15 +268,15 @@ public class AICaptain : MonoBehaviour
 				}
 			}
 
-			ship.strafe = newThrust.x;
-			ship.lift = newThrust.y;
-			ship.thrust = newThrust.z;
+			ship.Strafe = newThrust.x;
+			ship.Lift = newThrust.y;
+			ship.Thrust = newThrust.z;
 		}
         else
         {
             //we don't use these if we're not adjusting
-            ship.strafe = 0;
-            ship.lift = 0;
+            ship.Strafe = 0;
+            ship.Lift = 0;
         }
 	}
 }

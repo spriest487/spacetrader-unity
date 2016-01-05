@@ -15,7 +15,7 @@ public class Speedometer : MonoBehaviour
 
         if (player)
         {
-            var throttle = player.Ship.thrust;
+            var throttle = player.Ship.Thrust;
             throttleLabel.text = string.Format("{0:P}", throttle);
 
             float speed;

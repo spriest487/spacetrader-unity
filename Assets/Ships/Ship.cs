@@ -8,6 +8,9 @@ public class Ship : MonoBehaviour
 	private FormationManager formationManager;
 
     [SerializeField]
+    private ShipCrewAssignments crewAssignments;
+
+    [SerializeField]
     private ShipStats baseStats;
 
     [SerializeField]
@@ -23,15 +26,14 @@ public class Ship : MonoBehaviour
     private List<StatusEffect> activeStatusEffects = new List<StatusEffect>();
 
     [SerializeField]
-    private Vector3? bumpForce;
-
-    public float thrust;
-    public float strafe;
-    public float lift;
-
-    public float pitch;
-    public float yaw;
-    public float roll;
+    private Vector3 bumpForce;
+    
+    public float Thrust;
+    public float Strafe;
+    public float Lift;
+    public float Pitch;
+    public float Yaw;
+    public float Roll;
 
     private ShipStats currentStats;
 
@@ -75,13 +77,13 @@ public class Ship : MonoBehaviour
     {
         get { return activeStatusEffects.AsReadOnly(); }
     }
-    
-	/**
+   
+    /**
 	 * Finds the equivalent thrust required for the "from" ship to match
 	 * the current speed of the "target" ship (value will not exceed 1, even
 	 * if "from" is unable to match the speed)
 	 */
-	public static float EquivalentThrust(Ship from, Ship target)
+    public static float EquivalentThrust(Ship from, Ship target)
 	{
 		var targetSpeed = target.GetComponent<Rigidbody>().velocity.magnitude;
 		var maxSpeed = Mathf.Max(1, from.CurrentStats.maxSpeed);
@@ -158,12 +160,12 @@ public class Ship : MonoBehaviour
 
     private void ApplyBump(Rigidbody rigidbody)
     {
-        if (!bumpForce.HasValue)
+        if (bumpForce.sqrMagnitude < Mathf.Epsilon)
         {
             return;
         }
 
-        float bumpMag2 = bumpForce.Value.sqrMagnitude;
+        float bumpMag2 = bumpForce.sqrMagnitude;
         float bumpReduction = CurrentStats.maxSpeed * Time.deltaTime;
         bumpReduction *= bumpReduction;
 
@@ -173,18 +175,18 @@ public class Ship : MonoBehaviour
         {
             float reductionFactor = reducedBumpMag / bumpMag2;
 
-            bumpForce = bumpForce.Value * reductionFactor;
+            bumpForce = bumpForce * reductionFactor;
 
-            rigidbody.AddForce(bumpForce.Value);
+            rigidbody.AddForce(bumpForce);
 
-            if (bumpForce.Value.sqrMagnitude < bumpReduction)
+            if (bumpForce.sqrMagnitude < bumpReduction)
             {
-                bumpForce = null;
+                bumpForce = Vector3.zero;
             }
         }
         else
         {
-            bumpForce = null;
+            bumpForce = Vector3.zero;
         }
     }
 
@@ -297,22 +299,22 @@ public class Ship : MonoBehaviour
             rigidBody.inertiaTensor = new Vector3(1, 1, 1);
 
             //all movement vals must be within -1..1
-            thrust = Mathf.Clamp(thrust, -1, 1);
-            strafe = Mathf.Clamp(strafe, -1, 1);
-            lift = Mathf.Clamp(lift, -1, 1);
-            pitch = Mathf.Clamp(pitch, -1, 1);
-            yaw = Mathf.Clamp(yaw, -1, 1);
-            roll = Mathf.Clamp(roll, -1, 1);
+            Thrust = Mathf.Clamp(Thrust, -1, 1);
+            Strafe = Mathf.Clamp(Strafe, -1, 1);
+            Lift = Mathf.Clamp(Lift, -1, 1);
+            Pitch = Mathf.Clamp(Pitch, -1, 1);
+            Yaw = Mathf.Clamp(Yaw, -1, 1);
+            Roll = Mathf.Clamp(Roll, -1, 1);
 
             var torqueMax = CurrentStats.maxTurnSpeed * Mathf.Deg2Rad;
 
             var localRotation = rigidBody.transform.InverseTransformDirection(rigidBody.angularVelocity);
             var localVelocity = rigidBody.transform.InverseTransformDirection(rigidBody.velocity);
 
-            var torqueInput = InputAmountsToRequired(new Vector3(pitch, yaw, roll),
+            var torqueInput = InputAmountsToRequired(new Vector3(Pitch, Yaw, Roll),
                 localRotation,
                 torqueMax);            
-            var forceInput = InputAmountsToRequired(new Vector3(strafe, lift, thrust),
+            var forceInput = InputAmountsToRequired(new Vector3(Strafe, Lift, Thrust),
                 localVelocity,
                 CurrentStats.maxSpeed);           
 

@@ -113,8 +113,8 @@ public class PlayerShip : MonoBehaviour
 		var aimPitch = -Mathf.Clamp((2 * (screenAimPos.y / Screen.height)) - 1, -1, 1);
 		var aimYaw = Mathf.Clamp((2 * (screenAimPos.x / Screen.width)) - 1, -1, 1);
 
-		ship.yaw = aimYaw;
-		ship.pitch = aimPitch;
+		ship.Yaw = aimYaw;
+		ship.Pitch = aimPitch;
 	}
     
     void OnMoored()
@@ -286,8 +286,8 @@ public class PlayerShip : MonoBehaviour
         }
         else
         {
-            ship.pitch = Input.GetAxis("pitch");
-            ship.yaw = Input.GetAxis("yaw");
+            ship.Pitch = Input.GetAxis("pitch");
+            ship.Yaw = Input.GetAxis("yaw");
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -305,11 +305,11 @@ public class PlayerShip : MonoBehaviour
         }
         
         //roll is manual only
-        ship.roll = -Input.GetAxis("roll");
+        ship.Roll = -Input.GetAxis("roll");
 
-        ship.thrust = Input.GetAxis("Vertical");
-        ship.strafe = Input.GetAxis("Horizontal");
-        ship.lift = Input.GetAxis("lift");
+        ship.Thrust = Input.GetAxis("Vertical");
+        ship.Strafe = Input.GetAxis("Horizontal");
+        ship.Lift = Input.GetAxis("lift");
 
         var loadout = GetComponent<ModuleLoadout>();
         if (loadout)

@@ -230,12 +230,12 @@ public class ShipThrusterPoint : MonoBehaviour
 				break;
 		}
 
-		intensity = Mathf.Clamp01(ship.thrust * thrust);
-		intensity += Mathf.Clamp01(ship.strafe * strafe);
-		intensity += Mathf.Clamp01(ship.lift * lift);
-		intensity += Mathf.Clamp01(ship.roll * roll);
-		intensity += Mathf.Clamp01(ship.yaw * yaw);
-		intensity += Mathf.Clamp01(ship.pitch * pitch);
+		intensity = Mathf.Clamp01(ship.Thrust * thrust);
+		intensity += Mathf.Clamp01(ship.Strafe * strafe);
+		intensity += Mathf.Clamp01(ship.Lift * lift);
+		intensity += Mathf.Clamp01(ship.Roll * roll);
+		intensity += Mathf.Clamp01(ship.Yaw * yaw);
+		intensity += Mathf.Clamp01(ship.Pitch * pitch);
 
 		intensity = Mathf.Clamp01(intensity);
 	}
