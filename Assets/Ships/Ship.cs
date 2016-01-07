@@ -77,6 +77,11 @@ public class Ship : MonoBehaviour
     {
         get { return activeStatusEffects.AsReadOnly(); }
     }
+
+    public ShipCrewAssignments CrewAssignments
+    {
+        get { return crewAssignments; }
+    }
    
     /**
 	 * Finds the equivalent thrust required for the "from" ship to match
