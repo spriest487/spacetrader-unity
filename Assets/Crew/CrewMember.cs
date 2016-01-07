@@ -5,7 +5,7 @@ using UnityEngine;
 public class CrewMember : ScriptableObject
 {
 #if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew Member")]
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew/Crew member")]
     public static void CreateFromMenu()
     {
         ScriptableObjectUtility.CreateAsset<CrewMember>();

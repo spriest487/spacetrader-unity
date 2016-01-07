@@ -5,8 +5,8 @@ using System.Collections.Generic;
 [Serializable]
 public class ShipCrewAssignments
 {
-    public CrewMember captain;
+    public CrewMember Captain;
 
-    public List<CrewMember> passengers;
+    public List<CrewMember> Passengers;
 }
 
