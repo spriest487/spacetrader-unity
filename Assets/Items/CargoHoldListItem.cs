@@ -7,16 +7,21 @@ public class CargoHoldListItem : MonoBehaviour
     private Text label;
 
     [SerializeField]
+    private Image icon;
+
+    [SerializeField]
     private string itemName;
 
     [SerializeField]
     private int quantity;
 
-    public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab, string name, int quantity)
+    public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab, CargoItemType itemType, int quantity)
     {
         var result = Instantiate(prefab);
-        result.itemName = name;
         result.quantity = quantity;
+
+        result.label.text = itemType.DisplayName;
+        result.icon.sprite = itemType.Icon;
 
         return result;
     }

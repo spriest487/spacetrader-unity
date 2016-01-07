@@ -14,3 +14,4 @@ MonoBehaviour:
   displayName: 
   baseValue: 100
   module: {fileID: 11400000, guid: c5676ea959a8bc94cb6d51ebbd8a0a14, type: 2}
+  icon: {fileID: 21300000, guid: 42354fbfd1ff481429355f69234d4fab, type: 3}

@@ -12,13 +12,16 @@ public class CargoItemType : ScriptableObject
 #endif
 
     [SerializeField]
-    string displayName;
+    private string displayName;
 
     [SerializeField]
-    int baseValue;
+    private int baseValue;
 
     [SerializeField]
-    ModuleDefinition module;
+    private ModuleDefinition module;
+
+    [SerializeField]
+    private Sprite icon;
     
     public string DisplayName
     {
@@ -36,6 +39,11 @@ public class CargoItemType : ScriptableObject
 
             return name;
         }
+    }
+
+    public Sprite Icon
+    {
+        get { return icon; }
     }
 
     public int BaseValue

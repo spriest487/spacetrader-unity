@@ -23,7 +23,8 @@ public class CargoHoldList : MonoBehaviour
         {
             foreach (var cargoItem in targetHold.Items)
             {
-                var item = CargoHoldListItem.CreateFromPrefab(listItem, cargoItem, 1);
+                var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(cargoItem);
+                var item = CargoHoldListItem.CreateFromPrefab(listItem, itemType, 1);
                 item.transform.SetParent(transform, false);
             }
         }
