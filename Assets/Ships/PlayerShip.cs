@@ -32,9 +32,17 @@ public class PlayerShip : MonoBehaviour
 
     private bool inputDragging = false;
 
+    [SerializeField]
+    private int money;
+
     public Ship Ship
     {
         get { return ship; }
+    }
+
+    public int Money
+    {
+        get { return money; }
     }
 
     public void MakeLocal()
@@ -50,6 +58,11 @@ public class PlayerShip : MonoBehaviour
     public static void ClearLocal()
     {
         LocalPlayer = null;
+    }
+
+    public void AddMoney(int amount)
+    {
+        money += amount;
     }
 
 	private Vector2? FindTouchPos()

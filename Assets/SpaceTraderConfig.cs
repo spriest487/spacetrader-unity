@@ -7,6 +7,7 @@ public class SpaceTraderConfig : MonoBehaviour
     public static CrewConfiguration CrewConfiguration { get { return Instance.crewConfig; } }
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
+    public static Market Market { get { return Instance.market; } }
     
     [SerializeField]
     private CrewConfiguration crewConfig;
@@ -16,6 +17,9 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private MissionsConfiguration missionsConfig;
+
+    [SerializeField]
+    private Market market;
     
     private void OnEnable()
     {

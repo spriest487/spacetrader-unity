@@ -37,7 +37,7 @@ public class Ship : MonoBehaviour
 
     private ShipStats currentStats;
 
-    private ShipStats CurrentStats
+    public ShipStats CurrentStats
     {
         get
         {

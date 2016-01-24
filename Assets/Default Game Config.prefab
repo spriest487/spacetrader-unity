@@ -43,6 +43,7 @@ MonoBehaviour:
   crewConfig: {fileID: 11400000, guid: 6842b45ae68327a40aeae75aa689b914, type: 2}
   cargoConfig: {fileID: 11400000, guid: 16667b47347b6a44c94e090aefe428c6, type: 2}
   missionsConfig: {fileID: 11400000, guid: a32ad9dc69ee3764c8643f4f6a09c3cb, type: 2}
+  market: {fileID: 11400000, guid: d8679bb50937188409dbdc9aa2c33ac5, type: 2}
 --- !u!114 &11450970
 MonoBehaviour:
   m_ObjectHideFlags: 1

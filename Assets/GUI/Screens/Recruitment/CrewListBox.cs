@@ -31,6 +31,8 @@ public class CrewListBox : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+
+        currentItems = null;
     }
 
     private void Update()
@@ -42,14 +44,8 @@ public class CrewListBox : MonoBehaviour
             if (targetCrew == TargetCrew.Current)
             {
                 var playerShip = PlayerShip.LocalPlayer.Ship;
-
-                crew = new List<CrewMember>();
-                if (playerShip.CrewAssignments.Captain)
-                {
-                    crew.Add(playerShip.CrewAssignments.Captain);
-                }
                 
-                crew.AddRange(playerShip.CrewAssignments.Passengers);
+                crew = playerShip.CrewAssignments.Passengers;
             }
             else
             {
