@@ -35,6 +35,14 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private ScalableParticle explosionEffect;
 
+    public ShipStats Stats
+    {
+        get
+        {
+            return stats;
+        }
+    }
+
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
         var obj = (Transform) Instantiate(prefab, position, rotation);

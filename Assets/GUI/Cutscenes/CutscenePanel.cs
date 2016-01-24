@@ -28,4 +28,9 @@ public class CutscenePanel : MonoBehaviour
             content.gameObject.SetActive(false);
         }
     }
+
+    public void Advance()
+    {
+        ScreenManager.Instance.AdvanceCutscene();
+    }
 }

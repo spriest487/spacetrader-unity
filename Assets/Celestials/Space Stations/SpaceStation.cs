@@ -13,6 +13,9 @@ public class SpaceStation : MonoBehaviour
     [SerializeField]
     private List<CrewMember> availableCrew;
 
+    [SerializeField]
+    private List<ShipForSale> shipsForSale;
+
     public MooringTrigger MooringTrigger
     {
         get { return mooringTrigger; }
@@ -20,7 +23,10 @@ public class SpaceStation : MonoBehaviour
 
     public List<CrewMember> AvailableCrew
     {
-        get { return availableCrew; }
+        get
+        {
+            return availableCrew;
+        }
         set
         {
             availableCrew = value == null ?
@@ -29,14 +35,26 @@ public class SpaceStation : MonoBehaviour
         }
     }
 
+    public List<ShipForSale> ShipsForSale
+    {
+        get
+        {
+            return shipsForSale;
+        }
+        set
+        {
+            shipsForSale = value == null ?
+                new List<ShipForSale>() :
+                new List<ShipForSale>(value);
+        }
+    }
+
     public void RequestMooring(Moorable moorable)
     {
-        if (mooredShips.Contains(moorable) || !moorable.gameObject.activeInHierarchy)
-        {
-            throw new UnityException("tried to moor an already moored or disabled ship");
-        }
+        Debug.Assert(!mooredShips.Contains(moorable) && moorable.gameObject.activeInHierarchy,
+            "tried to moor an already moored or disabled ship");
 
-        moorable.gameObject.SendMessage("OnMoored", this);
+        moorable.gameObject.SendMessage("OnMoored", this, SendMessageOptions.DontRequireReceiver);
 
         moorable.gameObject.SetActive(false);
         mooredShips.Add(moorable);
@@ -44,31 +62,24 @@ public class SpaceStation : MonoBehaviour
 
     public void Unmoor(Moorable moorable)
     {
-        if (!mooredShips.Contains(moorable))
-        {
-            Debug.LogError(string.Format("tried to unmoor {0} from {1} but it's not moored here",
+        Debug.AssertFormat(mooredShips.Contains(moorable), 
+            "tried to unmoor {0} from {1} but it's not moored here",
                 moorable,
-                gameObject));
-        }
-        else
-        {
-            mooredShips.Remove(moorable);
+                gameObject);
+
+        mooredShips.Remove(moorable);
             
-            moorable.transform.position = mooringTrigger.transform.position;
-            moorable.transform.rotation = mooringTrigger.transform.rotation;
-            if (moorable.GetComponent<Rigidbody>())
-            {
-                moorable.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                moorable.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            }
+        moorable.transform.position = mooringTrigger.transform.position;
+        moorable.transform.rotation = mooringTrigger.transform.rotation;
 
-            moorable.gameObject.SetActive(true);
-            moorable.gameObject.SendMessage("OnUnmoored", this);
+        var rigidBody = moorable.GetComponent<Rigidbody>();
+        if (rigidBody)
+        {
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.velocity = Vector3.zero;
         }
-    }
 
-    void Start()
-    {
-        mooredShips = new List<Moorable>();
+        moorable.gameObject.SetActive(true);
+        moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
     }
 }
