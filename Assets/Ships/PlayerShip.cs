@@ -257,7 +257,14 @@ public class PlayerShip : MonoBehaviour
 
     void Update()
     {
-        if (HasControl())
+        if (ScreenManager.Instance.CurrentCutscenePage != null)
+        {
+            if (Input.GetButtonDown("fire") || Input.GetButtonDown("activate"))
+            {
+                ScreenManager.Instance.AdvanceCutscene();
+            }
+        }
+        else if (HasControl())
         {
             if (Input.GetButtonDown("Use Ability 1"))
             {
@@ -278,75 +285,67 @@ public class PlayerShip : MonoBehaviour
             {
                 UseAbility(3);
             }
-        }
-    }
-	
-	void FixedUpdate()
-	{
-        if (!HasControl())
-        {
-            return;
-        }
 
-        var aimPoint = FindAimPoint();
+            var aimPoint = FindAimPoint();
 
-        UpdateDrag(aimPoint);
-        CalculateMouseAim(aimPoint);
+            UpdateDrag(aimPoint);
+            CalculateMouseAim(aimPoint);
 
-        if (inputDragging && aimPoint.HasValue)
-        {
-            RotateTowardsAim(aimPoint.Value);
-        }
-        else
-        {
-            ship.Pitch = Input.GetAxis("pitch");
-            ship.Yaw = Input.GetAxis("yaw");
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            targetingClickStart = Time.time;
-        }
-
-        if (Input.GetMouseButtonUp(0) 
-            && !EventSystem.current.IsPointerOverGameObject()
-            && (!targetingClickStart.HasValue 
-                || targetingClickStart.Value + STICKY_TARGET_CLICK_DELAY > Time.time))
-        {
-            ship.Target = null;
-            targetingClickStart = null;
-        }
-        
-        //roll is manual only
-        ship.Roll = -Input.GetAxis("roll");
-
-        ship.Thrust = Input.GetAxis("Vertical");
-        ship.Strafe = Input.GetAxis("Horizontal");
-        ship.Lift = Input.GetAxis("lift");
-
-        var loadout = GetComponent<ModuleLoadout>();
-        if (loadout)
-        {
-            if (Input.GetButton("fire"))
+            if (inputDragging && aimPoint.HasValue)
             {
-                if (loadout.FrontModules.Size > 0)
+                RotateTowardsAim(aimPoint.Value);
+            }
+            else
+            {
+                ship.Pitch = Input.GetAxis("pitch");
+                ship.Yaw = Input.GetAxis("yaw");
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                targetingClickStart = Time.time;
+            }
+
+            if (Input.GetMouseButtonUp(0)
+                && !EventSystem.current.IsPointerOverGameObject()
+                && (!targetingClickStart.HasValue
+                    || targetingClickStart.Value + STICKY_TARGET_CLICK_DELAY > Time.time))
+            {
+                ship.Target = null;
+                targetingClickStart = null;
+            }
+
+            //roll is manual only
+            ship.Roll = -Input.GetAxis("roll");
+
+            ship.Thrust = Input.GetAxis("Vertical");
+            ship.Strafe = Input.GetAxis("Horizontal");
+            ship.Lift = Input.GetAxis("lift");
+
+            var loadout = GetComponent<ModuleLoadout>();
+            if (loadout)
+            {
+                if (Input.GetButton("fire"))
                 {
-                    for (var mod = 0; mod < loadout.FrontModules.Size; ++mod)
+                    if (loadout.FrontModules.Size > 0)
                     {
-                        loadout.Activate(mod);
-                    }                        
+                        for (var mod = 0; mod < loadout.FrontModules.Size; ++mod)
+                        {
+                            loadout.Activate(mod);
+                        }
+                    }
+                }
+            }
+
+            if (Input.GetButtonDown("activate"))
+            {
+                if (moorable && moorable.SpaceStation)
+                {
+                    moorable.RequestMooring();
                 }
             }
         }
-
-        if (Input.GetButtonDown("activate"))
-        {
-            if (moorable && moorable.SpaceStation)
-            {
-                moorable.RequestMooring();
-            }
-        }
-	}
+    }
 
 	void Start()
 	{

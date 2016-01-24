@@ -4,7 +4,23 @@ using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
-    public static ScreenManager Instance { get; private set; }
+    private static ScreenManager instance;
+    public static ScreenManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<ScreenManager>();
+            }
+
+            return instance;
+        }
+        private set
+        {
+            instance = value;
+        }
+    }
 
     [Serializable]
     private class HudOverlayMapping
@@ -92,6 +108,9 @@ public class ScreenManager : MonoBehaviour
     [SerializeField]
     private bool menuState;
 
+    [SerializeField]
+    private Cutscene cutscene;
+
     public ScreenState State
     {
         get
@@ -134,6 +153,14 @@ public class ScreenManager : MonoBehaviour
                 menuState = value;
                 Apply();
             }
+        }
+    }
+
+    public CutscenePage CurrentCutscenePage
+    {
+        get
+        {
+            return cutscene ? cutscene.CurrentPage : null;
         }
     }
 
@@ -202,11 +229,30 @@ public class ScreenManager : MonoBehaviour
         Apply();
     }
 
-    public void SetStates(HudOverlayState hudState, ScreenState state)
+    public void SetStates(HudOverlayState hudOverlay, ScreenState state)
     {
-        this.hudOverlay = hudState;
+        this.hudOverlay = hudOverlay;
         this.state = state;
         Apply();
+    }
+
+    public void PlayCutscene(Cutscene cutsceneToPlay)
+    {
+        Debug.Assert(cutsceneToPlay != null);
+
+        cutscene = Instantiate(cutsceneToPlay);
+    }
+
+    public void AdvanceCutscene()
+    {
+        Debug.Assert(cutscene != null);
+
+        cutscene.Next();
+
+        if (cutscene.CurrentPage == null)
+        {
+            cutscene = null;
+        }
     }
 
     private void Start()
@@ -215,11 +261,11 @@ public class ScreenManager : MonoBehaviour
         
         if (!!MissionManager.Instance)
         {
-            this.hudOverlay = HudOverlayState.MissionPrep;
+            hudOverlay = HudOverlayState.MissionPrep;
         }
         else
         {
-            this.hudOverlay = HudOverlayState.None;
+            hudOverlay = HudOverlayState.None;
         }
     }
 

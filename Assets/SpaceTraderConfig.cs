@@ -2,8 +2,24 @@
 
 public class SpaceTraderConfig : MonoBehaviour
 {
-    public static SpaceTraderConfig Instance { get; private set; }
-    
+    private static SpaceTraderConfig instance;
+    public static SpaceTraderConfig Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<SpaceTraderConfig>();
+            }
+
+            return instance;
+        }
+        private set
+        {
+            instance = value;
+        }
+    }
+
     public static CrewConfiguration CrewConfiguration { get { return Instance.crewConfig; } }
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }

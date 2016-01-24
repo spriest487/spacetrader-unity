@@ -20,7 +20,7 @@ public class MissionPrepScreen : MonoBehaviour
         }
 
         ScreenManager.Instance.SetStates(
-            hudState: ScreenManager.HudOverlayState.None, 
+            hudOverlay: ScreenManager.HudOverlayState.None, 
             state: ScreenManager.ScreenState.Flight);
     }
 
