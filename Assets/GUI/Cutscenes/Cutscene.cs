@@ -23,13 +23,36 @@ public class Cutscene : ScriptableObject
     private List<CutscenePage> pages;
 
     [SerializeField]
+    private CutsceneCameraRig cameraRigPrefab;
+
+    [SerializeField]
+    [HideInInspector]
     private int page = 0;
+
+    [SerializeField]
+    [HideInInspector]
+    private CutsceneCameraRig cameraRig;
 
     public CutscenePage CurrentPage
     {
         get { return page < pages.Count ? pages[page] : null; }
     }
 
+    public CutsceneCameraRig CameraRig
+    {
+        get { return cameraRig; }
+    }
+
+    public void Start()
+    {
+        if (cameraRigPrefab)
+        {
+            cameraRig = Instantiate(cameraRigPrefab);
+        }
+        
+        page = 0;
+    }
+    
     public void Next()
     {
         page += 1;

@@ -164,6 +164,14 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    public CutsceneCameraRig CurrentCutsceneCameraRig
+    {
+        get
+        {
+            return cutscene ? cutscene.CameraRig : null;
+        }
+    }
+
     private void OnEnable()
     {
         Instance = this;
@@ -241,6 +249,7 @@ public class ScreenManager : MonoBehaviour
         Debug.Assert(cutsceneToPlay != null);
 
         cutscene = Instantiate(cutsceneToPlay);
+        cutscene.Start();
     }
 
     public void AdvanceCutscene()

@@ -88,26 +88,42 @@ public class FollowCamera : MonoBehaviour
         }		
     }
 
-	void LateUpdate()
-	{
-        var player = PlayerShip.LocalPlayer;
+    void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
+    {
+        transform.position = cutsceneCamRig.View;
 
-        if (player)
+        var lookDirection = (cutsceneCamRig.Focus - cutsceneCamRig.View).normalized;
+        transform.rotation = Quaternion.LookRotation(lookDirection);
+    }
+
+    void LateUpdate()
+    {
+        var cutsceneCamRig = ScreenManager.Instance.CurrentCutsceneCameraRig;
+        if (cutsceneCamRig)
         {
-            var moorable = player.GetComponent<Moorable>();
-            if (moorable && moorable.Moored)
-            {
-                DockedCam(player, moorable.SpaceStation);
-            }
-            else
-            {
-                FlightCam(player);
-            }
+            CutsceneCam(cutsceneCamRig);
         }
         else
         {
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
+            var player = PlayerShip.LocalPlayer;
+
+            if (player)
+            {
+                var moorable = player.GetComponent<Moorable>();
+                if (moorable && moorable.Moored)
+                {
+                    DockedCam(player, moorable.SpaceStation);
+                }
+                else
+                {
+                    FlightCam(player);
+                }
+            }
+            else
+            {
+                transform.position = Vector3.zero;
+                transform.rotation = Quaternion.identity;
+            }
         }        
 	}
 

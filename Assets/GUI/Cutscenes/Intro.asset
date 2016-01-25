@@ -16,4 +16,6 @@ MonoBehaviour:
     Speaker: Bro
   - Text: I can hear you
     Speaker: Me
+  cameraRigPrefab: {fileID: 11428886, guid: 91d060a811a554b4aa8d255f2625e70f, type: 2}
   page: 0
+  cameraRig: {fileID: 0}
