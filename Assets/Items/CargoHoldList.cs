@@ -1,32 +1,57 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(LayoutGroup))]
 public class CargoHoldList : MonoBehaviour
 {
     [SerializeField]
-    CargoHold cargoHold;
+    private CargoHold cargoHold;
 
     [SerializeField]
-    CargoHoldListItem listItem;
+    private CargoHoldListItem listItem;
+
+    [SerializeField]
+    private Transform itemsHolder;
+
+    private List<string> currentItems;
         
-    void Update()
+    private void Clear()
     {
-        foreach (Transform child in transform)
+        foreach (Transform child in itemsHolder.transform)
         {
             Destroy(child.gameObject);
         }
 
+        currentItems = null;
+    }
+
+    private void Update()
+    {
         var targetHold = cargoHold ? cargoHold : PlayerShip.LocalPlayer.GetComponent<CargoHold>();
 
         if (targetHold)
         {
-            foreach (var cargoItem in targetHold.Items)
+            var items = new List<string>(targetHold.Items);
+
+            if (!items.ElementsEquals(currentItems))
             {
-                var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(cargoItem);
-                var item = CargoHoldListItem.CreateFromPrefab(listItem, itemType, 1);
-                item.transform.SetParent(transform, false);
+                Clear();
+
+                foreach (var cargoItem in items)
+                {
+                    var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(cargoItem);
+                    var item = CargoHoldListItem.CreateFromPrefab(listItem, itemType, 1);
+
+                    item.transform.SetParent(itemsHolder.transform, false);
+                }
+
+                currentItems = items;
             }
+        }
+        else
+        {
+            Clear();
         }
     }
 

@@ -10,7 +10,7 @@ public class CargoHoldListItem : MonoBehaviour
     private Image icon;
 
     [SerializeField]
-    private string itemName;
+    private CargoItemType itemType;
 
     [SerializeField]
     private int quantity;
@@ -22,13 +22,14 @@ public class CargoHoldListItem : MonoBehaviour
 
         result.label.text = itemType.DisplayName;
         result.icon.sprite = itemType.Icon;
+        result.itemType = itemType;
 
         return result;
     }
 
     void Start()
     {
-        label.text = itemName; 
+        label.text = itemType.DisplayName; 
 
         if (quantity > 1)
         {

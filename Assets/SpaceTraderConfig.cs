@@ -44,6 +44,6 @@ public class SpaceTraderConfig : MonoBehaviour
     
     private void OnDisable()
     {
-        Destroy(Instance);
+        Instance = null;
     }
 }

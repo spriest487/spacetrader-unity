@@ -19,4 +19,14 @@ public class ShipForSale
     {
         get { return price; }
     }
+
+    public ShipForSale()
+    {
+    }
+
+    public ShipForSale(ShipType shipType, int price)
+    {
+        this.shipType = shipType;
+        this.price = price;
+    }
 }

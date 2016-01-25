@@ -64,10 +64,8 @@ public class ShipModulesController : MonoBehaviour
 
             foreach (var newModule in currentModules)
             {
-                var module = (ShipModuleController) Instantiate(moduleTemplate);
-                module.transform.SetParent(this.transform, false);
-
-                module.Module = newModule;
+                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, newModule);
+                module.transform.SetParent(transform, false);
             }
         }
     }

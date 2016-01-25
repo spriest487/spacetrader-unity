@@ -171,7 +171,7 @@ public class ScreenManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Destroy(Instance);
+        Instance = null;
     }
 
     public void BroadcastScreenMessage(ScreenState screen,

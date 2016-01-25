@@ -4,28 +4,26 @@ using System.Collections;
 
 public class ShipModuleController : MonoBehaviour
 {
-    [SerializeField]
-    private ModuleStatus moduleStatus;
+    //[SerializeField]
+    //private ModuleStatus moduleStatus;
 
     [SerializeField]
     private Text caption;
 
-    public ModuleStatus Module {
-        get
-        {
-            return moduleStatus;
-        }
-        set
-        {
-            moduleStatus = value;
-        }
-    }
+    [SerializeField]
+    private Image icon;
 
-    void Update()
+    public static ShipModuleController CreateFromPrefab(ShipModuleController prefab,
+        ModuleStatus module)
     {
-        if (caption && moduleStatus)
-        {
-            caption.text = moduleStatus.Definition.name;
-        }
+        var result = Instantiate(prefab);
+
+        var itemName = module.Definition.name;
+        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
+
+        result.caption.text = itemName;
+        result.icon.sprite = itemType.Icon;
+
+        return result;
     }
 }

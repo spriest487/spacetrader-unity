@@ -24,6 +24,17 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         }
 
         station.AvailableCrew = newCrew;
+
+        //for now, all ships are available everywhere
+        var shipsForSale = new List<ShipForSale>();
+        foreach (var shipType in SpaceTraderConfig.Market.BuyableShipTypes)
+        {
+            var price = SpaceTraderConfig.Market.GetShipPrice(shipType);
+            var item = new ShipForSale(shipType, price);
+
+            shipsForSale.Add(item);
+        }
+        station.ShipsForSale = shipsForSale;
     }
 }
 
