@@ -65,8 +65,7 @@ public class TeamSpawner : MonoBehaviour
                             ship.gameObject.AddComponent<WingmanCaptain>();
                             break;
                         case SlotStatus.Human:
-                            var localPlayer = ship.gameObject.AddComponent<PlayerShip>();
-                            localPlayer.MakeLocal();
+                            SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
                             break;
                     }
 

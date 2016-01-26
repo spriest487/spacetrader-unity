@@ -24,6 +24,11 @@ public class SpaceTraderConfig : MonoBehaviour
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
     public static Market Market { get { return Instance.market; } }
+    public static PlayerShip LocalPlayer
+    {
+        get { return Instance.localPlayer; }
+        set { Instance.localPlayer = value; }
+    }
     
     [SerializeField]
     private CrewConfiguration crewConfig;
@@ -36,6 +41,9 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private Market market;
+
+    [SerializeField]
+    private PlayerShip localPlayer;
     
     private void OnEnable()
     {

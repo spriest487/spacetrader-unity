@@ -1,22 +1,59 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 
-public class CargoHold : MonoBehaviour
+public class CargoHold : ScriptableObject
 {
     [SerializeField]
-    string[] items;
+    private List<string> items;
 
     [SerializeField]
-    int size;
+    private int size;
 
-    public string[] Items {
-        get { return items; }
-        set { items = (string[]) value.Clone(); }
+    public IList<string> Items
+    {
+        get
+        {
+            if (items == null)
+            {
+                items = new List<string>(size);
+            }
+            return items;
+        }
     }
-
+    
     public int Size
     {
-        get { return size; }
-        set { size = value; }
+        get
+        {
+            return size;
+        }
+        set
+        {
+            if (value < size && items != null)
+            {
+                items.Resize(value);
+            }
+            size = value;
+        }
+    }
+
+    public int FreeCapacity
+    {
+        get
+        {
+            return size - Items.Count;
+        }
+    }
+
+    public void Add(string item)
+    {
+        Debug.Assert(FreeCapacity > 0);
+        Items.Add(item);
+    }
+
+    public void RemoveAt(int index)
+    {
+        Items.RemoveAt(index);
     }
 }

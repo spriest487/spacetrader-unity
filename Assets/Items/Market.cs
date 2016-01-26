@@ -112,8 +112,7 @@ public class Market : ScriptableObject {
         newShip.CrewAssignments.Captain = oldShip.CrewAssignments.Captain;
         newShip.CrewAssignments.Passengers = oldShip.CrewAssignments.Passengers;
             
-        PlayerShip.ClearLocal();
         Destroy(player.gameObject);
-        newPlayer.MakeLocal();
+        SpaceTraderConfig.LocalPlayer = newPlayer;
     }
 }

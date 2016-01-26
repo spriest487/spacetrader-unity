@@ -7,23 +7,12 @@ public class PlayerShip : MonoBehaviour
 {
     private float? targetingClickStart = null;
     private const float STICKY_TARGET_CLICK_DELAY = 0.1f;
-
-    private static PlayerShip[] localPlayer;
-
+    
     public static PlayerShip LocalPlayer
     {
         get
         {
-            if (localPlayer == null)
-            {
-                localPlayer = new PlayerShip[] { FindObjectOfType<PlayerShip>() };
-            }
-
-            return localPlayer[0];
-        }
-        private set
-        {
-            localPlayer = new PlayerShip[] { value };
+            return SpaceTraderConfig.LocalPlayer;
         }
     }
 
@@ -44,22 +33,7 @@ public class PlayerShip : MonoBehaviour
     {
         get { return money; }
     }
-
-    public void MakeLocal()
-    {
-        if (LocalPlayer && LocalPlayer != this)
-        {
-            throw new UnityException("there is already an active local player");
-        }
-
-        LocalPlayer = this;
-    }
-
-    public static void ClearLocal()
-    {
-        LocalPlayer = null;
-    }
-
+    
     public void AddMoney(int amount)
     {
         money += amount;
@@ -352,15 +326,7 @@ public class PlayerShip : MonoBehaviour
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
 	}
-
-    void OnDestroy()
-    {
-        if (LocalPlayer == this)
-        {
-            ClearLocal();
-        }
-    }
-
+    
 	void OnCollisionEnter(Collision collision)
 	{
         if (!HasControl())

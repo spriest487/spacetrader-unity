@@ -34,11 +34,14 @@ public class ModulePreset : ScriptableObject
             moduleLoadout.FrontModules.Equip(module, itemType.ModuleDefinition);
         }
 
-        var cargo = moduleLoadout.GetComponent<CargoHold>();
+        var cargo = moduleLoadout.GetComponent<Ship>().Cargo;
 
         if (cargo)
         {
-            cargo.Items = cargoItems;
+            foreach (var item in cargoItems)
+            {
+                cargo.Add(item);
+            }
         }
     }
 }

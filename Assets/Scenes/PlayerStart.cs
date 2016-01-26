@@ -16,7 +16,7 @@ public class PlayerStart : MonoBehaviour {
             var playerObj = (Ship)Instantiate(playerPrefab, transform.position, transform.rotation);
             var player = playerObj.gameObject.AddComponent<PlayerShip>();
 
-            player.MakeLocal();
+            SpaceTraderConfig.LocalPlayer = player;
         }
     }
 }

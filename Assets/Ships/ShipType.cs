@@ -69,9 +69,16 @@ public class ShipType : ScriptableObject
         {
             obj.gameObject.AddComponent<Moorable>();
         }   
-
-        var cargo = obj.gameObject.AddComponent<CargoHold>();
-        cargo.Size = cargoSize;
+                
+        if (cargoSize > 0)
+        {
+            ship.Cargo = CreateInstance<CargoHold>();
+            ship.Cargo.Size = cargoSize;
+        }
+        else
+        {
+            ship.Cargo = null;
+        }
 
         var hp = obj.gameObject.AddComponent<Hitpoints>();
         hp.Reset(armor, shieldSectors);

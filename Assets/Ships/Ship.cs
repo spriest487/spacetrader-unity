@@ -27,6 +27,9 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private Vector3 bumpForce;
+
+    [SerializeField]
+    private CargoHold cargo;
     
     public float Thrust;
     public float Strafe;
@@ -59,6 +62,12 @@ public class Ship : MonoBehaviour
     {
         get { return target; }
         set { target = value; }
+    }
+
+    public CargoHold Cargo
+    {
+        get { return cargo; }
+        set { cargo = value; }
     }
 
     public IList<Ability> Abilities
@@ -455,3 +464,21 @@ public class Ship : MonoBehaviour
         }
     }
 }
+
+#if UNITY_EDITOR
+
+[UnityEditor.CustomEditor(typeof(Ship))]
+public class ShipInspector : UnityEditor.Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        if (GUILayout.Button("Reset cargo hold"))
+        {
+            (target as Ship).Cargo = CreateInstance<CargoHold>();
+        }
+    }
+}
+
+#endif

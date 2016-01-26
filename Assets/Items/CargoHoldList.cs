@@ -28,7 +28,7 @@ public class CargoHoldList : MonoBehaviour
 
     private void Update()
     {
-        var targetHold = cargoHold ? cargoHold : PlayerShip.LocalPlayer.GetComponent<CargoHold>();
+        var targetHold = cargoHold ? cargoHold : PlayerShip.LocalPlayer.Ship.Cargo;
 
         if (targetHold)
         {

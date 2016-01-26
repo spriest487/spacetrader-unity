@@ -15,7 +15,9 @@ public class CargoHoldListItem : MonoBehaviour
     [SerializeField]
     private int quantity;
 
-    public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab, CargoItemType itemType, int quantity)
+    public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab, 
+        CargoItemType itemType, 
+        int quantity)
     {
         var result = Instantiate(prefab);
         result.quantity = quantity;
