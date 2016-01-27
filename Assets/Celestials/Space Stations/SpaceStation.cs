@@ -16,9 +16,26 @@ public class SpaceStation : MonoBehaviour
     [SerializeField]
     private List<ShipForSale> shipsForSale;
 
+    [SerializeField]
+    private CargoHold itemsForSale;
+
     public MooringTrigger MooringTrigger
     {
         get { return mooringTrigger; }
+    }
+
+    public CargoHold ItemsForSale
+    {
+        get
+        {
+            if (!itemsForSale)
+            {
+                itemsForSale = ScriptableObject.CreateInstance<CargoHold>();
+                itemsForSale.Size = 1000;
+            }
+
+            return itemsForSale;
+        }
     }
 
     public List<CrewMember> AvailableCrew

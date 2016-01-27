@@ -2,7 +2,7 @@
 
 internal static class ListUtility
 {
-    public static bool ElementsEquals<T>(this List<T> list, List<T> other)
+    public static bool ElementsEquals<T>(this IList<T> list, IList<T> other)
     {
         if (other == null || list.Count != other.Count)
         {
@@ -21,7 +21,7 @@ internal static class ListUtility
         return true;
     }
 
-    public static void Resize<T>(this List<T> list, int size) 
+    public static void Resize<T>(this IList<T> list, int size) 
         where T : class
     {
         int diff = size - list.Count;
@@ -35,7 +35,10 @@ internal static class ListUtility
         }
         else if (diff < 0)
         {
-            list.RemoveRange(list.Count - diff, diff);
+            for (int i = diff; i < 0; ++i)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
         }
     }
 }

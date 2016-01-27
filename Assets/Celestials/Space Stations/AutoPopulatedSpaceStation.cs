@@ -35,6 +35,18 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
             shipsForSale.Add(item);
         }
         station.ShipsForSale = shipsForSale;
+
+        //all items available
+        for (int slot = 0; slot < station.ItemsForSale.Size; ++slot)
+        {
+            //clear
+            station.ItemsForSale.RemoveAt(slot);
+        }
+
+        foreach (var itemType in SpaceTraderConfig.CargoItemConfiguration.ItemTypes)
+        {
+            station.ItemsForSale.Add(itemType.name);
+        }
     }
 }
 

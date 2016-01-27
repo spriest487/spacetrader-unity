@@ -48,12 +48,16 @@ public class CargoHold : ScriptableObject
 
     public void Add(string item)
     {
-        Debug.Assert(FreeCapacity > 0);
+        Debug.AssertFormat(FreeCapacity > 0, "cargo hold does not have space to add item {0}, size is {1} and free capacity is {2}",
+            item, size, FreeCapacity);
         Items.Add(item);
     }
 
     public void RemoveAt(int index)
     {
-        Items.RemoveAt(index);
+        if (index < items.Count)
+        {
+            Items.RemoveAt(index);
+        }
     }
 }

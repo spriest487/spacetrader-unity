@@ -12,7 +12,12 @@ public class CargoItemConfiguration : ScriptableObject
 #endif
 
     [SerializeField]
-    private CargoItemType[] itemTypes;
+    private List<CargoItemType> itemTypes;
+
+    public IList<CargoItemType> ItemTypes
+    {
+        get { return itemTypes; }
+    }
 
     private Dictionary<string, CargoItemType> typesByName;
     private Dictionary<string, CargoItemType> TypesByName
