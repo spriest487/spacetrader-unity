@@ -14,4 +14,4 @@ MonoBehaviour:
   baseValue: 100
   icon: {fileID: 21300000, guid: 462578a51d3ad474284b34540054525f, type: 3}
   displayName: Luxury Goods
-  description: 
+  description: Some really nice stuff
