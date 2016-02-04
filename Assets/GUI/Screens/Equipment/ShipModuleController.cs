@@ -1,24 +1,52 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
-using System.Collections;
 
+[RequireComponent(typeof(Button))]
 public class ShipModuleController : MonoBehaviour
 {
-    //[SerializeField]
-    //private ModuleStatus moduleStatus;
-
     [SerializeField]
     private Text caption;
 
     [SerializeField]
     private Image icon;
 
+    [SerializeField]
+    private ModuleLoadout loadout;
+
+    [SerializeField]
+    private int moduleSlot;
+
+    public ModuleLoadout ModuleLoadout
+    {
+        get { return loadout; }
+    }
+
+    public int ModuleSlot
+    {
+        get { return moduleSlot; }
+    }
+
+    public ModuleStatus Module
+    {
+        get { return ModuleLoadout.FrontModules[ModuleSlot]; }
+    }
+
+    public void OnClickModule()
+    {
+        SendMessageUpwards("OnSelectShipModule", this, SendMessageOptions.DontRequireReceiver);
+    }
+
     public static ShipModuleController CreateFromPrefab(ShipModuleController prefab,
-        ModuleStatus module)
+        ModuleLoadout loadout,
+        int moduleIndex)
     {
         var result = Instantiate(prefab);
 
-        var itemName = module.Definition.name;
+        result.moduleSlot = moduleIndex;
+        result.loadout = loadout;
+
+        var itemName = result.Module.Definition.name;
         var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
 
         result.caption.text = itemName;

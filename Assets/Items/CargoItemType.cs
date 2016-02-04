@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class CargoItemType : ScriptableObject
+public class CargoItemType : ItemType
 {
 #if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Items/Simple item type")]
+    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Items/Cargo item type")]
     public static void Create()
     {
         ScriptableObjectUtility.CreateAsset<CargoItemType>();
@@ -14,24 +13,14 @@ public class CargoItemType : ScriptableObject
     [SerializeField]
     private string displayName;
 
+    [TextArea]
     [SerializeField]
-    private int baseValue;
-
-    [SerializeField]
-    private ModuleDefinition module;
-
-    [SerializeField]
-    private Sprite icon;
+    private string description;
     
-    public string DisplayName
+    public override string DisplayName
     {
         get
         {
-            if (module != null)
-            {
-                return module.name;
-            }
-
             if (displayName != null)
             {
                 return displayName;
@@ -41,18 +30,11 @@ public class CargoItemType : ScriptableObject
         }
     }
 
-    public Sprite Icon
+    public override string Description
     {
-        get { return icon; }
-    }
-
-    public int BaseValue
-    {
-        get { return baseValue; }
-    }
-
-    public ModuleDefinition ModuleDefinition
-    {
-        get { return module; }
+        get
+        {
+            return description;
+        }
     }
 }

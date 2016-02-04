@@ -3,6 +3,11 @@ using System;
 using System.Collections.Generic;
 
 public class Market : ScriptableObject {
+    public static string FormatCurrency(int amount)
+    {
+        return "*" + amount.ToString("N0");
+    }
+
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Market")]
     public static void CreateNewMarket()
@@ -114,5 +119,60 @@ public class Market : ScriptableObject {
             
         Destroy(player.gameObject);
         SpaceTraderConfig.LocalPlayer = newPlayer;
+    }
+
+    public int GetSellingItemPrice(ItemType itemType, SpaceStation atStation)
+    {
+        return itemType.BaseValue;
+    }
+
+    public int GetBuyingItemPrice(ItemType itemType, SpaceStation atStation)
+    {
+        return itemType.BaseValue;
+    }
+
+    public void BuyItemFromStation(PlayerShip player, int itemIndex, SpaceStation station)
+    {
+        var playerCargo = player.Ship.Cargo;
+        var stationCargo = station.ItemsForSale;
+
+        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(stationCargo.Items[itemIndex]);
+
+        var price = GetBuyingItemPrice(itemType, station);
+
+        Debug.Assert(itemIndex < stationCargo.Size,
+            "index of item to buy must be valid index of item in station's cargo");
+        Debug.Assert(playerCargo.FreeCapacity > 0, 
+            "player must have space to put bought item");
+        Debug.Assert(player.Money >= price, "player must have enough money to buy item");
+
+        stationCargo.RemoveAt(itemIndex);
+        playerCargo.Add(itemType.name);
+
+        player.AddMoney(-price);
+    }
+
+    public void SellItemToStation(PlayerShip player, int itemIndex, SpaceStation station)
+    {
+        var playerCargo = player.Ship.Cargo;
+        var stationCargo = station.ItemsForSale;
+
+        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(playerCargo.Items[itemIndex]);
+
+        var price = GetSellingItemPrice(itemType, station);
+
+        Debug.Assert(playerCargo && itemIndex < playerCargo.Size,
+            "index of item to sell must be valid index of item in player's cargo");
+
+        if (stationCargo.FreeCapacity == 0)
+        {
+            //station cargo space is infinite
+            ++stationCargo.Size;
+        }
+
+        playerCargo.RemoveAt(itemIndex);
+        stationCargo.Add(itemType.name);
+
+        player.AddMoney(price);
     }
 }

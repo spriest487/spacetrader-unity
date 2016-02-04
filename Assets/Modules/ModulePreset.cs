@@ -25,9 +25,9 @@ public class ModulePreset : ScriptableObject
         for (int module = 0; module < frontModules.Length; ++module)
         {
             var moduleName = frontModules[module];
-            var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleName);
+            var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleName) as ModuleItemType;
 
-            if (itemType == null || itemType.ModuleDefinition == null)
+            if (itemType == null)
             {
                 throw new UnityException("bad module item name: " +moduleName);
             }

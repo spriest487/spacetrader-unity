@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 
-public class GunBehaviour : ModuleBehaviour
+public class GunBehaviour : ModuleBehaviour, IWeapon
 {
+    private const string DESCRIPTION_FORMAT =
+@"<color=#ffffffaa>Damage: </color> {0}-{1}
+<color=#ffffffaa>Range:</color> {2:0.0}m
+<color=#ffffffaa>Projectile speed:</color> {3:0.0}m/s";
+
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Gun Behavior")]
     public static void CreateModuleDefinition()
@@ -22,7 +27,25 @@ public class GunBehaviour : ModuleBehaviour
     [SerializeField]
     private int maxDamage;
 
-	public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
+    public override string Description
+    {
+        get
+        {
+            float velocity = bulletType.velocity;
+            float range = velocity * bulletType.lifetime;
+            return string.Format(DESCRIPTION_FORMAT, minDamage, maxDamage, range, velocity);
+        }
+    }
+
+    public int ApproxDamagePerActivation
+    {
+        get
+        {
+            return (minDamage + maxDamage / 2);
+        }
+    }
+
+    public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
 	{
         var aimingAt = module.Aim;
         if (hardpoint.CanAimAt(aimingAt))

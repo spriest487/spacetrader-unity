@@ -19,9 +19,43 @@ public class ModuleDefinition : ScriptableObject
 
 	[SerializeField]
 	private float cooldownLength;
+
+    [TextArea]
+    [SerializeField]
+    private string description;
     
 	public ModuleBehaviour Behaviour { get { return behaviour; } }
 	public float CooldownLength { get { return cooldownLength; } }
+
+    public string Description
+    {
+        get
+        {
+            string result;
+
+            //DPS
+            var weapon = behaviour as IWeapon;
+            if (weapon != null)
+            {
+                float dps = weapon.ApproxDamagePerActivation / cooldownLength;
+
+                result = string.Format("<size=32><color=#ffffffaa>DPS:</color> {0:0.0}</size>\n", dps);
+            }
+            else
+            {
+                result = "";
+            }
+
+            //description
+            if (description != null && description.Length > 0)
+            {
+                result += description + "\n";
+            }
+
+            //behaviour description (usually stats)
+            return result + behaviour.Description;
+        }
+    }
 
 	public static ModuleDefinition Create(string name,
         ModuleBehaviour behaviour,

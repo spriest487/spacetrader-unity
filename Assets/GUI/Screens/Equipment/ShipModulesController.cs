@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UnityEngine.UI.LayoutGroup))]
 public class ShipModulesController : MonoBehaviour
@@ -18,7 +19,7 @@ public class ShipModulesController : MonoBehaviour
     [SerializeField]
     private ShipModuleController moduleTemplate;
 
-    void Update()
+    private void Update()
     {
         var player = PlayerShip.LocalPlayer;
 
@@ -62,9 +63,10 @@ public class ShipModulesController : MonoBehaviour
                 Destroy(oldModule.gameObject);
             }
 
-            foreach (var newModule in currentModules)
+            var moduleCount = currentModules.Count;
+            for (int moduleSlot = 0; moduleSlot < moduleCount; ++moduleSlot)
             {
-                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, newModule);
+                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, loadout, moduleSlot);
                 module.transform.SetParent(transform, false);
             }
         }

@@ -16,11 +16,11 @@ public class MoneyLabel : MonoBehaviour
         var player = PlayerShip.LocalPlayer;
         if (player)
         {
-            text.text = "*" +player.Money.ToString();
+            text.text = Market.FormatCurrency(player.Money);
         }
         else
         {
-            text.text = "*-";
+            text.text = "-";
         }
     }
 }

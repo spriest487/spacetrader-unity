@@ -12,21 +12,21 @@ public class CargoItemConfiguration : ScriptableObject
 #endif
 
     [SerializeField]
-    private List<CargoItemType> itemTypes;
+    private List<ItemType> itemTypes;
 
-    public IList<CargoItemType> ItemTypes
+    public IList<ItemType> ItemTypes
     {
         get { return itemTypes; }
     }
 
-    private Dictionary<string, CargoItemType> typesByName;
-    private Dictionary<string, CargoItemType> TypesByName
+    private Dictionary<string, ItemType> typesByName;
+    private Dictionary<string, ItemType> TypesByName
     {
         get
         {
-            typesByName = new Dictionary<string, CargoItemType>();
+            typesByName = new Dictionary<string, ItemType>();
 
-            foreach (CargoItemType type in itemTypes)
+            foreach (ItemType type in itemTypes)
             {
                 if (type != null)
                 {
@@ -38,16 +38,10 @@ public class CargoItemConfiguration : ScriptableObject
         }
     }
 
-    public CargoItemType FindType(string name)
+    public ItemType FindType(string name)
     {
-        CargoItemType result;
-        if (TypesByName.TryGetValue(name, out result))
-        {
-            return result;
-        }
-        else
-        {
-            return null;
-        }
+        Debug.Assert(TypesByName.ContainsKey(name), "missing item type: " + name);
+
+        return typesByName[name];
     }
 }
