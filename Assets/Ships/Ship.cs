@@ -30,6 +30,11 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private CargoHold cargo;
+
+    [SerializeField]
+    private ModuleLoadout moduleLoadout;
+
+    private List<WeaponHardpoint> hardpoints;
     
     public float Thrust;
     public float Strafe;
@@ -39,6 +44,26 @@ public class Ship : MonoBehaviour
     public float Roll;
 
     private ShipStats currentStats;
+
+    public IList<WeaponHardpoint> Hardpoints
+    {
+        get
+        {
+            if (hardpoints == null)
+            {
+                hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());
+
+                if (hardpoints.Count == 0)
+                {
+                    var defaultHardpoint = gameObject.AddComponent<WeaponHardpoint>();
+                    defaultHardpoint.Arc = 360;
+                    hardpoints.Add(defaultHardpoint);
+                }
+            }
+
+            return hardpoints;
+        }
+    }
 
     public ShipStats CurrentStats
     {
@@ -50,6 +75,11 @@ public class Ship : MonoBehaviour
             }
             return currentStats;
         }
+    }
+
+    public ModuleLoadout ModuleLoadout
+    {
+        get { return moduleLoadout; }
     }
     
     public ShipStats BaseStats
@@ -354,7 +384,7 @@ public class Ship : MonoBehaviour
 		}
 	}
 
-	void LateUpdate()
+	private void Update()
 	{
         //force refresh of stats
         currentStats = null;
@@ -367,6 +397,9 @@ public class Ship : MonoBehaviour
                 ability.Cooldown -= Time.deltaTime;
             }
         }
+
+        //modules
+        ModuleLoadout.Update();
 
         List<StatusEffect> newStatusEffects = new List<StatusEffect>(activeStatusEffects.Count);
         foreach (var effect in activeStatusEffects)
@@ -444,6 +477,11 @@ public class Ship : MonoBehaviour
 		}
 	}
 
+    public WeaponHardpoint GetHardpointAt(int index)
+    {
+        return Hardpoints[index % Hardpoints.Count];
+    }
+
     public void Explode()
     {
         if (explosionEffect)
@@ -474,9 +512,19 @@ public class ShipInspector : UnityEditor.Editor
     {
         DrawDefaultInspector();
 
+        var ship = target as Ship;
+
         if (GUILayout.Button("Reset cargo hold"))
         {
-            (target as Ship).Cargo = CreateInstance<CargoHold>();
+            ship.Cargo = CreateInstance<CargoHold>();
+        }
+
+        if (GUILayout.Button("Reset weapon hardpoints"))
+        {
+            for (int mod = 0; mod < ship.ModuleLoadout.HardpointModules.Count; ++mod)
+            {
+                ship.ModuleLoadout.HardpointModules[mod] = ModuleStatus.Create(null);
+            }
         }
     }
 }

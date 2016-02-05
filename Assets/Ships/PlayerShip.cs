@@ -135,7 +135,7 @@ public class PlayerShip : MonoBehaviour
 #endif
     }
 
-    private bool AutoaimSnapToPredictor(Vector3 mousePos, ModuleStatus module, WeaponHardpoint hardpoint)
+    private bool AutoaimSnapToPredictor(Vector3 mousePos, int slot)
     {
         if (!ship.Target)
         {
@@ -148,8 +148,10 @@ public class PlayerShip : MonoBehaviour
         const float AUTOAIM_SNAP_DIST = 30;
         const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
 
-        var behavior = module.Definition.Behaviour;
-        var predictedPos = behavior.PredictTarget(ship, hardpoint, ship.Target);
+        var module = Ship.ModuleLoadout.HardpointModules[slot];
+        var behavior = module.ModuleType.Behaviour;
+
+        var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
         if (predictedPos.HasValue)
         {
             var screenPredicted = Camera.main.WorldToScreenPoint(predictedPos.Value);
@@ -169,20 +171,16 @@ public class PlayerShip : MonoBehaviour
 
     private void CalculateMouseAim(Vector3? aimPoint)
     {
-        var loadout = GetComponent<ModuleLoadout>();
-        if (!loadout)
-        {
-            return;
-        }
+        var loadout = ship.ModuleLoadout;
 
-        for (int moduleIndex = 0; moduleIndex < loadout.FrontModules.Size; ++moduleIndex)
+        for (int moduleIndex = 0; moduleIndex < loadout.HardpointModules.Count; ++moduleIndex)
         {
-            var module = loadout.FrontModules[moduleIndex];
-            var hardpoint = loadout.FindHardpoint(moduleIndex);
+            var module = loadout.HardpointModules[moduleIndex];
+            var hardpoint = ship.GetHardpointAt(moduleIndex);
 
             if (aimPoint.HasValue && Camera.main)
             {
-                if (!AutoaimSnapToPredictor(aimPoint.Value, module, hardpoint))
+                if (!AutoaimSnapToPredictor(aimPoint.Value, moduleIndex))
                 {
                     Vector3 mouseAim;
 
@@ -295,18 +293,14 @@ public class PlayerShip : MonoBehaviour
             ship.Thrust = Input.GetAxis("Vertical");
             ship.Strafe = Input.GetAxis("Horizontal");
             ship.Lift = Input.GetAxis("lift");
-
-            var loadout = GetComponent<ModuleLoadout>();
-            if (loadout)
+            
+            if (Input.GetButton("fire"))
             {
-                if (Input.GetButton("fire"))
+                if (ship.ModuleLoadout.HardpointModules.Count > 0)
                 {
-                    if (loadout.FrontModules.Size > 0)
+                    for (var mod = 0; mod < ship.ModuleLoadout.HardpointModules.Count; ++mod)
                     {
-                        for (var mod = 0; mod < loadout.FrontModules.Size; ++mod)
-                        {
-                            loadout.Activate(mod);
-                        }
+                        ship.ModuleLoadout.Activate(ship, mod);
                     }
                 }
             }

@@ -9,7 +9,7 @@ public class ModuleStatus : ScriptableObject
     private Vector3 aim;
 
     [SerializeField]
-    private ModuleDefinition definition;
+    private ModuleItemType definition;
 
     public Vector3 Aim
     {
@@ -17,7 +17,7 @@ public class ModuleStatus : ScriptableObject
         set { aim = value; }
     }
 
-    public ModuleDefinition Definition
+    public ModuleItemType ModuleType
     {
         get { return definition; }
     }
@@ -32,7 +32,7 @@ public class ModuleStatus : ScriptableObject
         cooldown = 0;
     }
 
-    public static ModuleStatus Create(ModuleDefinition definition)
+    public static ModuleStatus Create(ModuleItemType definition)
     {
         ModuleStatus result = CreateInstance<ModuleStatus>();
         result.definition = definition;
@@ -40,12 +40,12 @@ public class ModuleStatus : ScriptableObject
         return result;
     } 
 
-    public void Activate(Ship activator, WeaponHardpoint hardpoint)
+    public void Activate(Ship activator, int slot)
     {
         if (cooldown <= Mathf.Epsilon) //cd check
         {
-            Definition.Behaviour.Activate(activator, hardpoint, this);
-            cooldown = Definition.CooldownLength; 
+            ModuleType.Behaviour.Activate(activator, slot);
+            cooldown = ModuleType.CooldownLength; 
         }
     }
      

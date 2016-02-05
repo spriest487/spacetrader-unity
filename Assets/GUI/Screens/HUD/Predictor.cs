@@ -35,15 +35,15 @@ public class Predictor : MonoBehaviour
         }
 
         var playerShip = player.GetComponent<Ship>();
-        var loadout = player.GetComponent<ModuleLoadout>();
 
-        if (!loadout || !playerShip || !playerShip.Target)
+        if (!playerShip || !playerShip.Target)
         {
             ClearReticules();
             return;
         }
 
-        var modCount = loadout.FrontModules.Size;
+        var loadout = playerShip.ModuleLoadout;
+        var modCount = loadout.HardpointModules.Count;
 
         var newMarkerPositions = new List<Vector3>(modCount);
 
@@ -55,12 +55,10 @@ public class Predictor : MonoBehaviour
         behaviour here too */
         for (int moduleIndex = 0; moduleIndex < modCount; ++moduleIndex)
         {
-            var module = loadout.FrontModules[moduleIndex];
+            var module = loadout.HardpointModules[moduleIndex];
+            var behavior = module.ModuleType.Behaviour;
 
-            var behavior = module.Definition.Behaviour;
-            var hardpoint = loadout.FindHardpoint(moduleIndex);
-
-            var predictPoint = behavior.PredictTarget(playerShip, hardpoint, playerShip.Target);
+            var predictPoint = behavior.PredictTarget(playerShip, moduleIndex, playerShip.Target);
 
             if (predictPoint.HasValue)
             {

@@ -9,6 +9,6 @@ public class ModuleLoadoutInspector : Editor
         DrawDefaultInspector();
 
         //force init of FrontModules
-        var modules = (target as ModuleLoadout).FrontModules;
+        //var modules = (target as ModuleLoadout).FrontModules;
     }
 }

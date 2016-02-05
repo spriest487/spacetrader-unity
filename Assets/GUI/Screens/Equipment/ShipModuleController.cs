@@ -12,14 +12,14 @@ public class ShipModuleController : MonoBehaviour
     private Image icon;
 
     [SerializeField]
-    private ModuleLoadout loadout;
+    private Ship ship;
 
     [SerializeField]
     private int moduleSlot;
 
-    public ModuleLoadout ModuleLoadout
+    public Ship Ship
     {
-        get { return loadout; }
+        get { return ship; }
     }
 
     public int ModuleSlot
@@ -29,7 +29,7 @@ public class ShipModuleController : MonoBehaviour
 
     public ModuleStatus Module
     {
-        get { return ModuleLoadout.FrontModules[ModuleSlot]; }
+        get { return Ship.ModuleLoadout.HardpointModules[ModuleSlot]; }
     }
 
     public void OnClickModule()
@@ -38,15 +38,15 @@ public class ShipModuleController : MonoBehaviour
     }
 
     public static ShipModuleController CreateFromPrefab(ShipModuleController prefab,
-        ModuleLoadout loadout,
+        Ship ship,
         int moduleIndex)
     {
         var result = Instantiate(prefab);
 
         result.moduleSlot = moduleIndex;
-        result.loadout = loadout;
+        result.ship = ship;
 
-        var itemName = result.Module.Definition.name;
+        var itemName = result.Module.ModuleType.name;
         var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
 
         result.caption.text = itemName;

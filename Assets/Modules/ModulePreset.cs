@@ -11,37 +11,32 @@ public class ModulePreset : ScriptableObject
 #endif
 
     [SerializeField]
-    string[] frontModules;
+    private string[] frontModules;
 
     [SerializeField]
-    string[] cargoItems;
+    private string[] cargoItems;
 
     public string[] FrontModules { get { return frontModules; } }
     public string[] CargoItems { get { return cargoItems; } }
 
-    public void Apply(ModuleLoadout moduleLoadout)
+    public void Apply(Ship ship)
     {
-        moduleLoadout.FrontModules.Resize(frontModules.Length);
+        var moduleLoadout = ship.ModuleLoadout;
+        moduleLoadout.HardpointModules.Resize(frontModules.Length);
+
         for (int module = 0; module < frontModules.Length; ++module)
         {
             var moduleName = frontModules[module];
             var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleName) as ModuleItemType;
 
-            if (itemType == null)
-            {
-                throw new UnityException("bad module item name: " +moduleName);
-            }
-            moduleLoadout.FrontModules.Equip(module, itemType.ModuleDefinition);
+            Debug.Assert(itemType != null, "bad module item name: " +moduleName);
+            
+            moduleLoadout.Equip(module, itemType);
         }
-
-        var cargo = moduleLoadout.GetComponent<Ship>().Cargo;
-
-        if (cargo)
+        
+        foreach (var item in cargoItems)
         {
-            foreach (var item in cargoItems)
-            {
-                cargo.Add(item);
-            }
+            ship.Cargo.Add(item);
         }
     }
 }

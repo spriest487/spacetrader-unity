@@ -1,84 +1,38 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections.Generic;
 
-[RequireComponent(typeof(Ship))]
-public class ModuleLoadout : MonoBehaviour
+[Serializable]
+public class ModuleLoadout
 {
     [SerializeField]
-    private ModuleGroup frontModules;
+    private List<ModuleStatus> hardpointModules;
 
-    private WeaponHardpoint[] hardpoints;
-    
-    private Ship ship;
-
-    public WeaponHardpoint[] Hardpoints
+    public List<ModuleStatus> HardpointModules
     {
-        get { return hardpoints; }
-        private set { hardpoints = value; }
+        get { return hardpointModules; }
     }
     
-    public ModuleGroup FrontModules
-    { 
-        get
-        {
-            if (frontModules == null)
-            {
-                frontModules = ScriptableObject.CreateInstance<ModuleGroup>();
-            }
-
-            return frontModules;
-        }
-    }
-	
-	public void Activate(int index)
+	public void Activate(Ship ship, int slot)
 	{
-		var module = frontModules[index];
+        var module = HardpointModules[slot];
 
-		if (module.Definition)
-		{
-            WeaponHardpoint hardpoint;
-            if (Hardpoints.Length == 0)
-            {
-                hardpoint = null;                
-            }
-            else
-            {
-                hardpoint = Hardpoints[index % Hardpoints.Length];
-            }
-
-            module.Activate(ship, hardpoint);
+        if (module.ModuleType)
+        {
+            module.Activate(ship, slot);
         }
-		else
-		{
-			throw new System.ArgumentException("tried to activate an empty module slot");
-		}
 	}
 
-    public WeaponHardpoint FindHardpoint(int moduleIndex)
+    public void Equip(int slot, ModuleItemType moduleType)
     {
-        if (hardpoints == null || hardpoints.Length == 0)
-        {
-            return null;
-        }
-
-        return Hardpoints[moduleIndex % hardpoints.Length];
+        hardpointModules[slot] = ModuleStatus.Create(moduleType);
     }
-
-	void Start()
+        
+	public void Update()
 	{
-		ship = GetComponent<Ship>();
-		Hardpoints = ship.GetComponentsInChildren<WeaponHardpoint>();
-	}
-
-	void OnShipTypeChange()
-	{
-
-	}
-
-	void Update()
-	{
-		foreach (var module in FrontModules)
+		foreach (var module in hardpointModules)
 		{
-			if (module.Definition)
+			if (module.ModuleType)
 			{
 				module.Update();
 			}

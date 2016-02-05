@@ -36,15 +36,15 @@ public class Crosshair : MonoBehaviour
         }
 
 		var ship = player.GetComponent<Ship>();
-        var loadout = player.GetComponent<ModuleLoadout>();
+        var loadout = ship.ModuleLoadout;
 
-        if (!ship || !loadout)
+        if (!ship)
 		{
 			return;
 		}
 
-        var moduleCount = loadout.FrontModules.Size;
-        foreach (var module in loadout.FrontModules)
+        var moduleCount = loadout.HardpointModules.Count;
+        foreach (var module in loadout.HardpointModules)
         {
             DrawCrosshair(module.Aim, 1);
         }
@@ -53,13 +53,12 @@ public class Crosshair : MonoBehaviour
                         
         for (var moduleIndex = 0; moduleIndex < moduleCount; ++moduleIndex)
         {
-            var module = loadout.FrontModules[moduleIndex];
+            var module = loadout.HardpointModules[moduleIndex];
 
             Vector3 aimFromPoint;
-            if (loadout.Hardpoints != null && loadout.Hardpoints.Length > 0)
+            if (loadout.HardpointModules.Count > 0)
             {
-                var hardpointIndex = moduleIndex & loadout.Hardpoints.Length;
-                aimFromPoint = loadout.Hardpoints[hardpointIndex].transform.position;
+                aimFromPoint = ship.GetHardpointAt(moduleIndex).transform.position;
             }
             else
             {

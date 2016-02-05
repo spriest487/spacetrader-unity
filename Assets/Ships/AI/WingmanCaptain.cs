@@ -11,8 +11,7 @@ public class WingmanCaptain : MonoBehaviour
     private Seeker seeker;
     private AICaptain captain;
 
-    private Targetable targetable;	
-    private ModuleLoadout loadout;    
+    private Targetable targetable;
 
     private Vector3? immediateManeuver;
     
@@ -209,14 +208,10 @@ public class WingmanCaptain : MonoBehaviour
             immediateManeuver = ship.Target.transform.position + panicVec;
         }
 
-        if (loadout)
+        for (int module = 0; module < ship.ModuleLoadout.HardpointModules.Count; ++module)
         {
-            for (int module = 0; module < loadout.FrontModules.Size; ++module)
-            {
-                loadout.FrontModules[module].Aim = ship.Target.transform.position;
-
-                loadout.Activate(module);
-            }
+            ship.ModuleLoadout.HardpointModules[module].Aim = ship.Target.transform.position;
+            ship.ModuleLoadout.Activate(ship, module);
         }
 
         NavigateTo(behindTarget);
@@ -314,7 +309,6 @@ public class WingmanCaptain : MonoBehaviour
 		captain = GetComponent<AICaptain>();
 
         targetable = GetComponent<Targetable>();
-        loadout = GetComponent<ModuleLoadout>();
 
         seeker.pathCallback += NavigatePathCallback;
     }

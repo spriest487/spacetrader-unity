@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ed7b0796370e9499c2837922b59fa8, type: 3}
   m_Name: Test Laser
   m_EditorClassIdentifier: 
-  moduleName: Test Laser
   behaviour: {fileID: 11400000, guid: 9fe1b6d2a2c0d7447a488f840d9d3921, type: 2}
   cooldownLength: 0.3
+  description: 

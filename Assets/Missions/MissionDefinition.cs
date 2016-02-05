@@ -36,8 +36,7 @@ public class MissionDefinition : ScriptableObject
 
             if (modulePreset)
             {
-                var modules = ship.gameObject.AddComponent<ModuleLoadout>();
-                modulePreset.Apply(modules);
+                modulePreset.Apply(ship);
             }
 
             return ship;

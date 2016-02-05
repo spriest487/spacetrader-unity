@@ -3,9 +3,6 @@ using UnityEngine;
 
 class FireWeaponsTask : AITask
 {
-    [SerializeField]
-    private ModuleLoadout loadout;
-
     public override bool Done
     {
         get
@@ -20,26 +17,22 @@ class FireWeaponsTask : AITask
         var task = CreateInstance<FireWeaponsTask>();
         return task;
     }
-
-    public override void Begin()
-    {
-        loadout = TaskFollower.GetComponent<ModuleLoadout>();
-    }
-
+    
     public override void Update()
     {
         var ship = TaskFollower.Captain.Ship;
 
-        if (!loadout || !ship.Target)
+        if (!ship.Target)
         {
             return;
         }
 
-        for (int module = 0; module < loadout.FrontModules.Size; ++module)
+        var loadout = ship.ModuleLoadout;
+        for (int module = 0; module < loadout.HardpointModules.Count; ++module)
         {
-            loadout.FrontModules[module].Aim = ship.Target.transform.position;
+            loadout.HardpointModules[module].Aim = ship.Target.transform.position;
 
-            loadout.Activate(module);
+            loadout.Activate(ship, module);
         }
     }
 }

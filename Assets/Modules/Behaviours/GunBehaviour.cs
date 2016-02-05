@@ -9,7 +9,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Gun Behavior")]
-    public static void CreateModuleDefinition()
+    public static void CreateGunBehavior()
     {
         ScriptableObjectUtility.CreateAsset<GunBehaviour>();
     }
@@ -45,8 +45,11 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         }
     }
 
-    public override void Activate(Ship activator, WeaponHardpoint hardpoint, ModuleStatus module)
+    public override void Activate(Ship activator, int slot)
 	{
+        var hardpoint = activator.GetHardpointAt(slot);
+        var module = activator.ModuleLoadout.HardpointModules[slot];
+
         var aimingAt = module.Aim;
         if (hardpoint.CanAimAt(aimingAt))
         {
@@ -72,7 +75,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         }        
 	}
     
-    public override Vector3? PredictTarget(Ship activator, WeaponHardpoint hardpoint, Targetable target)
+    public override Vector3? PredictTarget(Ship activator, int slot, Targetable target)
     {
         Vector3 speedDiff;
         var targetBody = target.GetComponent<Rigidbody>();

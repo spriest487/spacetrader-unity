@@ -6,7 +6,11 @@ public class WeaponHardpoint : MonoBehaviour
     [Range(0, 180)]
     private float arc;
 
-    public float Arc { get { return arc; } }
+    public float Arc
+    {
+        get { return arc; }
+        set { arc = value; }
+    }
 
     private float GetArcAngleTo(Vector3 pos)
     {

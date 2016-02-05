@@ -29,15 +29,8 @@ public class ShipModulesController : MonoBehaviour
             return;
         }
 
-        var loadout = player.GetComponent<ModuleLoadout>();
-        if (!loadout)
-        {
-            Clear();
-            return;
-        }
-
         var currentModules = new List<ModuleStatus>();
-        foreach (var module in loadout.FrontModules)
+        foreach (var module in player.Ship.ModuleLoadout.HardpointModules)
         {
             currentModules.Add(module);
         }
@@ -51,7 +44,7 @@ public class ShipModulesController : MonoBehaviour
             var moduleCount = currentModules.Count;
             for (int moduleSlot = 0; moduleSlot < moduleCount; ++moduleSlot)
             {
-                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, loadout, moduleSlot);
+                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, player.Ship, moduleSlot);
                 module.transform.SetParent(transform, false);
             }
 

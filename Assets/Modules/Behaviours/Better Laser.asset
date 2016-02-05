@@ -13,4 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   behaviour: {fileID: 11400000, guid: 991a7a1e19492084cac800549a091f5e, type: 2}
   cooldownLength: 0.35
-  description: <color=#ffffffaa>Damage:</color> <size=16>5-8</size>
+  description: 3c636f6c6f723d2366666666666661613e44616d6167653a3c2f636f6c6f723e203c73697a653d31363e352d383c2f73697a653e
