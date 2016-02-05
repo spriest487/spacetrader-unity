@@ -5,19 +5,19 @@ using UnityEngine.Events;
 [RequireComponent(typeof(UnityEngine.UI.LayoutGroup))]
 public class ShipModulesController : MonoBehaviour
 {
-    public enum Target
-    {
-        FRONT,
-        BACK
-    }
-
     private List<ModuleStatus> lastModules;
-
-    [SerializeField]
-    private Target target;
-
+    
     [SerializeField]
     private ShipModuleController moduleTemplate;
+
+    private void Clear()
+    {
+        lastModules = null;
+        foreach (var oldModule in GetComponentsInChildren<ShipModuleController>())
+        {
+            Destroy(oldModule.gameObject);
+        }
+    }
 
     private void Update()
     {
@@ -25,43 +25,28 @@ public class ShipModulesController : MonoBehaviour
 
         if (!player)
         {
+            Clear();
             return;
         }
 
         var loadout = player.GetComponent<ModuleLoadout>();
-        if (loadout == null)
+        if (!loadout)
         {
+            Clear();
             return;
         }
 
-        List<ModuleStatus> currentModules = new List<ModuleStatus>();
-        var group = Target.FRONT.Equals(target) ? loadout.FrontModules : loadout.FrontModules;
-
-        foreach (var module in group)
+        var currentModules = new List<ModuleStatus>();
+        foreach (var module in loadout.FrontModules)
         {
             currentModules.Add(module);
         }
-
-        bool needsRefresh;
-        if (lastModules != null)
-        {
-            var matching = lastModules.FindAll(m => currentModules.Contains(m));
-
-            needsRefresh = matching.Count != currentModules.Count;
-        }
-        else
-        {
-            needsRefresh = true;
-        }
-
-        lastModules = currentModules;
+        
+        bool needsRefresh = lastModules == null || !currentModules.ElementsEquals(lastModules);
 
         if (needsRefresh)
         {
-            foreach (var oldModule in GetComponentsInChildren<ShipModuleController>())
-            {
-                Destroy(oldModule.gameObject);
-            }
+            Clear();
 
             var moduleCount = currentModules.Count;
             for (int moduleSlot = 0; moduleSlot < moduleCount; ++moduleSlot)
@@ -69,6 +54,8 @@ public class ShipModulesController : MonoBehaviour
                 var module = ShipModuleController.CreateFromPrefab(moduleTemplate, loadout, moduleSlot);
                 module.transform.SetParent(transform, false);
             }
+
+            lastModules = currentModules;
         }
     }
 }
