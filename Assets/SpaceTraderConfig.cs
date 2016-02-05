@@ -27,7 +27,17 @@ public class SpaceTraderConfig : MonoBehaviour
     public static PlayerShip LocalPlayer
     {
         get { return Instance.localPlayer; }
-        set { Instance.localPlayer = value; }
+        set
+        {
+            /* making a player the local player makes them persist through
+            level changes too */
+            if (value)
+            {
+                DontDestroyOnLoad(value);
+            }
+
+            Instance.localPlayer = value;
+        }
     }
     
     [SerializeField]
@@ -48,6 +58,7 @@ public class SpaceTraderConfig : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
+        DontDestroyOnLoad(this);
     }
     
     private void OnDisable()
