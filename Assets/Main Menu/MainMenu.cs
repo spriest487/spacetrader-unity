@@ -26,6 +26,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private string menuScene;
 
+    [SerializeField]
+    private Transform[] activeWhenPlayerExists;
+
+    [SerializeField]
+    private Transform[] activeWhenNoPlayerExists;
+
     public void GoToRoot()
     {
         GoToScreen(null);
@@ -114,14 +120,14 @@ public class MainMenu : MonoBehaviour
     {
         var ingame = !!PlayerShip.LocalPlayer;
 
-        foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyIngame"))
+        foreach (var obj in activeWhenPlayerExists)
         {
-            obj.SetActive(ingame);
+            obj.gameObject.SetActive(ingame);
         }
 
-        foreach (var obj in GameObject.FindGameObjectsWithTag("UIOnlyOutOfGame"))
+        foreach (var obj in activeWhenNoPlayerExists)
         {
-            obj.SetActive(!ingame);
+            obj.gameObject.SetActive(!ingame);
         }
     }
 
