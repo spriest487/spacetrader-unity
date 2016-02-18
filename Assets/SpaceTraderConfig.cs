@@ -55,14 +55,17 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private PlayerShip localPlayer;
     
-    private void OnEnable()
+    private void Start()
     {
-        Instance = this;
-        DontDestroyOnLoad(this);
-    }
-    
-    private void OnDisable()
-    {
-        Instance = null;
+        if (Instance != null && Instance != this)
+        {
+            //can't have two in a scene, and the existing one takes priority
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
     }
 }
