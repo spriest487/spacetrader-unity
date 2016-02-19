@@ -58,6 +58,7 @@ public class ScreenManager : MonoBehaviour
             if (!overlayInstance)
             {
                 overlayInstance = Instantiate(overlay);
+                DontDestroyOnLoad(overlayInstance.gameObject);
             }
 
             if (!barInstance && screenBarVisible)
@@ -174,7 +175,17 @@ public class ScreenManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Instance = this;
+        if (Instance != null && instance != this)
+        {
+            //can't have two in a scene, and the existing one takes priority
+            Destroy(gameObject);
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
     }
 
     private void OnDisable()
@@ -267,15 +278,6 @@ public class ScreenManager : MonoBehaviour
     private void Start()
     {      
         Apply();
-        
-        if (!!MissionManager.Instance)
-        {
-            hudOverlay = HudOverlayState.MissionPrep;
-        }
-        else
-        {
-            hudOverlay = HudOverlayState.None;
-        }
     }
 
     private void Update()
@@ -293,5 +295,13 @@ public class ScreenManager : MonoBehaviour
         }
 
         State = docked? ScreenState.Docked : ScreenState.Flight;
+    }
+
+    private void OnLevelWasLoaded()
+    {
+        if (FindObjectOfType<MissionManager>() != null)
+        {
+            HudOverlay = HudOverlayState.MissionPrep;
+        }
     }
 }
