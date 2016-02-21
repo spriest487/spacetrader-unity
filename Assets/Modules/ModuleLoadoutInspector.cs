@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(ModuleLoadout))]
@@ -12,3 +14,5 @@ public class ModuleLoadoutInspector : Editor
         //var modules = (target as ModuleLoadout).FrontModules;
     }
 }
+
+#endif
