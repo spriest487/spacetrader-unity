@@ -12,6 +12,11 @@ public class ModuleLoadout
     {
         get { return hardpointModules; }
     }
+
+    public ModuleLoadout()
+    {
+        hardpointModules = new List<ModuleStatus>();
+    }
     
 	public void Activate(Ship ship, int slot)
 	{
