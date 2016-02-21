@@ -297,11 +297,17 @@ public class ScreenManager : MonoBehaviour
         State = docked? ScreenState.Docked : ScreenState.Flight;
     }
 
-    private void OnLevelWasLoaded()
+    private void OnLevelWasLoaded(int level)
     {
         if (FindObjectOfType<MissionManager>() != null)
         {
+            //starting a mission
             HudOverlay = HudOverlayState.MissionPrep;
+        }
+        else if (level != 0) //0 is root menu
+        {
+            //loading any other scene
+            HudOverlay = HudOverlayState.None;
         }
     }
 }
