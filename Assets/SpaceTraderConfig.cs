@@ -55,17 +55,36 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private PlayerShip localPlayer;
     
-    private void Start()
+    private void OnEnable()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null && instance != this)
         {
             //can't have two in a scene, and the existing one takes priority
             Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         else
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
+    private void OnLevelWasLoaded()
+    {
+        /*bit of a hack, try to find the player (this won't actually
+            get used since we will usually have a mission config) */
+        if (!MissionManager.Instance)
+        {
+            localPlayer = FindObjectOfType<PlayerShip>();
         }
     }
 }

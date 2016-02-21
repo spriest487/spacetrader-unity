@@ -199,6 +199,11 @@ public class Ship : MonoBehaviour
             baseStats = new ShipStats();
         }
 
+        if (moduleLoadout == null)
+        {
+            moduleLoadout = new ModuleLoadout();
+        }
+
         activeStatusEffects.RemoveAll(e => e == null);
 	}
 

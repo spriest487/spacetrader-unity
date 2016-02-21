@@ -320,6 +320,14 @@ public class PlayerShip : MonoBehaviour
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
 	}
+
+    void OnDestroy()
+    {
+        if (SpaceTraderConfig.LocalPlayer == this)
+        {
+            SpaceTraderConfig.LocalPlayer = null;
+        }
+    }
     
 	void OnCollisionEnter(Collision collision)
 	{
