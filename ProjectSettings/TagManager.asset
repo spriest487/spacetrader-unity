@@ -13,6 +13,7 @@ TagManager:
   - MissionObjective
   - WorldPathfinding
   - LocalPathfinding
+  - Ships
   layers:
   - Default
   - TransparentFX
