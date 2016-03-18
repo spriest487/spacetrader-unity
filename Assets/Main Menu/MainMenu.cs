@@ -108,7 +108,7 @@ public class MainMenu : MonoBehaviour
 
     public void BackToGame()
     {
-        ScreenManager.Instance.HudOverlay = ScreenManager.HudOverlayState.None;
+        ScreenManager.Instance.HudOverlay = HudOverlayState.None;
     }
     
     public void Quit()

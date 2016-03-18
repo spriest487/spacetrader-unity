@@ -108,7 +108,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Docked);
+            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Docked);
         }
     }
 
@@ -116,7 +116,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(ScreenManager.HudOverlayState.None, ScreenManager.ScreenState.Flight);
+            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Flight);
         }
     }
 
@@ -311,6 +311,11 @@ public class PlayerShip : MonoBehaviour
                 {
                     moorable.RequestMooring();
                 }
+            }
+
+            if (Input.GetButtonDown("radio"))
+            {
+                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight, HudOverlayState.None, "ShowRadioMenu", null);
             }
         }
     }

@@ -70,30 +70,7 @@ public class ScreenManager : MonoBehaviour
             }
         }
     }
-
-    public enum ScreenState
-    {
-        None,
-        Docked,
-        Flight,
-    }
-
-    public enum HudOverlayState
-    {
-        None,
-        MainMenu,
-        Equipment,
-        MissionPrep,
-        Recruitment
-    }
-
-    public enum MissionPhase
-    {
-        Briefing,
-        Active,
-        Finished
-    }
-
+    
     [SerializeField]
     private ScreenState state;
 
