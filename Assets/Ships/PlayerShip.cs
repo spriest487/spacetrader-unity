@@ -328,7 +328,8 @@ public class PlayerShip : MonoBehaviour
 
     void OnDestroy()
     {
-        if (SpaceTraderConfig.LocalPlayer == this)
+        if (SpaceTraderConfig.Instance &&
+            SpaceTraderConfig.LocalPlayer == this)
         {
             SpaceTraderConfig.LocalPlayer = null;
         }
