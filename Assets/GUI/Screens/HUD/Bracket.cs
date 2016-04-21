@@ -118,21 +118,17 @@ public class Bracket : MonoBehaviour
 		var height = bracketManager.DefaultHeight;
 
         bool isTarget;
-        bool sameFaction;
         
-        Color reactionColor;
-        if (playerShip && playerTargetable)
+        if (playerShip)
         {
-            isTarget = playerShip.Target == target;
-            sameFaction = string.Equals(playerTargetable.Faction, target.Faction);
-            reactionColor = bracketManager.GetBracketColor(playerTargetable.Faction, target);
+            isTarget = playerShip.Target == target;            
         }
         else
         {
-            isTarget = false;
-            sameFaction = false;
-            reactionColor = Color.white;
+            isTarget = false;            
         }
+        
+        Color reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
 
         if (isTarget)
         {

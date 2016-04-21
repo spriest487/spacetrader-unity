@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class Predictor : MonoBehaviour
 {
+    const float MIN_SPEED = 0.01f;
+
     [SerializeField]
     private PredictorMarker markerPrefab;
 
@@ -88,7 +90,7 @@ public class Predictor : MonoBehaviour
             }
         }
 
-        var predictorColor = brackets.GetBracketColor(playerFaction, playerShip.Target);
+        var predictorColor = brackets.GetBracketColor(playerTargetable, playerShip.Target);
 
         /* set positions of the (now correctly sized) marker list */
         for (int marker = 0; marker < markerCount; ++marker)

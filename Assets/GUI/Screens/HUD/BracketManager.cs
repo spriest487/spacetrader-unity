@@ -95,10 +95,14 @@ public class BracketManager : MonoBehaviour
         return null;
     }
 
-    public Color GetBracketColor(string forFaction, Targetable bracketTarget)
+    public Color GetBracketColor(Targetable bracketOwner, Targetable bracketTarget)
     {
-        bool sameFaction = forFaction == bracketTarget.Faction;
-        
+        if (!bracketTarget || !bracketOwner)
+        {
+            return HostileColor;
+        }
+
+        bool sameFaction = bracketOwner.Faction == bracketTarget.Faction;        
         return sameFaction ? FriendlyColor : HostileColor;
     }
 }
