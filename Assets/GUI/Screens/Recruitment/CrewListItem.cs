@@ -7,7 +7,7 @@ public class CrewListItem : MonoBehaviour
     private static readonly Color UNAFFORDABLE_COLOR = Color.red;
 
     [SerializeField]
-    private Text name;
+    private Text nameLabel;
 
     [SerializeField]
     private Text hirePriceLabel;
@@ -23,7 +23,7 @@ public class CrewListItem : MonoBehaviour
     public static CrewListItem CreateFromPrefab(CrewListItem prefab, CrewMember member)
     {
         var instance = Instantiate(prefab);
-        instance.name.text = member.name;
+        instance.nameLabel.text = member.name;
         instance.member = member;
         
         if (instance.hirePriceLabel)

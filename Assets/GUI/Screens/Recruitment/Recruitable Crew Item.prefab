@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a27aaa9923684847be74b3689cac87f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: {fileID: 11463640}
+  nameLabel: {fileID: 11463640}
   hirePriceLabel: {fileID: 11448516}
   member: {fileID: 0}
 --- !u!114 &11498158
