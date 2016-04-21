@@ -79,7 +79,7 @@ public class Bracket : MonoBehaviour
         if (PlayerShip.LocalPlayer)
         {
             playerTargetable = PlayerShip.LocalPlayer.GetComponent<Targetable>();
-            playerShip = PlayerShip.LocalPlayer.GetComponent<Ship>();
+            playerShip = PlayerShip.LocalPlayer.Ship;
         }		
 
 		var targetHitpoints = target.GetComponent<Hitpoints>();
@@ -117,16 +117,29 @@ public class Bracket : MonoBehaviour
 		var width = bracketManager.DefaultWidth;
 		var height = bracketManager.DefaultHeight;
 
-		bool isTarget = playerShip && playerShip.Target == target;
-		bool sameFaction = playerTargetable && string.Equals(playerTargetable.Faction, target.Faction);
+        bool isTarget;
+        bool sameFaction;
+        
+        Color reactionColor;
+        if (playerShip && playerTargetable)
+        {
+            isTarget = playerShip.Target == target;
+            sameFaction = string.Equals(playerTargetable.Faction, target.Faction);
+            reactionColor = bracketManager.GetBracketColor(playerTargetable.Faction, target);
+        }
+        else
+        {
+            isTarget = false;
+            sameFaction = false;
+            reactionColor = Color.white;
+        }
 
         if (isTarget)
         {
             width = (int)(width * bracketManager.SelectedExpand);
             height = (int)(height * bracketManager.SelectedExpand);
         }
-		
-		Color reactionColor = bracketManager.GetBracketColor(playerTargetable.Faction, target);
+
 
 		if (childImages != null)
 		{

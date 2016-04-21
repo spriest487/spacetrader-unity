@@ -24,7 +24,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190862}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 95.859055, y: 155.11081, z: 5.7732496}
+  m_LocalPosition: {x: -3.012331, y: 2.5402308, z: 5.7732496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  hudOverlay: 1
+  hudOverlay: 0
   hudOverlays:
   - state: 1
     screenState: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
     overlayInstance: {fileID: 0}
     barInstance: {fileID: 0}
   - state: 0
-    screenState: 0
+    screenState: 2
     overlay: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
     screenBarVisible: 1
     overlayInstance: {fileID: 0}

@@ -47,13 +47,11 @@ public class RadioMenu : MonoBehaviour
         var message = (RadioMessageType) Enum.Parse(typeof(RadioMessageType), messageName);
         var source = PlayerShip.LocalPlayer.Ship;
 
-        var ships = GameObject.FindGameObjectsWithTag("ships");
-        foreach (var ship in ships)
-        {
-            ship.BroadcastMessage("OnRadioMessage", 
-                new RadioMessage(source, message), 
-                SendMessageOptions.DontRequireReceiver);
-        }
+        var target = source.Target? source.Target.GetComponent<Ship>() : null;
+
+        source.SendRadioMessage(message, target);
+
+        Cancel();
     }
 }
 
