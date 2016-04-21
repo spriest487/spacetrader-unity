@@ -45,6 +45,26 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         }
     }
 
+    private int CalculateDamage(Ship activator, int slot)
+    {
+        float randomBase = Random.Range(minDamage, maxDamage);
+
+        float crewBonus;
+
+        if (activator.CrewAssignments.Captain != null)
+        {
+            crewBonus = activator.CrewAssignments.Captain.WeaponsSkill * 0.1f;
+        }
+        else
+        {
+            crewBonus = 0;
+        }
+
+        float crewMultiplier = 1.0f + Mathf.Max(0.0f, crewBonus);
+
+        return Mathf.FloorToInt(randomBase * crewMultiplier);
+    }
+
     public override void Activate(Ship activator, int slot)
 	{
         var hardpoint = activator.GetHardpointAt(slot);
@@ -60,7 +80,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
             var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
 
             bulletInstance.owner = activator.gameObject;
-            bulletInstance.damage = Random.Range(minDamage, maxDamage);
+            bulletInstance.damage = CalculateDamage(activator, slot);
 
             if (activator.GetComponent<Rigidbody>())
             {

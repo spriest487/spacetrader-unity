@@ -12,6 +12,15 @@ public class CrewMember : ScriptableObject
     }
 #endif
 
+    [SerializeField]
+    private int pilotSkill;
+
+    [SerializeField]
+    private int weaponsSkill;
+
+    public int PilotSkill { get { return pilotSkill; } }
+    public int WeaponsSkill { get { return weaponsSkill; } }
+
     public static CrewMember Create(string name)
     {
         CrewMember result = CreateInstance<CrewMember>();
