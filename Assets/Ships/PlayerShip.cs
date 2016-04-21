@@ -320,6 +320,32 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
+    void OnRadioMessage(RadioMessage message)
+    {
+        if (message.MessageType == RadioMessageType.Greeting)
+        {
+            if (message.Source == Ship)
+            {
+                var target = Ship.Target;
+
+                if (target)
+                {
+                    ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
+                        HudOverlayState.None,
+                        "OnPlayerNotification",
+                        "You> Hello, " + target.name);
+                }
+            }    
+            else
+            {
+                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
+                    HudOverlayState.None,
+                    "OnPlayerNotification",
+                    message.Source.name + "> Hello!");
+            }
+        }
+    }
+
 	void Start()
 	{
 		ship = GetComponent<Ship>();

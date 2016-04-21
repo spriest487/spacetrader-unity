@@ -279,4 +279,23 @@ public class AICaptain : MonoBehaviour
             ship.Lift = 0;
         }
 	}
+
+    private void OnRadioMessage(RadioMessage message)
+    {
+        if (message.Source != this)
+        {
+            if (message.MessageType == RadioMessageType.Greeting)
+            {
+                //reply!
+                StartCoroutine(WaitThenReply(message.Source));
+            }
+        }
+    }
+
+    private IEnumerator WaitThenReply(Ship source)
+    {
+        yield return new WaitForSeconds(1);
+
+        Ship.SendRadioMessage(RadioMessageType.Greeting, source);
+    }
 }

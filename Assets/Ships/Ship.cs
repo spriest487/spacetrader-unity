@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -91,7 +92,24 @@ public class Ship : MonoBehaviour
     public Targetable Target
     {
         get { return target; }
-        set { target = value; }
+        set
+        {
+#if UNITY_EDITOR
+            if (PlayerShip.LocalPlayer 
+                && PlayerShip.LocalPlayer.Ship == this)
+            {
+                if (value)
+                {
+                    UnityEditor.Selection.activeGameObject = value.gameObject;
+                }
+                else
+                {
+                    UnityEditor.Selection.activeGameObject = null;
+                }
+            }
+#endif
+            target = value;
+        }
     }
 
     public CargoHold Cargo
@@ -504,6 +522,28 @@ public class Ship : MonoBehaviour
         if (hp && hp.GetArmor() - hd.Amount <= 0)
         {
             Explode();
+        }
+    }
+
+    public void SendRadioMessage(RadioMessageType message, Ship target)
+    {
+        GameObject[] messageTargets;
+        if (target != null)
+        {
+            //just the target
+            messageTargets = new GameObject[] { target.gameObject };
+        }
+        else
+        {
+            //all ships
+            messageTargets = GameObject.FindGameObjectsWithTag("Ships");
+        }
+        
+        foreach (var messageTarget in messageTargets)
+        {
+            messageTarget.BroadcastMessage("OnRadioMessage",
+                new RadioMessage(this, message),
+                SendMessageOptions.DontRequireReceiver);
         }
     }
 }
