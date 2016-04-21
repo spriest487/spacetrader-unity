@@ -108,7 +108,7 @@ public class Bracket : MonoBehaviour
             x = Screen.width - x;
         }
 
-        transform.position = new Vector3(x, y, transform.position.z);
+        transform.position = new Vector3((int) x, (int) y, transform.position.z);
 		canvasGroup.interactable = true;
 		canvasGroup.blocksRaycasts = true;
 		canvasGroup.alpha = 1;
