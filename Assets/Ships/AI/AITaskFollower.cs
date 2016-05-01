@@ -15,6 +15,9 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     private AITask[] serializedTasks;
 
     [SerializeField]
+    private AITask lastTask;
+
+    [SerializeField]
     private AICaptain captain;
 
     public AICaptain Captain
@@ -22,6 +25,14 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
         get
         {
             return captain;
+        }
+    }
+
+    public AITask LastTask
+    {
+        get
+        {
+            return lastTask;
         }
     }
 
@@ -107,8 +118,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     }
     
     void Update()
-    {  
-        while(true)
+    {
+        while (true)
         {
             /* a task execution can add new tasks itself, but during an update we
             skip those at the end of the list that are marked NEW */
@@ -139,6 +150,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
                 nextTask.Status = AITask.TaskStatus.FINISHED;
                 nextTask.End();
                 tasks.Remove(nextTaskNode);
+
+                lastTask = nextTask;
             }
             else
             {

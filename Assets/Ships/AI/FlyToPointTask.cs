@@ -35,8 +35,8 @@ public class FlyToPointTask : AITask
         further away from the correct heading we are) */
         TaskFollower.Captain.Throttle = Mathf.Clamp01(dotToTarget);
 
-        TaskFollower.Captain.destination = dest;
-        TaskFollower.Captain.adjustTarget = null;
+        TaskFollower.Captain.Destination = dest;
+        TaskFollower.Captain.AdjustTarget = null;
         
         TaskFollower.Captain.MinimumThrust = 0;
     }

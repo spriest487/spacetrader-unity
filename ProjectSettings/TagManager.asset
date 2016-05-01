@@ -14,6 +14,8 @@ TagManager:
   - WorldPathfinding
   - LocalPathfinding
   - Ships
+  - Pathfinding
+  - Local Pathfinding
   layers:
   - Default
   - TransparentFX

@@ -1,210 +1,227 @@
-﻿using Pathfinding;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using Pathfinding;
 
-[RequireComponent(typeof(Seeker))]
 public class NavigateTask : AITask
 {
-    [SerializeField]
-    private Vector3 dest;
+    const float SHORT_THINK = 0.5f;
+    const float LONG_THINK = 1.0f;
 
     [SerializeField]
-    private int maxPathLength;
+    private Vector3 destination;
 
-    [SerializeField]
-    private Path path;
+    private Coroutine navigate;
 
-    [SerializeField]
-    private float lastPathTime;
-
-    private enum PathStatus
+    public static NavigateTask Create(Vector3 dest)
     {
-        NOT_STARTED,
-        SHORT_RANGE,
-        LONG_RANGE,
-        FAILED
-    }
+        var task = CreateInstance<NavigateTask>();
+        task.destination = dest;
 
-    [SerializeField]
-    private PathStatus pathStatus;
-
-    private Seeker seeker;
-
-    private static bool graphMasksInit = false;
-    private static int localGraphMask;
-    private static int worldGraphMask;
-
-    private static int FindGraphMask(string name)
-    {
-        foreach (var graph in AstarPath.active.graphs)
-        {
-            if (graph.name == name)
-            {
-                return 1 << (int) graph.graphIndex;
-            }
-        }
-
-        throw new System.ArgumentException("graph doesn't exist: " +name);
-    }
-
-    private static void InitGraphMasks()
-    {
-        localGraphMask = FindGraphMask("Local");
-        worldGraphMask = FindGraphMask("World");
-        graphMasksInit = true;
-    }
-
-    private static int LocalGraphMask
-    {
-        get
-        {
-            if (!graphMasksInit)
-            {
-                InitGraphMasks();
-            }
-            return localGraphMask;
-        }
-    }
-
-    private static int WorldGraphMask
-    {
-        get
-        {
-            if (!graphMasksInit)
-            {
-                InitGraphMasks();
-            }
-            return worldGraphMask;
-        }
-    }
-
-    /// <summary>
-    /// Fly to a point, following the pathfinding grid as necessary
-    /// </summary>
-    /// <param name="dest">Destination point to move to</param>
-    /// <param name="maxSteps">If >0, only use this number of
-    /// steps in the path before stopping</param>
-    /// <returns></returns>
-    public static NavigateTask Create(Vector3 dest, int maxSteps = 0)
-    {
-        NavigateTask task = CreateInstance<NavigateTask>();
-        task.dest = dest;
-        task.maxPathLength = maxSteps;
-        task.pathStatus = PathStatus.NOT_STARTED;
         return task;
-    }
-
-    private void PathCallback(Path newPath)
-    {
-        if (newPath.error)
-        {
-            path = null;
-
-            if (pathStatus == PathStatus.SHORT_RANGE)
-            {
-                /* try the long-range nav graph (graph 1) */
-                pathStatus = PathStatus.LONG_RANGE;
-                seeker.StartPath(
-                    start: TaskFollower.transform.position,
-                    end: dest,
-                    callback: null,
-                    graphMask: WorldGraphMask);
-                return;
-            }
-            else
-            {
-                pathStatus = PathStatus.FAILED;
-                return;
-            }
-        }
-        else
-        {
-            path = newPath;
-            lastPathTime = Time.time;
-
-            var closeDistance = TaskFollower.Captain.Ship.BaseStats.maxSpeed * Time.fixedDeltaTime;
-            closeDistance += TaskFollower.Captain.CloseDistance;
-
-            var closeAngle = 15.0f;
-            
-            int pathLength = path.vectorPath.Count;
-
-            int maxSteps = maxPathLength < 1 ? pathLength : maxPathLength;
-            maxSteps = System.Math.Min(pathLength, maxSteps);
-
-            /* if the maxsteps is less than the path length, skip
-                steps after maxsteps */
-            int skippedSteps = pathLength - maxSteps;
-
-            /* move as far as it takes to get to the max length
-            path, then stop */
-            dest = newPath.vectorPath[maxSteps - 1];
-            TaskFollower.AssignTask(FlyToPointTask.Create(dest, closeDistance));
-
-            for (int step = 0; step < maxSteps; ++step)
-            {
-                var pathIndex = (pathLength - 1) - (step + skippedSteps);
-                var pathPoint = path.vectorPath[pathIndex];
-
-                /* for every point except the first one, aim at
-                    the next point after arriving */
-                if (step > 0)
-                {
-                    var nextPoint = path.vectorPath[pathIndex + 1];
-                    TaskFollower.AssignTask(AimAtTask.Create(nextPoint, nextPoint, closeAngle));
-                }
-
-                /* for the final step, aim at the destination after moving */
-                if (step == 0)
-                {
-                    TaskFollower.AssignTask(AimAtTask.Create(dest, dest, closeAngle));
-                }
-
-                TaskFollower.AssignTask(FlyToPointTask.Create(pathPoint, closeDistance));
-            }
-        }
-    }
-
-    public override void Update()
-    {
-        if (pathStatus == PathStatus.NOT_STARTED)
-        {
-            /* here we assume a standard pathfinding setup with two separate
-            graphs to deal with the fact that space is big! we should have the
-            fine-grained nav (around obstacles) in graph ID 0, and the long-range
-            world nav (between celestial objects) in graph ID 1.
-            
-            we start with the fine-grained one first then try the long-range one
-            if we can't get a path */
-            pathStatus = PathStatus.SHORT_RANGE;
-            seeker.StartPath(
-                start: TaskFollower.transform.position, 
-                end: dest, 
-                graphMask: LocalGraphMask, 
-                callback: null);
-        }
     }
 
     public override void Begin()
     {
-        seeker = TaskFollower.GetComponent<Seeker>();
-        seeker.pathCallback += PathCallback;
+        navigate = null;        
+    }
+
+    public override void Update()
+    {
+        if (navigate == null)
+        {
+            var seeker = TaskFollower.GetComponent<Seeker>();
+
+            if (seeker == null || !AstarPath.active || !AstarPath.active.isActiveAndEnabled)
+            {
+                TaskFollower.Captain.Destination = destination;
+                TaskFollower.Captain.Throttle = 1;
+            }
+            else
+            {
+                navigate = seeker.StartCoroutine(Navigate(seeker));
+            }
+        }
+    }
+
+    private IEnumerator Navigate(Seeker seeker)
+    {
+        var captain = TaskFollower.Captain;
+
+        while (!Done)
+        {
+            if (captain.CanSee(destination))
+            {
+                captain.Destination = destination;
+                captain.Throttle = 1;
+
+                Debug.Log("can see target, going straight for it");
+                yield return new WaitForSeconds(SHORT_THINK);
+            }
+            else
+            {
+                captain.Throttle = 0;
+                yield return seeker.StartCoroutine(FollowWorldPath(seeker));
+            }
+        }
+    }
+
+    private IEnumerator FollowWorldPath(Seeker seeker)
+    {
+        var captain = TaskFollower.Captain;
+
+        //get a world path to target
+        Debug.Log("getting a new world path...");
+        var path = seeker.StartPath(TaskFollower.transform.position, destination, null, 1);
+        yield return seeker.StartCoroutine(path.WaitForPath());
+
+        if (path.error)
+        {
+            Debug.Log("world path failed");
+            yield return new WaitForSeconds(LONG_THINK);
+            yield break;
+        }
+
+        int pointIt = 0;
+
+        do
+        {
+            //if at any point we can see the destination directly, go for that instead
+            if (captain.CanSee(destination))
+            {
+                Debug.Log("giving up on world nav path because we can see the destination");
+                captain.Destination = destination;
+                captain.Throttle = 1;
+                yield return new WaitForSeconds(SHORT_THINK);
+                yield break;
+            }
+
+            var point = path.vectorPath[pointIt];
+            bool lastPoint = pointIt == path.vectorPath.Count - 1;
+
+            //can we see it?
+            if (!captain.CanSee(point))
+            {
+                Debug.Log("can't see next world node, trying a local obstacle route");
+                yield return seeker.StartCoroutine(FollowLocalPath(seeker, point));
+
+                //start navigation again when we're done with that path
+                yield break;
+            }
+
+            if (!lastPoint)
+            {
+                /* when doing world nav, skip a point if we can already see a clear path
+                to the next point*/
+                var nextPoint = path.vectorPath[pointIt + 1];
+                if (captain.CanSee(nextPoint))
+                {
+                    ++pointIt;
+                    continue;
+                }
+            }
+
+            captain.Destination = point;
+            captain.Throttle = 1;
+
+            if (captain.IsCloseTo(point))
+            {
+                ++pointIt;
+            }
+            else
+            {
+                yield return new WaitForSeconds(LONG_THINK);
+            }
+        }
+        while (pointIt < path.vectorPath.Count);
+
+        //if we reach the end of a world path and still can't see the target, look for a local obstacle path
+        if (pointIt == path.vectorPath.Count
+            && !TaskFollower.Captain.CanSee(destination))
+        {
+            Debug.Log("reached end of world path and couldn't see the dest, trying to navigate local obstacles");
+            yield return seeker.StartCoroutine(FollowLocalPath(seeker, destination));
+        }
+
+        Debug.Log("stopped following a world route");
+    }
+
+    private IEnumerator FollowLocalPath(Seeker seeker, Vector3 worldDest)
+    {
+        var captain = TaskFollower.Captain;
+        var localPath = seeker.StartPath(TaskFollower.transform.position, worldDest, null, ~1);
+        yield return seeker.StartCoroutine(localPath.WaitForPath());
+
+        if (localPath.error)
+        {
+            Debug.Log("local path failed, going back to world nav");
+            captain.Throttle = 1;
+            captain.Destination = worldDest;
+
+            yield return new WaitForSeconds(LONG_THINK);
+            yield break;
+        }
+
+        //follow the local obstacle's path
+        int pointIt = 0;
+        do
+        {
+            var point = localPath.vectorPath[pointIt];
+            bool lastPoint = pointIt == localPath.vectorPath.Count - 1;
+
+            captain.Destination = point;
+            captain.Throttle = 1;
+            captain.TargetUp = Vector3.up;
+            
+            if (!captain.CanSee(point))
+            {
+                Debug.Log("cancelling local route since we can't see the next node");
+                yield return new WaitForSeconds(LONG_THINK);
+                yield break;
+            }
+
+            if (!lastPoint)
+            {
+                /* skip points if we can already see the next point */
+                var nextPoint = localPath.vectorPath[pointIt + 1];
+                if (TaskFollower.Captain.CanSee(nextPoint))
+                {
+                    ++pointIt;
+                    continue;
+                }
+            }
+
+            if (captain.IsCloseTo(point))
+            {
+                ++pointIt;
+                Debug.Log("reached a waypoint on our local route");
+            }
+            else
+            {
+                //Debug.Log("flying on local route...");
+                yield return new WaitForSeconds(SHORT_THINK);
+            }
+        }
+        while (pointIt < localPath.vectorPath.Count);
+
+        Debug.Log("stopped following a local route");
     }
 
     public override void End()
     {
-        seeker.pathCallback -= PathCallback;
+        if (navigate != null)
+        {
+            TaskFollower.GetComponent<Seeker>().StopCoroutine(navigate);
+        }
+
+        base.End();
     }
 
     public override bool Done
     {
         get
         {
-            if (pathStatus == PathStatus.FAILED)
-            {
-                return true;
-            }
-
-            return TaskFollower.Captain.IsCloseTo(dest);
+            return TaskFollower.Captain.IsCloseTo(destination);
         }
     }
 }

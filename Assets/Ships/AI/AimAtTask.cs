@@ -38,8 +38,8 @@ public class AimAtTask : AITask
 
     public override void Update()
     {
-        TaskFollower.Captain.adjustTarget = dest;
-        TaskFollower.Captain.destination = aimAtPos;
+        TaskFollower.Captain.AdjustTarget = dest;
+        TaskFollower.Captain.Destination = aimAtPos;
         TaskFollower.Captain.Throttle = 0;
     }
 }

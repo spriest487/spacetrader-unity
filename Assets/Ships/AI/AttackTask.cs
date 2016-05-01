@@ -36,25 +36,20 @@ public class AttackTask : AITask
         {
             return;
         }
+        
+        canSeeTarget = TaskFollower.Captain.CanSee(Target.transform.position);
 
-        var targetCollider = Target.GetComponent<Collider>();
-        if (targetCollider)
-        {
-            canSeeTarget = TaskFollower.Captain.CanSee(targetCollider);
-        }
-        else
-        {
-            canSeeTarget = TaskFollower.Captain.CanSee(Target.transform.position);
-        }
-
+        bool navigatingToTarget = false;
         if (!canSeeTarget)
         {
             /*there must be some obstacle in the way, 
             let's follow the nav points directly to them
             and see if that helps */
-            TaskFollower.AssignTask(NavigateTask.Create(Target.transform.position, 0));
+            TaskFollower.AssignTask(NavigateTask.Create(Target.transform.position));
+            navigatingToTarget = true;
         }
-        else
+
+        if (!navigatingToTarget)
         {
             //are we aiming in the same direction as the target
             var dotToForward = Vector3.Dot(TaskFollower.transform.forward, Target.transform.forward);

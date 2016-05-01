@@ -53,10 +53,10 @@ public class WingmanCaptain : MonoBehaviour
 	private void FlyInFormation(Ship leader)
 	{
 		//fly in same direction as leader
-		captain.destination = transform.position + (leader.transform.forward * ship.BaseStats.maxSpeed);
+		captain.Destination = transform.position + (leader.transform.forward * ship.BaseStats.maxSpeed);
 		
 		//keep adjusting to match our formation pos if possible
-		captain.adjustTarget = leader.GetFormationPos(ship);
+		captain.AdjustTarget = leader.GetFormationPos(ship);
 		
 		float angleDiffBetweenHeadings;		
 		if (leader.GetComponent<Rigidbody>().velocity.sqrMagnitude > Vector3.kEpsilon)
@@ -86,7 +86,7 @@ public class WingmanCaptain : MonoBehaviour
 	{
 		var leaderPos = leader.transform.position;
 		
-		captain.destination = leaderPos;
+		captain.Destination = leaderPos;
 
 		//throttle down as we approach the min formation distance
 		float throttleDownDist = ship.BaseStats.maxSpeed * Time.deltaTime;
@@ -117,8 +117,8 @@ public class WingmanCaptain : MonoBehaviour
         var distance = (myPos - leaderPos).magnitude;
         var minFormationDistance = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 1f;
 
-        captain.targetUp = null;
-        captain.adjustTarget = null;
+        captain.TargetUp = null;
+        captain.AdjustTarget = null;
 
         if (distance < minFormationDistance)
         {
@@ -126,7 +126,7 @@ public class WingmanCaptain : MonoBehaviour
         }
         else
         {
-            captain.destination = leaderPos;
+            captain.Destination = leaderPos;
             captain.Throttle = 1;
         }
     }
@@ -182,11 +182,11 @@ public class WingmanCaptain : MonoBehaviour
 
         if (distToPos2 < distToNextPoint2)
         {
-            captain.destination = pos;
+            captain.Destination = pos;
         }
         else
         {
-            captain.destination = nextPoint;
+            captain.Destination = nextPoint;
         }
 
         captain.Throttle = 1;
@@ -293,7 +293,7 @@ public class WingmanCaptain : MonoBehaviour
 
     void FollowImmediateManeuver()
     {
-        captain.destination = immediateManeuver.Value;
+        captain.Destination = immediateManeuver.Value;
         captain.Throttle = 1;
 
         if (captain.IsCloseTo(immediateManeuver.Value))

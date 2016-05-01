@@ -82,6 +82,11 @@ public class BracketManager : MonoBehaviour
         newBrackets.Values.CopyTo(brackets, 0);
 	}
 
+    void OnLevelWasLoaded()
+    {
+        brackets = new Bracket[0];
+    }
+
     public Bracket FindBracket(GameObject obj)
     {   
         foreach (var bracket in brackets)

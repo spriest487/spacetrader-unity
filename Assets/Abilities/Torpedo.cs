@@ -65,12 +65,12 @@ public class Torpedo : MonoBehaviour
                last position*/
             if (ship.Target)
             {
-                captain.destination = ship.Target.transform.position;
+                captain.Destination = ship.Target.transform.position;
             }
             captain.Throttle = 1;
             captain.MinimumThrust = 0.5f;
 
-            var dist2 = (transform.position - captain.destination).sqrMagnitude;
+            var dist2 = (transform.position - captain.Destination).sqrMagnitude;
             var proximity2 = explodeProximity * explodeProximity;
 
             if (dist2 < proximity2)
