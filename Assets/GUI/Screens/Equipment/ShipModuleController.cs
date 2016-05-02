@@ -46,10 +46,9 @@ public class ShipModuleController : MonoBehaviour
         result.moduleSlot = moduleIndex;
         result.ship = ship;
 
-        var itemName = result.Module.ModuleType.name;
-        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
+        var itemType = result.Module.ModuleType;
 
-        result.caption.text = itemName;
+        result.caption.text = itemType.name;
         result.icon.sprite = itemType.Icon;
 
         return result;

@@ -11,9 +11,7 @@ public class EquipmentScreen : MonoBehaviour
 
     private void OnSelectShipModule(ShipModuleController moduleController)
     {
-        var moduleDef = moduleController.Module.ModuleType;
-        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleDef.name);
-        infoPanel.ItemType = itemType;
+        infoPanel.ItemType = moduleController.Module.ModuleType;
     }
 
     private void OnSelectCargoItem(CargoHoldListItem selection)
