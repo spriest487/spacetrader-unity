@@ -214,7 +214,8 @@ public class AICaptain : MonoBehaviour
         collider = GetComponent<Collider>();
     }
     					
-	void Update () {        
+	void Update()
+    {        
 		Debug.DrawLine(transform.position, Destination, Color.red, Time.deltaTime);
 
         if (AdjustTarget.HasValue)
@@ -238,9 +239,23 @@ public class AICaptain : MonoBehaviour
         var slowDownToTurnFactor = (forwardToDestDot + 1) * 0.5f;
         ship.Thrust = Mathf.Clamp(ship.Thrust, MinimumThrust, slowDownToTurnFactor);
 
+        AdjustThrottleForProximity(between);
+
 		//adjustments are applied AFTER the clamping, so we can go beyond the throttle if necessary
 		ApplyAdjustThrust(ship);
 	}
+
+    private void AdjustThrottleForProximity(Vector3 between)
+    {
+        var dist = between.magnitude;
+
+        //TODO: could calculate stopping time exactly, this is assuming 1 second
+        var slowdownDist = CloseDistance + ship.CurrentStats.maxSpeed;
+
+        var slowdownFactor = Mathf.Clamp01(dist / slowdownDist);
+
+        ship.Thrust *= slowdownFactor;
+    }
     
 	private void ApplyAdjustThrust(Ship ship) 
 	{

@@ -18,8 +18,7 @@ public class EquipmentScreen : MonoBehaviour
 
     private void OnSelectCargoItem(CargoHoldListItem selection)
     {
-        var item = selection.Item;
-        infoPanel.ItemType = SpaceTraderConfig.CargoItemConfiguration.FindType(item);
+        infoPanel.ItemType = selection.Item;
     }
 
     private void Update()

@@ -5,21 +5,14 @@ using System.Collections;
 public class CargoHold : ScriptableObject
 {
     [SerializeField]
-    private List<string> items;
+    private List<ItemType> items = new List<ItemType>();
 
     [SerializeField]
-    private int size;
+    private int size = 0;
 
-    public IList<string> Items
+    public IEnumerable<ItemType> Items
     {
-        get
-        {
-            if (items == null)
-            {
-                items = new List<string>(size);
-            }
-            return items;
-        }
+        get { return items; }
     }
     
     public int Size
@@ -42,22 +35,43 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            return size - Items.Count;
+            return size - items.Count;
         }
     }
 
-    public void Add(string item)
+    public int ItemCount
+    {
+        get
+        {
+            return items.Count;
+        }
+    }
+
+    public void Add(ItemType item)
     {
         Debug.AssertFormat(FreeCapacity > 0, "cargo hold does not have space to add item {0}, size is {1} and free capacity is {2}",
             item, size, FreeCapacity);
-        Items.Add(item);
+        items.Add(item);
     }
 
     public void RemoveAt(int index)
     {
         if (index < items.Count)
         {
-            Items.RemoveAt(index);
+            items.RemoveAt(index);
+        }
+    }
+
+    public bool IsValidIndex(int index)
+    {
+        return index >= 0 && index < items.Count;
+    }
+
+    public ItemType this[int index]
+    {
+        get
+        {
+            return items[index];
         }
     }
 }

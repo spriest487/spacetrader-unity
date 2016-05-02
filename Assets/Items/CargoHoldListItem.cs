@@ -39,11 +39,11 @@ public class CargoHoldListItem : MonoBehaviour
         }
     }
 
-    public string Item
+    public ItemType Item
     {
         get
         {
-            return CargoHold.Items[ItemIndex];
+            return CargoHold[ItemIndex];
         }
     }
 
@@ -69,8 +69,7 @@ public class CargoHoldListItem : MonoBehaviour
         int itemIndex)
     {
         var result = Instantiate(prefab);
-        var itemName = cargoHold.Items[itemIndex];
-        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
+        var itemType = cargoHold[itemIndex];
 
         result.cargoHold = cargoHold;
         result.itemIndex = itemIndex;

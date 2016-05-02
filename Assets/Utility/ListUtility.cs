@@ -2,9 +2,11 @@
 
 internal static class ListUtility
 {
-    public static bool ElementsEquals<T>(this IList<T> list, IList<T> other)
+    public static bool ElementsEquals<T>(this IList<T> list, IEnumerable<T> other)
     {
-        if (other == null || list.Count != other.Count)
+        var otherItems = new List<T>(other);
+
+        if (other == null || list.Count != otherItems.Count)
         {
             return false;
         }
@@ -12,7 +14,7 @@ internal static class ListUtility
         var size = list.Count;
         for (int i = 0; i < size; ++i)
         {
-            if (!Equals(list[i], other[i]))
+            if (!Equals(list[i], otherItems[i]))
             {
                 return false;
             }

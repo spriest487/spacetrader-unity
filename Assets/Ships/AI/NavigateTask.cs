@@ -78,7 +78,34 @@ public class NavigateTask : AITask
         if (path.error)
         {
             Debug.Log("world path failed");
-            yield return new WaitForSeconds(LONG_THINK);
+
+            do
+            {
+                if (captain.CanSee(destination))
+                {
+                    captain.Destination = destination;
+                    captain.Throttle = 1;
+                    yield return new WaitForSeconds(LONG_THINK);
+                }
+                else
+                {
+                    //feel our way forward blindly
+                    var pos = TaskFollower.transform.position;
+                    var between = destination - pos;
+
+                    float lookAhead;
+                    if (!GuessSizeOfObstacleInFront(between, out lookAhead))
+                    {
+                        lookAhead = TaskFollower.Captain.Ship.CurrentStats.maxSpeed;
+                    }
+
+                    var aheadDest = pos + (between.normalized * lookAhead);
+
+                    yield return seeker.StartCoroutine(FollowLocalPath(seeker, aheadDest));
+                }                
+            }
+            while (!Done);
+            
             yield break;
         }
 
@@ -92,7 +119,7 @@ public class NavigateTask : AITask
                 Debug.Log("giving up on world nav path because we can see the destination");
                 captain.Destination = destination;
                 captain.Throttle = 1;
-                yield return new WaitForSeconds(SHORT_THINK);
+                yield return new WaitForSeconds(LONG_THINK);
                 yield break;
             }
 
@@ -205,6 +232,24 @@ public class NavigateTask : AITask
         while (pointIt < localPath.vectorPath.Count);
 
         Debug.Log("stopped following a local route");
+    }
+
+    private bool GuessSizeOfObstacleInFront(Vector3 between, out float size)
+    {
+        var xform = TaskFollower.transform;
+        var ray = new Ray(xform.position, between);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            var diameter = hit.collider.bounds.extents.magnitude * 2;
+            size = diameter;
+
+            return true;
+        }
+
+        size = 0;
+        return false;
     }
 
     public override void End()

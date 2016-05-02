@@ -23,7 +23,7 @@ public class CargoHoldList : MonoBehaviour
     [SerializeField]
     private Text sizeLabel;
 
-    private List<string> currentItems;
+    private List<ItemType> currentItems;
 
     public CargoHold CargoHold
     {
@@ -35,7 +35,7 @@ public class CargoHoldList : MonoBehaviour
     {
         get
         {
-            if (highlightedIndex >= cargoHold.Items.Count)
+            if (cargoHold.IsValidIndex(highlightedIndex))
             {
                 return -1;
             }
@@ -59,8 +59,7 @@ public class CargoHoldList : MonoBehaviour
                 return null;
             }
 
-            var itemName = cargoHold.Items[index];
-            return SpaceTraderConfig.CargoItemConfiguration.FindType(itemName);
+            return cargoHold[index];
         }
     }
 
@@ -94,16 +93,16 @@ public class CargoHoldList : MonoBehaviour
 
         if (sizeLabel)
         {
-            sizeLabel.text = string.Format(sizeFormat, CargoHold.Items.Count, CargoHold.Size);
+            sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, CargoHold.Size);
         }
 
-        if (!CargoHold.Items.ElementsEquals(currentItems))
+        if (!currentItems.ElementsEquals(CargoHold.Items))
         {
             int oldHighlight = highlightedIndex;
 
             Clear();
 
-            var itemCount = CargoHold.Items.Count;
+            var itemCount = CargoHold.ItemCount;
             for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
             {
                 var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, itemIndex);
@@ -111,7 +110,7 @@ public class CargoHoldList : MonoBehaviour
                 item.transform.SetParent(itemsHolder.transform, false);
             }
 
-            currentItems = new List<string>(CargoHold.Items);
+            currentItems = new List<ItemType>(CargoHold.Items);
 
             highlightedIndex = System.Math.Min(oldHighlight, currentItems.Count - 1);
         }

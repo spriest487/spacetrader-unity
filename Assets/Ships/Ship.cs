@@ -547,31 +547,3 @@ public class Ship : MonoBehaviour
         }
     }
 }
-
-#if UNITY_EDITOR
-
-[UnityEditor.CustomEditor(typeof(Ship))]
-public class ShipInspector : UnityEditor.Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-        var ship = target as Ship;
-
-        if (GUILayout.Button("Reset cargo hold"))
-        {
-            ship.Cargo = CreateInstance<CargoHold>();
-        }
-
-        if (GUILayout.Button("Reset weapon hardpoints"))
-        {
-            for (int mod = 0; mod < ship.ModuleLoadout.HardpointModules.Count; ++mod)
-            {
-                ship.ModuleLoadout.HardpointModules[mod] = ModuleStatus.Create(null);
-            }
-        }
-    }
-}
-
-#endif

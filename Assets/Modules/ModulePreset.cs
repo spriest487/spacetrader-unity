@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class ModulePreset : ScriptableObject
 {
@@ -11,29 +12,27 @@ public class ModulePreset : ScriptableObject
 #endif
 
     [SerializeField]
-    private string[] frontModules;
+    private List<ModuleItemType> slots;
 
     [SerializeField]
-    private string[] cargoItems;
+    private List<CargoItemType> cargoItems;
 
-    public string[] FrontModules { get { return frontModules; } }
-    public string[] CargoItems { get { return cargoItems; } }
+    public IEnumerable<ModuleItemType> FrontModules { get { return slots; } }
+    public IEnumerable<CargoItemType> CargoItems { get { return cargoItems; } }
 
     public void Apply(Ship ship)
     {
         var moduleLoadout = ship.ModuleLoadout;
-        moduleLoadout.HardpointModules.Resize(frontModules.Length);
-
-        for (int module = 0; module < frontModules.Length; ++module)
-        {
-            var moduleName = frontModules[module];
-            var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(moduleName) as ModuleItemType;
-
-            Debug.Assert(itemType != null, "bad module item name: " +moduleName);
-            
-            moduleLoadout.Equip(module, itemType);
-        }
+        moduleLoadout.HardpointModules.Resize(slots.Count);
         
+        for (int slot = 0; slot < slots.Count; ++slot)
+        {
+            var moduleType = slots[slot];
+            moduleLoadout.Equip(slot, moduleType);
+        }
+
+        ship.Cargo = CreateInstance<CargoHold>();
+        ship.Cargo.Size = cargoItems.Count;
         foreach (var item in cargoItems)
         {
             ship.Cargo.Add(item);

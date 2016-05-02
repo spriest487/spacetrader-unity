@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf0773fea99804458c952657b1a7dd9, type: 3}
   m_Name: Fighter 1
   m_EditorClassIdentifier: 
-  frontModules:
-  - Test Laser
-  - Test Laser
+  slots:
+  - {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
+  - {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
   cargoItems:
-  - Luxury Goods
-  - Luxury Goods
-  - Luxury Goods
-  - Machine Gun
-  - 
+  - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
+  - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

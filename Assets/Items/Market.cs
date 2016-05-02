@@ -136,7 +136,7 @@ public class Market : ScriptableObject {
         var playerCargo = player.Ship.Cargo;
         var stationCargo = station.ItemsForSale;
 
-        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(stationCargo.Items[itemIndex]);
+        var itemType = stationCargo[itemIndex];
 
         var price = GetBuyingItemPrice(itemType, station);
 
@@ -147,7 +147,7 @@ public class Market : ScriptableObject {
         Debug.Assert(player.Money >= price, "player must have enough money to buy item");
 
         stationCargo.RemoveAt(itemIndex);
-        playerCargo.Add(itemType.name);
+        playerCargo.Add(itemType);
 
         player.AddMoney(-price);
     }
@@ -157,7 +157,7 @@ public class Market : ScriptableObject {
         var playerCargo = player.Ship.Cargo;
         var stationCargo = station.ItemsForSale;
 
-        var itemType = SpaceTraderConfig.CargoItemConfiguration.FindType(playerCargo.Items[itemIndex]);
+        var itemType = playerCargo[itemIndex];
 
         var price = GetSellingItemPrice(itemType, station);
 
@@ -171,7 +171,7 @@ public class Market : ScriptableObject {
         }
 
         playerCargo.RemoveAt(itemIndex);
-        stationCargo.Add(itemType.name);
+        stationCargo.Add(itemType);
 
         player.AddMoney(price);
     }

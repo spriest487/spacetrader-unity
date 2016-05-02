@@ -4,15 +4,32 @@ using UnityEngine;
 [Serializable]
 public class ShipStats
 {
+    /// <summary>
+    /// Turn acceleration, in degrees/sec^2
+    /// </summary>
 	public float agility;
+
+    /// <summary>
+    /// Main engine acceleration, in m/s^2
+    /// </summary>
 	public float thrust;
 
+    /// <summary>
+    /// Turn speed cap, in degrees/sec
+    /// </summary>
 	public float maxTurnSpeed;
+
+    /// <summary>
+    /// Main engine speed cap, in m/s
+    /// </summary>
 	public float maxSpeed;
 
     [SerializeField]
     private float passengerCapacity;
 
+    /// <summary>
+    /// Number of passenger slots
+    /// </summary>
     public uint PassengerCapacity
     {
         get { return (uint) Mathf.FloorToInt(passengerCapacity); }

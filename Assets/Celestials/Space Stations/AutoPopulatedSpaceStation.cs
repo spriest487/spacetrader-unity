@@ -45,7 +45,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
 
         foreach (var itemType in SpaceTraderConfig.CargoItemConfiguration.ItemTypes)
         {
-            station.ItemsForSale.Add(itemType.name);
+            station.ItemsForSale.Add(itemType);
         }
     }
 }
