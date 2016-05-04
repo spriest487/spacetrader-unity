@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(AICaptain), typeof(Ship), typeof(Seeker))]
+[RequireComponent(typeof(AITaskFollower))]
 public class WingmanCaptain : MonoBehaviour
 {    
 	private const float FORMATION_SPACING = 1.5f;
 	private const float FORMATION_MATCH_ANGLE = 15f;
 
 	private Ship ship;
-    private Seeker seeker;
     private AICaptain captain;
+    private AITaskFollower taskFollower;
 
     private Targetable targetable;
 
@@ -131,66 +131,6 @@ public class WingmanCaptain : MonoBehaviour
         }
     }
     
-    private void OnDisable()
-    {
-        seeker.pathCallback -= NavigatePathCallback;
-    }
-
-    private void NavigatePathCallback(Pathfinding.Path path)
-    {
-        
-    }
-
-    private void NavigateTo(Vector3 pos)
-    {
-        /* if we have a really old path, discard it */
-        if (currentPath != null && Time.time > lastPathStarted + MAX_PATH_AGE)
-        {
-            currentPath = null;
-        }
-
-        /* if we're not currently following a path, wait until we
-        have one */
-        if (currentPath == null)
-        {
-            if (seeker.IsDone())
-            {
-                seeker.StartPath(transform.position, pos);
-                lastPathStarted = Time.time;
-            }
-            
-            return;
-        }
-        
-        var nextPoint = currentPath.vectorPath[0];
-
-        /* have we arrived at the next waypoint? if so, recalculate the
-        path (target might have changed, etc). if the points are reasonably
-        fine-grained we should be able to navigate obstacles without being
-        interrupted or getting confused.. */
-        if (captain.IsCloseTo(nextPoint) && currentPath.vectorPath.Count > 1)
-        {
-            seeker.StartPath(currentPath.vectorPath[1], pos);
-            currentPath = null;
-            return;
-        }
-        
-        /* if the end node's position is actually further away than the 
-        destination point, we just want to fly to the destination actually */
-        var distToNextPoint2 = (nextPoint - transform.position).sqrMagnitude;
-        var distToPos2 = (pos - transform.position).sqrMagnitude;
-
-        if (distToPos2 < distToNextPoint2)
-        {
-            captain.Destination = pos;
-        }
-        else
-        {
-            captain.Destination = nextPoint;
-        }
-
-        captain.Throttle = 1;
-    }
 
     private void ChaseTarget()
     {
@@ -214,7 +154,7 @@ public class WingmanCaptain : MonoBehaviour
             ship.ModuleLoadout.Activate(ship, module);
         }
 
-        NavigateTo(behindTarget);
+        taskFollower.AssignTask(AttackTask.Create(ship.Target));
     }
 
     private int CalculateThreat(Targetable target)
@@ -304,13 +244,12 @@ public class WingmanCaptain : MonoBehaviour
 
 	void Start()
 	{
-		ship = GetComponent<Ship>();
-        seeker = GetComponent<Seeker>();
-		captain = GetComponent<AICaptain>();
+        taskFollower = GetComponent<AITaskFollower>();
+        captain = taskFollower.Captain;
+
+        ship = captain.Ship;
 
         targetable = GetComponent<Targetable>();
-
-        seeker.pathCallback += NavigatePathCallback;
     }
 
 	void Update()
