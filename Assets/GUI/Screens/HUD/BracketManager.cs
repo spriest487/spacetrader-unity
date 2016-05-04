@@ -91,7 +91,7 @@ public class BracketManager : MonoBehaviour
     {   
         foreach (var bracket in brackets)
         {
-            if (bracket.Target.gameObject == obj)
+            if (bracket.Target && bracket.Target.gameObject == obj)
             {
                 return bracket;
             }
