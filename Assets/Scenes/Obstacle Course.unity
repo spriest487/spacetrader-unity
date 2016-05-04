@@ -171,20 +171,6 @@ Transform:
   - {fileID: 267950042}
   m_Father: {fileID: 894714705}
   m_RootOrder: 0
---- !u!114 &24983058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a15364b2a10345a45b22046030069e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cooldown: 0
-  aim: {x: 0, y: 0, z: 0}
-  definition: {fileID: 0}
 --- !u!1 &35660483
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,7 +1793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &60334168
 Transform:
   m_ObjectHideFlags: 0
@@ -1882,8 +1868,8 @@ Camera:
   m_GameObject: {fileID: 83901594}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -3504,6 +3490,20 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &164712271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15364b2a10345a45b22046030069e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 0
+  aim: {x: 0, y: 0, z: 0}
+  definition: {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
 --- !u!1 &182126833
 GameObject:
   m_ObjectHideFlags: 0
@@ -18184,6 +18184,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 60334168}
   m_RootOrder: 1
+--- !u!114 &418785201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290fd498497777e479d507e7b60029d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
+  - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  size: 5
 --- !u!1 &426540040
 GameObject:
   m_ObjectHideFlags: 0
@@ -34367,8 +34385,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 894714704}
-  m_LocalRotation: {x: 0.6584402, y: 0, z: 0, w: 0.75263315}
-  m_LocalPosition: {x: 111.4, y: 6.157877, z: 328.47537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 6.157877, z: -44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 23053570}
@@ -34489,11 +34507,11 @@ MonoBehaviour:
   abilities: []
   activeStatusEffects: []
   bumpForce: {x: 0, y: 0, z: 0}
-  cargo: {fileID: 0}
+  cargo: {fileID: 418785201}
   moduleLoadout:
     hardpointModules:
-    - {fileID: 1154925815}
-    - {fileID: 24983058}
+    - {fileID: 1314799263}
+    - {fileID: 164712271}
   Thrust: 0
   Strafe: 0
   Lift: 0
@@ -39721,20 +39739,6 @@ Transform:
   - {fileID: 1460242052}
   m_Father: {fileID: 2076998008}
   m_RootOrder: 11
---- !u!114 &1154925815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a15364b2a10345a45b22046030069e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cooldown: 0
-  aim: {x: 0, y: 0, z: 0}
-  definition: {fileID: 0}
 --- !u!1 &1156704901
 GameObject:
   m_ObjectHideFlags: 0
@@ -46391,6 +46395,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1538892790}
   m_RootOrder: 3
+--- !u!114 &1314799263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15364b2a10345a45b22046030069e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 0
+  aim: {x: 0, y: 0, z: 0}
+  definition: {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
 --- !u!1 &1333515192
 GameObject:
   m_ObjectHideFlags: 0
