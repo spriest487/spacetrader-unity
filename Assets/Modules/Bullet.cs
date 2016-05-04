@@ -81,7 +81,8 @@ public class Bullet : MonoBehaviour {
 
             if (hitEffect)
             {
-                Instantiate(hitEffect, hitPos, Quaternion.LookRotation((lastPos - hitPos).normalized));
+                var hitRotation = Quaternion.LookRotation(transform.forward);
+                Instantiate(hitEffect, hitPos, hitRotation);
             }
 
 			Destroy(gameObject);
