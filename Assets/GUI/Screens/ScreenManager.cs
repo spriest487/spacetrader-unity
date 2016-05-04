@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScreenManager : MonoBehaviour
 {
@@ -150,6 +151,27 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    private HudOverlayState DefaultHudOverlay
+    {
+        get
+        {
+            /*if there's an active mission, and the player is not spawned, the default state 
+             is the mission prep screen instead */
+            if (!!MissionManager.Instance && !PlayerShip.LocalPlayer)
+            {
+                return HudOverlayState.MissionPrep;
+            }
+            else if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                return HudOverlayState.MainMenu;
+            }
+            else
+            {
+                return HudOverlayState.None;
+            }
+        }
+    }
+
     private void OnEnable()
     {
         if (Instance != null && instance != this)
@@ -206,16 +228,7 @@ public class ScreenManager : MonoBehaviour
     {
         if (HudOverlay == state)
         {
-            /*if there's an active mission, and the player is not spawned, the default state 
-             is the mission prep screen instead */
-            if (!!MissionManager.Instance && !PlayerShip.LocalPlayer)
-            {
-                HudOverlay = HudOverlayState.MissionPrep;
-            }
-            else
-            {
-                HudOverlay = HudOverlayState.None;
-            }
+            HudOverlay = DefaultHudOverlay;
         }
         else
         {
@@ -253,8 +266,8 @@ public class ScreenManager : MonoBehaviour
     }
 
     private void Start()
-    {      
-        Apply();
+    {
+        HudOverlay = DefaultHudOverlay;
     }
 
     private void Update()
@@ -276,15 +289,6 @@ public class ScreenManager : MonoBehaviour
 
     private void OnLevelWasLoaded(int level)
     {
-        if (FindObjectOfType<MissionManager>() != null)
-        {
-            //starting a mission
-            HudOverlay = HudOverlayState.MissionPrep;
-        }
-        else if (level != 0) //0 is root menu
-        {
-            //loading any other scene
-            HudOverlay = HudOverlayState.None;
-        }
+        Start();
     }
 }
