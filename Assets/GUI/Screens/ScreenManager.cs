@@ -35,39 +35,21 @@ public class ScreenManager : MonoBehaviour
         [SerializeField]
         private GameObject overlay;
 
-        [SerializeField]
-        private bool screenBarVisible;
-
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
-
-        [HideInInspector]
-        [SerializeField]
-        private ScreenBar barInstance;
-
+        
         public GameObject Overlay { get { return overlayInstance; } }
-        public ScreenBar Bar { get { return barInstance; } }
 
         public HudOverlayState State { get { return state; } }
         public ScreenState ScreenState { get { return screenState; } }
-
-        public bool ScreenBarVisible { get { return screenBarVisible; } }
-
-        public void Init(ScreenBar screenBarPrefab)
+        
+        public void Init()
         {
             if (!overlayInstance)
             {
                 overlayInstance = Instantiate(overlay);
                 DontDestroyOnLoad(overlayInstance.gameObject);
-            }
-
-            if (!barInstance && screenBarVisible)
-            {
-                //add the screenbar
-                barInstance = Instantiate(screenBarPrefab);
-                barInstance.transform.position = Vector3.zero;
-                barInstance.transform.SetParent(overlayInstance.transform, false);
             }
         }
     }
@@ -79,7 +61,7 @@ public class ScreenManager : MonoBehaviour
     private HudOverlayState hudOverlay;
 
     [SerializeField]
-    private HudOverlayMapping[] hudOverlays;
+    private HudOverlayMapping[] hudOverlays = new HudOverlayMapping[0];
 
     [SerializeField]
     private ScreenBar screenBar;
@@ -210,7 +192,7 @@ public class ScreenManager : MonoBehaviour
     {
         foreach (var overlay in hudOverlays)
         {
-            overlay.Init(screenBar);
+            overlay.Init();
 
             var overlayActive = HudOverlay == overlay.State;
             var screenActive = State == overlay.ScreenState
