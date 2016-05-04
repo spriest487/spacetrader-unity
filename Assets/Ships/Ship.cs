@@ -6,10 +6,10 @@ using System.Collections.Generic;
 public class Ship : MonoBehaviour
 {
     [SerializeField]
-	private FormationManager formationManager;
+	private FormationManager formationManager = new FormationManager();
 
     [SerializeField]
-    private ShipCrewAssignments crewAssignments;
+    private ShipCrewAssignments crewAssignments = new ShipCrewAssignments();
 
     [SerializeField]
     private ShipStats baseStats;
