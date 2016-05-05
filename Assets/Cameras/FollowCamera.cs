@@ -1,10 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System;
 
 public class FollowCamera : MonoBehaviour
 {
     public Camera Camera { get; private set; }
+
+    public Vector2? DragInput
+    {
+        get { return dragInput; }
+    }
 
 	public bool ignoreTranslation;
 
@@ -23,8 +29,13 @@ public class FollowCamera : MonoBehaviour
 	private float shake;
 	private Vector3 shakeAngles;
 
+    [SerializeField]
     private float lookYaw;
+
+    [SerializeField]
     private float lookPitch;
+    
+    private Vector2? dragInput;
 
     private Coroutine waitToDragOnGui = null;
 
@@ -43,9 +54,9 @@ public class FollowCamera : MonoBehaviour
         Camera = GetComponent<Camera>();
 
 		currentSpeedOffset = Vector3.zero;
-		shakeAngles = new Vector3(Random.value * 2 - 1,
-			Random.value * 2 - 1,
-			Random.value * 2 - 1);
+		shakeAngles = new Vector3(UnityEngine.Random.value * 2 - 1,
+            UnityEngine.Random.value * 2 - 1,
+            UnityEngine.Random.value * 2 - 1);
 
 		shake = shakeCollisionConversion * 6;
 	}
@@ -60,42 +71,44 @@ public class FollowCamera : MonoBehaviour
     void FlightCam(PlayerShip player)
     {
         transform.position = offset;
-        if (player)
+
+        if (!player)
         {
-            if (!ignoreTranslation)
-            {
-                var newPos = player.transform.TransformPoint(offset);
-                newPos -= currentSpeedOffset;
+            transform.rotation = Quaternion.identity;
+            return;
+        }
 
-                var shakePhase = shakeSpeed * Time.frameCount;
+        if (!ignoreTranslation)
+        {
+            var newPos = player.transform.TransformPoint(offset);
+            newPos -= currentSpeedOffset;
 
-                var shakeAmount = new Vector3(
-                    shake * Mathf.Sin(shakePhase * shakeAngles.x),
-                    shake * Mathf.Sin(shakePhase * shakeAngles.y),
-                    shake * Mathf.Sin(shakePhase * shakeAngles.z));
-                newPos += transform.TransformDirection(shakeAmount);
+            var shakePhase = shakeSpeed * Time.frameCount;
 
-                transform.position = newPos;
+            var shakeAmount = new Vector3(
+                shake * Mathf.Sin(shakePhase * shakeAngles.x),
+                shake * Mathf.Sin(shakePhase * shakeAngles.y),
+                shake * Mathf.Sin(shakePhase * shakeAngles.z));
+            newPos += transform.TransformDirection(shakeAmount);
 
-                transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
-            }
-            else
-            {
-                transform.position = Vector3.zero;
-                transform.LookAt(player.transform.forward * 1000, player.transform.up);
-            }
+            transform.position = newPos;
 
-            float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
-            var rotOffsetAmt = Quaternion.Euler(player.GetComponent<Rigidbody>().angularVelocity.x * rotationOffsetAmt,
-                player.GetComponent<Rigidbody>().angularVelocity.y * rotationOffsetAmt,
-                player.GetComponent<Rigidbody>().angularVelocity.z * rotationOffsetAmt);
-            transform.rotation = rotOffsetAmt * transform.rotation;
+            transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
         }
         else
         {
             transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-        }		
+            transform.LookAt(player.transform.forward * 1000, player.transform.up);
+        }
+
+        float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
+        var rotOffsetAmt = Quaternion.Euler(player.GetComponent<Rigidbody>().angularVelocity.x * rotationOffsetAmt,
+            player.GetComponent<Rigidbody>().angularVelocity.y * rotationOffsetAmt,
+            player.GetComponent<Rigidbody>().angularVelocity.z * rotationOffsetAmt);
+
+        var mouselookOffset = Quaternion.Euler(lookPitch * 180, lookYaw * 180, 0);
+
+        transform.rotation =  rotOffsetAmt * transform.rotation * mouselookOffset;	
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -105,33 +118,7 @@ public class FollowCamera : MonoBehaviour
         var lookDirection = (cutsceneCamRig.Focus - cutsceneCamRig.View).normalized;
         transform.rotation = Quaternion.LookRotation(lookDirection);
     }
-
-    public PlayerCameraInput? GetInput()
-    {
-        var centerX = Screen.width / 2;
-        var centerY = Screen.height / 2;
-
-        var player = PlayerShip.LocalPlayer;
-
-        PlayerCameraInput? input = null;
-
-        var moveButton = Input.GetKey(KeyCode.Mouse0);
-        
-        var moveX = Input.GetAxis("pitch");
-        var moveY = Input.GetAxis("yaw");
-
-        if (moveButton)
-        {
-            input = new PlayerCameraInput()
-            {
-                DragX = moveX,
-                DragY = moveY
-            };
-        }
-
-        return input;
-    }
-
+    
     private Vector2? FindTouchPos()
     {
         //mouse input takes priority!
@@ -163,6 +150,23 @@ public class FollowCamera : MonoBehaviour
 
         var screenPos = Camera.WorldToScreenPoint(worldAim.Value);
         return new Vector2(screenPos.x, screenPos.y);
+    }
+
+    private Vector2? GetDragTurnAmount(Vector3 mouseRayOrigin)
+    {
+        var screenAim = GetScreenAimPoint(mouseRayOrigin);
+
+        if (screenAim.HasValue)
+        {
+            var x = Mathf.Clamp((2 * (screenAim.Value.x / Screen.width)) - 1, -1, 1);
+            var y = -Mathf.Clamp((2 * (screenAim.Value.y / Screen.height)) - 1, -1, 1);
+
+            return new Vector2(x, y);
+        }
+        else
+        {
+            return Vector2.zero;
+        }
     }
 
     public Vector3? GetWorldAimPoint(Vector3 origin)
@@ -209,32 +213,63 @@ public class FollowCamera : MonoBehaviour
         }
     }
 
-    IEnumerator WaitToDragOnGui()
+    private void UpdateDrag()
+    {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
+
+        var player = PlayerShip.LocalPlayer;
+        if (player)
+        {
+            dragInput = GetDragTurnAmount(player.transform.position);
+        }
+        else
+        {
+            dragInput = null;
+        }
+
+        if (Input.GetButton("look") && dragInput != null)
+        {
+            lookPitch = DragInput.Value.y;
+            lookYaw = DragInput.Value.x;
+        }
+        else
+        {
+            lookPitch = 0;
+            lookYaw = 0;
+        }
+    }
+
+    private IEnumerator WaitToDragOnGui()
     {
         yield return new WaitForSeconds(0.2f);
 
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
+        UpdateDrag();
+        waitToDragOnGui = null;
     }
 
-    IEnumerator Update()
+    private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse0) && waitToDragOnGui != null)
+        if ((Input.GetButtonUp("turn") || Input.GetButtonUp("look")) 
+            && waitToDragOnGui != null)
         {
             StopCoroutine(waitToDragOnGui);
         }
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        if ((Input.GetButtonDown("look") || Input.GetButtonDown("turn"))
+            && waitToDragOnGui == null
+            && EventSystem.current.IsPointerOverGameObject())
         {
-            if (EventSystem.current.IsPointerOverGameObject())
+            waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
+        }
+
+        var lookButton = Input.GetButton("look");
+        var turnButton = Input.GetButton("turn");
+        if (turnButton || lookButton)
+        {
+            if (waitToDragOnGui == null)
             {
-                waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
-                yield return waitToDragOnGui;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = false;
+                UpdateDrag();
             }
         }
         else

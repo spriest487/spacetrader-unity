@@ -171,15 +171,12 @@ public class PlayerShip : MonoBehaviour
 
                 if (Input.GetButton("turn"))
                 {
-                    var turnAim = camera.GetScreenAimPoint(transform.position);
+                    var turnAim = camera.DragInput;
 
                     if (turnAim.HasValue)
                     {
-                        var aimPitch = -Mathf.Clamp((2 * (turnAim.Value.y / Screen.height)) - 1, -1, 1);
-                        var aimYaw = Mathf.Clamp((2 * (turnAim.Value.x / Screen.width)) - 1, -1, 1);
-
-                        yaw = aimYaw;
-                        pitch = aimPitch;
+                        yaw = turnAim.Value.x;
+                        pitch = turnAim.Value.y;
                     }
                 }
             }
