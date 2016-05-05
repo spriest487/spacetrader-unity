@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class FollowCamera : MonoBehaviour
 {
+    public Camera Camera { get; private set; }
+
 	public bool ignoreTranslation;
 
 	public Vector3 offset;
@@ -20,6 +23,11 @@ public class FollowCamera : MonoBehaviour
 	private float shake;
 	private Vector3 shakeAngles;
 
+    private float lookYaw;
+    private float lookPitch;
+
+    private Coroutine waitToDragOnGui = null;
+
 	private void AddShake(float amount)
 	{
 		shake = Mathf.Clamp(shakeMax, 0, amount + shake);
@@ -32,6 +40,8 @@ public class FollowCamera : MonoBehaviour
 
 	void Start()
 	{
+        Camera = GetComponent<Camera>();
+
 		currentSpeedOffset = Vector3.zero;
 		shakeAngles = new Vector3(Random.value * 2 - 1,
 			Random.value * 2 - 1,
@@ -94,6 +104,144 @@ public class FollowCamera : MonoBehaviour
 
         var lookDirection = (cutsceneCamRig.Focus - cutsceneCamRig.View).normalized;
         transform.rotation = Quaternion.LookRotation(lookDirection);
+    }
+
+    public PlayerCameraInput? GetInput()
+    {
+        var centerX = Screen.width / 2;
+        var centerY = Screen.height / 2;
+
+        var player = PlayerShip.LocalPlayer;
+
+        PlayerCameraInput? input = null;
+
+        var moveButton = Input.GetKey(KeyCode.Mouse0);
+        
+        var moveX = Input.GetAxis("pitch");
+        var moveY = Input.GetAxis("yaw");
+
+        if (moveButton)
+        {
+            input = new PlayerCameraInput()
+            {
+                DragX = moveX,
+                DragY = moveY
+            };
+        }
+
+        return input;
+    }
+
+    private Vector2? FindTouchPos()
+    {
+        //mouse input takes priority!
+        if (Input.GetMouseButton(0))
+        {
+            return Input.mousePosition;
+        }
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+            {
+                return touch.position;
+            }
+        }
+
+        return null;
+    }
+
+    public Vector2? GetScreenAimPoint(Vector3 origin)
+    {
+        var worldAim = GetWorldAimPoint(origin);
+
+        if (!worldAim.HasValue)
+        {
+            return null;
+        }
+
+        var screenPos = Camera.WorldToScreenPoint(worldAim.Value);
+        return new Vector2(screenPos.x, screenPos.y);
+    }
+
+    public Vector3? GetWorldAimPoint(Vector3 origin)
+    {
+        var cursorPos = GetAimCursorPos();
+        if (!cursorPos.HasValue)
+        {
+            return null;
+        }
+
+        const float AIM_DEPTH = 1000;
+        
+        Vector3 mousePos = new Vector3(cursorPos.Value.x, cursorPos.Value.y, AIM_DEPTH);
+
+        var mouseRay = Camera.ScreenPointToRay(mousePos);
+        
+        RaycastHit hit;
+        if (Physics.Raycast(mouseRay, out hit))
+        {
+            return hit.point;
+        }
+        else
+        {
+            return mouseRay.origin + (mouseRay.direction * AIM_DEPTH);
+        }
+    }
+    
+    private Vector2? GetAimCursorPos()
+    {
+        //decide whether to use touch or mouse
+        var touchPos = FindTouchPos();
+
+        if (touchPos.HasValue)
+        {
+            return touchPos;
+        }
+        else if (Input.mousePresent)
+        {
+            return Input.mousePosition;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    IEnumerator WaitToDragOnGui()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
+    }
+
+    IEnumerator Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Mouse0) && waitToDragOnGui != null)
+        {
+            StopCoroutine(waitToDragOnGui);
+        }
+
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
+                yield return waitToDragOnGui;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
+            }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     void LateUpdate()
