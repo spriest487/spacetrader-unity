@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class Bracket : MonoBehaviour
 {
-	[SerializeField]
+    [SerializeField]
     private Targetable target;
 
-	[SerializeField]
+    [SerializeField]
     private Text nameplate;
     [SerializeField]
-    private Image[] childImages; 
-	[SerializeField]
+    private Image[] childImages;
+    [SerializeField]
     private Healthbar healthbar;
 
     [SerializeField]
@@ -28,45 +28,95 @@ public class Bracket : MonoBehaviour
 
     public Targetable Target { get { return target; } }
 
+    [SerializeField]
+    [HideInInspector]
+    private Collider targetCollider;
+
+    [SerializeField]
+    [HideInInspector]
+    private Hitpoints targetHitpoints;
+
+    [SerializeField]
+    private Ship targetShip;
+
     public static Bracket CreateFromPrefab(Bracket prefab,
         BracketManager manager,
         Targetable target)
     {
         var newBracket = Instantiate(prefab);
-                
+
         newBracket.bracketManager = manager;
         newBracket.name = "Bracket for " + target.name;
         newBracket.target = target;
 
+        newBracket.targetCollider = target.GetComponent<Collider>();
+        newBracket.targetHitpoints = target.GetComponent<Hitpoints>();
+
         return newBracket;
     }
-    
-	void Start()
-	{
+
+    void Start()
+    {
         canvas = GetComponentInParent<Canvas>();
-		canvasGroup = GetComponent<CanvasGroup>();
-		rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        rectTransform = GetComponent<RectTransform>();
 
-		if (!target)
-		{
-			throw new UnityException("no target for bracket");
-		}
+        if (!target)
+        {
+            throw new UnityException("no target for bracket");
+        }
 
-		var hitpoints = target.GetComponent<Hitpoints>();
-		foreach (var healthbar in GetComponentsInChildren<Healthbar>())
-		{
-			if (hitpoints)
-			{
-				healthbar.ship = hitpoints;
-			}
-			else
-			{
-				healthbar.gameObject.SetActive(false);
-			}
-		}
-	}
+        var hitpoints = target.GetComponent<Hitpoints>();
+        foreach (var healthbar in GetComponentsInChildren<Healthbar>())
+        {
+            if (hitpoints)
+            {
+                healthbar.ship = hitpoints;
+            }
+            else
+            {
+                healthbar.gameObject.SetActive(false);
+            }
+        }
+    }
 
-	void LateUpdate()
+    private void CalculateBoundingBoxSize(out int width, out int height)
+    {
+        var extents = targetCollider.bounds.extents;
+        var corners = new[]
+        {
+            new Vector3(extents.x, extents.y, extents.z),
+            new Vector3(-extents.x, extents.y, extents.z),
+            new Vector3(-extents.x, -extents.y, extents.z),
+            new Vector3(extents.x, -extents.y, extents.z),
+            new Vector3(extents.x, extents.y, -extents.z),
+            new Vector3(-extents.x, extents.y, -extents.z),
+            new Vector3(-extents.x, -extents.y, -extents.z),
+            new Vector3(extents.x, -extents.y, -extents.z),
+        };
+
+        var xs = new float[8];
+        var ys = new float[8];
+
+        for (int i = 0; i < 8; ++i)
+        {
+            var cornerScreenPos = Camera.main.WorldToScreenPoint(target.transform.position + corners[i]);
+            xs[i] = cornerScreenPos.x;
+            ys[i] = cornerScreenPos.y;
+        }
+
+        var minCorner = new Vector2(Mathf.Min(xs), Mathf.Min(ys));
+        var maxCorner = new Vector2(Mathf.Max(xs), Mathf.Max(ys));
+
+        var diff = maxCorner - minCorner;
+        width = (int)(diff.x / canvas.scaleFactor);
+        height = (int)(diff.y / canvas.scaleFactor);
+
+        width = Mathf.Clamp(width, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 3);
+        height = Mathf.Clamp(height, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 3);
+    }
+    
+    void LateUpdate()
 	{
 		if (!target)
 		{
@@ -80,11 +130,9 @@ public class Bracket : MonoBehaviour
         {
             playerTargetable = PlayerShip.LocalPlayer.GetComponent<Targetable>();
             playerShip = PlayerShip.LocalPlayer.Ship;
-        }		
-
-		var targetHitpoints = target.GetComponent<Hitpoints>();
-		
-		var pos = Camera.main.WorldToScreenPoint(target.transform.position);
+        }
+        
+        var pos = Camera.main.WorldToScreenPoint(target.transform.position);
         
         var x = Mathf.Clamp(pos.x, 0, Screen.width);
         var y = Mathf.Clamp(pos.y, 0, Screen.height);
@@ -116,6 +164,11 @@ public class Bracket : MonoBehaviour
 		//todo: calculate screen size of object
 		var width = bracketManager.DefaultWidth;
 		var height = bracketManager.DefaultHeight;
+
+        if (targetCollider)
+        {
+            CalculateBoundingBoxSize(out width, out height);
+        }
 
         bool isTarget;
         
