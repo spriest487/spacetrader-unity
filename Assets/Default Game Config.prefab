@@ -56,52 +56,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f38a179bf6a2ef44b0f0b1787f9a9b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
-  hudOverlay: 0
-  hudOverlays:
-  - state: 1
-    screenState: 0
-    overlay: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
-    screenBarVisible: 0
-    overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 2
-    screenState: 0
-    overlay: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
-    screenBarVisible: 1
-    overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 3
-    screenState: 0
-    overlay: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
-    screenBarVisible: 1
-    overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 4
-    screenState: 0
-    overlay: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
-    screenBarVisible: 1
-    overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 0
-    screenState: 1
-    overlay: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
-    screenBarVisible: 1
-    overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 0
-    screenState: 2
+  playerStatus: 0
+  screenId: 0
+  screens:
+  - screenId: 0
+    playerStatus: 2
     overlay: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
-    screenBarVisible: 1
     overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  - state: 0
-    screenState: 2
-    overlay: {fileID: 176876, guid: 15e11323a7394fd4eaed26d1f94f2624, type: 2}
-    screenBarVisible: 0
+  - screenId: 1
+    playerStatus: 0
+    overlay: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
     overlayInstance: {fileID: 0}
-    barInstance: {fileID: 0}
-  screenBar: {fileID: 11407202, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
+  - screenId: 2
+    playerStatus: 0
+    overlay: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
+    overlayInstance: {fileID: 0}
+  - screenId: 3
+    playerStatus: 0
+    overlay: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
+    overlayInstance: {fileID: 0}
+  - screenId: 4
+    playerStatus: 0
+    overlay: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
+    overlayInstance: {fileID: 0}
+  screenBarPrefab: {fileID: 11416706, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
+  screenBar: {fileID: 0}
   menuState: 0
   cutscene: {fileID: 0}
 --- !u!1001 &100100000

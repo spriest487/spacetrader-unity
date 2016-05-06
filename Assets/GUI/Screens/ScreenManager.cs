@@ -24,13 +24,13 @@ public class ScreenManager : MonoBehaviour
     }
 
     [Serializable]
-    private class HudOverlayMapping
+    public class ScreenMapping
     {
         [SerializeField]
-        private HudOverlayState state;
+        private ScreenID screenId;
 
         [SerializeField]
-        private ScreenState screenState;
+        private PlayerStatus playerStatus;
         
         [SerializeField]
         private GameObject overlay;
@@ -41,8 +41,8 @@ public class ScreenManager : MonoBehaviour
         
         public GameObject Overlay { get { return overlayInstance; } }
 
-        public HudOverlayState State { get { return state; } }
-        public ScreenState ScreenState { get { return screenState; } }
+        public ScreenID ScreenID { get { return screenId; } }
+        public PlayerStatus PlayerStatus { get { return playerStatus; } }
         
         public void Init()
         {
@@ -55,14 +55,18 @@ public class ScreenManager : MonoBehaviour
     }
     
     [SerializeField]
-    private ScreenState state;
+    private PlayerStatus playerStatus;
+    
+    [SerializeField]
+    private ScreenID screenId;
 
     [SerializeField]
-    private HudOverlayState hudOverlay;
+    private ScreenMapping[] screens = new ScreenMapping[0];
 
     [SerializeField]
-    private HudOverlayMapping[] hudOverlays = new HudOverlayMapping[0];
+    private ScreenBar screenBarPrefab;
 
+    [HideInInspector]
     [SerializeField]
     private ScreenBar screenBar;
 
@@ -72,31 +76,31 @@ public class ScreenManager : MonoBehaviour
     [SerializeField]
     private Cutscene cutscene;
 
-    public ScreenState State
+    public PlayerStatus State
     {
         get
         {
-            return state;
+            return playerStatus;
         }
         private set
         {
-            if (state != value)
+            if (playerStatus != value)
             {
-                state = value;
+                playerStatus = value;
                 Apply();
             }
         }
     }
 
-    public HudOverlayState HudOverlay
+    public ScreenID HudOverlay
     {
         get
         {
-            return hudOverlay;
+            return screenId;
         }
         set
         {
-            hudOverlay = value;
+            screenId = value;
             Apply();
         }
     }    
@@ -133,7 +137,7 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    private HudOverlayState DefaultHudOverlay
+    private ScreenID DefaultHudOverlay
     {
         get
         {
@@ -141,15 +145,15 @@ public class ScreenManager : MonoBehaviour
              is the mission prep screen instead */
             if (!!MissionManager.Instance && !PlayerShip.LocalPlayer)
             {
-                return HudOverlayState.MissionPrep;
+                return ScreenID.MissionPrep;
             }
             else if (SceneManager.GetActiveScene().buildIndex == 0)
             {
-                return HudOverlayState.MainMenu;
+                return ScreenID.MainMenu;
             }
             else
             {
-                return HudOverlayState.None;
+                return ScreenID.None;
             }
         }
     }
@@ -174,14 +178,14 @@ public class ScreenManager : MonoBehaviour
         Instance = null;
     }
 
-    public void BroadcastScreenMessage(ScreenState screen,
-        HudOverlayState overlayState,
+    public void BroadcastScreenMessage(PlayerStatus screen,
+        ScreenID overlayState,
         string message, 
         object value)
     {
-        foreach (var overlay in hudOverlays)
+        foreach (var overlay in screens)
         {
-            if (overlay.ScreenState == screen && overlay.State == overlayState)
+            if (overlay.PlayerStatus == screen && overlay.ScreenID == overlayState)
             {
                 overlay.Overlay.BroadcastMessage(message, value, SendMessageOptions.DontRequireReceiver);
             }
@@ -190,13 +194,18 @@ public class ScreenManager : MonoBehaviour
     
     private void Apply()
     {
-        foreach (var overlay in hudOverlays)
+        if (!screenBar)
+        {
+            screenBar = Instantiate(screenBarPrefab);
+        }
+
+        foreach (var overlay in screens)
         {
             overlay.Init();
 
-            var overlayActive = HudOverlay == overlay.State;
-            var screenActive = State == overlay.ScreenState
-                || overlay.ScreenState == ScreenState.None;
+            var overlayActive = HudOverlay == overlay.ScreenID;
+            var screenActive = State == overlay.PlayerStatus
+                || overlay.PlayerStatus == PlayerStatus.None;
 
             var overlayState = overlayActive && screenActive;
 
@@ -206,7 +215,7 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    public void ToggleOverlay(HudOverlayState state)
+    public void ToggleOverlay(ScreenID state)
     {
         if (HudOverlay == state)
         {
@@ -220,10 +229,10 @@ public class ScreenManager : MonoBehaviour
         Apply();
     }
 
-    public void SetStates(HudOverlayState hudOverlay, ScreenState state)
+    public void SetStates(ScreenID hudOverlay, PlayerStatus state)
     {
-        this.hudOverlay = hudOverlay;
-        this.state = state;
+        this.screenId = hudOverlay;
+        this.playerStatus = state;
         Apply();
     }
 
@@ -266,7 +275,7 @@ public class ScreenManager : MonoBehaviour
             }
         }
 
-        State = docked? ScreenState.Docked : ScreenState.Flight;
+        State = docked? PlayerStatus.Docked : PlayerStatus.Flight;
     }
 
     private void OnLevelWasLoaded(int level)

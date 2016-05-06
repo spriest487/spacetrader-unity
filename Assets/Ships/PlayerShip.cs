@@ -108,7 +108,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Docked);
+            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Docked);
         }
     }
 
@@ -116,7 +116,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Flight);
+            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Flight);
         }
     }
 
@@ -315,7 +315,7 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("radio"))
             {
-                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight, HudOverlayState.None, "ShowRadioMenu", null);
+                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "ShowRadioMenu", null);
             }
         }
     }
@@ -330,16 +330,16 @@ public class PlayerShip : MonoBehaviour
 
                 if (target)
                 {
-                    ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
-                        HudOverlayState.None,
+                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                        ScreenID.None,
                         "OnPlayerNotification",
                         "You> Hello, " + target.name);
                 }
             }    
             else
             {
-                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
-                    HudOverlayState.None,
+                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                    ScreenID.None,
                     "OnPlayerNotification",
                     message.Source.name + "> Hello!");
             }
