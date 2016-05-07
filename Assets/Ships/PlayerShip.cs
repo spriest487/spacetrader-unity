@@ -191,7 +191,7 @@ public class PlayerShip : MonoBehaviour
             ship.Strafe = Input.GetAxis("Horizontal");
             ship.Lift = Input.GetAxis("lift");
             
-            if (Input.GetButton("fire"))
+            if (Input.GetButton("fire") || (Input.GetButton("look") && (Input.GetButton("turn"))))
             {
                 if (ship.ModuleLoadout.HardpointModules.Count > 0)
                 {

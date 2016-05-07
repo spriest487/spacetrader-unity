@@ -4,18 +4,29 @@ using System;
 
 public class BracketManager : MonoBehaviour
 {
-    [SerializeField] Bracket bracket;
+    [SerializeField]
+    private Bracket bracket;
 
-    [SerializeField] Color friendlyColor;
-    [SerializeField] Color hostileColor;
-    [SerializeField] Color unselectedTint;
+    [SerializeField]
+    private Color friendlyColor;
+    [SerializeField]
+    private Color hostileColor;
+    [SerializeField]
+    private Color unselectedTint;
 
-    [SerializeField] Sprite corner;
-    [SerializeField] Sprite selectedCorner;
+    [SerializeField]
+    private Sprite corner;
+    [SerializeField]
+    private Sprite selectedCorner;
+    [SerializeField]
+    private Sprite edgeMarker;
 
-    [SerializeField] int defaultWidth = 64;
-    [SerializeField] int defaultHeight = 64;
-    [SerializeField] float selectedExpand = 1.25f;
+    [SerializeField]
+    private int defaultWidth = 64;
+    [SerializeField]
+    private int defaultHeight = 64;
+    [SerializeField]
+    private float selectedExpand = 1.25f;
 
     [HideInInspector, SerializeField] Bracket[] brackets;
 
