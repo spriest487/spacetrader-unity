@@ -11,7 +11,9 @@ public class Bracket : MonoBehaviour
     [SerializeField]
     private Text nameplate;
     [SerializeField]
-    private Image[] childImages;
+    private List<Image> childImages;
+    [SerializeField]
+    private Image edgeMarker;
     [SerializeField]
     private Healthbar healthbar;
 
@@ -115,6 +117,22 @@ public class Bracket : MonoBehaviour
         width = Mathf.Clamp(width, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 3);
         height = Mathf.Clamp(height, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 3);
     }
+
+    private void RotateEdgeMarkerToTarget(int x, int y)
+    {
+        var halfWidth = Screen.width * 0.5f;
+        var halfHeight = Screen.height * 0.5f;
+        var center = new Vector2(halfWidth, halfHeight);
+        var between = new Vector2(x, y) - center;
+        
+        var angle = Vector2.Angle(Vector2.up, between);
+        if (x > halfWidth)
+        {
+            angle = 360 - angle;
+        }
+
+        edgeMarker.transform.rotation = Quaternion.AngleAxis(angle, new Vector3(0, 0, 1));
+    }
     
     void LateUpdate()
 	{
@@ -131,11 +149,24 @@ public class Bracket : MonoBehaviour
             playerTargetable = PlayerShip.LocalPlayer.GetComponent<Targetable>();
             playerShip = PlayerShip.LocalPlayer.Ship;
         }
-        
+
+        bool isTarget;
+
+        if (playerShip)
+        {
+            isTarget = playerShip.Target == target;
+        }
+        else
+        {
+            isTarget = false;
+        }
+
+        Color reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
+
         var pos = Camera.main.WorldToScreenPoint(target.transform.position);
-                        
-        var x = Mathf.Clamp(pos.x, 0, Screen.width);
-        var y = Mathf.Clamp(pos.y, 0, Screen.height);
+
+        var x = (int) Mathf.Clamp(pos.x, 0, Screen.width);
+        var y = (int) Mathf.Clamp(pos.y, 0, Screen.height);
 
         /*if it's behind us...
             -things above and behind stick to the top of the screen
@@ -156,87 +187,75 @@ public class Bracket : MonoBehaviour
             x = Screen.width - x;
         }
 
+        if (x == 0 
+            || x == Screen.width
+            || y == 0 
+            || y == Screen.height)
+        {
+            nameplate.gameObject.SetActive(false);
+            healthbar.gameObject.SetActive(false);
+            childImages.ForEach(childImage => childImage.gameObject.SetActive(false));
+            edgeMarker.gameObject.SetActive(true);
+            edgeMarker.color = reactionColor;
+
+            RotateEdgeMarkerToTarget(x, y);
+        }
+        else
+        {
+            childImages.ForEach(childImage =>
+            {
+                childImage.gameObject.SetActive(true);
+                childImage.color = reactionColor;
+
+                if (isTarget)
+                {
+                    childImage.sprite = bracketManager.SelectedCorner;
+                }
+                else
+                {
+                    childImage.sprite = bracketManager.Corner;
+                }
+            });
+
+            nameplate.gameObject.SetActive(isTarget);
+            nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, 1);
+
+            nameplate.text = target.name.ToUpper();
+
+            healthbar.gameObject.SetActive(true);
+            edgeMarker.gameObject.SetActive(false);
+
+            var width = bracketManager.DefaultWidth;
+            var height = bracketManager.DefaultHeight;
+
+            if (targetCollider)
+            {
+                CalculateBoundingBoxSize(out width, out height);
+            }
+
+            if (isTarget)
+            {
+                width = (int)(width * bracketManager.SelectedExpand);
+                height = (int)(height * bracketManager.SelectedExpand);
+            }
+
+            rectTransform.sizeDelta = new Vector2(width, height);
+
+            if (targetHitpoints)
+            {
+                healthbar.gameObject.SetActive(true);
+                healthbar.ship = targetHitpoints;
+            }
+            else
+            {
+                healthbar.gameObject.SetActive(false);
+            }
+        }
+
         transform.position = new Vector3((int) x, (int) y, transform.position.z);
 		canvasGroup.interactable = true;
 		canvasGroup.blocksRaycasts = true;
 		canvasGroup.alpha = 1;
-			
-		//todo: calculate screen size of object
-		var width = bracketManager.DefaultWidth;
-		var height = bracketManager.DefaultHeight;
-
-        if (targetCollider)
-        {
-            CalculateBoundingBoxSize(out width, out height);
-        }
-
-        bool isTarget;
-        
-        if (playerShip)
-        {
-            isTarget = playerShip.Target == target;            
-        }
-        else
-        {
-            isTarget = false;            
-        }
-        
-        Color reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
-
-        if (isTarget)
-        {
-            width = (int)(width * bracketManager.SelectedExpand);
-            height = (int)(height * bracketManager.SelectedExpand);
-        }
-
-
-		if (childImages != null)
-		{
-			foreach (var childImage in childImages)
-			{
-				childImage.color = reactionColor;
-
-				if (isTarget)
-				{
-					childImage.sprite = bracketManager.SelectedCorner;
-				}
-				else
-				{
-					childImage.sprite = bracketManager.Corner;
-				}
-			}
-		}
-
-		if (nameplate)
-		{
-            nameplate.gameObject.SetActive(isTarget);
-			nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, 1);
-
-			nameplate.text = target.name.ToUpper();
-		}
-
-		if (healthbar)
-		{
-			if (targetHitpoints)
-			{
-				healthbar.gameObject.SetActive(true);
-				healthbar.ship = targetHitpoints;
-			}
-			else
-			{
-				healthbar.gameObject.SetActive(false);
-			}
-		}
-			
-		rectTransform.sizeDelta = new Vector2(width, height);
-		/*}
-		else
-		{
-			//not visible or interactible
-			canvasGroup.interactable = false;
-			canvasGroup.blocksRaycasts = false;
-			canvasGroup.alpha = 0;
-		}*/
 	}
 
     public void SetPlayerTarget()
