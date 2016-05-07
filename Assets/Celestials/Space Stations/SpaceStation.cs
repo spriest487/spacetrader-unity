@@ -99,4 +99,13 @@ public class SpaceStation : MonoBehaviour
         moorable.gameObject.SetActive(true);
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
     }
+
+    private void OnActivated(Ship activator)
+    {
+        var moorable = activator.GetComponent<Moorable>();
+        if (moorable)
+        {
+            RequestMooring(moorable);
+        }
+    }
 }
