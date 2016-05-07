@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -89,7 +90,7 @@ public class MainMenu : MonoBehaviour
 
     public void NewGame()
     {
-        Application.LoadLevel(newGameScene);
+        SceneManager.LoadScene(newGameScene);
     }
 
     public void EndGame()
@@ -103,7 +104,7 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        Application.LoadLevel(menuScene);
+        SceneManager.LoadScene(menuScene);
     }
 
     public void BackToGame()

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MissionsMenu : MonoBehaviour
 {
@@ -78,7 +79,7 @@ public class MissionsMenu : MonoBehaviour
 
     public void PlayOffline()
     {
-        Application.LoadLevel(selectedMission.SceneName);
+        SceneManager.LoadScene(selectedMission.SceneName);
     }
 
 #if !UNITY_WEBGL
@@ -88,7 +89,7 @@ public class MissionsMenu : MonoBehaviour
         var error = Network.InitializeServer(8, 30001, true);
         if (error == NetworkConnectionError.NoError)
         {
-            Application.LoadLevel(selectedMission.SceneName);
+            SceneManager.LoadScene(selectedMission.SceneName);
             SelectMission(null);
         }
         else
@@ -102,7 +103,7 @@ public class MissionsMenu : MonoBehaviour
         var error = Network.Connect("localhost", 30001);
         if (error == NetworkConnectionError.NoError)
         {
-            Application.LoadLevel(emptySceneName);
+            SceneManager.LoadScene(emptySceneName);
             
             var connecting = (ConnectingScreen) Instantiate(connectingScreen);
             DontDestroyOnLoad(connecting);

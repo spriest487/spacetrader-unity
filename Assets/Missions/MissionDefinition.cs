@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MissionDefinition : ScriptableObject
 {
@@ -77,6 +78,6 @@ public class MissionDefinition : ScriptableObject
     
     public void LoadMission()
     {
-        Application.LoadLevel(SceneName);
+        SceneManager.LoadScene(SceneName);
     }
 }

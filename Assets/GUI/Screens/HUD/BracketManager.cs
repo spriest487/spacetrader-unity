@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using System;
 
 public class BracketManager : MonoBehaviour
@@ -112,6 +113,25 @@ public class BracketManager : MonoBehaviour
         //z-sort (this is one frame behind but it shouldn't matter..?)
         brackets.Sort(bracketOrder);
         brackets.ForEach(b => b.transform.SetAsFirstSibling());
+
+        if (!EventSystem.current.IsPointerOverGameObject())
+        { 
+            if (Input.GetButtonDown("turn"))
+            {
+                clickOffTargetTime = Time.time;
+            }
+            else if (Input.GetButtonUp("turn"))
+            {
+                if (Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+                {
+                    var player = PlayerShip.LocalPlayer;
+                    if (player)
+                    {
+                        player.Ship.Target = null;
+                    }
+                }
+            }
+        }
 	}
 
     void OnLevelWasLoaded()
@@ -145,18 +165,11 @@ public class BracketManager : MonoBehaviour
 
     public void ClickOffTargetDown()
     {
-        clickOffTargetTime = Time.time;
+        
     }
 
     public void ClickOffTargetUp()
     {
-        if (Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
-        {
-            var player = PlayerShip.LocalPlayer;
-            if (player)
-            {
-                player.Ship.Target = null;
-            }
-        }
+        
     }
 }

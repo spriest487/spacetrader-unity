@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class FollowCamera : MonoBehaviour
@@ -228,6 +229,10 @@ public class FollowCamera : MonoBehaviour
 
     private IEnumerator WaitToDragOnGui()
     {
+        var pointerData = new PointerEventData(EventSystem.current);
+        var raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
+
         if (EventSystem.current.IsPointerOverGameObject())
         {
             yield return new WaitForSeconds(UI_DRAG_DELAY);
@@ -243,6 +248,7 @@ public class FollowCamera : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         waitToDragOnGui = null;
+        dragInput = null;
     }
 
     private void Update()
@@ -253,10 +259,6 @@ public class FollowCamera : MonoBehaviour
             {
                 waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
             }
-        }
-        else
-        {
-            dragInput = null;
         }
     }
 
