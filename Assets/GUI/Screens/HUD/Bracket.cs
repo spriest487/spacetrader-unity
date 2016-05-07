@@ -133,7 +133,7 @@ public class Bracket : MonoBehaviour
         }
         
         var pos = Camera.main.WorldToScreenPoint(target.transform.position);
-        
+                        
         var x = Mathf.Clamp(pos.x, 0, Screen.width);
         var y = Mathf.Clamp(pos.y, 0, Screen.height);
 
