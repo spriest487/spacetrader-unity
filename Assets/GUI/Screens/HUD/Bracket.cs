@@ -198,6 +198,15 @@ public class Bracket : MonoBehaviour
             edgeMarker.gameObject.SetActive(true);
             edgeMarker.color = reactionColor;
 
+            if (isTarget)
+            {
+                edgeMarker.sprite = bracketManager.SelectedEdgeMarker;
+            }
+            else
+            {
+                edgeMarker.sprite = bracketManager.EdgeMarker;
+            }
+
             RotateEdgeMarkerToTarget(x, y);
         }
         else

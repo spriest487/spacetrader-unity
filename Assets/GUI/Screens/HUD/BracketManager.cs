@@ -20,6 +20,8 @@ public class BracketManager : MonoBehaviour
     private Sprite selectedCorner;
     [SerializeField]
     private Sprite edgeMarker;
+    [SerializeField]
+    private Sprite selectedEdgeMarker;
 
     [SerializeField]
     private int defaultWidth = 64;
@@ -34,6 +36,8 @@ public class BracketManager : MonoBehaviour
     public Color HostileColor { get { return hostileColor; } }
     public Sprite Corner { get { return corner; } }
     public Sprite SelectedCorner { get { return selectedCorner; } }
+    public Sprite EdgeMarker { get { return edgeMarker; } }
+    public Sprite SelectedEdgeMarker { get { return selectedEdgeMarker; } }
 
     public int DefaultWidth { get { return defaultWidth; } }
     public int DefaultHeight { get { return defaultHeight; } }
