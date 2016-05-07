@@ -79,7 +79,7 @@ MonoBehaviour:
     playerStatus: 0
     overlay: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
     overlayInstance: {fileID: 0}
-  screenBarPrefab: {fileID: 11429348, guid: a65b64b9096d88645b5a0a834281058a, type: 2}
+  screenBarPrefab: {fileID: 0}
   screenBar: {fileID: 0}
   menuState: 0
   cutscene: {fileID: 0}
