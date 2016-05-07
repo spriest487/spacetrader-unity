@@ -22,19 +22,16 @@ public class FollowCamera : MonoBehaviour
 	public float shakeSpeed;
 
 	///world speeds multiplied by this to get the added amount of shake
-	public float shakeCollisionConversion; 
+	public float shakeCollisionConversion;
+
+    [SerializeField]
+    private AnimationCurve dragInputCurve;
 
 	private Vector3 currentSpeedOffset;
 
 	private float shake;
 	private Vector3 shakeAngles;
-
-    [SerializeField]
-    private float lookYaw;
-
-    [SerializeField]
-    private float lookPitch;
-    
+        
     private Vector2? dragInput;
 
     private Coroutine waitToDragOnGui = null;
@@ -105,10 +102,8 @@ public class FollowCamera : MonoBehaviour
         var rotOffsetAmt = Quaternion.Euler(player.GetComponent<Rigidbody>().angularVelocity.x * rotationOffsetAmt,
             player.GetComponent<Rigidbody>().angularVelocity.y * rotationOffsetAmt,
             player.GetComponent<Rigidbody>().angularVelocity.z * rotationOffsetAmt);
-
-        var mouselookOffset = Quaternion.Euler(lookPitch * 180, lookYaw * 180, 0);
-
-        transform.rotation =  rotOffsetAmt * transform.rotation * mouselookOffset;	
+        
+        transform.rotation =  rotOffsetAmt * transform.rotation;	
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -151,7 +146,7 @@ public class FollowCamera : MonoBehaviour
         var screenPos = Camera.WorldToScreenPoint(worldAim.Value);
         return new Vector2(screenPos.x, screenPos.y);
     }
-
+    
     private Vector2? GetDragTurnAmount(Vector3 mouseRayOrigin)
     {
         var screenAim = GetScreenAimPoint(mouseRayOrigin);
@@ -160,6 +155,9 @@ public class FollowCamera : MonoBehaviour
         {
             var x = Mathf.Clamp((2 * (screenAim.Value.x / Screen.width)) - 1, -1, 1);
             var y = -Mathf.Clamp((2 * (screenAim.Value.y / Screen.height)) - 1, -1, 1);
+
+            x *= dragInputCurve.Evaluate(Mathf.Abs(x));
+            y *= dragInputCurve.Evaluate(Mathf.Abs(y));
 
             return new Vector2(x, y);
         }
@@ -215,9 +213,6 @@ public class FollowCamera : MonoBehaviour
 
     private void UpdateDrag()
     {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
-
         var player = PlayerShip.LocalPlayer;
         if (player)
         {
@@ -227,55 +222,39 @@ public class FollowCamera : MonoBehaviour
         {
             dragInput = null;
         }
-
-        if (Input.GetButton("look") && dragInput != null)
-        {
-            lookPitch = DragInput.Value.y;
-            lookYaw = DragInput.Value.x;
-        }
-        else
-        {
-            lookPitch = 0;
-            lookYaw = 0;
-        }
     }
 
     private IEnumerator WaitToDragOnGui()
     {
-        yield return new WaitForSeconds(0.2f);
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            yield return new WaitForSeconds(.2f);
+        }
 
-        UpdateDrag();
+        while (Input.GetButton("turn"))
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+
+            UpdateDrag();
+            yield return null;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
         waitToDragOnGui = null;
     }
 
     private void Update()
     {
-        if ((Input.GetButtonUp("turn") || Input.GetButtonUp("look")) 
-            && waitToDragOnGui != null)
-        {
-            StopCoroutine(waitToDragOnGui);
-        }
-
-        if ((Input.GetButtonDown("look") || Input.GetButtonDown("turn"))
-            && waitToDragOnGui == null
-            && EventSystem.current.IsPointerOverGameObject())
-        {
-            waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
-        }
-
-        var lookButton = Input.GetButton("look");
-        var turnButton = Input.GetButton("turn");
-        if (turnButton || lookButton)
+        if (Input.GetButtonDown("turn"))
         {
             if (waitToDragOnGui == null)
             {
-                UpdateDrag();
+                waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
             }
         }
         else
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            dragInput = null;
         }
     }
 
