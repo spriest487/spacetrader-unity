@@ -13,7 +13,7 @@ GameObject:
   - 114: {fileID: 11465616}
   - 114: {fileID: 11415080}
   m_Layer: 5
-  m_Name: Screens Bar 1
+  m_Name: Screens Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

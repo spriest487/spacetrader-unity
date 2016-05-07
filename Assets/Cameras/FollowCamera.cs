@@ -5,6 +5,8 @@ using System;
 
 public class FollowCamera : MonoBehaviour
 {
+    public const float UI_DRAG_DELAY = 0.2f;
+
     public Camera Camera { get; private set; }
 
     public Vector2? DragInput
@@ -228,7 +230,7 @@ public class FollowCamera : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            yield return new WaitForSeconds(.2f);
+            yield return new WaitForSeconds(UI_DRAG_DELAY);
         }
 
         while (Input.GetButton("turn"))

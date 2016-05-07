@@ -4,6 +4,14 @@ using System;
 
 public class BracketManager : MonoBehaviour
 {
+    private class BracketOrderComparer : IComparer<Bracket>
+    {
+        public int Compare(Bracket b1, Bracket b2)
+        {
+            return (int) (b2.transform.position.z - b1.transform.position.z);
+        }
+    }
+
     [SerializeField]
     private Bracket bracket;
 
@@ -30,7 +38,13 @@ public class BracketManager : MonoBehaviour
     [SerializeField]
     private float selectedExpand = 1.25f;
 
-    [HideInInspector, SerializeField] Bracket[] brackets;
+    private float clickOffTargetTime;
+
+    private IComparer<Bracket> bracketOrder = new BracketOrderComparer();
+
+    [HideInInspector]
+    [SerializeField]
+    private List<Bracket> brackets;
 
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
@@ -92,14 +106,17 @@ public class BracketManager : MonoBehaviour
                 Destroy(bracket.Value.gameObject);
 			}
 		}
-        
-		brackets = new Bracket[newBrackets.Count];
-        newBrackets.Values.CopyTo(brackets, 0);
+
+        brackets = new List<Bracket>(newBrackets.Values);
+
+        //z-sort (this is one frame behind but it shouldn't matter..?)
+        brackets.Sort(bracketOrder);
+        brackets.ForEach(b => b.transform.SetAsFirstSibling());
 	}
 
     void OnLevelWasLoaded()
     {
-        brackets = new Bracket[0];
+        brackets = new List<Bracket>();
     }
 
     public Bracket FindBracket(GameObject obj)
@@ -124,5 +141,22 @@ public class BracketManager : MonoBehaviour
 
         bool sameFaction = bracketOwner.Faction == bracketTarget.Faction;        
         return sameFaction ? FriendlyColor : HostileColor;
+    }
+
+    public void ClickOffTargetDown()
+    {
+        clickOffTargetTime = Time.time;
+    }
+
+    public void ClickOffTargetUp()
+    {
+        if (Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+        {
+            var player = PlayerShip.LocalPlayer;
+            if (player)
+            {
+                player.Ship.Target = null;
+            }
+        }
     }
 }

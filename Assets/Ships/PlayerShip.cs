@@ -201,12 +201,12 @@ public class PlayerShip : MonoBehaviour
                     }
                 }
             }
-
+            
             if (Input.GetButtonDown("activate"))
             {
-                if (moorable && moorable.SpaceStation)
+                if (ship.Target)
                 {
-                    moorable.RequestMooring();
+                    ship.Target.SendMessage("OnActivated", this, SendMessageOptions.DontRequireReceiver);
                 }
             }
 

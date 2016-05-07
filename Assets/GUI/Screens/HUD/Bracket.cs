@@ -167,6 +167,7 @@ public class Bracket : MonoBehaviour
 
         var x = (int) Mathf.Clamp(pos.x, 0, Screen.width);
         var y = (int) Mathf.Clamp(pos.y, 0, Screen.height);
+        var z = -pos.z; //closer things should have higher values
 
         /*if it's behind us...
             -things above and behind stick to the top of the screen
@@ -196,34 +197,41 @@ public class Bracket : MonoBehaviour
             healthbar.gameObject.SetActive(false);
             childImages.ForEach(childImage => childImage.gameObject.SetActive(false));
             edgeMarker.gameObject.SetActive(true);
-            edgeMarker.color = reactionColor;
 
             if (isTarget)
             {
                 edgeMarker.sprite = bracketManager.SelectedEdgeMarker;
+                edgeMarker.color = reactionColor;
             }
             else
             {
                 edgeMarker.sprite = bracketManager.EdgeMarker;
+                edgeMarker.color = reactionColor * new Color(1, 1, 1, 0.5f);
             }
 
             RotateEdgeMarkerToTarget(x, y);
         }
         else
         {
+            Color cornerColor;
+            Sprite cornerSprite;
+
+            if (isTarget)
+            {
+                cornerSprite = bracketManager.SelectedCorner;
+                cornerColor = reactionColor;
+            }
+            else
+            {
+                cornerSprite = bracketManager.Corner;
+                cornerColor = reactionColor * new Color(1, 1, 1, 0.5f);
+            }
+
             childImages.ForEach(childImage =>
             {
                 childImage.gameObject.SetActive(true);
-                childImage.color = reactionColor;
-
-                if (isTarget)
-                {
-                    childImage.sprite = bracketManager.SelectedCorner;
-                }
-                else
-                {
-                    childImage.sprite = bracketManager.Corner;
-                }
+                childImage.color = cornerColor;
+                childImage.sprite = cornerSprite;
             });
 
             nameplate.gameObject.SetActive(isTarget);
@@ -261,7 +269,7 @@ public class Bracket : MonoBehaviour
             }
         }
 
-        transform.position = new Vector3((int) x, (int) y, transform.position.z);
+        transform.position = new Vector3(x, y, z);
 		canvasGroup.interactable = true;
 		canvasGroup.blocksRaycasts = true;
 		canvasGroup.alpha = 1;
