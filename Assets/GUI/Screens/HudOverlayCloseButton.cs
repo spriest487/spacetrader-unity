@@ -5,7 +5,7 @@ public class HudOverlayCloseButton : MonoBehaviour
 {
     public void CloseOverlay()
     {
-        var state = ScreenManager.Instance.HudOverlay;
+        var state = ScreenManager.Instance.ScreenID;
         ScreenManager.Instance.ToggleOverlay(state);
     }
 }

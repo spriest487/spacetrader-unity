@@ -109,7 +109,7 @@ public class MainMenu : MonoBehaviour
 
     public void BackToGame()
     {
-        ScreenManager.Instance.HudOverlay = ScreenID.None;
+        ScreenManager.Instance.ScreenID = ScreenID.None;
     }
     
     public void Quit()
