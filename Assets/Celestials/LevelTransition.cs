@@ -14,6 +14,12 @@ public class LevelTransition : MonoBehaviour
     
     private void OnActivated(Ship activator)
     {
+        if (!PlayerShip.LocalPlayer || activator != PlayerShip.LocalPlayer.Ship)
+        {
+            Debug.LogWarning("ignoring level transition activation from someone other than local player");
+            return;
+        }
+
         if (activeTransition)
         {
             if (activeTransition == this)
@@ -53,6 +59,8 @@ public class LevelTransition : MonoBehaviour
         }
 
         yield return tickWait;
+
+        DontDestroyOnLoad(PlayerShip.LocalPlayer);
         SceneManager.LoadScene(level);
     }
 }
