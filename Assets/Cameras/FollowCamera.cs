@@ -36,7 +36,10 @@ public class FollowCamera : MonoBehaviour
 	private Vector3 shakeAngles;
         
     private Vector2? dragInput;
+
+    private float lookPitchTarget;
     private float lookPitch;
+    private float lookYawTarget;
     private float lookYaw;
 
     [SerializeField]
@@ -284,21 +287,32 @@ public class FollowCamera : MonoBehaviour
         if (Input.GetButton("look"))
         {
             var dragInput = GetDragTurnAmount(transform.position);
-            var dragSpeed = 180 * Time.deltaTime;
-            lookYaw += dragInput.Value.x * dragSpeed;
-            lookPitch += dragInput.Value.y * dragSpeed;
+
+            Debug.LogFormat("{0}", dragInput.Value.ToString("0.000000"));
+
+            float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
+            float pitchInput = Mathf.Clamp(dragInput.Value.y, -1, 1);
+
+            lookYawTarget = yawInput * 180;
+            lookPitchTarget = pitchInput * 180;
+
+            lookYaw = Mathf.MoveTowards(lookYaw, lookYawTarget, 720 * Time.deltaTime);
+            lookPitch = Mathf.MoveTowards(lookPitch, lookPitchTarget, 720 * Time.deltaTime);
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Confined;
         }
         else
         {
+            lookYawTarget = 0;
+            lookPitchTarget = 0;
+
             var snapBackYawSpeed = lookSnapBackCurve.Evaluate(lookYaw);
             var snapBackPitchSpeed = lookSnapBackCurve.Evaluate(lookPitch);
 
-            lookYaw = Mathf.MoveTowardsAngle(lookYaw, 0, snapBackYawSpeed * Time.deltaTime);
-            lookPitch = Mathf.MoveTowardsAngle(lookPitch, 0, snapBackPitchSpeed * Time.deltaTime);
-            
+            lookYaw = Mathf.MoveTowardsAngle(lookYaw, lookYawTarget, snapBackYawSpeed * Time.deltaTime);
+            lookPitch = Mathf.MoveTowardsAngle(lookPitch, lookPitchTarget, snapBackPitchSpeed * Time.deltaTime);
+
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
