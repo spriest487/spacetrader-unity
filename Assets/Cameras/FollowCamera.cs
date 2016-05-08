@@ -287,9 +287,7 @@ public class FollowCamera : MonoBehaviour
         if (Input.GetButton("look"))
         {
             var dragInput = GetDragTurnAmount(transform.position);
-
-            Debug.LogFormat("{0}", dragInput.Value.ToString("0.000000"));
-
+            
             float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
             float pitchInput = Mathf.Clamp(dragInput.Value.y, -1, 1);
 

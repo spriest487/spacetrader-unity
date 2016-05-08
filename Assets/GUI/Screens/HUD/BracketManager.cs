@@ -58,8 +58,23 @@ public class BracketManager : MonoBehaviour
     public int DefaultHeight { get { return defaultHeight; } }
     public float SelectedExpand { get { return selectedExpand; } }
 
+    private void Clear()
+    {
+        foreach (var bracket in brackets)
+        {
+            Destroy(bracket.gameObject);
+            brackets.Clear();
+        }
+    }
+
     void LateUpdate()
 	{
+        if (!Camera.main)
+        {
+            Clear();
+            return;
+        }
+
         var ships = FindObjectsOfType(typeof(Targetable)) as Targetable[];
 
         var existingBrackets = new Dictionary<int, Bracket>();
@@ -161,15 +176,5 @@ public class BracketManager : MonoBehaviour
 
         bool sameFaction = bracketOwner.Faction == bracketTarget.Faction;        
         return sameFaction ? FriendlyColor : HostileColor;
-    }
-
-    public void ClickOffTargetDown()
-    {
-        
-    }
-
-    public void ClickOffTargetUp()
-    {
-        
     }
 }

@@ -21910,30 +21910,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[1].value
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[0].inSlope
-      value: 6.215313
-      objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[0].outSlope
-      value: 6.215313
-      objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[0].tangentMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[1].tangentMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11425038, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
-      propertyPath: lookSnapBackCurve.m_Curve.Array.data[1].inSlope
-      value: 0.03636853
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 310ebb49e013ea744babc9d9300cfe6d, type: 2}
   m_IsPrefabParent: 0
