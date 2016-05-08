@@ -206,7 +206,7 @@ public class PlayerShip : MonoBehaviour
             {
                 if (ship.Target)
                 {
-                    ship.Target.SendMessage("OnActivated", this, SendMessageOptions.DontRequireReceiver);
+                    ship.Target.SendMessage("OnActivated", Ship, SendMessageOptions.DontRequireReceiver);
                 }
             }
 

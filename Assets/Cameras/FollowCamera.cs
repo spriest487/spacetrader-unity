@@ -284,8 +284,9 @@ public class FollowCamera : MonoBehaviour
         if (Input.GetButton("look"))
         {
             var dragInput = GetDragTurnAmount(transform.position);
-            lookYaw += dragInput.Value.x;
-            lookPitch += dragInput.Value.y;
+            var dragSpeed = 180 * Time.deltaTime;
+            lookYaw += dragInput.Value.x * dragSpeed;
+            lookPitch += dragInput.Value.y * dragSpeed;
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Confined;

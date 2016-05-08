@@ -12,7 +12,7 @@ public class LevelTransition : MonoBehaviour
     [SerializeField]
     private string level = null;
     
-    private void OnActivated()
+    private void OnActivated(Ship activator)
     {
         if (activeTransition)
         {
