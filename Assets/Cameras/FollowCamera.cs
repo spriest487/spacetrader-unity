@@ -36,6 +36,11 @@ public class FollowCamera : MonoBehaviour
 	private Vector3 shakeAngles;
         
     private Vector2? dragInput;
+    private float lookPitch;
+    private float lookYaw;
+
+    [SerializeField]
+    private AnimationCurve lookSnapBackCurve;
 
     private Coroutine waitToDragOnGui = null;
 
@@ -68,6 +73,32 @@ public class FollowCamera : MonoBehaviour
         transform.position -= new Vector3(0, 0, 100);
     }
 
+    Vector3 GetShakeOffset()
+    {
+        var shakePhase = shakeSpeed * Time.frameCount;
+
+        var shakeAmount = new Vector3(
+            shake * Mathf.Sin(shakePhase * shakeAngles.x),
+            shake * Mathf.Sin(shakePhase * shakeAngles.y),
+            shake * Mathf.Sin(shakePhase * shakeAngles.z));
+
+        return shakeAmount;
+    }
+
+    Quaternion GetAngularVelocityOffset(PlayerShip player)
+    {
+        var rb = player.GetComponent<Rigidbody>();
+        if (!rb)
+        {
+            return Quaternion.identity;
+        }
+        
+        float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
+        return Quaternion.Euler(rb.angularVelocity.x * rotationOffsetAmt,
+            rb.angularVelocity.y * rotationOffsetAmt,
+            rb.angularVelocity.z * rotationOffsetAmt);
+    }
+
     void FlightCam(PlayerShip player)
     {
         transform.position = offset;
@@ -78,35 +109,31 @@ public class FollowCamera : MonoBehaviour
             return;
         }
 
+        var forwardPoint = player.transform.position + player.transform.forward * 1000;
+        var forwardDirection = (forwardPoint - player.transform.position).normalized;
+
+        var shipRot = Quaternion.LookRotation(forwardDirection, player.transform.up);
+        var avOffset = GetAngularVelocityOffset(player);
+        shipRot = avOffset * shipRot;
+
+        var shipPos = player.transform.position;
+
+        var lookRot = Quaternion.Euler(new Vector3(lookPitch, lookYaw));
+        lookRot = shipRot * lookRot;
+
+        var lookMat = new Matrix4x4();
+        lookMat.SetTRS(Vector3.zero, lookRot, Vector3.one);
+        
+        var lookOffset = lookMat.MultiplyPoint(offset + GetShakeOffset());
         if (!ignoreTranslation)
         {
-            var newPos = player.transform.TransformPoint(offset);
-            newPos -= currentSpeedOffset;
-
-            var shakePhase = shakeSpeed * Time.frameCount;
-
-            var shakeAmount = new Vector3(
-                shake * Mathf.Sin(shakePhase * shakeAngles.x),
-                shake * Mathf.Sin(shakePhase * shakeAngles.y),
-                shake * Mathf.Sin(shakePhase * shakeAngles.z));
-            newPos += transform.TransformDirection(shakeAmount);
-
-            transform.position = newPos;
-
-            transform.LookAt(player.transform.position + (player.transform.forward * 1000), player.transform.up);
-        }
-        else
-        {
-            transform.position = Vector3.zero;
-            transform.LookAt(player.transform.forward * 1000, player.transform.up);
+            lookOffset += shipPos + currentSpeedOffset;
         }
 
-        float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
-        var rotOffsetAmt = Quaternion.Euler(player.GetComponent<Rigidbody>().angularVelocity.x * rotationOffsetAmt,
-            player.GetComponent<Rigidbody>().angularVelocity.y * rotationOffsetAmt,
-            player.GetComponent<Rigidbody>().angularVelocity.z * rotationOffsetAmt);
+        transform.rotation = lookRot;
+        transform.position = lookOffset;
         
-        transform.rotation =  rotOffsetAmt * transform.rotation;	
+        return;
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -243,6 +270,7 @@ public class FollowCamera : MonoBehaviour
             Cursor.lockState = CursorLockMode.Confined;
 
             UpdateDrag();
+
             yield return null;
         }
 
@@ -253,11 +281,32 @@ public class FollowCamera : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("turn"))
+        if (Input.GetButton("look"))
         {
-            if (waitToDragOnGui == null)
+            var dragInput = GetDragTurnAmount(transform.position);
+            lookYaw += dragInput.Value.x;
+            lookPitch += dragInput.Value.y;
+
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        else
+        {
+            var snapBackYawSpeed = lookSnapBackCurve.Evaluate(lookYaw);
+            var snapBackPitchSpeed = lookSnapBackCurve.Evaluate(lookPitch);
+
+            lookYaw = Mathf.MoveTowardsAngle(lookYaw, 0, snapBackYawSpeed * Time.deltaTime);
+            lookPitch = Mathf.MoveTowardsAngle(lookPitch, 0, snapBackPitchSpeed * Time.deltaTime);
+            
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            if (Input.GetButtonDown("turn"))
             {
-                waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
+                if (waitToDragOnGui == null)
+                {
+                    waitToDragOnGui = StartCoroutine(WaitToDragOnGui());
+                }
             }
         }
     }
@@ -308,10 +357,9 @@ public class FollowCamera : MonoBehaviour
 		
 		if (playerRb && ship)
 		{
-			var speed = playerRb.velocity / Mathf.Max(1, ship.BaseStats.maxSpeed);
+			var speed = -playerRb.velocity / Mathf.Max(1, ship.BaseStats.maxSpeed);
 			var targetSpeedOffset = speed * thrustOffset;
-
-			currentSpeedOffset = Vector3.Lerp(currentSpeedOffset, targetSpeedOffset, 0.1f);
+            currentSpeedOffset = Vector3.MoveTowards(currentSpeedOffset, targetSpeedOffset, 0.1f);
 		}
 	}
 }

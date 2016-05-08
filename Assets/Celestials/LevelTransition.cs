@@ -21,6 +21,7 @@ public class LevelTransition : MonoBehaviour
                 ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", "Jump cancelled");
 
                 StopCoroutine(changingLevel);
+                activeTransition = null;
             }
             else
             {
@@ -30,7 +31,7 @@ public class LevelTransition : MonoBehaviour
         else
         {
             activeTransition = this;
-            StartCoroutine(ChangeLevel());
+            changingLevel = StartCoroutine(ChangeLevel());
         }
     }
     
@@ -49,8 +50,9 @@ public class LevelTransition : MonoBehaviour
             }
 
             yield return tickWait;
-
-            SceneManager.LoadScene(level);
         }
+
+        yield return tickWait;
+        SceneManager.LoadScene(level);
     }
 }

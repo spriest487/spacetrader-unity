@@ -19,7 +19,7 @@ public class MessagePanel : MonoBehaviour
     {
         var newItem = MessagePanelItem.CreateFromPrefab(messagePrefab, message);
         newItem.transform.SetParent(messageContent, false);
-        newItem.transform.SetAsFirstSibling();
+        newItem.transform.SetAsLastSibling();
         messages.Add(newItem);
     }
 
