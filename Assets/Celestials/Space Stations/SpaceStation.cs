@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System.Collections.Generic;
 using System;
 
@@ -9,6 +11,9 @@ public class SpaceStation : MonoBehaviour
 
     [SerializeField]
     private List<Moorable> mooredShips;
+
+    [SerializeField]
+    private List<Transform> undockPoints;
 
     [SerializeField]
     private List<CrewMember> availableCrew;
@@ -85,9 +90,19 @@ public class SpaceStation : MonoBehaviour
                 gameObject);
 
         mooredShips.Remove(moorable);
-            
-        moorable.transform.position = mooringTrigger.transform.position;
-        moorable.transform.rotation = mooringTrigger.transform.rotation;
+
+        Transform undockPoint;
+        if (undockPoints.Count == 0)
+        {
+            undockPoint = mooringTrigger.transform;
+        }
+        else
+        {
+            undockPoint = undockPoints[UnityEngine.Random.Range(0, undockPoints.Count)];
+        }
+
+        moorable.transform.position = undockPoint.position;
+        moorable.transform.rotation = undockPoint.rotation;
 
         var rigidBody = moorable.GetComponent<Rigidbody>();
         if (rigidBody)

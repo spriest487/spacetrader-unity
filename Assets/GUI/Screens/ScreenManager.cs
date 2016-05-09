@@ -36,10 +36,7 @@ public class ScreenManager : MonoBehaviour
         [UnityEngine.Serialization.FormerlySerializedAs("overlay")]
         [SerializeField]
         private GameObject root;
-
-        [SerializeField]
-        private bool showScreenBar;
-
+        
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
@@ -48,7 +45,6 @@ public class ScreenManager : MonoBehaviour
 
         public ScreenID ScreenID { get { return screenId; } }
         public PlayerStatus PlayerStatus { get { return playerStatus; } }
-        public bool ShowScreenBar { get { return showScreenBar; } }
         
         public void Init()
         {
@@ -68,14 +64,7 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private ScreenMapping[] screens = new ScreenMapping[0];
-
-    [SerializeField]
-    private ScreenBar screenBarPrefab;
-
-    [HideInInspector]
-    [SerializeField]
-    private ScreenBar screenBar;
-
+    
     [SerializeField]
     private bool menuState;
 
@@ -200,13 +189,6 @@ public class ScreenManager : MonoBehaviour
     
     private void Apply()
     {
-        if (!screenBar)
-        {
-            screenBar = Instantiate(screenBarPrefab);
-        }
-
-        bool showScreenBar = false;
-
         foreach (var screen in screens)
         {
             screen.Init();
@@ -216,18 +198,11 @@ public class ScreenManager : MonoBehaviour
                 || screen.PlayerStatus == PlayerStatus.None;
 
             var screenActive = screenIdMatches && playerStatusMatches;
-
-            if (screenActive)
-            {
-                showScreenBar |= screen.ShowScreenBar;
-            }
-
+            
             screen.Root.gameObject.SetActive(screenActive);
 
             screen.Root.BroadcastMessage(screenActive ? "OnScreenActive" : "OnScreenInactive", SendMessageOptions.DontRequireReceiver);
         }
-
-        screenBar.gameObject.SetActive(showScreenBar);
     }
 
     public void ToggleOverlay(ScreenID state)
