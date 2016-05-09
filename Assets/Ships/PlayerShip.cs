@@ -221,7 +221,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (message.MessageType == RadioMessageType.Greeting)
         {
-            if (message.Source == Ship)
+            if (message.SourceShip == Ship)
             {
                 var target = Ship.Target;
 
@@ -238,7 +238,7 @@ public class PlayerShip : MonoBehaviour
                 ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
                     ScreenID.None,
                     "OnPlayerNotification",
-                    message.Source.name + "> Hello!");
+                    message.SourceShip.name + "> Hello!");
             }
         }
     }

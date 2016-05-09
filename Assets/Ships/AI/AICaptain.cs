@@ -317,12 +317,12 @@ public class AICaptain : MonoBehaviour
 
     private void OnRadioMessage(RadioMessage message)
     {
-        if (message.Source != this)
+        if (message.SourceShip != Ship)
         {
             if (message.MessageType == RadioMessageType.Greeting)
             {
                 //reply!
-                StartCoroutine(WaitThenReply(message.Source));
+                StartCoroutine(WaitThenReply(message.SourceShip));
             }
         }
     }

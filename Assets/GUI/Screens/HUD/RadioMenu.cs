@@ -12,7 +12,7 @@ public struct RadioMessage
     private readonly Ship source;
     private RadioMessageType messageType;
 
-    public Ship Source { get { return source; } }
+    public Ship SourceShip { get { return source; } }
     public RadioMessageType MessageType { get { return messageType; } }
 
     public RadioMessage(Ship source, RadioMessageType messageType)

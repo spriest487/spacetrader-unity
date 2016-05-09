@@ -538,12 +538,14 @@ public class Ship : MonoBehaviour
             //all ships
             messageTargets = GameObject.FindGameObjectsWithTag("Ships");
         }
+
+        var radioMessage = new RadioMessage(this, message);
+
+        SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);
         
         foreach (var messageTarget in messageTargets)
         {
-            messageTarget.BroadcastMessage("OnRadioMessage",
-                new RadioMessage(this, message),
-                SendMessageOptions.DontRequireReceiver);
+            messageTarget.SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);
         }
     }
 }
