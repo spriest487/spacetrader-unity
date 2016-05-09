@@ -5,9 +5,6 @@ using System.Collections;
 [RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
-    private float? targetingClickStart = null;
-    private const float STICKY_TARGET_CLICK_DELAY = 0.1f;
-    
     public static PlayerShip LocalPlayer
     {
         get
@@ -18,9 +15,7 @@ public class PlayerShip : MonoBehaviour
 
     private Ship ship;
     private Moorable moorable;
-
-    private bool inputDragging = false;
-
+    
     [SerializeField]
     private int money;
 
@@ -38,77 +33,12 @@ public class PlayerShip : MonoBehaviour
     {
         money += amount;
     }
-
-	private Vector2? FindTouchPos()
-	{
-		//mouse input takes priority!
-		if (Input.GetMouseButton(0))
-		{
-			return Input.mousePosition;
-		}
-
-		if (Input.touchCount > 0)
-		{
-			Touch touch = Input.GetTouch(0);
-			if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
-			{
-				return touch.position;
-			}
-		}
-
-		return null;
-	}
-
-    private Vector2? FindAimPoint()
-    {
-        //decide whether to use touch or mouse
-        var touchPos = FindTouchPos();
-            
-        if (touchPos.HasValue)
-        {
-            return touchPos;
-        }
-        else if (Input.mousePresent)
-        {
-            return Input.mousePosition;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    private void UpdateDrag(Vector2? aimPos)
-    {
-        //see whether we can start a new drag
-        if (aimPos.HasValue && Input.GetMouseButton(0) && !inputDragging)
-        {
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                inputDragging = true;
-            }
-        }
-
-        if (!Input.GetMouseButton(0))
-        {
-            inputDragging = false;
-        }
-    }
-    
-	private void RotateTowardsAim(Vector2 screenAimPos)
-	{
-		var aimPitch = -Mathf.Clamp((2 * (screenAimPos.y / Screen.height)) - 1, -1, 1);
-		var aimYaw = Mathf.Clamp((2 * (screenAimPos.x / Screen.width)) - 1, -1, 1);
-
-		ship.Yaw = aimYaw;
-		ship.Pitch = aimPitch;
-	}
     
     void OnMoored()
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Docked);
+            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Docked);
         }
     }
 
@@ -116,7 +46,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(HudOverlayState.None, ScreenState.Flight);
+            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Flight);
         }
     }
 
@@ -135,11 +65,11 @@ public class PlayerShip : MonoBehaviour
 #endif
     }
 
-    private bool AutoaimSnapToPredictor(Vector3 mousePos, int slot)
+    private Vector3 AutoaimSnapToPredictor(Vector3 mousePos, int slot)
     {
         if (!ship.Target)
         {
-            return false;
+            return mousePos;
         }
 
         /* mouse/touch auto-aim implementation
@@ -148,7 +78,7 @@ public class PlayerShip : MonoBehaviour
         const float AUTOAIM_SNAP_DIST = 30;
         const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
 
-        var module = Ship.ModuleLoadout.HardpointModules[slot];
+        var module = ship.ModuleLoadout.HardpointModules[slot];
         var behavior = module.ModuleType.Behaviour;
 
         var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
@@ -161,15 +91,14 @@ public class PlayerShip : MonoBehaviour
 
             if (predictedToActualDifference.sqrMagnitude < AUTOAIM_SNAP_DIST_SQR)
             {
-                module.Aim = predictedPos.Value;
-                return true;
+                return predictedPos.Value;
             }
         }
 
-        return false;
+        return mousePos;
     }
 
-    private void CalculateMouseAim(Vector3? aimPoint)
+    private void UpdateModuleAimPoints(FollowCamera cam)
     {
         var loadout = ship.ModuleLoadout;
 
@@ -178,39 +107,13 @@ public class PlayerShip : MonoBehaviour
             var module = loadout.HardpointModules[moduleIndex];
             var hardpoint = ship.GetHardpointAt(moduleIndex);
 
-            if (aimPoint.HasValue && Camera.main)
+            var aimOrigin = hardpoint.transform.position;
+
+            var aimPoint = cam.GetWorldAimPoint(aimOrigin);
+            
+            if (aimPoint.HasValue)
             {
-                if (!AutoaimSnapToPredictor(aimPoint.Value, moduleIndex))
-                {
-                    Vector3 mouseAim;
-
-                    Vector3 mousePos = new Vector3(aimPoint.Value.x, aimPoint.Value.y, 1000);
-
-                    var mouseRay = Camera.main.ScreenPointToRay(mousePos);
-
-                    Vector3? hitSomething = null;
-                    RaycastHit[] rayHits = Physics.RaycastAll(mouseRay);
-
-                    foreach (var rayHit in rayHits)
-                    {
-                        if (rayHit.collider != GetComponent<Collider>())
-                        {
-                            hitSomething = rayHit.point;
-                            break;
-                        }
-                    }
-
-                    if (!hitSomething.HasValue)
-                    {
-                        mouseAim = mouseRay.origin + mouseRay.direction * 1000;
-                    }
-                    else
-                    {
-                        mouseAim = hitSomething.Value;
-                    }
-
-                    module.Aim = mouseAim;
-                }
+                module.Aim = AutoaimSnapToPredictor(aimPoint.Value, moduleIndex);
             }
             else
             {
@@ -258,34 +161,28 @@ public class PlayerShip : MonoBehaviour
                 UseAbility(3);
             }
 
-            var aimPoint = FindAimPoint();
+            var pitch = Input.GetAxis("pitch");
+            var yaw = Input.GetAxis("yaw");
 
-            UpdateDrag(aimPoint);
-            CalculateMouseAim(aimPoint);
+            var camera = Camera.main? Camera.main.GetComponent<FollowCamera>() : null;
+            if (camera)
+            {
+                UpdateModuleAimPoints(camera);
 
-            if (inputDragging && aimPoint.HasValue)
-            {
-                RotateTowardsAim(aimPoint.Value);
-            }
-            else
-            {
-                ship.Pitch = Input.GetAxis("pitch");
-                ship.Yaw = Input.GetAxis("yaw");
+                if (Input.GetButton("turn"))
+                {
+                    var turnAim = camera.DragInput;
+
+                    if (turnAim.HasValue)
+                    {
+                        yaw = turnAim.Value.x;
+                        pitch = turnAim.Value.y;
+                    }
+                }
             }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                targetingClickStart = Time.time;
-            }
-
-            if (Input.GetMouseButtonUp(0)
-                && !EventSystem.current.IsPointerOverGameObject()
-                && (!targetingClickStart.HasValue
-                    || targetingClickStart.Value + STICKY_TARGET_CLICK_DELAY > Time.time))
-            {
-                ship.Target = null;
-                targetingClickStart = null;
-            }
+            ship.Pitch = pitch;
+            ship.Yaw = yaw;
 
             //roll is manual only
             ship.Roll = -Input.GetAxis("roll");
@@ -304,18 +201,18 @@ public class PlayerShip : MonoBehaviour
                     }
                 }
             }
-
+            
             if (Input.GetButtonDown("activate"))
             {
-                if (moorable && moorable.SpaceStation)
+                if (ship.Target)
                 {
-                    moorable.RequestMooring();
+                    ship.Target.SendMessage("OnActivated", Ship, SendMessageOptions.DontRequireReceiver);
                 }
             }
 
             if (Input.GetButtonDown("radio"))
             {
-                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight, HudOverlayState.None, "ShowRadioMenu", null);
+                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "ShowRadioMenu", null);
             }
         }
     }
@@ -324,24 +221,24 @@ public class PlayerShip : MonoBehaviour
     {
         if (message.MessageType == RadioMessageType.Greeting)
         {
-            if (message.Source == Ship)
+            if (message.SourceShip == Ship)
             {
                 var target = Ship.Target;
 
                 if (target)
                 {
-                    ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
-                        HudOverlayState.None,
+                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                        ScreenID.None,
                         "OnPlayerNotification",
                         "You> Hello, " + target.name);
                 }
             }    
             else
             {
-                ScreenManager.Instance.BroadcastScreenMessage(ScreenState.Flight,
-                    HudOverlayState.None,
+                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                    ScreenID.None,
                     "OnPlayerNotification",
-                    message.Source.name + "> Hello!");
+                    message.SourceShip.name + "> Hello!");
             }
         }
     }

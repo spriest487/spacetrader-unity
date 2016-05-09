@@ -1,4 +1,4 @@
-﻿public enum ScreenState
+﻿public enum PlayerStatus
 {
     None,
     Docked,

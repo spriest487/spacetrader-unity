@@ -3,7 +3,7 @@
 public class WeaponHardpoint : MonoBehaviour
 {
     [SerializeField]
-    [Range(0, 180)]
+    [Range(0, 360)]
     private float arc;
 
     public float Arc

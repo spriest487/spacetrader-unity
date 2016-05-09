@@ -1,4 +1,4 @@
-﻿public enum HudOverlayState
+﻿public enum ScreenID
 {
     None,
     MainMenu,

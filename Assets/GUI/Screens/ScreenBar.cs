@@ -11,9 +11,9 @@ public class ScreenBar : MonoBehaviour
 
     public void ShowOverlay(string name)
     {
-        var state = System.Enum.Parse(typeof(HudOverlayState), name);
+        var state = System.Enum.Parse(typeof(ScreenID), name);
 
-        ScreenManager.Instance.ToggleOverlay((HudOverlayState) state);
+        ScreenManager.Instance.ToggleOverlay((ScreenID) state);
     }
 
     void Update()

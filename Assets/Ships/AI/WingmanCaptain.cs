@@ -15,8 +15,6 @@ public class WingmanCaptain : MonoBehaviour
 
     private Vector3? immediateManeuver;
     
-    private Pathfinding.Path currentPath;
-    private float lastPathStarted = 0;
     const float MAX_PATH_AGE = 5f;
 
     private float lastTargetCheck = 0;

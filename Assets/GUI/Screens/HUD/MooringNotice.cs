@@ -34,6 +34,6 @@ public class MooringNotice : MonoBehaviour
             }
         }
 
-        text.enabled = active;
+        text.gameObject.SetActive(active);
     }
 }

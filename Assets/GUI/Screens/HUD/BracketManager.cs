@@ -1,35 +1,80 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using System;
 
 public class BracketManager : MonoBehaviour
 {
-    [SerializeField] Bracket bracket;
+    private class BracketOrderComparer : IComparer<Bracket>
+    {
+        public int Compare(Bracket b1, Bracket b2)
+        {
+            return (int) (b2.transform.position.z - b1.transform.position.z);
+        }
+    }
 
-    [SerializeField] Color friendlyColor;
-    [SerializeField] Color hostileColor;
-    [SerializeField] Color unselectedTint;
+    [SerializeField]
+    private Bracket bracket;
 
-    [SerializeField] Sprite corner;
-    [SerializeField] Sprite selectedCorner;
+    [SerializeField]
+    private Color friendlyColor;
+    [SerializeField]
+    private Color hostileColor;
+    [SerializeField]
+    private Color unselectedTint;
 
-    [SerializeField] int defaultWidth = 64;
-    [SerializeField] int defaultHeight = 64;
-    [SerializeField] float selectedExpand = 1.25f;
+    [SerializeField]
+    private Sprite corner;
+    [SerializeField]
+    private Sprite selectedCorner;
+    [SerializeField]
+    private Sprite edgeMarker;
+    [SerializeField]
+    private Sprite selectedEdgeMarker;
 
-    [HideInInspector, SerializeField] Bracket[] brackets;
+    [SerializeField]
+    private int defaultWidth = 64;
+    [SerializeField]
+    private int defaultHeight = 64;
+    [SerializeField]
+    private float selectedExpand = 1.25f;
+
+    private float clickOffTargetTime;
+
+    private IComparer<Bracket> bracketOrder = new BracketOrderComparer();
+
+    [HideInInspector]
+    [SerializeField]
+    private List<Bracket> brackets;
 
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
     public Sprite Corner { get { return corner; } }
     public Sprite SelectedCorner { get { return selectedCorner; } }
+    public Sprite EdgeMarker { get { return edgeMarker; } }
+    public Sprite SelectedEdgeMarker { get { return selectedEdgeMarker; } }
 
     public int DefaultWidth { get { return defaultWidth; } }
     public int DefaultHeight { get { return defaultHeight; } }
     public float SelectedExpand { get { return selectedExpand; } }
 
+    private void Clear()
+    {
+        foreach (var bracket in brackets)
+        {
+            Destroy(bracket.gameObject);
+            brackets.Clear();
+        }
+    }
+
     void LateUpdate()
 	{
+        if (!Camera.main)
+        {
+            Clear();
+            return;
+        }
+
         var ships = FindObjectsOfType(typeof(Targetable)) as Targetable[];
 
         var existingBrackets = new Dictionary<int, Bracket>();
@@ -77,14 +122,36 @@ public class BracketManager : MonoBehaviour
                 Destroy(bracket.Value.gameObject);
 			}
 		}
-        
-		brackets = new Bracket[newBrackets.Count];
-        newBrackets.Values.CopyTo(brackets, 0);
+
+        brackets = new List<Bracket>(newBrackets.Values);
+
+        //z-sort (this is one frame behind but it shouldn't matter..?)
+        brackets.Sort(bracketOrder);
+        brackets.ForEach(b => b.transform.SetAsFirstSibling());
+
+        if (!EventSystem.current.IsPointerOverGameObject())
+        { 
+            if (Input.GetButtonDown("turn"))
+            {
+                clickOffTargetTime = Time.time;
+            }
+            else if (Input.GetButtonUp("turn"))
+            {
+                if (Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+                {
+                    var player = PlayerShip.LocalPlayer;
+                    if (player)
+                    {
+                        player.Ship.Target = null;
+                    }
+                }
+            }
+        }
 	}
 
     void OnLevelWasLoaded()
     {
-        brackets = new Bracket[0];
+        brackets = new List<Bracket>();
     }
 
     public Bracket FindBracket(GameObject obj)

@@ -129,6 +129,43 @@ MonoBehaviour:
   shakeMax: 0.1
   shakeSpeed: 2
   shakeCollisionConversion: 0.05
+  dragInputCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  lookSnapBackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: -89.86806
+      value: 181.112
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 1
+    - time: 0
+      value: 0
+      inSlope: -4.969328
+      outSlope: 6.215313
+      tangentMode: 1
+    - time: 90
+      value: 180
+      inSlope: 0.03636853
+      outSlope: 0
+      tangentMode: 1
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &11425040
 MonoBehaviour:
   m_ObjectHideFlags: 1

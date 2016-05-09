@@ -93,8 +93,8 @@ public class Hitpoints : MonoBehaviour
         if (PlayerShip.LocalPlayer)
         {
             ScreenManager.Instance.BroadcastScreenMessage(
-                ScreenState.Flight,
-                HudOverlayState.None,
+                PlayerStatus.Flight,
+                ScreenID.None,
                 "OnDamageNotification",
                 new DamageNotification(amount, this));
         }
