@@ -527,22 +527,20 @@ public class Ship : MonoBehaviour
 
     public void SendRadioMessage(RadioMessageType message, Ship target)
     {
-        GameObject[] messageTargets;
-        if (target != null)
+        var messageTargets = new List<Ship>();
+        if (target)
         {
-            //just the target
-            messageTargets = new GameObject[] { target.gameObject };
+            //private, just me and the target
+            messageTargets.Add(target);
+            messageTargets.Add(this);
         }
         else
         {
-            //all ships
-            messageTargets = GameObject.FindGameObjectsWithTag("Ships");
+            //all ships everywhere
+            messageTargets.AddRange(FindObjectsOfType<Ship>());
         }
 
-        var radioMessage = new RadioMessage(this, message);
-
-        SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);
-        
+        var radioMessage = new RadioMessage(this, message);        
         foreach (var messageTarget in messageTargets)
         {
             messageTarget.SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);

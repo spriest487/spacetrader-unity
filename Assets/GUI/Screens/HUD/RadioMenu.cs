@@ -1,6 +1,10 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public enum RadioMessageType
 {
@@ -27,14 +31,21 @@ public class RadioMenu : MonoBehaviour
     [SerializeField]
     private Transform content;
 
-    void Start()
+    private IEnumerator AnimateShowRadioMenu()
     {
+        foreach (var entry in content.GetComponentsInChildren<RadioMenuEntry>())
+        {
+            entry.RefreshRadioMenu();
+        }
 
+        yield return null;
+
+        content.gameObject.SetActive(true);
     }
-
+    
     public void ShowRadioMenu()
     {
-        content.gameObject.SetActive(true);
+        StartCoroutine(AnimateShowRadioMenu());
     }
 
     public void Cancel()
@@ -55,14 +66,4 @@ public class RadioMenu : MonoBehaviour
     }
 }
 
-[Serializable]
-public class RadioMenuItem
-{
-    [SerializeField]
-    private List<RadioMenuItem> children;
 
-    public RadioMenuItem()
-    {
-        children = new List<RadioMenuItem>();
-    }
-}
