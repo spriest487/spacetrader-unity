@@ -67,7 +67,7 @@ public class ShipType : ScriptableObject
         }
         ship.Abilities = newAbilities;
 
-        if (moorable)
+        if (moorable && !obj.gameObject.GetComponent<Moorable>())
         {
             obj.gameObject.AddComponent<Moorable>();
         }   
