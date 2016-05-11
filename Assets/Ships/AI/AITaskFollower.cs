@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Pathfinding;
 #if UNITY_EDITOR
 using System;
 using System.Reflection;

@@ -64,6 +64,11 @@ public class RadioMenu : MonoBehaviour
 
         Cancel();
     }
+
+    public void OnScreenActive()
+    {
+        Cancel();
+    }
 }
 
 

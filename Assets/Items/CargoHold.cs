@@ -7,9 +7,6 @@ public class CargoHold : ScriptableObject
     [SerializeField]
     private List<ItemType> items = new List<ItemType>();
 
-    [SerializeField]
-    private int size = 0;
-
     public IEnumerable<ItemType> Items
     {
         get { return items; }
@@ -19,15 +16,11 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            return size;
+            return items.Count;
         }
         set
         {
-            if (value < size && items != null)
-            {
-                items.Resize(value);
-            }
-            size = value;
+            items.Resize(value);
         }
     }
 
@@ -35,7 +28,15 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            return size - items.Count;
+            int empty = 0;
+            items.ForEach(item => 
+            {
+                if (item == null)
+                {
+                    ++empty;
+                }
+            });
+            return empty;
         }
     }
 
@@ -43,20 +44,37 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            return items.Count;
+            return items.Count - FreeCapacity;
         }
     }
 
+    /// <summary>
+    /// Adds an item in the first empty slot
+    /// </summary>
+    /// <param name="item">non-null item type to add</param>
     public void Add(ItemType item)
     {
+        if (!item)
+        {
+            throw new System.ArgumentException("item must not be null");
+        }
+
         Debug.AssertFormat(FreeCapacity > 0, "cargo hold does not have space to add item {0}, size is {1} and free capacity is {2}",
-            item, size, FreeCapacity);
-        items.Add(item);
+            item, Size, FreeCapacity);
+
+        for (int index = 0; index < items.Count; ++index)
+        {
+            if (items[index] == null)
+            {
+                items[index] = item;
+                break;
+            }
+        }
     }
 
     public void RemoveAt(int index)
     {
-        if (index < items.Count)
+        if (IsValidIndex(index))
         {
             items.RemoveAt(index);
         }
@@ -65,6 +83,11 @@ public class CargoHold : ScriptableObject
     public bool IsValidIndex(int index)
     {
         return index >= 0 && index < items.Count;
+    }
+
+    public bool IsIndexFree(int index)
+    {
+        return IsValidIndex(index) && items[index] == null;
     }
 
     public ItemType this[int index]

@@ -24,4 +24,9 @@ public class EquipmentScreen : MonoBehaviour
         var player = SpaceTraderConfig.LocalPlayer;
         playerCargoList.CargoHold = player? player.Ship.Cargo : null;
     }
+
+    public void Close()
+    {
+        ScreenManager.Instance.ScreenID = ScreenID.None;
+    }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.Events;
@@ -96,12 +98,12 @@ public class CargoHoldList : MonoBehaviour
             sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, CargoHold.Size);
         }
 
-        if (!currentItems.ElementsEquals(CargoHold.Items))
+        if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
         {
-            int oldHighlight = highlightedIndex;
-
             Clear();
 
+            int oldHighlight = highlightedIndex;
+            
             var itemCount = CargoHold.ItemCount;
             for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
             {

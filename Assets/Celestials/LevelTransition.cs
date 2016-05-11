@@ -61,6 +61,7 @@ public class LevelTransition : MonoBehaviour
         yield return tickWait;
 
         DontDestroyOnLoad(PlayerShip.LocalPlayer);
-        SceneManager.LoadScene(level);
+
+        yield return SceneManager.LoadSceneAsync(level);
     }
 }
