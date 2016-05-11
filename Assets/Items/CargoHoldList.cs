@@ -104,11 +104,10 @@ public class CargoHoldList : MonoBehaviour
 
             int oldHighlight = highlightedIndex;
             
-            var itemCount = CargoHold.ItemCount;
+            var itemCount = CargoHold.Size;
             for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
             {
                 var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, itemIndex);
-
                 item.transform.SetParent(itemsHolder.transform, false);
             }
 

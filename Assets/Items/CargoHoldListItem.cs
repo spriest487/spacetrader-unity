@@ -71,18 +71,33 @@ public class CargoHoldListItem : MonoBehaviour
         int itemIndex)
     {
         var result = Instantiate(prefab);
-        var itemType = cargoHold[itemIndex];
-
         result.cargoHold = cargoHold;
         result.itemIndex = itemIndex;
 
-        result.label.text = itemType.DisplayName;
-        result.icon.sprite = itemType.Icon;
-
-        if (result.priceLabel)
+        if (cargoHold.IsIndexFree(itemIndex))
         {
-            result.priceLabel.text = Market.FormatCurrency(itemType.BaseValue);
+            result.icon.gameObject.SetActive(false);
+            result.label.gameObject.SetActive(false);
+
+            if (result.priceLabel)
+            {
+                result.priceLabel.gameObject.SetActive(false);
+            }
         }
+        else
+        {
+            var itemType = cargoHold[itemIndex];
+
+            result.label.text = itemType.DisplayName;
+            result.icon.sprite = itemType.Icon;
+
+            if (result.priceLabel)
+            {
+                result.priceLabel.text = Market.FormatCurrency(itemType.BaseValue);
+            }
+        }
+
+        
 
         return result;
     }
