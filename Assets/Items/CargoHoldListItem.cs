@@ -97,8 +97,6 @@ public class CargoHoldListItem : MonoBehaviour
             }
         }
 
-        
-
         return result;
     }
 }

@@ -169,6 +169,11 @@ public class Ship : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        target = null;
+    }
+
     private void RecalculateCurrentStats()
     {
         var result = new ShipStats(BaseStats);

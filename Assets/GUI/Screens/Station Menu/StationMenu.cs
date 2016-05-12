@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
 public class StationMenu : MonoBehaviour
 {
     [SerializeField]
-    private string headerFormat = "Docked at {0}";
+    private string headerFormat = "{0}";
 
     [SerializeField]
     private Text headerText;
@@ -30,19 +32,17 @@ public class StationMenu : MonoBehaviour
         {
             moorable.SpaceStation.Unmoor(moorable);
         }
-    }
 
-    void Start()
-    {
+        ScreenManager.Instance.ScreenID = ScreenID.None;
     }
-
-    void Update()
+    
+    void OnScreenActive()
     {
         var moorable = GetPlayerMoorable();
 
         if (headerText)
         {
-            headerText.text = string.Format(headerFormat, moorable.SpaceStation.name);
+            headerText.text = string.Format(headerFormat, moorable.SpaceStation.name.ToUpper());
         }
     }
 }

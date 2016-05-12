@@ -15,6 +15,9 @@ public class ShipModuleController : MonoBehaviour
     private Ship ship;
 
     [SerializeField]
+    private Transform highlight;
+
+    [SerializeField]
     private int moduleSlot;
 
     public Ship Ship
@@ -30,6 +33,12 @@ public class ShipModuleController : MonoBehaviour
     public ModuleStatus Module
     {
         get { return Ship.ModuleLoadout.HardpointModules[ModuleSlot]; }
+    }
+
+    public bool Highlighted
+    {
+        get { return highlight.gameObject.activeSelf; }
+        set { highlight.gameObject.SetActive(value); }
     }
 
     public void OnClickModule()
@@ -50,6 +59,8 @@ public class ShipModuleController : MonoBehaviour
 
         result.caption.text = itemType.name;
         result.icon.sprite = itemType.Icon;
+
+        result.Highlighted = false;
 
         return result;
     }

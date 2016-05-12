@@ -30,6 +30,9 @@ public class ScreensBar : MonoBehaviour
 
     public void OnScreenActive()
     {
-        missionButton.gameObject.SetActive(MissionManager.Instance);
+        if (missionButton)
+        {
+            missionButton.gameObject.SetActive(MissionManager.Instance);
+        }
     }
 }
