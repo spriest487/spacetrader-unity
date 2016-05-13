@@ -1,8 +1,10 @@
 ﻿#pragma warning disable 0649
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ScreenManager : MonoBehaviour
 {
@@ -33,15 +35,19 @@ public class ScreenManager : MonoBehaviour
         [SerializeField]
         private PlayerStatus playerStatus;
         
-        [UnityEngine.Serialization.FormerlySerializedAs("overlay")]
         [SerializeField]
         private GameObject root;
         
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
+
+        [HideInInspector]
+        [SerializeField]
+        private CanvasScaler canvasScaler;
         
         public GameObject Root { get { return overlayInstance; } }
+        public CanvasScaler CanvasScaler { get { return canvasScaler; } }
 
         public ScreenID ScreenID { get { return screenId; } }
         public PlayerStatus PlayerStatus { get { return playerStatus; } }
@@ -51,6 +57,12 @@ public class ScreenManager : MonoBehaviour
             if (!overlayInstance)
             {
                 overlayInstance = Instantiate(root);
+
+                if (!(canvasScaler = overlayInstance.GetComponent<CanvasScaler>()))
+                {
+                    canvasScaler = overlayInstance.GetComponentInParent<CanvasScaler>();
+                }
+
                 DontDestroyOnLoad(overlayInstance.gameObject);
             }
         }
@@ -63,7 +75,7 @@ public class ScreenManager : MonoBehaviour
     private ScreenID screenId;
 
     [SerializeField]
-    private ScreenMapping[] screens = new ScreenMapping[0];
+    private List<ScreenMapping> screens = new List<ScreenMapping>();
     
     [SerializeField]
     private bool menuState;
@@ -253,6 +265,9 @@ public class ScreenManager : MonoBehaviour
 
     private void Update()
     {
+        float scale = (Screen.height < 600) ? Screen.height / 600.0f : 1;
+        screens.ForEach(screen => screen.CanvasScaler.scaleFactor = scale);
+
         bool docked = false;
 
         var player = PlayerShip.LocalPlayer;
