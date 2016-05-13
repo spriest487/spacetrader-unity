@@ -24,7 +24,7 @@ public class CargoHoldList : MonoBehaviour
 
     [SerializeField]
     private Text sizeLabel;
-
+    
     private List<ItemType> currentItems;
 
     public CargoHold CargoHold
@@ -122,5 +122,11 @@ public class CargoHoldList : MonoBehaviour
     private void OnSelectCargoItem(CargoHoldListItem item)
     {
         highlightedIndex = item.ItemIndex;
+    }
+
+    private void OnDragCargoItem(CargoHoldListItem item)
+    {
+        highlightedIndex = item.ItemIndex;
+
     }
 }

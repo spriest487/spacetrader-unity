@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class EquipmentScreen : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class EquipmentScreen : MonoBehaviour
     [SerializeField]
     private ShipModulesController shipModules;
 
+    [SerializeField]
+    private Image dragItem; 
+
     private void OnSelectShipModule(ShipModuleController moduleController)
     {
         infoPanel.ItemType = moduleController.Module.ModuleType;
@@ -24,6 +28,11 @@ public class EquipmentScreen : MonoBehaviour
     {
         infoPanel.ItemType = selection.Item;
         shipModules.HighlightedIndex = -1;
+    }
+
+    private void OnDragCargoItem(CargoHoldListItem selection)
+    {
+        dragItem.sprite = selection.Item.Icon;
     }
 
     private void Update()

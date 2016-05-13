@@ -66,6 +66,11 @@ public class CargoHoldListItem : MonoBehaviour
         SendMessageUpwards("OnSelectCargoItem", this, SendMessageOptions.DontRequireReceiver);
     }
 
+    public void Drag()
+    {
+        SendMessageUpwards("OnDragCargoItem", this, SendMessageOptions.DontRequireReceiver);
+    }
+    
     public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab,
         CargoHold cargoHold,
         int itemIndex)

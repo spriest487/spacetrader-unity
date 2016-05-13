@@ -7,7 +7,7 @@ public abstract class ItemType : ScriptableObject
 
     [SerializeField]
     private Sprite icon;
-
+   
     public abstract string DisplayName { get; }
 
     public abstract string Description { get; }
