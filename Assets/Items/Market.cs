@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 
@@ -131,8 +133,9 @@ public class Market : ScriptableObject {
         return itemType.BaseValue;
     }
 
-    public void BuyItemFromStation(PlayerShip player, int itemIndex, SpaceStation station)
+    public void BuyItemFromStation(PlayerShip player, int itemIndex)
     {
+        var station = player.CurrentStation;
         var playerCargo = player.Ship.Cargo;
         var stationCargo = station.ItemsForSale;
 
@@ -152,9 +155,10 @@ public class Market : ScriptableObject {
         player.AddMoney(-price);
     }
 
-    public void SellItemToStation(PlayerShip player, int itemIndex, SpaceStation station)
+    public void SellItemToStation(PlayerShip player, int itemIndex)
     {
         var playerCargo = player.Ship.Cargo;
+        var station = player.CurrentStation;
         var stationCargo = station.ItemsForSale;
 
         var itemType = playerCargo[itemIndex];

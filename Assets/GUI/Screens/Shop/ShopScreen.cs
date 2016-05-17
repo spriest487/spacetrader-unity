@@ -79,7 +79,7 @@ public class ShopScreen : MonoBehaviour
 
         var player = SpaceTraderConfig.LocalPlayer;
         var station = player.GetComponent<Moorable>().SpaceStation;
-        SpaceTraderConfig.Market.BuyItemFromStation(player, forSaleItems.HighlightedIndex, station);
+        SpaceTraderConfig.Market.BuyItemFromStation(player, forSaleItems.HighlightedIndex);
     }
 
     public void SellSelectedItem()
@@ -92,6 +92,6 @@ public class ShopScreen : MonoBehaviour
 
         var player = SpaceTraderConfig.LocalPlayer;
         var station = player.GetComponent<Moorable>().SpaceStation;
-        SpaceTraderConfig.Market.SellItemToStation(player, cargoItems.HighlightedIndex, station);
+        SpaceTraderConfig.Market.SellItemToStation(player, cargoItems.HighlightedIndex);
     }
 }
