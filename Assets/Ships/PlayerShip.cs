@@ -63,19 +63,9 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
-    bool HasControl()
+    bool LocalPlayerHasControl()
     {
-#if UNITY_WEBGL
-        return true;
-#else
-        if (Network.isClient || Network.isServer)
-        {
-            return GetComponent<NetworkView>() && GetComponent<NetworkView>().isMine;
-        }
-        else {
-            return true;
-        }
-#endif
+        return LocalPlayer == this;
     }
 
     private Vector3 AutoaimSnapToPredictor(Vector3 mousePos, int slot)
@@ -145,6 +135,14 @@ public class PlayerShip : MonoBehaviour
 
     void Update()
     {
+        if (LocalPlayerHasControl())
+        {
+            ProcessLocalInput();
+        }
+    }
+
+    private void ProcessLocalInput()
+    {
         if (ScreenManager.Instance.CurrentCutscenePage != null)
         {
             if (Input.GetButtonDown("fire") || Input.GetButtonDown("activate"))
@@ -152,7 +150,7 @@ public class PlayerShip : MonoBehaviour
                 ScreenManager.Instance.AdvanceCutscene();
             }
         }
-        else if (HasControl())
+        else if (LocalPlayerHasControl())
         {
             if (Input.GetButtonDown("Use Ability 1"))
             {
@@ -177,7 +175,7 @@ public class PlayerShip : MonoBehaviour
             var pitch = Input.GetAxis("pitch");
             var yaw = Input.GetAxis("yaw");
 
-            var camera = Camera.main? Camera.main.GetComponent<FollowCamera>() : null;
+            var camera = Camera.main ? Camera.main.GetComponent<FollowCamera>() : null;
             if (camera)
             {
                 UpdateModuleAimPoints(camera);
@@ -203,7 +201,7 @@ public class PlayerShip : MonoBehaviour
             ship.Thrust = Input.GetAxis("Vertical");
             ship.Strafe = Input.GetAxis("Horizontal");
             ship.Lift = Input.GetAxis("lift");
-            
+
             if (Input.GetButton("fire"))
             {
                 if (ship.ModuleLoadout.HardpointModules.Count > 0)
@@ -214,7 +212,7 @@ public class PlayerShip : MonoBehaviour
                     }
                 }
             }
-            
+
             if (Input.GetButtonDown("activate"))
             {
                 if (ship.Target)
@@ -273,7 +271,7 @@ public class PlayerShip : MonoBehaviour
     
 	void OnCollisionEnter(Collision collision)
 	{
-        if (!HasControl())
+        if (!LocalPlayerHasControl())
         {
             return;
         }

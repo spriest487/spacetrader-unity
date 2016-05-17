@@ -171,12 +171,27 @@ public class BracketManager : MonoBehaviour
 
     public Color GetBracketColor(Targetable bracketOwner, Targetable bracketTarget)
     {
-        if (!bracketTarget || !bracketOwner)
+        int relationship;
+        if (!bracketOwner || !bracketTarget)
+        {
+            relationship = 0;
+        }
+        else
+        {
+            relationship = bracketOwner.RelationshipTo(bracketTarget);
+        }
+
+        if (relationship < 0)
         {
             return HostileColor;
         }
-
-        bool sameFaction = bracketOwner.Faction == bracketTarget.Faction;        
-        return sameFaction ? FriendlyColor : HostileColor;
+        else if (relationship > 0)
+        {
+            return FriendlyColor;
+        }
+        else
+        {
+            return Color.white;
+        }
     }
 }
