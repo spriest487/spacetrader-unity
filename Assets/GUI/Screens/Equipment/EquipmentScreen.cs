@@ -1,10 +1,11 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class EquipmentScreen : MonoBehaviour
+public class EquipmentScreen : MonoBehaviour, IDropHandler
 {
     [SerializeField]
     private ItemInformationPanel infoPanel;
@@ -16,7 +17,14 @@ public class EquipmentScreen : MonoBehaviour
     private ShipModulesController shipModules;
 
     [SerializeField]
-    private Image dragItem; 
+    private DragItem dragItem;
+    
+    private void OnScreenActive()
+    {
+        dragItem.gameObject.SetActive(false);
+        var player = SpaceTraderConfig.LocalPlayer;
+        playerCargoList.CargoHold = player ? player.Ship.Cargo : null;
+    }
 
     private void OnSelectShipModule(ShipModuleController moduleController)
     {
@@ -26,21 +34,29 @@ public class EquipmentScreen : MonoBehaviour
 
     private void OnSelectCargoItem(CargoHoldListItem selection)
     {
-        infoPanel.ItemType = selection.Item;
+        infoPanel.ItemType = selection.ItemType;
         shipModules.HighlightedIndex = -1;
     }
 
-    private void OnDragCargoItem(CargoHoldListItem selection)
+    private void OnDragCargoItem(CargoHoldListItem dragged)
     {
-        dragItem.sprite = selection.Item.Icon;
+        dragItem.gameObject.SetActive(true);
+        dragItem.Item = dragged;
     }
 
-    private void Update()
+    private void OnDropCargoItem(CargoHoldListItem dragged)
     {
-        var player = SpaceTraderConfig.LocalPlayer;
-        playerCargoList.CargoHold = player? player.Ship.Cargo : null;
+        dragItem.gameObject.SetActive(false);
+        dragItem.Item = null;
+
+        var pointerEvent = new PointerEventData(EventSystem.current);
     }
 
+    public void OnDrop(PointerEventData pointerData)
+    {
+        dragItem.gameObject.SetActive(false);
+    }
+    
     public void Close()
     {
         ScreenManager.Instance.ScreenID = ScreenID.None;

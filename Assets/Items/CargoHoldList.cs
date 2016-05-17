@@ -87,6 +87,12 @@ public class CargoHoldList : MonoBehaviour
 
     private void Update()
     {
+        Refresh();
+        UpdateHighlight();
+    }
+
+    public void Refresh()
+    {
         if (!CargoHold)
         {
             Clear();
@@ -103,7 +109,7 @@ public class CargoHoldList : MonoBehaviour
             Clear();
 
             int oldHighlight = highlightedIndex;
-            
+
             var itemCount = CargoHold.Size;
             for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
             {
@@ -115,8 +121,6 @@ public class CargoHoldList : MonoBehaviour
 
             highlightedIndex = System.Math.Min(oldHighlight, currentItems.Count - 1);
         }
-
-        UpdateHighlight();
     }
 
     private void OnSelectCargoItem(CargoHoldListItem item)

@@ -48,6 +48,22 @@ public class CargoHold : ScriptableObject
         }
     }
 
+    public int FirstFreeIndex
+    {
+        get
+        {
+            for (int i = 0; i < items.Count; ++i)
+            {
+                if (items[i] == null)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+    }
+
     /// <summary>
     /// Adds an item in the first empty slot
     /// </summary>
@@ -78,6 +94,18 @@ public class CargoHold : ScriptableObject
         {
             items.RemoveAt(index);
         }
+    }
+
+    public void Swap(int src, int dest)
+    {
+        if (!IsValidIndex(src) || !IsValidIndex(dest))
+        {
+            throw new System.ArgumentException("invalid indices for swap");
+        }
+
+        var old = items[dest];
+        items[dest] = items[src];
+        items[src] = old;
     }
 
     public bool IsValidIndex(int index)

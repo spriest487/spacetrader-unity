@@ -1,11 +1,12 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Button))]
-public class CargoHoldListItem : MonoBehaviour
+public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField]
     private Text label;
@@ -41,7 +42,7 @@ public class CargoHoldListItem : MonoBehaviour
         }
     }
 
-    public ItemType Item
+    public ItemType ItemType
     {
         get
         {
@@ -66,9 +67,31 @@ public class CargoHoldListItem : MonoBehaviour
         SendMessageUpwards("OnSelectCargoItem", this, SendMessageOptions.DontRequireReceiver);
     }
 
-    public void Drag()
+    public void OnDrag(PointerEventData pointerData)
     {
-        SendMessageUpwards("OnDragCargoItem", this, SendMessageOptions.DontRequireReceiver);
+    }
+
+    public void OnBeginDrag(PointerEventData pointerData)
+    {
+        if (!cargoHold.IsIndexFree(itemIndex))
+        {
+            Debug.Log("dragged from slot " + itemIndex);
+            SendMessageUpwards("OnDragCargoItem", this, SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+    public void OnEndDrag(PointerEventData pointerData)
+    {
+        if (!cargoHold.IsIndexFree(itemIndex))
+        {
+            var hits = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, hits);
+
+            if (hits.Count != 0)
+            {
+                hits[0].gameObject.SendMessage("OnDropCargoItem", this, SendMessageOptions.DontRequireReceiver);
+            }
+        }
     }
     
     public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab,

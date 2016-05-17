@@ -15,13 +15,26 @@ public class PlayerShip : MonoBehaviour
 
     private Ship ship;
     private Moorable moorable;
-    
+
     [SerializeField]
     private int money;
 
     public Ship Ship
     {
         get { return ship; }
+    }
+
+    public SpaceStation CurrentStation
+    {
+        get
+        {
+            if (!moorable)
+            {
+                return null;
+            }
+
+            return moorable.SpaceStation;
+        }
     }
 
     public int Money
