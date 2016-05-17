@@ -19,7 +19,8 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         
         for (int crewNo = 0; crewNo < crewCount; ++crewNo)
         {
-            var member = CrewMember.Create("No name");
+            //TODO: people have faces
+            var member = CrewMember.Create("No name", null);
             newCrew.Add(member);
         }
 

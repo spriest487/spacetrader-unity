@@ -265,7 +265,15 @@ public class ScreenManager : MonoBehaviour
 
     private void Update()
     {
-        float scale = (Screen.height < 600) ? Screen.height / 600.0f : 1;
+        float scale;
+        if (Screen.height < 600 || Screen.width < 800)
+        {
+            scale = Mathf.Min(Screen.height / 600f, Screen.width / 600f);
+        }
+        else
+        {
+            scale = 1;
+        }
         screens.ForEach(screen => screen.CanvasScaler.scaleFactor = scale);
 
         bool docked = false;
