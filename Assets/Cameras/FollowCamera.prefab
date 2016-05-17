@@ -134,9 +134,14 @@ MonoBehaviour:
     m_Curve:
     - time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.077586204
+      outSlope: 0.077586204
       tangentMode: 0
+    - time: 0.24960847
+      value: 0.8261149
+      inSlope: 1.3795495
+      outSlope: 0.6931072
+      tangentMode: 1
     - time: 1
       value: 1
       inSlope: 0

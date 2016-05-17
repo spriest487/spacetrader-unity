@@ -17,17 +17,27 @@ public class FollowCamera : MonoBehaviour
         get { return dragInput; }
     }
 
-	public bool ignoreTranslation;
+    [SerializeField]
+    private bool ignoreTranslation;
 
-	public Vector3 offset;
-	public float thrustOffset;
-	public float rotationOffset;
-	
-	public float shakeMax;
-	public float shakeSpeed;
+    [SerializeField]
+	private Vector3 offset;
 
-	///world speeds multiplied by this to get the added amount of shake
-	public float shakeCollisionConversion;
+    [SerializeField]
+    private float thrustOffset;
+
+    [SerializeField]
+    private float rotationOffset;
+
+    [SerializeField]
+    private float shakeMax;
+
+    [SerializeField]
+    private float shakeSpeed;
+
+    ///world speeds multiplied by this to get the added amount of shake
+    [SerializeField]
+    private float shakeCollisionConversion;
 
     [SerializeField]
     private AnimationCurve dragInputCurve;
