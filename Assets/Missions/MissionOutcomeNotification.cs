@@ -8,6 +8,25 @@ public class MissionOutcomeNotification : MonoBehaviour
 
     void OnEndMission()
     {
+        Refresh();
+    }
+
+    void OnScreenActive()
+    {
+        Refresh();
+    }
+
+    void Refresh()
+    {
+        var missionManager = MissionManager.Instance;
+        if (!missionManager || missionManager.Mission == null)
+        {
+            label.gameObject.SetActive(false);
+            return;
+        }
+
+        label.gameObject.SetActive(true);
+
         var winners = MissionManager.Instance.Mission.WinningTeams;
         var player = PlayerShip.LocalPlayer;
 
