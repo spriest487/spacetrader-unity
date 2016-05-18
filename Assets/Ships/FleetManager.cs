@@ -5,18 +5,6 @@ using System.Collections.Generic;
 
 public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
 {
-    private class Fleet : ScriptableObject
-    {
-        public Ship Leader;
-        public List<Ship> Followers;
-
-        public Fleet()
-        {
-            Leader = null;
-            Followers = new List<Ship>();
-        }
-    }
-    
     [SerializeField]
     private List<Fleet> fleetsList;
 
@@ -37,21 +25,31 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
         fleets = new Dictionary<Ship, Fleet>(fleetsList.Count);
         fleetsList.ForEach(fleet =>
         {
-            fleets.Add(fleet.Leader, fleet);
-            fleet.Followers.ForEach(follower => fleets.Add(follower, fleet));
+            if (fleet)
+            {
+                fleets.Add(fleet.Leader, fleet);
+                fleet.Followers.ForEach(follower => fleets.Add(follower, fleet));
+            }
         });
         fleetsList = null;
     }
 
     public void AddToFleet(Ship leader, Ship follower)
     {
+        if (fleets.ContainsKey(follower))
+        {
+            LeaveFleet(follower);
+        }
+
         Fleet fleet;
         if (!fleets.TryGetValue(leader, out fleet))
         {
-            fleet = CreateInstance<Fleet>();
+            fleet = Fleet.Create(leader);
+            fleets.Add(leader, fleet);
         }
 
-        fleet.Followers.Add(follower);
+        fleet.Followers.Add(follower);        
+        fleets.Add(follower, fleet);
     }
 
     public void LeaveFleet(Ship ship)
@@ -78,5 +76,11 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
         fleets.Remove(fleet.Leader);
 
         Destroy(fleet);
+    }
+
+    public Fleet GetFleetOf(Ship ship)
+    {
+        Fleet fleet;
+        return fleets.TryGetValue(ship, out fleet) ? fleet : null;
     }
 }

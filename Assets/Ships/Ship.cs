@@ -18,9 +18,6 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private Targetable target;
-
-    [SerializeField]
-    private Ship leader;
     
     [SerializeField]
     private ScalableParticle explosionEffect;
@@ -70,12 +67,7 @@ public class Ship : MonoBehaviour
             return hardpoints;
         }
     }
-
-    public Ship Leader
-    {
-        get { return leader; }
-    }
-
+    
     public ShipStats CurrentStats
     {
         get
@@ -175,6 +167,8 @@ public class Ship : MonoBehaviour
         {
             Destroy(ability);
         }
+
+        SpaceTraderConfig.FleetManager.LeaveFleet(this);
     }
 
     private void OnDisable()
@@ -564,6 +558,8 @@ public class Ship : MonoBehaviour
 
     public bool IsFleetMember(Ship other)
     {
-        return (leader == other || other.leader == this);
+        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(this);
+
+        return fleet && fleet.IsMember(other);
     }
 }

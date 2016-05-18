@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System.Collections.Generic;
 
 public class TeamSpawner : MonoBehaviour

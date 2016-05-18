@@ -19,4 +19,10 @@ public static class ConfigSingletonMenus
     {
         ScriptableObjectUtility.CreateAsset<CrewConfiguration>();
     }
+
+    [MenuItem("Assets/Create/SpaceTrader/Fleet manager")]
+    public static void FleetManager()
+    {
+        ScriptableObjectUtility.CreateAsset<FleetManager>();
+    }
 }

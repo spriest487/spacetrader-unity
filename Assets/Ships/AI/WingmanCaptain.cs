@@ -28,7 +28,7 @@ public class WingmanCaptain : MonoBehaviour
 	
 	private Ship FindLeader()
 	{
-        if (PlayerShip.LocalPlayer 
+        if (PlayerShip.LocalPlayer
             && PlayerShip.LocalPlayer.GetComponent<Targetable>()
             && targetable
             && PlayerShip.LocalPlayer.GetComponent<Targetable>().Faction == targetable.Faction)

@@ -25,6 +25,7 @@ public class SpaceTraderConfig : MonoBehaviour
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
     public static Market Market { get { return Instance.market; } }
     public static FleetManager FleetManager { get { return Instance.fleetManager; } }
+
     public static PlayerShip LocalPlayer
     {
         get { return Instance.localPlayer; }
