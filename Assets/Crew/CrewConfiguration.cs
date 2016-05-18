@@ -5,14 +5,6 @@ using UnityEngine;
 
 public class CrewConfiguration : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew/Crew configuration")]
-    public static void Create()
-    {
-        ScriptableObjectUtility.CreateAsset<CrewConfiguration>();
-    }
-#endif
-
     [SerializeField]
     private TextAsset forenameList;
 

@@ -1,5 +1,13 @@
 ﻿using UnityEngine;
 
+public enum TargetRelationship
+{
+    Neutral,
+    Hostile,
+    Friendly,
+    FleetMember
+}
+
 public class Targetable : MonoBehaviour
 {
     [SerializeField]
@@ -35,16 +43,20 @@ public class Targetable : MonoBehaviour
         ship = GetComponent<Ship>();
     }
 
-    public int RelationshipTo(Targetable other)
+    public TargetRelationship RelationshipTo(Targetable other)
     {
-        if (other
-            || string.IsNullOrEmpty(other.Faction)
-            || string.IsNullOrEmpty(Faction))
+        if (ship && other.ship && ship.IsFleetMember(other.ship))
         {
-            return 0;
+            return TargetRelationship.FleetMember;
         }
 
+        if (string.IsNullOrEmpty(other.Faction)
+            || string.IsNullOrEmpty(Faction))
+        {
+            return TargetRelationship.Neutral;
+        }
+        
         bool sameFaction = Faction == other.Faction;
-        return sameFaction ? 1 : -1;
+        return sameFaction ? TargetRelationship.Friendly : TargetRelationship.Hostile;
     }
 }

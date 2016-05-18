@@ -3,18 +3,10 @@ using System.Collections.Generic;
 
 public class CargoItemConfiguration : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Items/Item configuration")]
-    public static void CreateNewConfiguration()
-    {
-        ScriptableObjectUtility.CreateAsset<CargoItemConfiguration>();
-    }
-#endif
-
     [SerializeField]
     private List<ItemType> itemTypes;
 
-    public IList<ItemType> ItemTypes
+    public IEnumerable<ItemType> ItemTypes
     {
         get { return itemTypes; }
     }

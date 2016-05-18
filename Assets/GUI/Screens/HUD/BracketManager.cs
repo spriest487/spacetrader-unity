@@ -19,11 +19,14 @@ public class BracketManager : MonoBehaviour
     private Bracket bracket;
 
     [SerializeField]
-    private Color friendlyColor;
+    private Color friendlyColor = Color.green;
     [SerializeField]
-    private Color hostileColor;
+    private Color hostileColor = Color.red;
     [SerializeField]
-    private Color unselectedTint;
+    private Color fleetMemberColor = Color.magenta;
+
+    [SerializeField]
+    private Color unselectedTint = new Color(1, 1, 1, 0.5f);
 
     [SerializeField]
     private Sprite corner;
@@ -51,6 +54,7 @@ public class BracketManager : MonoBehaviour
 
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
+    public Color FleetMemberColor { get { return fleetMemberColor; } }
     public Sprite Corner { get { return corner; } }
     public Sprite SelectedCorner { get { return selectedCorner; } }
     public Sprite EdgeMarker { get { return edgeMarker; } }
@@ -171,27 +175,26 @@ public class BracketManager : MonoBehaviour
 
     public Color GetBracketColor(Targetable bracketOwner, Targetable bracketTarget)
     {
-        int relationship;
+        TargetRelationship relationship;
         if (!bracketOwner || !bracketTarget)
         {
-            relationship = 0;
+            relationship = TargetRelationship.Neutral;
         }
         else
         {
             relationship = bracketOwner.RelationshipTo(bracketTarget);
         }
 
-        if (relationship < 0)
+        switch (relationship)
         {
-            return HostileColor;
-        }
-        else if (relationship > 0)
-        {
-            return FriendlyColor;
-        }
-        else
-        {
-            return Color.white;
+            case TargetRelationship.FleetMember:
+                return FleetMemberColor;
+            case TargetRelationship.Friendly:
+                return FriendlyColor;
+            case TargetRelationship.Hostile:
+                return HostileColor;
+            default:
+                return Color.white;
         }
     }
 }

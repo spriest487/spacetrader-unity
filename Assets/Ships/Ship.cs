@@ -18,6 +18,9 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private Targetable target;
+
+    [SerializeField]
+    private Ship leader;
     
     [SerializeField]
     private ScalableParticle explosionEffect;
@@ -45,7 +48,7 @@ public class Ship : MonoBehaviour
     public float Pitch;
     public float Yaw;
     public float Roll;
-
+    
     private ShipStats currentStats;
 
     public IList<WeaponHardpoint> Hardpoints
@@ -66,6 +69,11 @@ public class Ship : MonoBehaviour
 
             return hardpoints;
         }
+    }
+
+    public Ship Leader
+    {
+        get { return leader; }
     }
 
     public ShipStats CurrentStats
@@ -552,5 +560,10 @@ public class Ship : MonoBehaviour
         {
             messageTarget.SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);
         }
+    }
+
+    public bool IsFleetMember(Ship other)
+    {
+        return (leader == other || other.leader == this);
     }
 }
