@@ -168,7 +168,11 @@ public class Ship : MonoBehaviour
             Destroy(ability);
         }
 
-        SpaceTraderConfig.FleetManager.LeaveFleet(this);
+        var fleetManager = SpaceTraderConfig.FleetManager;
+        if (fleetManager)
+        {
+            SpaceTraderConfig.FleetManager.LeaveFleet(this);
+        }
     }
 
     private void OnDisable()
