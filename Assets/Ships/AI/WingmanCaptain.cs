@@ -28,19 +28,10 @@ public class WingmanCaptain : MonoBehaviour
 	
 	private Ship FindLeader()
 	{
-        if (PlayerShip.LocalPlayer
-            && PlayerShip.LocalPlayer.GetComponent<Targetable>()
-            && targetable
-            && PlayerShip.LocalPlayer.GetComponent<Targetable>().Faction == targetable.Faction)
+        var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(ship);
+        if (myFleet && myFleet.Leader != ship)
         {
-            var leaderObj = PlayerShip.LocalPlayer;
-            var leaderShip = leaderObj.GetComponent<Ship>();
-            if (!leaderShip)
-            {
-                throw new UnityException("Wingman's Leader is not a Ship");
-            }
-
-            return leaderShip;
+            return myFleet.Leader;
         }
         else
         {

@@ -45,6 +45,7 @@ MonoBehaviour:
   missionsConfig: {fileID: 11400000, guid: a32ad9dc69ee3764c8643f4f6a09c3cb, type: 2}
   market: {fileID: 11400000, guid: d8679bb50937188409dbdc9aa2c33ac5, type: 2}
   localPlayer: {fileID: 0}
+  fleetManager: {fileID: 11400000, guid: 07199d1ff1574ba4daa632df70ef6d5a, type: 2}
 --- !u!114 &11450970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -62,35 +63,33 @@ MonoBehaviour:
   - screenId: 0
     playerStatus: 2
     root: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
-    showScreenBar: 1
     overlayInstance: {fileID: 0}
+    canvasScaler: {fileID: 0}
   - screenId: 1
     playerStatus: 0
     root: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
-    showScreenBar: 0
     overlayInstance: {fileID: 0}
+    canvasScaler: {fileID: 0}
   - screenId: 2
     playerStatus: 0
     root: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
-    showScreenBar: 0
     overlayInstance: {fileID: 0}
+    canvasScaler: {fileID: 0}
   - screenId: 3
     playerStatus: 0
     root: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
-    showScreenBar: 0
     overlayInstance: {fileID: 0}
+    canvasScaler: {fileID: 0}
   - screenId: 4
     playerStatus: 0
     root: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
-    showScreenBar: 0
     overlayInstance: {fileID: 0}
+    canvasScaler: {fileID: 0}
   - screenId: 0
     playerStatus: 1
     root: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
-    showScreenBar: 0
     overlayInstance: {fileID: 0}
-  screenBarPrefab: {fileID: 11415080, guid: c052a1f808bb26d44803006012f4a79b, type: 2}
-  screenBar: {fileID: 0}
+    canvasScaler: {fileID: 0}
   menuState: 0
   cutscene: {fileID: 0}
 --- !u!1001 &100100000
