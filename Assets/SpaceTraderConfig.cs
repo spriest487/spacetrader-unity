@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 
 public class SpaceTraderConfig : MonoBehaviour
 {
@@ -24,7 +26,7 @@ public class SpaceTraderConfig : MonoBehaviour
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
     public static Market Market { get { return Instance.market; } }
-    public static FleetManager FleetManager { get { return Instance.fleetManager; } }
+    public static FleetManager FleetManager { get { return Instance? Instance.fleetManager : null; } }
 
     public static PlayerShip LocalPlayer
     {
