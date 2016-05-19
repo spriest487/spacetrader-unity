@@ -2276,7 +2276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items: []
-  itemPrefab: {fileID: 11442488, guid: 54e27a5821e569a409b0df2647c8b011, type: 2}
+  itemPrefab: {fileID: 11473622, guid: 164b844c9225d284c8e5eacebae6fc3e, type: 2}
   content: {fileID: 22422246}
 --- !u!114 &11444294
 MonoBehaviour:

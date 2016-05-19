@@ -9,6 +9,9 @@ public class FleetListItem : MonoBehaviour
     [SerializeField]
     private Image armorBar;
 
+    [SerializeField]
+    private Image captainPortrait;
+
     [HideInInspector]
     [SerializeField]
     private Ship ship;
@@ -25,6 +28,8 @@ public class FleetListItem : MonoBehaviour
 
         item.nameLabel.color = labelColor;
 
+        item.Update();
+
         return item;
     }
 
@@ -40,6 +45,28 @@ public class FleetListItem : MonoBehaviour
         else
         {
             armorBar.gameObject.SetActive(false);
+        }
+
+        var captain = ship.CrewAssignments.Captain;
+        if (captain)
+        {
+            captainPortrait.sprite = captain.Portrait;
+            captainPortrait.gameObject.SetActive(true);
+        }
+        else
+        {
+            captainPortrait.gameObject.SetActive(false);
+        }
+    }
+
+    public void TargetMember()
+    {
+        var player = PlayerShip.LocalPlayer;
+        var shipTargetable = ship.GetComponent<Targetable>();
+
+        if (player && shipTargetable)
+        {
+            player.Ship.Target = shipTargetable;
         }
     }
 }
