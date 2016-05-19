@@ -92,7 +92,7 @@ public class CargoHold : ScriptableObject
     {
         if (IsValidIndex(index))
         {
-            items.RemoveAt(index);
+            items[index] = null;
         }
     }
 

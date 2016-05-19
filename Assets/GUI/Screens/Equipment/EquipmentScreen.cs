@@ -59,6 +59,11 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     {
         dragItem.gameObject.SetActive(false);
     }
+
+    public void ShowError(string message)
+    {
+        Debug.Log("todo: equipment screen error - " + message);
+    }
     
     public void Close()
     {
