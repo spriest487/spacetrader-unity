@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class FleetListItem : MonoBehaviour
@@ -10,6 +12,9 @@ public class FleetListItem : MonoBehaviour
     private Image armorBar;
 
     [SerializeField]
+    private Text wingmanStatus;
+
+    [SerializeField]
     private Image captainPortrait;
 
     [SerializeField]
@@ -18,6 +23,10 @@ public class FleetListItem : MonoBehaviour
     [HideInInspector]
     [SerializeField]
     private Ship ship;
+
+    [SerializeField]
+    [HideInInspector]
+    private WingmanCaptain wingmanCaptain;
 
     [HideInInspector]
     [SerializeField]
@@ -28,6 +37,7 @@ public class FleetListItem : MonoBehaviour
         var item = Instantiate(prefab);
         item.ship = ship;
         item.hitpoints = ship.GetComponent<Hitpoints>();
+        item.wingmanCaptain = ship.GetComponent<WingmanCaptain>();
 
         item.nameLabel.color = labelColor;
         foreach (var selectionImage in item.selectionOverlay.GetComponentsInChildren<Image>())
@@ -38,6 +48,17 @@ public class FleetListItem : MonoBehaviour
         item.Update();
 
         return item;
+    }
+
+    private string OrderString(WingmanOrder order)
+    {
+        switch (order)
+        {
+            case WingmanOrder.Attack: return "Attacking " + ship.Target.name;
+            case WingmanOrder.Follow: return "Following";
+            case WingmanOrder.Wait: return "Waiting";
+            default: return null;
+        }
     }
 
     private void Update()
@@ -63,6 +84,22 @@ public class FleetListItem : MonoBehaviour
         else
         {
             captainPortrait.gameObject.SetActive(false);
+        }
+
+        string wingmanOrder = null;
+        if (wingmanCaptain)
+        {
+            wingmanOrder = OrderString(wingmanCaptain.ActiveOrder);
+        }
+
+        if (wingmanOrder != null)
+        {
+            wingmanStatus.gameObject.SetActive(true);
+            wingmanStatus.text = wingmanOrder;
+        }
+        else
+        {
+            wingmanStatus.gameObject.SetActive(false);
         }
 
         var player = PlayerShip.LocalPlayer;

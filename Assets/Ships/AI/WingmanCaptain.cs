@@ -1,29 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public enum WingmanOrder
+{
+    Follow,
+    Wait,
+    Attack
+}
+
 [RequireComponent(typeof(AITaskFollower))]
 public class WingmanCaptain : MonoBehaviour
-{    
-	private const float FORMATION_SPACING = 1.5f;
-	private const float FORMATION_MATCH_ANGLE = 15f;
+{
+    private const float FORMATION_MATCH_ANGLE = 15f;
 
-	private Ship ship;
+    private Ship ship;
     private AICaptain captain;
     private AITaskFollower taskFollower;
 
     private Targetable targetable;
 
     private Vector3? immediateManeuver;
-    
-    const float MAX_PATH_AGE = 5f;
+
+    [SerializeField]
+    private WingmanOrder activeOrder;
 
     private float lastTargetCheck = 0;
     const float TARGET_CHECK_INTERVAL = 1;
-    
+
     struct PotentialTarget
     {
         public int Threat;
         public Targetable Target;
+    }
+
+    public WingmanOrder ActiveOrder
+    {
+        get { return activeOrder; }
     }
 	
 	private Ship FindLeader()
@@ -50,7 +62,7 @@ public class WingmanCaptain : MonoBehaviour
 		float angleDiffBetweenHeadings;		
 		if (leader.GetComponent<Rigidbody>().velocity.sqrMagnitude > Vector3.kEpsilon)
 		{
-			angleDiffBetweenHeadings  = Mathf.Acos(Vector3.Dot(leader.GetComponent<Rigidbody>().velocity.normalized, leader.GetComponent<Rigidbody>().transform.forward));
+			angleDiffBetweenHeadings = Mathf.Acos(Vector3.Dot(leader.GetComponent<Rigidbody>().velocity.normalized, leader.GetComponent<Rigidbody>().transform.forward));
 		}
 		else
 		{
@@ -234,10 +246,8 @@ public class WingmanCaptain : MonoBehaviour
 	void Start()
 	{
         taskFollower = GetComponent<AITaskFollower>();
-        captain = taskFollower.Captain;
-
-        ship = captain.Ship;
-
+        captain = GetComponent<AICaptain>();
+        ship = GetComponent<Ship>();
         targetable = GetComponent<Targetable>();
     }
 
