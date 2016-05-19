@@ -71,6 +71,11 @@ public class ShipModulesController : MonoBehaviour
         }
     }
 
+    public void Refresh()
+    {
+        Update();
+    }
+
     private void OnSelectShipModule(ShipModuleController selected)
     {
         var modules = GetComponentsInChildren<ShipModuleController>();

@@ -24,6 +24,9 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         dragItem.gameObject.SetActive(false);
         var player = SpaceTraderConfig.LocalPlayer;
         playerCargoList.CargoHold = player ? player.Ship.Cargo : null;
+
+        playerCargoList.Refresh();
+        shipModules.Refresh();
     }
 
     private void OnSelectShipModule(ShipModuleController moduleController)

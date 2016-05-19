@@ -12,6 +12,9 @@ public class FleetListItem : MonoBehaviour
     [SerializeField]
     private Image captainPortrait;
 
+    [SerializeField]
+    private Transform selectionOverlay;
+
     [HideInInspector]
     [SerializeField]
     private Ship ship;
@@ -27,6 +30,10 @@ public class FleetListItem : MonoBehaviour
         item.hitpoints = ship.GetComponent<Hitpoints>();
 
         item.nameLabel.color = labelColor;
+        foreach (var selectionImage in item.selectionOverlay.GetComponentsInChildren<Image>())
+        {
+            selectionImage.color = labelColor;
+        }
 
         item.Update();
 
@@ -57,6 +64,10 @@ public class FleetListItem : MonoBehaviour
         {
             captainPortrait.gameObject.SetActive(false);
         }
+
+        var player = PlayerShip.LocalPlayer;
+        var shipTargetable = ship.GetComponent<Targetable>();
+        selectionOverlay.gameObject.SetActive(player && player.Ship.Target == shipTargetable);
     }
 
     public void TargetMember()
