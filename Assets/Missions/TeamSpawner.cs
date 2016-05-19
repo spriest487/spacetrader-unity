@@ -47,6 +47,8 @@ public class TeamSpawner : MonoBehaviour
                 }
             }
 
+            Ship firstSpawned = null;
+
             var spawnsCount = allSpawnPoints.Count;
 
             for (int slotIndex = 0; slotIndex < slotsCount; ++slotIndex)
@@ -55,10 +57,20 @@ public class TeamSpawner : MonoBehaviour
                 var spawnPoint = allSpawnPoints[slotIndex % spawnsCount];
 
                 var activeSlot = activeTeam.Slots[slotIndex];
-
+                
                 if (activeSlot.Status != SlotStatus.Closed || activeSlot.Status == SlotStatus.Open)
                 {
                     var ship = slotDefinition.SpawnShip(spawnPoint.position, spawnPoint.rotation, teamDefinition);
+
+                    //first spawned ship becomnes the leader of the fleet
+                    if (firstSpawned == null)
+                    {
+                        firstSpawned = ship;
+                    }
+                    else
+                    {
+                        SpaceTraderConfig.FleetManager.AddToFleet(firstSpawned, ship);
+                    }
 
                     switch(activeSlot.Status)
                     {
