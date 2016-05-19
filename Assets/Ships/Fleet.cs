@@ -20,6 +20,18 @@ public class Fleet : ScriptableObject
         get { return followers; }
     }
 
+    public IEnumerable<Ship> Members
+    {
+        get
+        {
+            yield return leader;
+            foreach (var follower in followers)
+            {
+                yield return follower;
+            }
+        }
+    }
+
     public Fleet()
     {
         followers = new List<Ship>();

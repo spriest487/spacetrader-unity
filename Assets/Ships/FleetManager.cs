@@ -64,6 +64,11 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
             else
             {
                 fleet.Followers.Remove(ship);
+
+                if (fleet.Followers.Count == 0)
+                {
+                    DisbandFleet(fleet);
+                }
             }
 
             fleets.Remove(ship);
