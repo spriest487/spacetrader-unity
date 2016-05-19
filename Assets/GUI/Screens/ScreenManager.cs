@@ -265,10 +265,13 @@ public class ScreenManager : MonoBehaviour
 
     private void Update()
     {
+        const int TARGET_W = 800;
+        const int TARGET_H = 640;
+
         float scale;
-        if (Screen.height < 600 || Screen.width < 800)
+        if (Screen.height < TARGET_H || Screen.width < TARGET_W)
         {
-            scale = Mathf.Min(Screen.height / 600f, Screen.width / 600f);
+            scale = Mathf.Min(Screen.height / (float) TARGET_H, Screen.width / (float) TARGET_W);
         }
         else
         {
