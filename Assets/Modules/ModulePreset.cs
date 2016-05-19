@@ -33,9 +33,9 @@ public class ModulePreset : ScriptableObject
 
         ship.Cargo = CreateInstance<CargoHold>();
         ship.Cargo.Size = cargoItems.Count;
-        foreach (var item in cargoItems)
+        for (int cargoIt = 0; cargoIt < cargoItems.Count; ++cargoIt)
         {
-            ship.Cargo.Add(item);
+            ship.Cargo[cargoIt] = cargoItems[cargoIt];
         }
     }
 }

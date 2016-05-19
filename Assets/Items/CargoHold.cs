@@ -124,5 +124,9 @@ public class CargoHold : ScriptableObject
         {
             return items[index];
         }
+        set
+        {
+            items[index] = value;
+        }
     }
 }
