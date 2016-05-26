@@ -39,10 +39,7 @@ public class Bracket : MonoBehaviour
     [SerializeField]
     [HideInInspector]
     private Hitpoints targetHitpoints;
-
-    [SerializeField]
-    private Ship targetShip;
-
+   
     public static Bracket CreateFromPrefab(Bracket prefab,
         BracketManager manager,
         Targetable target)

@@ -24,6 +24,8 @@ public class BracketManager : MonoBehaviour
     private Color hostileColor = Color.red;
     [SerializeField]
     private Color fleetMemberColor = Color.magenta;
+    [SerializeField]
+    private Color resourceColor = Color.yellow;
 
     [SerializeField]
     private Color unselectedTint = new Color(1, 1, 1, 0.5f);
@@ -55,6 +57,7 @@ public class BracketManager : MonoBehaviour
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
     public Color FleetMemberColor { get { return fleetMemberColor; } }
+    public Color ResourceColor { get { return resourceColor; } }
     public Sprite Corner { get { return corner; } }
     public Sprite SelectedCorner { get { return selectedCorner; } }
     public Sprite EdgeMarker { get { return edgeMarker; } }
@@ -193,6 +196,8 @@ public class BracketManager : MonoBehaviour
                 return FriendlyColor;
             case TargetRelationship.Hostile:
                 return HostileColor;
+            case TargetRelationship.Resource:
+                return ResourceColor;
             default:
                 return Color.white;
         }

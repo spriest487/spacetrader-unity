@@ -31,7 +31,6 @@ GameObject:
   - 114: {fileID: 11484872}
   - 114: {fileID: 11453738}
   - 114: {fileID: 11497660}
-  - 114: {fileID: 11451302}
   m_Layer: 0
   m_Name: Cargo Item
   m_TagString: Untagged
@@ -256,18 +255,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &11451302
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 124166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 016e20d909f513b409462f1f433d829b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slot: {fileID: 11410474}
 --- !u!114 &11451890
 MonoBehaviour:
   m_ObjectHideFlags: 1

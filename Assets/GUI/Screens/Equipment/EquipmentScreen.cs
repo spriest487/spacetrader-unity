@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class EquipmentScreen : MonoBehaviour, IDropHandler
 {
@@ -14,10 +15,16 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     private CargoHoldList playerCargoList;
 
     [SerializeField]
+    private CargoHoldList targetCargoList;
+
+    [SerializeField]
     private ShipModulesController shipModules;
 
     [SerializeField]
     private DragItem dragItem;
+
+    [SerializeField]
+    private ErrorMessage errorMessage;
     
     private void OnScreenActive()
     {
@@ -27,6 +34,17 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
         playerCargoList.Refresh();
         shipModules.Refresh();
+        errorMessage.Reset();
+
+        if (player.CurrentStation)
+        {
+            targetCargoList.gameObject.SetActive(true);
+            targetCargoList.CargoHold = player.CurrentStation.ItemsForSale;
+        }
+        else
+        {
+            targetCargoList.gameObject.SetActive(false);
+        }
     }
 
     private void OnSelectShipModule(ShipModuleController moduleController)
@@ -62,7 +80,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
     public void ShowError(string message)
     {
-        Debug.Log("todo: equipment screen error - " + message);
+        errorMessage.ShowError(message);
     }
     
     public void Close()

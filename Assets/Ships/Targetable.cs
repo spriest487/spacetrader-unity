@@ -7,7 +7,8 @@ public enum TargetRelationship
     Neutral,
     Hostile,
     Friendly,
-    FleetMember
+    FleetMember,
+    Resource
 }
 
 public class Targetable : MonoBehaviour
@@ -50,6 +51,11 @@ public class Targetable : MonoBehaviour
         if (ship && other.ship && ship.IsFleetMember(other.ship))
         {
             return TargetRelationship.FleetMember;
+        }
+
+        if (other.faction == "resource")
+        {
+            return TargetRelationship.Resource;
         }
 
         if (string.IsNullOrEmpty(other.Faction)

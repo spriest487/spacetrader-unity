@@ -96,31 +96,34 @@ public class CargoHoldList : MonoBehaviour
         if (!CargoHold)
         {
             Clear();
-            return;
         }
-
-        if (sizeLabel)
+        else
         {
-            sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, CargoHold.Size);
-        }
-
-        if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
-        {
-            Clear();
-
-            int oldHighlight = highlightedIndex;
-
-            var itemCount = CargoHold.Size;
-            for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
+            if (sizeLabel)
             {
-                var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, itemIndex);
-                item.transform.SetParent(itemsHolder.transform, false);
+                sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, CargoHold.Size);
             }
 
-            currentItems = new List<ItemType>(CargoHold.Items);
+            if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
+            {
+                Clear();
 
-            highlightedIndex = System.Math.Min(oldHighlight, currentItems.Count - 1);
-        }
+                int oldHighlight = highlightedIndex;
+
+                var itemCount = CargoHold.Size;
+                for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
+                {
+                    var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, itemIndex);
+                    item.transform.SetParent(itemsHolder.transform, false);
+
+                    SendMessageUpwards("OnCargoListNewItem", item, SendMessageOptions.DontRequireReceiver);
+                }
+
+                currentItems = new List<ItemType>(CargoHold.Items);
+
+                highlightedIndex = System.Math.Min(oldHighlight, currentItems.Count - 1);
+            }
+        } 
     }
 
     private void OnSelectCargoItem(CargoHoldListItem item)

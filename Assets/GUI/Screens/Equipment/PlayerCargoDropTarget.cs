@@ -42,4 +42,13 @@ public class PlayerCargoDropTarget : MonoBehaviour
         playerCargoList.Refresh();
         playerCargoList.HighlightedIndex = targetIndex;
     }
+    
+    private void OnCargoListNewItem(CargoHoldListItem item)
+    {
+        if (!slot)
+        {
+            var slotDropTarget = item.gameObject.AddComponent<PlayerCargoDropTarget>();
+            slotDropTarget.slot = item;
+        }
+    }
 }
