@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System.Collections.Generic;
 
 public enum WingmanOrder
@@ -131,7 +133,27 @@ public class WingmanCaptain : MonoBehaviour
             captain.Throttle = 1;
         }
     }
-    
+
+    private void OnRadioMessage(RadioMessage message)
+    {
+        if (message.SourceShip == FindLeader())
+        { 
+            switch (message.MessageType)
+            {
+                case RadioMessageType.FollowMe:
+                    activeOrder = WingmanOrder.Follow;
+                    break;
+                case RadioMessageType.Wait:
+                    activeOrder = WingmanOrder.Wait;
+                    captain.Destination = FindLeader().transform.position;
+                    captain.Throttle = 1;
+                    break;
+                case RadioMessageType.Attack:
+                    activeOrder = WingmanOrder.Attack;
+                    break;
+            }
+        }
+    }
 
     private void ChaseTarget()
     {
@@ -163,7 +185,7 @@ public class WingmanCaptain : MonoBehaviour
         int threat = 1;
 
         //invert threat for friendlies
-        if (targetable && target.Faction == targetable.Faction)
+        if (targetable && targetable.RelationshipTo(target) != TargetRelationship.Hostile)
         {
             threat = -threat;
         }
@@ -259,15 +281,26 @@ public class WingmanCaptain : MonoBehaviour
         }
         else
         {
-            AcquireTarget();
-
-            if (ship.Target)
+            switch (activeOrder)
             {
-                ChaseTarget();
-            }
-            else
-            {
-                FollowLeader();
+                case WingmanOrder.Attack:
+                    AcquireTarget();
+                    if (ship.Target)
+                    {
+                        ChaseTarget();
+                    }
+                    else
+                    {
+                        FollowLeader();
+                    }
+                    break;
+                case WingmanOrder.Follow:
+                    ship.Target = null;
+                    FollowLeader();
+                    break;
+                default:
+                    ship.Target = null;
+                    break;
             }
         }
 	}

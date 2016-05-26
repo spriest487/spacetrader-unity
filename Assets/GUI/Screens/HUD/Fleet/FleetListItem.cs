@@ -54,7 +54,15 @@ public class FleetListItem : MonoBehaviour
     {
         switch (order)
         {
-            case WingmanOrder.Attack: return "Attacking " + ship.Target.name;
+            case WingmanOrder.Attack:
+                if (ship.Target)
+                {
+                    return "Attacking " + ship.Target.name;
+                }
+                else
+                {
+                    return "Following";
+                }
             case WingmanOrder.Follow: return "Following";
             case WingmanOrder.Wait: return "Waiting";
             default: return null;

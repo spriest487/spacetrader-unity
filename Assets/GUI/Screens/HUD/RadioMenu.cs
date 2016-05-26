@@ -8,7 +8,11 @@ using System.Collections;
 
 public enum RadioMessageType
 {
-    Greeting
+    Greeting,
+
+    FollowMe,
+    Attack,
+    Wait
 }
 
 public struct RadioMessage
@@ -53,16 +57,41 @@ public class RadioMenu : MonoBehaviour
         content.gameObject.SetActive(false);
     }
 
-    public void SendRadioBroadcast(string messageName)
+    private void Send(string messageName, Ship target)
     {
-        var message = (RadioMessageType) Enum.Parse(typeof(RadioMessageType), messageName);
+        var message = (RadioMessageType)Enum.Parse(typeof(RadioMessageType), messageName);
         var source = PlayerShip.LocalPlayer.Ship;
 
-        var target = source.Target? source.Target.GetComponent<Ship>() : null;
-
         source.SendRadioMessage(message, target);
-
         Cancel();
+    }
+
+    public void SendGlobalBroadcast(string messageName)
+    {
+        Send(messageName, null);
+    }
+
+    public void SendFleetRadioBroadcast(string messageName)
+    {
+        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(PlayerShip.LocalPlayer.Ship);
+        foreach (var member in fleet.Members)
+        {
+            Send(messageName, member);
+       }
+    }
+
+    public void SendTargetRadioBroadcast(string messageName)
+    {
+        var target = PlayerShip.LocalPlayer.Ship.Target;
+        var targetShip = target.GetComponent<Ship>();
+        if (targetShip)
+        {
+            Send(messageName, targetShip);
+        }
+        else
+        {
+            Cancel();
+        }
     }
 
     public void OnScreenActive()

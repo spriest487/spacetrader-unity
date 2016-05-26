@@ -211,6 +211,9 @@ public class AICaptain : MonoBehaviour
         ship = GetComponent<Ship>();
         rigidbody = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
+
+        Destination = transform.position;
+        TargetUp = transform.up;
     }
     					
 	void Update()
