@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
+using System.Collections;
 
 public class HUD : MonoBehaviour
 {
@@ -7,6 +10,16 @@ public class HUD : MonoBehaviour
 
     [SerializeField]
     private Transform[] playerShipInfo;
+
+    [SerializeField]
+    private SpeechBubble speechBubble;
+
+    private BracketManager bracketManager;
+
+    private void Start()
+    {
+        bracketManager = GetComponentInChildren<BracketManager>();
+    }
 
     private void Update()
     {
@@ -23,6 +36,21 @@ public class HUD : MonoBehaviour
         foreach (var shipInfoItem in playerShipInfo)
         {
             shipInfoItem.gameObject.SetActive(playerInfoVisible);
+        }
+    }
+
+    private void OnScreenActive()
+    {
+        speechBubble.Dismiss();
+    }
+
+    private void OnRadioSpeech(PlayerRadioMessage message)
+    {
+        var bracket = bracketManager.FindBracket(message.Source.gameObject);
+
+        if (bracket)
+        {
+            speechBubble.Show(message.Message, 3, bracket.transform);
         }
     }
 }

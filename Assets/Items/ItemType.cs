@@ -1,5 +1,13 @@
 ﻿using UnityEngine;
 
+public enum Rarity
+{
+    Common,
+    Uncommon,
+    Rare,
+    SuperRare
+}
+
 public abstract class ItemType : ScriptableObject
 {
     [SerializeField]
@@ -7,10 +15,20 @@ public abstract class ItemType : ScriptableObject
 
     [SerializeField]
     private Sprite icon;
+
+    [SerializeField]
+    private Rarity rarity;
    
     public abstract string DisplayName { get; }
-
     public abstract string Description { get; }
+
+    public Rarity Rarity
+    {
+        get
+        {
+            return rarity;
+        }
+    }
 
     public int BaseValue
     {

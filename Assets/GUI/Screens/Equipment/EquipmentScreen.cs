@@ -39,6 +39,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         if (player.CurrentStation)
         {
             targetCargoList.gameObject.SetActive(true);
+            targetCargoList.Refresh();
             targetCargoList.CargoHold = player.CurrentStation.ItemsForSale;
         }
         else

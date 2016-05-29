@@ -12,7 +12,9 @@ public enum RadioMessageType
 
     FollowMe,
     Attack,
-    Wait
+    Wait,
+
+    AcknowledgeOrder
 }
 
 public struct RadioMessage

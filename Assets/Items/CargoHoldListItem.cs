@@ -8,8 +8,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Button))]
 public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    [SerializeField]
-    private Text label;
+    //[SerializeField]
+    //private Text label;
 
     [SerializeField]
     private Text priceLabel;
@@ -22,6 +22,9 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
     [SerializeField]
     private CargoHold cargoHold;
+
+    [SerializeField]
+    private Image rarityHighlight;
 
     [SerializeField]
     private int itemIndex;
@@ -93,37 +96,47 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
             }
         }
     }
+
+    private void Assign(CargoHold cargoHold, int itemIndex)
+    {
+        this.cargoHold = cargoHold;
+        this.itemIndex = itemIndex;
+
+        if (cargoHold.IsIndexFree(itemIndex))
+        {
+            icon.gameObject.SetActive(false);
+            //result.label.gameObject.SetActive(false);
+
+            if (priceLabel)
+            {
+                priceLabel.gameObject.SetActive(false);
+            }
+
+            rarityHighlight.gameObject.SetActive(false);
+        }
+        else
+        {
+            var itemType = cargoHold[itemIndex];
+
+            //result.label.text = itemType.DisplayName;
+            icon.sprite = itemType.Icon;
+
+            if (priceLabel)
+            {
+                priceLabel.text = Market.FormatCurrency(itemType.BaseValue);
+            }
+
+            rarityHighlight.gameObject.SetActive(true);
+            rarityHighlight.color = SpaceTraderConfig.CargoItemConfiguration.RarityColor(itemType.Rarity);
+        }
+    }
     
     public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab,
         CargoHold cargoHold,
         int itemIndex)
     {
         var result = Instantiate(prefab);
-        result.cargoHold = cargoHold;
-        result.itemIndex = itemIndex;
-
-        if (cargoHold.IsIndexFree(itemIndex))
-        {
-            result.icon.gameObject.SetActive(false);
-            result.label.gameObject.SetActive(false);
-
-            if (result.priceLabel)
-            {
-                result.priceLabel.gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            var itemType = cargoHold[itemIndex];
-
-            result.label.text = itemType.DisplayName;
-            result.icon.sprite = itemType.Icon;
-
-            if (result.priceLabel)
-            {
-                result.priceLabel.text = Market.FormatCurrency(itemType.BaseValue);
-            }
-        }
+        result.Assign(cargoHold, itemIndex);
 
         return result;
     }

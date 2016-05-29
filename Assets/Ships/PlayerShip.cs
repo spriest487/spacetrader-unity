@@ -4,6 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
 
+struct PlayerRadioMessage
+{
+    public string Message;
+    public Ship Source;
+}
+
 [RequireComponent(typeof(Ship))]
 public class PlayerShip : MonoBehaviour
 {
@@ -232,27 +238,50 @@ public class PlayerShip : MonoBehaviour
 
     void OnRadioMessage(RadioMessage message)
     {
-        if (message.MessageType == RadioMessageType.Greeting)
+        switch (message.MessageType)
         {
-            if (message.SourceShip == Ship)
-            {
-                var target = Ship.Target;
+            case RadioMessageType.Greeting:
+                if (message.SourceShip == Ship)
+                {
+                    var target = Ship.Target;
 
-                if (target)
+                    if (target)
+                    {
+                        ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                            ScreenID.None,
+                            "OnPlayerNotification",
+                            "You> Hello, " + target.name);
+                    }
+                }    
+                else
                 {
                     ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
                         ScreenID.None,
                         "OnPlayerNotification",
-                        "You> Hello, " + target.name);
+                        message.SourceShip.name + "> Hello!");
                 }
-            }    
-            else
-            {
-                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
-                    ScreenID.None,
-                    "OnPlayerNotification",
-                    message.SourceShip.name + "> Hello!");
-            }
+                break;
+
+            case RadioMessageType.AcknowledgeOrder:
+                if (message.SourceShip != this)
+                {
+                    string msg = "OK, Boss.";
+
+                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
+                        ScreenID.None,
+                        "OnPlayerNotification",
+                        message.SourceShip.name + "> " + msg);
+
+                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None,
+                        "OnRadioSpeech",
+                        new PlayerRadioMessage()
+                        {
+                            Message = msg,
+                            Source = message.SourceShip
+                        });
+                }
+
+                break;
         }
     }
 

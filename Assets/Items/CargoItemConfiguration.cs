@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System.Collections.Generic;
 
 public class CargoItemConfiguration : ScriptableObject
@@ -6,10 +8,27 @@ public class CargoItemConfiguration : ScriptableObject
     [SerializeField]
     private List<ItemType> itemTypes;
 
+    [SerializeField]
+    private Color commonColor;
+
+    [SerializeField]
+    private Color uncommonColor;
+
+    [SerializeField]
+    private Color rareColor;
+
+    [SerializeField]
+    private Color superRareColor;
+
     public IEnumerable<ItemType> ItemTypes
     {
         get { return itemTypes; }
     }
+
+    public Color CommonColor { get { return commonColor; } }
+    public Color UncommonColor { get { return uncommonColor; } }
+    public Color RareColor { get { return rareColor; } }
+    public Color SuperRareColor { get { return superRareColor; } }
 
     private Dictionary<string, ItemType> typesByName;
     private Dictionary<string, ItemType> TypesByName
@@ -27,6 +46,21 @@ public class CargoItemConfiguration : ScriptableObject
             }
 
             return typesByName;
+        }
+    }
+
+    public Color RarityColor(Rarity rarity)
+    {
+        switch (rarity)
+        {
+            case Rarity.SuperRare:
+                return superRareColor;
+            case Rarity.Rare:
+                return rareColor;
+            case Rarity.Uncommon:
+                return uncommonColor;
+            default:
+                return commonColor;
         }
     }
 

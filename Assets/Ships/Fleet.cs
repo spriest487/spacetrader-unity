@@ -15,6 +15,7 @@ public class Fleet : ScriptableObject
     {
         get { return leader; }
     }
+
     public List<Ship> Followers
     {
         get { return followers; }

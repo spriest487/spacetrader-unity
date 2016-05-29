@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public enum WingmanOrder
 {
@@ -152,7 +153,23 @@ public class WingmanCaptain : MonoBehaviour
                     activeOrder = WingmanOrder.Attack;
                     break;
             }
+
+            //if we're the player's number two, acknowledge the order
+            if (PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship == message.SourceShip)
+            {
+                var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(ship);
+                if (myFleet && myFleet.Followers.IndexOf(ship) == 0)
+                {
+                    StartCoroutine(AcknowledgeOrder(message));
+                }
+            }
         }
+    }
+
+    private IEnumerator AcknowledgeOrder(RadioMessage order)
+    {
+        yield return new WaitForSeconds(0.5f);
+        ship.SendRadioMessage(RadioMessageType.AcknowledgeOrder, order.SourceShip);
     }
 
     private void ChaseTarget()

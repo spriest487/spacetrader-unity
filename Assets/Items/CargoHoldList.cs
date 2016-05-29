@@ -74,11 +74,21 @@ public class CargoHoldList : MonoBehaviour
         }
     }
 
-    public void Clear()
+    private void Prepare(int capacity)
     {
-        foreach (Transform child in itemsHolder.transform)
+        int item = 0;
+        foreach (CargoHoldListItem child in itemsHolder.transform)
         {
-            Destroy(child.gameObject);
+            if (item >= capacity)
+            {
+                child.gameObject.SetActive(false);
+            }
+            ++item;
+        }
+
+        while (item < capcity)
+        {
+
         }
 
         currentItems = null;
@@ -95,7 +105,7 @@ public class CargoHoldList : MonoBehaviour
     {
         if (!CargoHold)
         {
-            Clear();
+            Prepare(0);
         }
         else
         {
@@ -106,7 +116,7 @@ public class CargoHoldList : MonoBehaviour
 
             if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
             {
-                Clear();
+                Prepare(CargoHold.Size);
 
                 int oldHighlight = highlightedIndex;
 
