@@ -36,7 +36,7 @@ public class PlayerShip : MonoBehaviour
     {
         get
         {
-            if (!moorable)
+            if (!moorable || !moorable.Moored)
             {
                 return null;
             }
