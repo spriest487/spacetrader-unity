@@ -13,7 +13,7 @@ public class ShipModulesDropTarget : MonoBehaviour
     {
         equipmentScreen = GetComponentInParent<EquipmentScreen>();
     }
-
+    
     [SerializeField]
     private void OnDropCargoItem(CargoHoldListItem droppedItem)
     {

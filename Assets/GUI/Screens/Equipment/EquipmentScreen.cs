@@ -25,6 +25,22 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
     [SerializeField]
     private ErrorMessage errorMessage;
+
+    public CargoHold TargetCargo
+    {
+        get
+        {
+            return targetCargoList.CargoHold;
+        }
+    }
+
+    public CargoHold PlayerCargo
+    {
+        get
+        {
+            return playerCargoList.CargoHold;
+        }
+    }
     
     private void OnScreenActive()
     {
@@ -52,12 +68,22 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     {
         infoPanel.ItemType = moduleController.Module.ModuleType;
         playerCargoList.HighlightedIndex = -1;
+        targetCargoList.HighlightedIndex = -1;
     }
 
     private void OnSelectCargoItem(CargoHoldListItem selection)
     {
         infoPanel.ItemType = selection.ItemType;
         shipModules.HighlightedIndex = -1;
+
+        if (selection.CargoHold == playerCargoList.CargoHold)
+        {
+            targetCargoList.HighlightedIndex = -1;
+        }
+        else
+        {
+            playerCargoList.HighlightedIndex = -1;
+        }
     }
 
     private void OnDragCargoItem(CargoHoldListItem dragged)

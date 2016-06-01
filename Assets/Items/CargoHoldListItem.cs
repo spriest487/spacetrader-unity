@@ -8,9 +8,6 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Button))]
 public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    //[SerializeField]
-    //private Text label;
-
     [SerializeField]
     private Text priceLabel;
 
@@ -97,7 +94,7 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
         }
     }
 
-    private void Assign(CargoHold cargoHold, int itemIndex)
+    public void Assign(CargoHold cargoHold, int itemIndex)
     {
         this.cargoHold = cargoHold;
         this.itemIndex = itemIndex;
@@ -120,10 +117,12 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
             //result.label.text = itemType.DisplayName;
             icon.sprite = itemType.Icon;
+            icon.gameObject.SetActive(true);
 
             if (priceLabel)
             {
                 priceLabel.text = Market.FormatCurrency(itemType.BaseValue);
+                priceLabel.gameObject.SetActive(true);
             }
 
             rarityHighlight.gameObject.SetActive(true);

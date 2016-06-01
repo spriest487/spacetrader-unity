@@ -76,19 +76,30 @@ public class CargoHoldList : MonoBehaviour
 
     private void Prepare(int capacity)
     {
-        int item = 0;
-        foreach (CargoHoldListItem child in itemsHolder.transform)
+        int index = 0;
+        foreach (var child in itemsHolder.GetComponentsInChildren<CargoHoldListItem>())
         {
-            if (item >= capacity)
+            if (index >= capacity)
             {
                 child.gameObject.SetActive(false);
             }
-            ++item;
+            ++index;
         }
 
-        while (item < capcity)
+        var newItems = new List<CargoHoldListItem>(capacity - index);
+        while (index < capacity)
         {
+            var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, index);
+            item.transform.SetParent(itemsHolder.transform, false);
 
+            newItems.Add(item);
+
+            ++index;
+        }
+
+        if (newItems.Count > 0)
+        {
+            SendMessageUpwards("OnCargoListNewItems", newItems, SendMessageOptions.DontRequireReceiver);
         }
 
         currentItems = null;
@@ -109,24 +120,22 @@ public class CargoHoldList : MonoBehaviour
         }
         else
         {
-            if (sizeLabel)
-            {
-                sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, CargoHold.Size);
-            }
-
             if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
             {
-                Prepare(CargoHold.Size);
-
                 int oldHighlight = highlightedIndex;
 
-                var itemCount = CargoHold.Size;
-                for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex)
-                {
-                    var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, itemIndex);
-                    item.transform.SetParent(itemsHolder.transform, false);
+                var slotCount = CargoHold.Size;
+                Prepare(CargoHold.Size);
 
-                    SendMessageUpwards("OnCargoListNewItem", item, SendMessageOptions.DontRequireReceiver);
+                if (sizeLabel)
+                {
+                    sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, slotCount);
+                }
+
+                var itemSlots = itemsHolder.GetComponentsInChildren<CargoHoldListItem>();
+                for (int itemIndex = 0; itemIndex < slotCount; ++itemIndex)
+                {
+                    itemSlots[itemIndex].Assign(cargoHold, itemIndex);
                 }
 
                 currentItems = new List<ItemType>(CargoHold.Items);
