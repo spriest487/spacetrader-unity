@@ -41,13 +41,8 @@ public class ScreenManager : MonoBehaviour
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
-
-        [HideInInspector]
-        [SerializeField]
-        private CanvasScaler canvasScaler;
         
         public GameObject Root { get { return overlayInstance; } }
-        public CanvasScaler CanvasScaler { get { return canvasScaler; } }
 
         public ScreenID ScreenID { get { return screenId; } }
         public PlayerStatus PlayerStatus { get { return playerStatus; } }
@@ -57,12 +52,7 @@ public class ScreenManager : MonoBehaviour
             if (!overlayInstance)
             {
                 overlayInstance = Instantiate(root);
-
-                if (!(canvasScaler = overlayInstance.GetComponent<CanvasScaler>()))
-                {
-                    canvasScaler = overlayInstance.GetComponentInParent<CanvasScaler>();
-                }
-
+                
                 DontDestroyOnLoad(overlayInstance.gameObject);
             }
         }
@@ -265,20 +255,6 @@ public class ScreenManager : MonoBehaviour
 
     private void Update()
     {
-        const int TARGET_W = 800;
-        const int TARGET_H = 640;
-
-        float scale;
-        if (Screen.height < TARGET_H || Screen.width < TARGET_W)
-        {
-            scale = Mathf.Min(Screen.height / (float) TARGET_H, Screen.width / (float) TARGET_W);
-        }
-        else
-        {
-            scale = 1;
-        }
-        screens.ForEach(screen => screen.CanvasScaler.scaleFactor = scale);
-
         bool docked = false;
 
         var player = PlayerShip.LocalPlayer;
