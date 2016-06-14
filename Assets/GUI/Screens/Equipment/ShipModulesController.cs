@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(UnityEngine.UI.LayoutGroup))]
 public class ShipModulesController : MonoBehaviour
 {
-    private List<ModuleStatus> lastModules;
+    private PooledList<ShipModuleController, ModuleStatus> modules;
     
     [SerializeField]
     private ShipModuleController moduleTemplate;
@@ -28,47 +28,27 @@ public class ShipModulesController : MonoBehaviour
             }
         }
     }
-
-    private void Clear()
-    {
-        lastModules = null;
-        foreach (var oldModule in GetComponentsInChildren<ShipModuleController>())
-        {
-            Destroy(oldModule.gameObject);
-        }
-    }
-
+    
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
 
+        if (modules == null)
+        {
+            modules = new PooledList<ShipModuleController, ModuleStatus>(transform);
+        }
+
         if (!player)
         {
-            Clear();
+            modules.Clear();
             return;
         }
 
-        var currentModules = new List<ModuleStatus>();
-        foreach (var module in player.Ship.ModuleLoadout.HardpointModules)
-        {
-            currentModules.Add(module);
-        }
+        var slots = new List<ModuleStatus>(player.Ship.ModuleLoadout);
         
-        bool needsRefresh = lastModules == null || !currentModules.ElementsEquals(lastModules);
-
-        if (needsRefresh)
-        {
-            Clear();
-
-            var moduleCount = currentModules.Count;
-            for (int moduleSlot = 0; moduleSlot < moduleCount; ++moduleSlot)
-            {
-                var module = ShipModuleController.CreateFromPrefab(moduleTemplate, player.Ship, moduleSlot);
-                module.transform.SetParent(transform, false);
-            }
-
-            lastModules = currentModules;
-        }
+        modules.Refresh(slots,
+            (slot) => ShipModuleController.CreateFromPrefab(moduleTemplate, player.Ship, slots.IndexOf(slot)),
+            (module, slot) => { module.Assign(player.Ship, slots.IndexOf(slot)); });
     }
 
     public void Refresh()

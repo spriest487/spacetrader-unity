@@ -28,9 +28,9 @@ class FireWeaponsTask : AITask
         }
 
         var loadout = ship.ModuleLoadout;
-        for (int module = 0; module < loadout.HardpointModules.Count; ++module)
+        for (int module = 0; module < loadout.SlotCount; ++module)
         {
-            loadout.HardpointModules[module].Aim = ship.Target.transform.position;
+            loadout.GetSlot(module).Aim = ship.Target.transform.position;
 
             loadout.Activate(ship, module);
         }

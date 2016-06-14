@@ -167,7 +167,7 @@ public class Ship : MonoBehaviour
         {
             Destroy(ability);
         }
-
+        
         var fleetManager = SpaceTraderConfig.FleetManager;
         if (fleetManager)
         {

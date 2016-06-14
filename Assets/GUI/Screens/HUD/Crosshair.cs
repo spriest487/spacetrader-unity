@@ -43,20 +43,20 @@ public class Crosshair : MonoBehaviour
 			return;
 		}
 
-        var moduleCount = loadout.HardpointModules.Count;
-        foreach (var module in loadout.HardpointModules)
+        var moduleCount = loadout.SlotCount;
+        foreach (var module in loadout)
         {
-            DrawCrosshair(module.Aim, 1);
+               DrawCrosshair(module.Aim, 1);
         }
 
 		int layerMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
                         
         for (var moduleIndex = 0; moduleIndex < moduleCount; ++moduleIndex)
         {
-            var module = loadout.HardpointModules[moduleIndex];
+            var module = loadout.GetSlot(moduleIndex);
 
             Vector3 aimFromPoint;
-            if (loadout.HardpointModules.Count > 0)
+            if (loadout.SlotCount > 0)
             {
                 aimFromPoint = ship.GetHardpointAt(moduleIndex).transform.position;
             }

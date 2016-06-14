@@ -9,6 +9,9 @@ public class DragItem : MonoBehaviour
     private CargoHoldListItem item;
 
     [SerializeField]
+    private ShipModuleController module;
+
+    [SerializeField]
     private Image icon;
 
     public CargoHoldListItem Item
@@ -30,9 +33,28 @@ public class DragItem : MonoBehaviour
         }
     }
 
+    public ShipModuleController Module
+    {
+        get { return module; }
+        set
+        {
+            module = value;
+            if (module)
+            {
+                icon.sprite = module.Module.ModuleType.Icon;
+            }
+            else
+            {
+                icon.sprite = null;
+            }
+
+            Update();
+        }
+    }
+
     private void Update()
     {
-        if (item)
+        if (item || module)
         {
             transform.position = Input.mousePosition;
         }

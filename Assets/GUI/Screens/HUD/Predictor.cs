@@ -47,7 +47,7 @@ public class Predictor : MonoBehaviour
         }
 
         var loadout = playerShip.ModuleLoadout;
-        var modCount = loadout.HardpointModules.Count;
+        var modCount = loadout.SlotCount;
 
         var newMarkerPositions = new List<Vector3>(modCount);
 
@@ -59,7 +59,7 @@ public class Predictor : MonoBehaviour
         behaviour here too */
         for (int moduleIndex = 0; moduleIndex < modCount; ++moduleIndex)
         {
-            var module = loadout.HardpointModules[moduleIndex];
+            var module = loadout.GetSlot(moduleIndex);
             var behavior = module.ModuleType.Behaviour;
 
             var predictPoint = behavior.PredictTarget(playerShip, moduleIndex, playerShip.Target);

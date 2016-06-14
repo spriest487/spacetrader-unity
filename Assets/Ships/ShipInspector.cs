@@ -19,9 +19,10 @@ public class ShipInspector : Editor
 
         if (GUILayout.Button("Reset weapon hardpoints"))
         {
-            for (int mod = 0; mod < ship.ModuleLoadout.HardpointModules.Count; ++mod)
+            for (int mod = 0; mod < ship.ModuleLoadout.SlotCount; ++mod)
             {
-                ship.ModuleLoadout.HardpointModules[mod] = ModuleStatus.Create(null);
+                ship.ModuleLoadout.RemoveAt(mod);
+                ship.ModuleLoadout.Equip(mod, null);
             }
         }
         

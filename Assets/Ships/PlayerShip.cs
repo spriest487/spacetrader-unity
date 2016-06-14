@@ -89,7 +89,7 @@ public class PlayerShip : MonoBehaviour
         const float AUTOAIM_SNAP_DIST = 30;
         const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
 
-        var module = ship.ModuleLoadout.HardpointModules[slot];
+        var module = ship.ModuleLoadout.GetSlot(slot);
         var behavior = module.ModuleType.Behaviour;
 
         var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
@@ -113,9 +113,10 @@ public class PlayerShip : MonoBehaviour
     {
         var loadout = ship.ModuleLoadout;
 
-        for (int moduleIndex = 0; moduleIndex < loadout.HardpointModules.Count; ++moduleIndex)
+        for (int moduleIndex = 0; moduleIndex < loadout.SlotCount; ++moduleIndex)
         {
-            var module = loadout.HardpointModules[moduleIndex];
+            var module = loadout.GetSlot(moduleIndex);
+
             var hardpoint = ship.GetHardpointAt(moduleIndex);
 
             var aimOrigin = hardpoint.transform.position;
@@ -212,12 +213,9 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButton("fire"))
             {
-                if (ship.ModuleLoadout.HardpointModules.Count > 0)
+                for (int mod = 0; mod < ship.ModuleLoadout.SlotCount; ++mod)
                 {
-                    for (var mod = 0; mod < ship.ModuleLoadout.HardpointModules.Count; ++mod)
-                    {
-                        ship.ModuleLoadout.Activate(ship, mod);
-                    }
+                    ship.ModuleLoadout.Activate(ship, mod);
                 }
             }
 

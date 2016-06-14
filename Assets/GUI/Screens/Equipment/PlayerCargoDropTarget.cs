@@ -40,9 +40,38 @@ public class PlayerCargoDropTarget : MonoBehaviour
             else if (station && sourceCargo == station.ItemsForSale)
             {
                 SpaceTraderConfig.Market.BuyItemFromStation(player, item.ItemIndex);
-                playerCargoList.HighlightedIndex = -1;
+                playerCargoList.HighlightedIndex = CargoHold.BAD_INDEX;
             }
-        }        
+        }
+    }
+
+    private void OnDropHardpointModule(ShipModuleController module)
+    {
+        var player = PlayerShip.LocalPlayer;
+        var targetCargo = playerCargoList.CargoHold;
+        var loadout = player.Ship.ModuleLoadout;
+
+        int targetIndex = slot ? slot.ItemIndex : targetCargo.FirstFreeIndex;
+        if (targetIndex != CargoHold.BAD_INDEX)
+        {
+            var targetItem = targetCargo[targetIndex];
+            var targetModule = targetItem as ModuleItemType;
+
+            if (targetItem && !targetModule)
+            {
+                Debug.Log("can't swap out item, swapped item is not a module");
+                return;
+            }
+
+            var swappedModule = loadout.RemoveAt(module.ModuleSlot);
+            if (targetItem)
+            {
+                loadout.Equip(module.ModuleSlot, targetModule);
+            }
+
+            targetCargo[targetIndex] = swappedModule;
+            playerCargoList.HighlightedIndex = targetIndex;
+        }
     }
        
     private void OnCargoListNewItems(List<CargoHoldListItem> items)

@@ -188,9 +188,9 @@ public class WingmanCaptain : MonoBehaviour
             immediateManeuver = ship.Target.transform.position + panicVec;
         }
 
-        for (int module = 0; module < ship.ModuleLoadout.HardpointModules.Count; ++module)
+        for (int module = 0; module < ship.ModuleLoadout.SlotCount; ++module)
         {
-            ship.ModuleLoadout.HardpointModules[module].Aim = ship.Target.transform.position;
+            ship.ModuleLoadout.GetSlot(module).Aim = ship.Target.transform.position;
             ship.ModuleLoadout.Activate(ship, module);
         }
 

@@ -23,7 +23,7 @@ public class ModulePreset : ScriptableObject
     public void Apply(Ship ship)
     {
         var moduleLoadout = ship.ModuleLoadout;
-        moduleLoadout.HardpointModules.Resize(slots.Count);
+        moduleLoadout.SlotCount = slots.Count;
         
         for (int slot = 0; slot < slots.Count; ++slot)
         {

@@ -18,6 +18,12 @@ public class MinimumSizeCanvasScaler : MonoBehaviour
         canvasScaler = GetComponent<CanvasScaler>();
     }
 
+    private void OnEnable()
+    {
+        Start();
+        Update();
+    }
+
     private void Update()
     {
         float scale;

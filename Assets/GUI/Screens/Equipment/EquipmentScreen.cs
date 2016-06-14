@@ -64,14 +64,14 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         }
     }
 
-    private void OnSelectShipModule(ShipModuleController moduleController)
+    public void OnSelectShipModule(ShipModuleController moduleController)
     {
         infoPanel.ItemType = moduleController.Module.ModuleType;
         playerCargoList.HighlightedIndex = -1;
         targetCargoList.HighlightedIndex = -1;
     }
 
-    private void OnSelectCargoItem(CargoHoldListItem selection)
+    public void OnSelectCargoItem(CargoHoldListItem selection)
     {
         infoPanel.ItemType = selection.ItemType;
         shipModules.HighlightedIndex = -1;
@@ -96,8 +96,18 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     {
         dragItem.gameObject.SetActive(false);
         dragItem.Item = null;
+    }
 
-        var pointerEvent = new PointerEventData(EventSystem.current);
+    private void OnDragHardpointModule(ShipModuleController module)
+    {
+        dragItem.gameObject.SetActive(true);
+        dragItem.Module = module;
+    }
+
+    private void OnDropHardpointModule(ShipModuleController module)
+    {
+        dragItem.gameObject.SetActive(false);
+        dragItem.Module = null;
     }
 
     public void OnDrop(PointerEventData pointerData)

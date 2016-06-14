@@ -70,7 +70,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
     public override void Activate(Ship activator, int slot)
 	{
         var hardpoint = activator.GetHardpointAt(slot);
-        var module = activator.ModuleLoadout.HardpointModules[slot];
+        var module = activator.ModuleLoadout.GetSlot(slot);
 
         var aimingAt = module.Aim;
         if (hardpoint.CanAimAt(aimingAt))

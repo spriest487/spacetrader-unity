@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 
-public class ModuleStatus : ScriptableObject
+[Serializable]
+public class ModuleStatus
 {
     [SerializeField]
     private float cooldown;
@@ -32,12 +34,9 @@ public class ModuleStatus : ScriptableObject
         cooldown = 0;
     }
 
-    public static ModuleStatus Create(ModuleItemType definition)
+    public ModuleStatus(ModuleItemType definition): this()
     {
-        ModuleStatus result = CreateInstance<ModuleStatus>();
-        result.definition = definition;
-
-        return result;
+        this.definition = definition;
     } 
 
     public void Activate(Ship activator, int slot)

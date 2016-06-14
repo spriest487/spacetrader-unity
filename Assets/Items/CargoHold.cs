@@ -4,6 +4,8 @@ using System.Collections;
 
 public class CargoHold : ScriptableObject
 {
+    public const int BAD_INDEX = -1;
+
     [SerializeField]
     private List<ItemType> items = new List<ItemType>();
 
@@ -11,7 +13,19 @@ public class CargoHold : ScriptableObject
     {
         get { return items; }
     }
-    
+
+    public ItemType this[int index]
+    {
+        get
+        {
+            return items[index];
+        }
+        set
+        {
+            items[index] = value;
+        }
+    }
+
     public int Size
     {
         get
@@ -44,7 +58,7 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            return items.Count - FreeCapacity;
+            return Size - FreeCapacity;
         }
     }
 
@@ -52,15 +66,15 @@ public class CargoHold : ScriptableObject
     {
         get
         {
-            for (int i = 0; i < items.Count; ++i)
+            for (int i = 0; i < Size; ++i)
             {
-                if (items[i] == null)
+                if (this[i] == null)
                 {
                     return i;
                 }
             }
 
-            return -1;
+            return BAD_INDEX;
         }
     }
 
@@ -80,9 +94,9 @@ public class CargoHold : ScriptableObject
 
         for (int index = 0; index < items.Count; ++index)
         {
-            if (items[index] == null)
+            if (this[index] == null)
             {
-                items[index] = item;
+                this[index] = item;
                 break;
             }
         }
@@ -92,7 +106,7 @@ public class CargoHold : ScriptableObject
     {
         if (IsValidIndex(index))
         {
-            items[index] = null;
+            this[index] = null;
         }
     }
 
@@ -103,30 +117,18 @@ public class CargoHold : ScriptableObject
             throw new System.ArgumentException("invalid indices for swap");
         }
 
-        var old = items[dest];
-        items[dest] = items[src];
-        items[src] = old;
+        var old = this[dest];
+        this[dest] = this[src];
+        this[src] = old;
     }
 
     public bool IsValidIndex(int index)
     {
-        return index >= 0 && index < items.Count;
+        return index >= 0 && index < Size;
     }
 
     public bool IsIndexFree(int index)
     {
-        return IsValidIndex(index) && items[index] == null;
-    }
-
-    public ItemType this[int index]
-    {
-        get
-        {
-            return items[index];
-        }
-        set
-        {
-            items[index] = value;
-        }
+        return IsValidIndex(index) && this[index] == null;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShipModulesDropTarget : MonoBehaviour
 {
     private EquipmentScreen equipmentScreen;
+    private ShipModulesController modules;
 
     [SerializeField]
     private ShipModuleController module;
@@ -12,6 +13,7 @@ public class ShipModulesDropTarget : MonoBehaviour
     private void Start()
     {
         equipmentScreen = GetComponentInParent<EquipmentScreen>();
+        modules = GetComponentInParent<ShipModulesController>();
     }
     
     [SerializeField]
@@ -30,13 +32,19 @@ public class ShipModulesDropTarget : MonoBehaviour
                 if (!loadout.IsFreeSlot(targetSlot))
                 {
                     //swap to cargo
-                    var currentItem = loadout.HardpointModules[targetSlot].ModuleType;
+                    var currentItem = loadout.GetSlot(targetSlot).ModuleType;
                     
                     droppedItem.CargoHold[droppedItem.ItemIndex] = currentItem;
                     loadout.RemoveAt(targetSlot);
                 }
-
+                else
+                {
+                    droppedItem.CargoHold[droppedItem.ItemIndex] = null;
+                }
+                
                 loadout.Equip(targetSlot, droppedModuleType);
+                modules.HighlightedIndex = targetSlot;
+                equipmentScreen.OnSelectShipModule(module);
             }
         }
         else

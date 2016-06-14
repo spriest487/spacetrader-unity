@@ -1,23 +1,38 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 [Serializable]
-public class ModuleLoadout
+public class ModuleLoadout : IEnumerable<ModuleStatus>
 {
     [SerializeField]
     private List<ModuleStatus> hardpointModules;
-
-    public IList<ModuleStatus> HardpointModules
-    {
-        get { return hardpointModules; }
-    }
-
+    
     public ModuleLoadout()
     {
         hardpointModules = new List<ModuleStatus>();
     }
+    
+    public IEnumerator<ModuleStatus> GetEnumerator()
+    {
+        return hardpointModules.GetEnumerator();
+    }
 
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public int SlotCount
+    {
+        get { return hardpointModules.Count; }
+        set
+        {
+            hardpointModules.Resize(value);
+        }
+    }
+    
     public void Activate(Ship ship, int slot)
     {
         var module = hardpointModules[slot];
@@ -30,34 +45,53 @@ public class ModuleLoadout
 
     public void Equip(int slot, ModuleItemType moduleType)
     {
-        if (!IsValidSlot(slot) || !IsFreeSlot(slot))
+        if (!IsValidSlot(slot))
         {
-            throw new ArgumentException("invalid slot passed to Equip()");
+            Debug.LogError("invalid slot passed to ModuleLoadout.Equip()");
+            return;
         }
 
-        hardpointModules[slot] = ModuleStatus.Create(moduleType);
+        var free = IsFreeSlot(slot);
+        if (!free)
+        {
+            if (moduleType)
+            {
+                Debug.LogWarning("equipping a module to an occupied slot!");
+            }
+        }
+
+        hardpointModules[slot] = new ModuleStatus(moduleType);
     }
 
-    public void RemoveAt(int slot)
+    public ModuleItemType RemoveAt(int slot)
     {
         if (IsFreeSlot(slot) || !IsValidSlot(slot))
         {
-            throw new ArgumentException("invalid slot passed to RemoveAt()");
+            Debug.LogError("invalid slot passed to ModuleLoadout.RemoveAt()");
+            return null;
         }
 
-        hardpointModules[slot] = null;
+        var result = hardpointModules[slot].ModuleType;
+        Equip(slot, null);
+
+        return result;
+    }
+
+    public ModuleStatus GetSlot(int slot)
+    {
+        return hardpointModules[slot];
     }
 
     public bool IsFreeSlot(int slot)
     {
-        return !hardpointModules[slot];
+        return !hardpointModules[slot].ModuleType;
     }
 
     public int FindFirstFreeSlot()
     {
         for (int slot = 0; slot < hardpointModules.Count; ++slot)
         {
-            if (!hardpointModules[slot])
+            if (!hardpointModules[slot].ModuleType)
             {
                 return slot;
             }
