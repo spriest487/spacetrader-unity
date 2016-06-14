@@ -33,7 +33,7 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
         get { return moduleSlot; }
     }
 
-    public ModuleStatus Module
+    public HardpointModule Module
     {
         get { return Ship.ModuleLoadout.GetSlot(ModuleSlot); }
     }

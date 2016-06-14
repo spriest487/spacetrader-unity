@@ -2,7 +2,7 @@
 using System;
 
 [Serializable]
-public class ModuleStatus
+public class HardpointModule
 {
     [SerializeField]
     private float cooldown;
@@ -29,12 +29,12 @@ public class ModuleStatus
         get { return cooldown; }
     }
     
-    public ModuleStatus()
+    public HardpointModule()
     {
         cooldown = 0;
     }
 
-    public ModuleStatus(ModuleItemType definition): this()
+    public HardpointModule(ModuleItemType definition): this()
     {
         this.definition = definition;
     } 

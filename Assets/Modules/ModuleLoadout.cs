@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.Collections;
 
 [Serializable]
-public class ModuleLoadout : IEnumerable<ModuleStatus>
+public class ModuleLoadout : IEnumerable<HardpointModule>
 {
     [SerializeField]
-    private List<ModuleStatus> hardpointModules;
+    private List<HardpointModule> hardpointModules;
     
     public ModuleLoadout()
     {
-        hardpointModules = new List<ModuleStatus>();
+        hardpointModules = new List<HardpointModule>();
     }
     
-    public IEnumerator<ModuleStatus> GetEnumerator()
+    public IEnumerator<HardpointModule> GetEnumerator()
     {
         return hardpointModules.GetEnumerator();
     }
@@ -56,7 +56,7 @@ public class ModuleLoadout : IEnumerable<ModuleStatus>
             }
         }
 
-        hardpointModules[slot] = new ModuleStatus(moduleType);
+        hardpointModules[slot] = new HardpointModule(moduleType);
     }
 
     public void Swap(int slot1, int slot2)
@@ -83,7 +83,7 @@ public class ModuleLoadout : IEnumerable<ModuleStatus>
         return result;
     }
 
-    public ModuleStatus GetSlot(int slot)
+    public HardpointModule GetSlot(int slot)
     {
         return hardpointModules[slot];
     }

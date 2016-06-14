@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(UnityEngine.UI.LayoutGroup))]
 public class ShipModulesController : MonoBehaviour
 {
-    private PooledList<ShipModuleController, ModuleStatus> modules;
+    private PooledList<ShipModuleController, HardpointModule> modules;
     
     [SerializeField]
     private ShipModuleController moduleTemplate;
@@ -35,7 +35,7 @@ public class ShipModulesController : MonoBehaviour
 
         if (modules == null)
         {
-            modules = new PooledList<ShipModuleController, ModuleStatus>(transform);
+            modules = new PooledList<ShipModuleController, HardpointModule>(transform);
         }
 
         if (!player)
@@ -44,7 +44,7 @@ public class ShipModulesController : MonoBehaviour
             return;
         }
 
-        var slots = new List<ModuleStatus>(player.Ship.ModuleLoadout);
+        var slots = new List<HardpointModule>(player.Ship.ModuleLoadout);
         
         modules.Refresh(slots,
             (slot) => ShipModuleController.CreateFromPrefab(moduleTemplate, player.Ship, slots.IndexOf(slot)),
