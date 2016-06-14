@@ -45,11 +45,7 @@ public class ModuleLoadout : IEnumerable<ModuleStatus>
 
     public void Equip(int slot, ModuleItemType moduleType)
     {
-        if (!IsValidSlot(slot))
-        {
-            Debug.LogError("invalid slot passed to ModuleLoadout.Equip()");
-            return;
-        }
+        Debug.Assert(IsValidSlot(slot), "slots passed to ModuleLoadout.Equip() must be valid slot numbers");
 
         var free = IsFreeSlot(slot);
         if (!free)
@@ -61,6 +57,16 @@ public class ModuleLoadout : IEnumerable<ModuleStatus>
         }
 
         hardpointModules[slot] = new ModuleStatus(moduleType);
+    }
+
+    public void Swap(int slot1, int slot2)
+    {
+        Debug.Assert(IsValidSlot(slot1) && IsValidSlot(slot2),
+            "slots passed to ModuleLoadout.Swap() must be valid slot numbers");
+
+        var swapped = hardpointModules[slot1];
+        hardpointModules[slot1] = hardpointModules[slot2];
+        hardpointModules[slot2] = swapped;
     }
 
     public ModuleItemType RemoveAt(int slot)

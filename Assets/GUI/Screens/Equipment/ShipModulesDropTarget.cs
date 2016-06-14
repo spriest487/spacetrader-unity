@@ -16,7 +16,6 @@ public class ShipModulesDropTarget : MonoBehaviour
         modules = GetComponentInParent<ShipModulesController>();
     }
     
-    [SerializeField]
     private void OnDropCargoItem(CargoHoldListItem droppedItem)
     {
         var player = PlayerShip.LocalPlayer;
@@ -51,5 +50,19 @@ public class ShipModulesDropTarget : MonoBehaviour
         {
             equipmentScreen.ShowError("Can only equip Modules");
         }
+    }
+
+    private void OnDropHardpointModule(ShipModuleController droppedModule)
+    {
+        if (!module)
+        {
+            //only drop areas associated with a slot can be swapped like this
+            return;
+        }
+
+        var player = PlayerShip.LocalPlayer;
+        var loadout = player.Ship.ModuleLoadout;
+
+        loadout.Swap(module.ModuleSlot, droppedModule.ModuleSlot);
     }
 }

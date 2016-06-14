@@ -30,7 +30,12 @@ public class ShipStatsPanel : MonoBehaviour
         var stats = ship.CurrentStats;
         var hp = ship.GetComponent<Hitpoints>();
 
+        var hardpoints = ship.ModuleLoadout;
+      
         var entries = new Dictionary<string, string>();
+        entries.Add("DPS", stats.estimatedDps.ToString("F2"));
+        entries.Add("Max speed", stats.maxSpeed.ToString("F2") +"m/s");
+        entries.Add("Agility", stats.maxTurnSpeed.ToString("F2") + "deg/s");
         entries.Add("Armor", hp.GetMaxArmor().ToString());
         entries.Add("Front Shield", hp.GetMaxShields(0).ToString());
         entries.Add("Rear Shield", hp.GetMaxShields(1).ToString());
