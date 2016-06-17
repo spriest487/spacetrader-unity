@@ -90,19 +90,22 @@ public class PlayerShip : MonoBehaviour
         const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
 
         var module = ship.ModuleLoadout.GetSlot(slot);
-        var behavior = module.ModuleType.Behaviour;
-
-        var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
-        if (predictedPos.HasValue)
+        if (module.ModuleType)
         {
-            var screenPredicted = Camera.main.WorldToScreenPoint(predictedPos.Value);
-            screenPredicted.z = mousePos.z;
+            var behavior = module.ModuleType.Behaviour;
 
-            var predictedToActualDifference = screenPredicted - mousePos;
-
-            if (predictedToActualDifference.sqrMagnitude < AUTOAIM_SNAP_DIST_SQR)
+            var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
+            if (predictedPos.HasValue)
             {
-                return predictedPos.Value;
+                var screenPredicted = Camera.main.WorldToScreenPoint(predictedPos.Value);
+                screenPredicted.z = mousePos.z;
+
+                var predictedToActualDifference = screenPredicted - mousePos;
+
+                if (predictedToActualDifference.sqrMagnitude < AUTOAIM_SNAP_DIST_SQR)
+                {
+                    return predictedPos.Value;
+                }
             }
         }
 

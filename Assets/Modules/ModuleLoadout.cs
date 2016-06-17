@@ -8,12 +8,12 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
 {
     [SerializeField]
     private List<HardpointModule> hardpointModules;
-    
+
     public ModuleLoadout()
     {
         hardpointModules = new List<HardpointModule>();
     }
-    
+
     public IEnumerator<HardpointModule> GetEnumerator()
     {
         return hardpointModules.GetEnumerator();
@@ -32,7 +32,7 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
             hardpointModules.Resize(value);
         }
     }
-    
+
     public void Activate(Ship ship, int slot)
     {
         var module = hardpointModules[slot];
@@ -110,15 +110,4 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
     {
         return slot >= 0 && slot < hardpointModules.Count;
     }
-    
-    public void Update()
-	{
-		foreach (var module in hardpointModules)
-		{
-			if (module.ModuleType)
-			{
-				module.Update();
-			}
-		}
-	}
 }

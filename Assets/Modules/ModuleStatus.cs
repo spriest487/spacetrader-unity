@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System;
 
 [Serializable]
 public class HardpointModule
 {
     [SerializeField]
-    private float cooldown;
+    private ModuleBehaviour behaviour;
     
     [SerializeField]
     private Vector3 aim;
@@ -26,30 +28,29 @@ public class HardpointModule
 
     public float Cooldown
     {
-        get { return cooldown; }
+        get { return behaviour? behaviour.Cooldown : 0; }
     }
     
     public HardpointModule()
     {
-        cooldown = 0;
+        definition = null;
+        behaviour = null;
     }
 
     public HardpointModule(ModuleItemType definition): this()
     {
         this.definition = definition;
-    } 
+        if (definition)
+        {
+            this.behaviour = definition ? ScriptableObject.Instantiate(definition.Behaviour) : null;
+        }
+    }
 
     public void Activate(Ship activator, int slot)
     {
-        if (cooldown <= Mathf.Epsilon) //cd check
+        if (Cooldown <= Mathf.Epsilon) //cd check
         {
             ModuleType.Behaviour.Activate(activator, slot);
-            cooldown = ModuleType.CooldownLength; 
         }
-    }
-     
-    public void Update()
-    {
-        cooldown -= Time.deltaTime; 
     }
 }

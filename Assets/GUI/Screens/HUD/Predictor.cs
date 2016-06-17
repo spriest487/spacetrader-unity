@@ -60,6 +60,12 @@ public class Predictor : MonoBehaviour
         for (int moduleIndex = 0; moduleIndex < modCount; ++moduleIndex)
         {
             var module = loadout.GetSlot(moduleIndex);
+            if (!module.ModuleType)
+            {
+                //empty slot
+                continue;
+            }
+
             var behavior = module.ModuleType.Behaviour;
 
             var predictPoint = behavior.PredictTarget(playerShip, moduleIndex, playerShip.Target);

@@ -434,9 +434,6 @@ public class Ship : MonoBehaviour
             }
         }
 
-        //modules
-        ModuleLoadout.Update();
-
         List<StatusEffect> newStatusEffects = new List<StatusEffect>(activeStatusEffects.Count);
         foreach (var effect in activeStatusEffects)
         {

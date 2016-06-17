@@ -28,6 +28,21 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
     [SerializeField]
     private int maxDamage;
+    
+    [SerializeField]
+    private float fireRate = 0.2f;
+
+    [SerializeField]
+    [HideInInspector]
+    private float lastShot = 0;
+
+    public override float Cooldown
+    {
+        get
+        {
+            return (lastShot + Cooldown) - Time.time;
+        }
+    }
 
     public override string Description
     {
@@ -94,6 +109,8 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
                 var flash = (Transform)Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
                 flash.SetParent(firedTransform, true);
             }
+
+            lastShot = Time.time;
         }        
 	}
     
