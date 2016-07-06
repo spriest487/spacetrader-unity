@@ -26,4 +26,8 @@ public class MiningScanner : ModuleBehaviour
             return;
         }
     }
+
+    public override void Equip(HardpointModule slot)
+    {
+    }
 }

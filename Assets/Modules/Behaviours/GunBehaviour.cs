@@ -1,5 +1,6 @@
 ﻿#pragma warning disable 0649
 
+using System;
 using UnityEngine;
 
 public class GunBehaviour : ModuleBehaviour, IWeapon
@@ -33,14 +34,13 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
     private float fireRate = 0.2f;
 
     [SerializeField]
-    [HideInInspector]
     private float lastShot = 0;
-
+    
     public override float Cooldown
     {
         get
         {
-            return (lastShot + Cooldown) - Time.time;
+            return (lastShot + fireRate) - Time.time;
         }
     }
 
@@ -54,17 +54,19 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         }
     }
 
-    public int ApproxDamagePerActivation
+    public int CalculateDps(Ship owner)
     {
-        get
-        {
-            return (minDamage + maxDamage / 2);
-        }
+        return (int) Mathf.Ceil((minDamage + maxDamage / 2) / fireRate);
+    }
+    
+    public override void Equip(HardpointModule slot)
+    {
+        lastShot = 0;
     }
 
     private int CalculateDamage(Ship activator, int slot)
     {
-        float randomBase = Random.Range(minDamage, maxDamage);
+        float randomBase = UnityEngine.Random.Range(minDamage, maxDamage);
 
         float crewBonus;
 
@@ -84,6 +86,11 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
     public override void Activate(Ship activator, int slot)
 	{
+        if (Cooldown > 0)
+        {
+            return;
+        }
+
         var hardpoint = activator.GetHardpointAt(slot);
         var module = activator.ModuleLoadout.GetSlot(slot);
 

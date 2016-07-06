@@ -38,7 +38,16 @@ public class ItemInformationPanel : MonoBehaviour
         {
             nameLabel.text = itemType.DisplayName;
             icon.sprite = itemType.Icon;
-            descriptionLabel.text = itemType.Description;
+
+            var moduleType = itemType as ModuleItemType;
+            if (moduleType != null)
+            {
+                descriptionLabel.text = moduleType.GetStatsString(PlayerShip.LocalPlayer.Ship) + "\n" + itemType.Description;
+            }
+            else
+            {
+                descriptionLabel.text = itemType.Description;
+            }
         }
         else
         {

@@ -65,8 +65,8 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
             "slots passed to ModuleLoadout.Swap() must be valid slot numbers");
 
         var swapped = hardpointModules[slot1];
-        hardpointModules[slot1] = hardpointModules[slot2];
-        hardpointModules[slot2] = swapped;
+        hardpointModules[slot1] = new HardpointModule(hardpointModules[slot2].ModuleType);
+        hardpointModules[slot2] = new HardpointModule(swapped.ModuleType);
     }
 
     public ModuleItemType RemoveAt(int slot)

@@ -1,4 +1,4 @@
 ﻿public interface IWeapon
 {
-    int ApproxDamagePerActivation { get; }
+    int CalculateDps(Ship owner);
 }

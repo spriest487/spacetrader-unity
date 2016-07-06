@@ -4,6 +4,8 @@ public abstract class ModuleBehaviour : ScriptableObject
 {
     public abstract string Description { get; }
 
+    public abstract void Equip(HardpointModule slot);
+
 	public abstract void Activate(Ship activator, int slot);
 
     public virtual float Cooldown

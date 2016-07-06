@@ -39,10 +39,11 @@ public class HardpointModule
 
     public HardpointModule(ModuleItemType definition): this()
     {
-        this.definition = definition;
         if (definition)
         {
-            this.behaviour = definition ? ScriptableObject.Instantiate(definition.Behaviour) : null;
+            this.definition = definition;
+            behaviour = ScriptableObject.Instantiate(definition.Behaviour);
+            behaviour.Equip(this);
         }
     }
 
