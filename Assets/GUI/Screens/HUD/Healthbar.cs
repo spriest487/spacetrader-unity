@@ -10,7 +10,6 @@ public class Healthbar : MonoBehaviour
     }
 
     public HealthType type;
-    public int shieldSector;
 
     public string stateName = "Healthbar";
     public int healthStatusLayer = 0;
@@ -48,8 +47,8 @@ public class Healthbar : MonoBehaviour
             }
             else
             {
-                currentHealth = target.GetShield(shieldSector);
-                maxHealth = target.GetMaxShields(shieldSector);
+                currentHealth = target.GetShield();
+                maxHealth = target.GetMaxShields();
             }
 
             animator.Play(healthbarStatehash, healthStatusLayer, currentHealth / maxHealth);

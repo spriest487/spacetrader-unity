@@ -87,8 +87,8 @@ public class Ship : MonoBehaviour
     
     public ShipStats BaseStats
     {
-        get { return baseStats; }
-        set { baseStats = new ShipStats(value); }
+        get { return baseStats.Clone(); }
+        set { baseStats = value.Clone();  }
     }
 
     public Targetable Target
@@ -182,9 +182,8 @@ public class Ship : MonoBehaviour
 
     private void RecalculateCurrentStats()
     {
-        var result = new ShipStats(BaseStats);
-
-        ShipStats proportionalTotals = new ShipStats();
+        var result = BaseStats.Clone();
+        var proportionalTotals = new ShipStats();
 
         foreach (var statusEffect in activeStatusEffects)
         {

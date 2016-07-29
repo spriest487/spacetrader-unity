@@ -29,6 +29,10 @@ public class ShipStats
     [SerializeField]
     private float passengerCapacity;
 
+    private float armor;
+
+    private float shield;
+
     /// <summary>
     /// Number of passenger slots
     /// </summary>
@@ -48,19 +52,14 @@ public class ShipStats
         maxSpeed = 0;
 
         passengerCapacity = 0;
+
+        armor = 0;
+        shield = 0;
     }
 
-    public ShipStats(ShipStats other)
+    public ShipStats Clone()
     {
-        estimatedDps = other.estimatedDps;
-
-        agility = other.agility;
-        thrust = other.thrust;
-
-        maxTurnSpeed = other.maxTurnSpeed;
-        maxSpeed = other.maxSpeed;
-
-        passengerCapacity = other.PassengerCapacity;
+        return (ShipStats) MemberwiseClone();
     }
 
     public void AddFlat(ShipStats other)
@@ -71,6 +70,9 @@ public class ShipStats
         maxTurnSpeed += other.maxTurnSpeed;
         maxSpeed += other.maxSpeed;
         passengerCapacity += other.passengerCapacity;
+
+        armor += other.armor;
+        shield += other.shield;
     }
 
     public void ApplyProportional(ShipStats other)
@@ -81,5 +83,8 @@ public class ShipStats
         maxTurnSpeed += maxTurnSpeed * other.maxTurnSpeed;
         maxSpeed += maxSpeed * other.maxSpeed;
         passengerCapacity += passengerCapacity * other.passengerCapacity;
+
+        armor += armor * other.armor;
+        shield += shield * other.shield;
     }
 }

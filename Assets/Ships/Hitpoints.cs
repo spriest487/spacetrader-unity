@@ -20,25 +20,8 @@ public class Hitpoints : MonoBehaviour
         }
     }
 
-    [Serializable]
-    public class ShieldValue : HitpointValue
-    {
-        public float weight = 1;
-
-        public ShieldValue()
-        {
-        }
-
-        public ShieldValue(int val, float weight) : base(val)
-        {
-            this.weight = weight;
-        }
-    }
-
-    private bool inCamera;
-
     [SerializeField]
-    private ShieldValue[] shieldSectors;
+    private HitpointValue shield;
 
     [SerializeField]
 	private HitpointValue armor;
@@ -46,42 +29,19 @@ public class Hitpoints : MonoBehaviour
     [SerializeField]
     private float lastHealTick;
         
-    public void Reset(int armor, int[] shieldSectors)
+    public void Reset(int armor, int shield)
     {
         this.armor = new HitpointValue(armor);
-
-		this.shieldSectors = new ShieldValue[shieldSectors.Length];
-
-        int shieldTotal = 0;
-        foreach (int sector in shieldSectors) 
-        {
-            shieldTotal += sector;
-        }
-
-        for (int sectorNo = 0; sectorNo < shieldSectors.Length; ++sectorNo)
-        {
-            int sectorVal = shieldSectors[sectorNo];
-            float weight = shieldTotal / (float) sectorVal;
-
-            this.shieldSectors[sectorNo] = new ShieldValue(sectorVal, weight);
-        }
-
+        this.shield = new HitpointValue(shield);
+        
         lastHealTick = 0;
     }
     
-    public void SetShield(int sector, int value)
+    public void SetShield(int value)
     {
-	    var shieldSector = shieldSectors[sector];
-	
-	    shieldSector.max = value;
-	    shieldSector.current = Math.Min(shieldSector.max, shieldSector.current);
+        shield.max = value;
+        shield.current = Math.Min(shield.max, shield.current);
     }
-
-	public void SetSectorWeight(int sector, float value)
-	{
-		var shieldSector = shieldSectors[sector];
-		shieldSector.weight = value;
-	}
 
     public void SetArmor(int value)
     {
@@ -89,7 +49,8 @@ public class Hitpoints : MonoBehaviour
 	    armor.current = Math.Min(armor.max, armor.current);
     }
 
-    public void TakeDamage(int amount) {
+    public void TakeDamage(int amount)
+    {
         if (PlayerShip.LocalPlayer)
         {
             ScreenManager.Instance.BroadcastScreenMessage(
@@ -104,127 +65,29 @@ public class Hitpoints : MonoBehaviour
             return;
         }
 
-        //for now... uniform distribution across shields before any armor damage
-        var sectorCount = shieldSectors.Length;
-        if (sectorCount == 0)
+        var remainingDamage = amount - shield.current;
+        shield.current -= amount;
+
+        if (remainingDamage > 0)
         {
-            TakeDamageToArmor(amount);
+            armor.current -= remainingDamage;
         }
-        else
-        {
-            var amountPerSector = Math.Max(1, amount / sectorCount);
 
-            for (int sector = 0; sector < sectorCount; ++sector)
-            {
-                TakeDamageInSector(amountPerSector, sector);
-            }
-        }
+        shield.current = Math.Max(0, shield.current);
+        armor.current = Math.Max(0, armor.current);
     }
-
-    public void TakeDamageInSector(int amount, int sector) {
-		var sectorValue = shieldSectors[sector];
-
-		var remaining = sectorValue.current - amount;
-		sectorValue.current = Math.Max(0, remaining);
-
-	    if (remaining <= 0) {
-		    TakeDamageToArmor(-remaining);
-	    }
-    }
-
-    public void TakeDamageToArmor(int amount) {
-	    armor.current = Math.Max(0, armor.current - amount);
-    }
-
+    
     public void HealArmor(int amount) {
 	    armor.current = Math.Max(armor.max, armor.current + amount);
     }
-
-    private bool IsSectorHealed(int[] healed, int sectorIt)
-    {
-        return shieldSectors[sectorIt].current + healed[sectorIt] >= shieldSectors[sectorIt].max;
-    }
-
-    private bool IsFullyHealed(int[] healed)
-    {
-        bool result = true;
-
-        for (int sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt)
-        {
-            result &= IsSectorHealed(healed, sectorIt);
-        }
-
-        return result;
-    }
-
-    private void RecurseHealShield(int previousRemainder, int[] healed, int amount)
-    {
-        float weightTotal = 0;
-		foreach (var sector in shieldSectors) {
-			weightTotal += sector.weight;
-		}
-
-		int newRemainder = 0;
-
-		int sectorIt;
-		for (sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt) {
-			var shieldSector = shieldSectors[sectorIt];
-
-			healed[sectorIt] = Mathf.FloorToInt(amount * (shieldSectors[sectorIt].weight / weightTotal));
-			
-			int total = healed[sectorIt] + shieldSector.current;
-			if (total > shieldSector.max) {
-				int extra = total - shieldSector.max;
-				newRemainder += extra;
-				healed[sectorIt] -= extra;
-			}
-		}
-
-		if (newRemainder != previousRemainder) {
-			RecurseHealShield(newRemainder, healed, amount);
-		}
-		else {
-			sectorIt = 0;
-			while (!(IsFullyHealed(healed) || newRemainder < 1)) {
-				if (!IsSectorHealed(healed, sectorIt)) {
-					++shieldSectors[sectorIt].current;
-				}
-
-				sectorIt = (sectorIt + 1) % shieldSectors.Length;
-			}
-		}
-    }
-
+    
     public void HealShield(int amount) {
-        var healed = new int[shieldSectors.Length];
-        for (int sector = 0; sector < shieldSectors.Length; ++sector)
-        {
-            healed[sector] = 0;
-        }
-
-	    RecurseHealShield(0, healed, amount);
-
-	    for (int sectorIt = 0; sectorIt < shieldSectors.Length; ++sectorIt) {
-		    shieldSectors[sectorIt].current += healed[sectorIt];
-	    }
+        shield.current = Mathf.Min(shield.max, shield.current + amount);
     }
-
-	public void DistributeShield()
-	{
-	    int totalShields = 0;
-	    foreach (var shieldSector in shieldSectors) {
-		    totalShields += shieldSector.current;
-		    shieldSector.current = 0;
-	    }
-
-	    HealShield(totalShields);
-    }
-
+   
 	public void ResetShield()
 	{
-	    foreach (var shieldSector in shieldSectors) {
-		    shieldSector.current = shieldSector.max;
-	    }
+        shield.current = shield.max;
     }
 
 	public void ResetArmor()
@@ -237,14 +100,9 @@ public class Hitpoints : MonoBehaviour
 	    return armor.current;
     }
 
-	public int GetShield(int sector)
+	public int GetShield()
 	{
-		if (sector < 0 || sector >= shieldSectors.Length)
-		{
-			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Length));
-		}
-
-	    return shieldSectors[sector].current;
+        return shield.current;
     }
 
 	public int GetMaxArmor()
@@ -252,13 +110,8 @@ public class Hitpoints : MonoBehaviour
 	    return armor.max;
     }
 
-    public int GetMaxShields(int sector) {
-		if (sector < 0 || sector >= shieldSectors.Length)
-		{
-			throw new ArgumentException(string.Format("Invalid sector {0}, sector count is {1}", sector, shieldSectors.Length));
-		}
-
-	    return shieldSectors[sector].max;
+    public int GetMaxShields() {
+        return shield.max;
     }
     
 	void OnTakeDamage(HitDamage damage)
@@ -269,6 +122,7 @@ public class Hitpoints : MonoBehaviour
     void Update()
     {
         const float HEAL_TICK_RATE = 1.0f;
+        const int HEAL_AMOUNT = 1;
         
         lastHealTick += Time.deltaTime;
 
@@ -276,10 +130,7 @@ public class Hitpoints : MonoBehaviour
         {
             lastHealTick -= HEAL_TICK_RATE;
 
-            var healPerShield = 1;
-            var healAmount = shieldSectors.Length * healPerShield;
-
-            HealShield(healAmount);
+            HealShield(HEAL_AMOUNT);
         }
     }
 }

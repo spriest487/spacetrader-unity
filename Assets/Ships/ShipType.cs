@@ -23,7 +23,7 @@ public class ShipType : ScriptableObject
     private int armor;
 
     [SerializeField]
-    private int[] shieldSectors;
+    private int shield;
 
     [SerializeField]
     private int cargoSize;
@@ -83,7 +83,7 @@ public class ShipType : ScriptableObject
         }
 
         var hp = obj.gameObject.AddComponent<Hitpoints>();
-        hp.Reset(armor, shieldSectors);
+        hp.Reset(armor, shield);
 
         return ship;
     }

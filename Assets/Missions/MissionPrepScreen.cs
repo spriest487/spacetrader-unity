@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MissionPrepScreen : MonoBehaviour
@@ -8,8 +10,11 @@ public class MissionPrepScreen : MonoBehaviour
 
     [SerializeField]
     private Text missionTitleText;
-
+    
+    [SerializeField]
     private Button readyButton;
+
+    [SerializeField]
     private Text readyText;
     
     public void Ready()
@@ -23,13 +28,7 @@ public class MissionPrepScreen : MonoBehaviour
             hudOverlay: ScreenID.None, 
             state: PlayerStatus.Flight);
     }
-
-    void Start()
-    {
-        readyButton = transform.Find("Ready Button").GetComponent<Button>();
-        readyText = readyButton.GetComponentInChildren<Text>();
-    }
-
+    
     void OnScreenActive()
     {
         var mission = MissionManager.Instance.Mission;

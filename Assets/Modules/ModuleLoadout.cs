@@ -90,7 +90,7 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
 
     public bool IsFreeSlot(int slot)
     {
-        return !hardpointModules[slot].ModuleType;
+        return hardpointModules[slot] == null;
     }
 
     public int FindFirstFreeSlot()

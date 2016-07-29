@@ -37,8 +37,7 @@ public class ShipStatsPanel : MonoBehaviour
         entries.Add("Max speed", stats.maxSpeed.ToString("F2") +"m/s");
         entries.Add("Agility", stats.maxTurnSpeed.ToString("F2") + "deg/s");
         entries.Add("Armor", hp.GetMaxArmor().ToString());
-        entries.Add("Front Shield", hp.GetMaxShields(0).ToString());
-        entries.Add("Rear Shield", hp.GetMaxShields(1).ToString());
+        entries.Add("Shield", hp.GetMaxShields().ToString());
 
         if (items == null)
         {
