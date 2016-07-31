@@ -107,6 +107,16 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(menuScene);
     }
 
+    public void SaveGame()
+    {
+        SavedGames.SavesFolder.SaveGame();
+    }
+
+    public void LoadGame()
+    {
+        SavedGames.SavesFolder.LoadGame();
+    }
+
     public void BackToGame()
     {
         ScreenManager.Instance.ScreenID = ScreenID.None;
