@@ -370,7 +370,7 @@ public class FollowCamera : MonoBehaviour
 	void FixedUpdate()
 	{
         var player = PlayerShip.LocalPlayer;
-		if (!player)
+		if (!player || !player.isActiveAndEnabled)
 		{
 			return;
 		}
@@ -382,7 +382,7 @@ public class FollowCamera : MonoBehaviour
 		
 		if (playerRb && ship)
 		{
-			var speed = -playerRb.velocity / Mathf.Max(1, ship.BaseStats.maxSpeed);
+			var speed = -playerRb.velocity / Mathf.Max(1, ship.CurrentStats.maxSpeed);
 			var targetSpeedOffset = speed * thrustOffset;
             currentSpeedOffset = Vector3.MoveTowards(currentSpeedOffset, targetSpeedOffset, 0.1f);
 		}
