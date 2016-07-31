@@ -300,18 +300,4 @@ public class PlayerShip : MonoBehaviour
             SpaceTraderConfig.LocalPlayer = null;
         }
     }
-    
-	void OnCollisionEnter(Collision collision)
-	{
-        if (!LocalPlayerHasControl())
-        {
-            return;
-        }
-
-        var followCam = Camera.main ? Camera.main.GetComponent<FollowCamera>() : null;
-        if (followCam)
-        {
-            followCam.NotifyPlayerCollision(collision);
-        }
-	}
 }

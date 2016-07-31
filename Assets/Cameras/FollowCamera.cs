@@ -28,13 +28,7 @@ public class FollowCamera : MonoBehaviour
 
     [SerializeField]
     private float rotationOffset;
-
-    [SerializeField]
-    private float shakeMax;
-
-    [SerializeField]
-    private float shakeSpeed;
-
+    
     ///world speeds multiplied by this to get the added amount of shake
     [SerializeField]
     private float shakeCollisionConversion;
@@ -43,10 +37,7 @@ public class FollowCamera : MonoBehaviour
     private AnimationCurve dragInputCurve;
 
 	private Vector3 currentSpeedOffset;
-
-	private float shake;
-	private Vector3 shakeAngles;
-        
+            
     private Vector2? dragInput;
 
     private float lookPitchTarget;
@@ -58,27 +49,12 @@ public class FollowCamera : MonoBehaviour
     private AnimationCurve lookSnapBackCurve;
 
     private Coroutine waitToDragOnGui = null;
-
-	private void AddShake(float amount)
-	{
-		shake = Mathf.Clamp(shakeMax, 0, amount + shake);
-	}
-
-	public void NotifyPlayerCollision(Collision collision)
-	{
-		AddShake(collision.relativeVelocity.magnitude);
-	}
-
+    
 	void Start()
 	{
         Camera = GetComponent<Camera>();
 
 		currentSpeedOffset = Vector3.zero;
-		shakeAngles = new Vector3(UnityEngine.Random.value * 2 - 1,
-            UnityEngine.Random.value * 2 - 1,
-            UnityEngine.Random.value * 2 - 1);
-
-		shake = shakeCollisionConversion * 6;
 	}
 
     void DockedCam(PlayerShip player, SpaceStation station)
@@ -87,19 +63,7 @@ public class FollowCamera : MonoBehaviour
         transform.position = station.transform.position;
         transform.position -= new Vector3(0, 0, 100);
     }
-
-    Vector3 GetShakeOffset()
-    {
-        var shakePhase = shakeSpeed * Time.frameCount;
-
-        var shakeAmount = new Vector3(
-            shake * Mathf.Sin(shakePhase * shakeAngles.x),
-            shake * Mathf.Sin(shakePhase * shakeAngles.y),
-            shake * Mathf.Sin(shakePhase * shakeAngles.z));
-
-        return shakeAmount;
-    }
-
+    
     Quaternion GetAngularVelocityOffset(PlayerShip player)
     {
         var rb = player.GetComponent<Rigidbody>();
@@ -139,7 +103,7 @@ public class FollowCamera : MonoBehaviour
         var lookMat = new Matrix4x4();
         lookMat.SetTRS(Vector3.zero, lookRot, Vector3.one);
         
-        var lookOffset = lookMat.MultiplyPoint(offset + GetShakeOffset());
+        var lookOffset = lookMat.MultiplyPoint(offset);
         if (!ignoreTranslation)
         {
             lookOffset += shipPos + currentSpeedOffset;
@@ -374,9 +338,7 @@ public class FollowCamera : MonoBehaviour
 		{
 			return;
 		}
-
-		shake = Mathf.Lerp(shake, 0, 0.5f);
-
+        
 		var playerRb = player.GetComponent<Rigidbody>();
 		var ship = player.GetComponent<Ship>();
 		
