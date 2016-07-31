@@ -147,7 +147,6 @@ public class Ship : MonoBehaviour
         ship.shipType = shipType;
 
         var rb = ship.GetComponent<Rigidbody>();
-        rb.mass = shipType.Stats.Mass;
 
         ship.ExplosionEffect = shipType.ExplosionEffect;
 

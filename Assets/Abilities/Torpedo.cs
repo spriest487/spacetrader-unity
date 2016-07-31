@@ -16,7 +16,6 @@ public class Torpedo : MonoBehaviour
     private float lifetime = 10;
 
     private AICaptain captain;
-    private Ship ship;
 
     public Ship Owner
     {
@@ -27,7 +26,6 @@ public class Torpedo : MonoBehaviour
     void Start()
     {
         captain = GetComponent<AICaptain>();
-        ship = GetComponent<Ship>();
     }
 
     public void UpdateCollisions()
@@ -48,7 +46,7 @@ public class Torpedo : MonoBehaviour
 
     void Explode()
     {
-        ship.Explode();
+        captain.Ship.Explode();
     }
 
     void Update()
@@ -63,12 +61,12 @@ public class Torpedo : MonoBehaviour
         {
             /* if target dies, the ai will just keep moving towards its
                last position*/
-            if (ship.Target)
+            if (captain.Ship.Target)
             {
-                captain.Destination = ship.Target.transform.position;
+                captain.Destination = captain.Ship.Target.transform.position;
             }
-            captain.Throttle = 1;
-            captain.MinimumThrust = 0.5f;
+            captain.Throttle = 1f;
+            captain.MinimumThrust = 1f;
 
             var dist2 = (transform.position - captain.Destination).sqrMagnitude;
             var proximity2 = explodeProximity * explodeProximity;
@@ -76,11 +74,11 @@ public class Torpedo : MonoBehaviour
             if (dist2 < proximity2)
             {
                 //TODO: damage in a sphere instead
-                if (ship.Target)
+                if (captain.Ship.Target)
                 {
                     var damage = new HitDamage(transform.position, explodeDamage, owner ? owner.gameObject : null);
 
-                    ship.Target.gameObject.SendMessage("OnTakeDamage", damage, SendMessageOptions.DontRequireReceiver);
+                    captain.Ship.Target.gameObject.SendMessage("OnTakeDamage", damage, SendMessageOptions.DontRequireReceiver);
                 }
 
                 Explode();

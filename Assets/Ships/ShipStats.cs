@@ -57,7 +57,7 @@ public class ShipStats
         armor = 0;
         shield = 0;
 
-        mass = 10;
+        mass = 0;
     }
 
     public ShipStats Clone()
