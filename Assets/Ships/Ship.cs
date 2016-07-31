@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -12,10 +13,7 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private ShipCrewAssignments crewAssignments = new ShipCrewAssignments();
-
-    [SerializeField]
-    private ShipStats baseStats;
-
+    
     [SerializeField]
     private Targetable target;
     
@@ -27,15 +25,14 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private List<StatusEffect> activeStatusEffects = new List<StatusEffect>();
-
-    [SerializeField]
-    private Vector3 bumpForce;
-
+    
     [SerializeField]
     private CargoHold cargo;
 
     [SerializeField]
     private ModuleLoadout moduleLoadout;
+
+    private new Rigidbody rigidbody;
 
     private List<WeaponHardpoint> hardpoints;
     
@@ -47,6 +44,14 @@ public class Ship : MonoBehaviour
     public float Roll;
     
     private ShipStats currentStats;
+
+    [SerializeField]
+    private ShipType shipType;
+
+    public ShipType ShipType
+    {
+        get { return shipType; }
+    }
 
     public IList<WeaponHardpoint> Hardpoints
     {
@@ -85,12 +90,6 @@ public class Ship : MonoBehaviour
         get { return moduleLoadout; }
     }
     
-    public ShipStats BaseStats
-    {
-        get { return baseStats.Clone(); }
-        set { baseStats = value.Clone();  }
-    }
-
     public Targetable Target
     {
         get { return target; }
@@ -141,6 +140,51 @@ public class Ship : MonoBehaviour
     {
         get { return crewAssignments; }
     }
+
+    public static Ship Create(GameObject obj, ShipType shipType)
+    {
+        var ship = obj.AddComponent<Ship>();
+        ship.shipType = shipType;
+
+        var rb = ship.GetComponent<Rigidbody>();
+        rb.mass = shipType.Stats.Mass;
+
+        ship.ExplosionEffect = shipType.ExplosionEffect;
+
+        var newAbilities = new List<Ability>();
+        foreach (var ability in shipType.Abilities)
+        {
+            if (ability != null)
+            {
+                var abilityInstance = Instantiate(ability);
+                abilityInstance.name = ability.name;
+                abilityInstance.Cooldown = 0;
+                newAbilities.Add(abilityInstance);
+            }
+        }
+        ship.Abilities = newAbilities;
+
+        if (shipType.Moorable && !obj.gameObject.GetComponent<Moorable>())
+        {
+            obj.gameObject.AddComponent<Moorable>();
+        }
+
+        if (!ship.cargo)
+        {
+            ship.Cargo = ScriptableObject.CreateInstance<CargoHold>();
+        }
+        ship.Cargo.Size = shipType.CargoSize;
+
+        var hp = obj.gameObject.AddComponent<Hitpoints>();
+        hp.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
+
+        return ship;
+    }
+
+    void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
    
     /**
 	 * Finds the equivalent thrust required for the "from" ship to match
@@ -149,7 +193,7 @@ public class Ship : MonoBehaviour
 	 */
     public static float EquivalentThrust(Ship from, Ship target)
 	{
-		var targetSpeed = target.GetComponent<Rigidbody>().velocity.magnitude;
+		var targetSpeed = target.rigidbody.velocity.magnitude;
 		var maxSpeed = Mathf.Max(1, from.CurrentStats.maxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
@@ -182,7 +226,7 @@ public class Ship : MonoBehaviour
 
     private void RecalculateCurrentStats()
     {
-        var result = BaseStats.Clone();
+        var result = ShipType.Stats.Clone();
         var proportionalTotals = new ShipStats();
 
         foreach (var statusEffect in activeStatusEffects)
@@ -223,12 +267,7 @@ public class Ship : MonoBehaviour
         {
             formationManager = new FormationManager();
         }
-
-        if (baseStats == null)
-        {
-            baseStats = new ShipStats();
-        }
-
+        
         if (moduleLoadout == null)
         {
             moduleLoadout = new ModuleLoadout();
@@ -236,39 +275,7 @@ public class Ship : MonoBehaviour
 
         activeStatusEffects.RemoveAll(e => e == null);
 	}
-
-    private void ApplyBump(Rigidbody rigidbody)
-    {
-        if (bumpForce.sqrMagnitude < Mathf.Epsilon)
-        {
-            return;
-        }
-
-        float bumpMag2 = bumpForce.sqrMagnitude;
-        float bumpReduction = CurrentStats.maxSpeed * Time.deltaTime;
-        bumpReduction *= bumpReduction;
-
-        float reducedBumpMag = Mathf.Max(0, bumpMag2 - bumpReduction);
-
-        if (reducedBumpMag > 0 && bumpMag2 > 0)
-        {
-            float reductionFactor = reducedBumpMag / bumpMag2;
-
-            bumpForce = bumpForce * reductionFactor;
-
-            rigidbody.AddForce(bumpForce);
-
-            if (bumpForce.sqrMagnitude < bumpReduction)
-            {
-                bumpForce = Vector3.zero;
-            }
-        }
-        else
-        {
-            bumpForce = Vector3.zero;
-        }
-    }
-
+    
     private static Vector3 InputAmountsToRequired(Vector3 input,
         Vector3 localCurrentValue,
         float maxSpeed)
@@ -296,86 +303,21 @@ public class Ship : MonoBehaviour
 
         return inputAdjusted;
     }
-
-	private static Vector3 DecayRotation(Vector3 input,
-		Vector3 localCurrentValue,
-		float decaySpeed,
-		float maxSpeed,
-		Transform currentTransform)
-	{
-         var inputAdjusted = input;
-
-		//input proportional to the largest individual value
-		var inputMax = Mathf.Max(Mathf.Abs(inputAdjusted.x), Mathf.Abs(inputAdjusted.y), Mathf.Abs(inputAdjusted.z));
-		Vector3 inputProportions;
-
-		if (inputMax > Vector3.kEpsilon)
-		{
-			inputProportions = new Vector3(inputAdjusted.x / inputMax, inputAdjusted.y / inputMax, inputAdjusted.z / inputMax);
-		}
-		else
-		{
-			inputProportions = Vector3.zero;
-		}
-
-		var decayAmt = Time.deltaTime * decaySpeed;
-		var decay = new Vector3(decayAmt, decayAmt, decayAmt);
-		
-		/* input can counteract decay, so the direction we're actually trying to go is not
-		 * decayed. 100% input will counteract an amount of decay equal to 100% of decaySpeed,
-		 * 50% input will counteract 50%, etc
-		 */
-		for (int i = 0; i < 3; ++i)
-		{
-			decay[i] *= 1 - (inputAdjusted[i] * inputProportions[i]);
-		}
-		
-		if (decay.sqrMagnitude <= Vector3.kEpsilon)
-		{
-			decay = Vector3.zero;
-		}
-
-        var decayedRot = localCurrentValue;
-		for (int i = 0; i < 3; ++i) 
-		{
-            var absRot = Mathf.Abs(localCurrentValue[i]);
-
-			if (absRot > Vector3.kEpsilon)
-			{
-				/* we're decaying an absolute amount, but how we apply it is by multiplying current
-				 velocity, so we need the decay speed as proportion of current velocity in this
-				 direction */				
-				var decayProportion = Mathf.Clamp01(decay[i] / absRot);
-
-				decayedRot[i] *= (1 - (decayProportion));
-			}
-		}
-
-        var result = currentTransform.TransformDirection(decayedRot);
-
-        for (int component = 0; component < 3; ++component)
-        {
-            if (float.IsNaN(result[component]))
-            {
-                result[component] = 0;
-            }
-        }
-
-        return result;       
-	}
-			
+    
 	void FixedUpdate()
-	{			
+	{
 		formationManager.Update();
 		DebugDrawFollowerPositions();
-
-        var rigidBody = GetComponent<Rigidbody>();
-        if (rigidBody)
+        
+        if (rigidbody)
 		{
-            rigidBody.drag = 0;
-            rigidBody.angularDrag = 0;
-            rigidBody.maxAngularVelocity = Mathf.Deg2Rad * CurrentStats.maxTurnSpeed;
-            rigidBody.inertiaTensor = new Vector3(1, 1, 1);
+            rigidbody.mass = CurrentStats.Mass;
+            rigidbody.isKinematic = rigidbody.mass < Mathf.Epsilon;
+
+            rigidbody.drag = 2;
+            rigidbody.angularDrag = 2;
+            rigidbody.maxAngularVelocity = Mathf.Deg2Rad * CurrentStats.maxTurnSpeed;
+            rigidbody.inertiaTensor = new Vector3(1, 1, 1);
 
             //all movement vals must be within -1..1
             Thrust = Mathf.Clamp(Thrust, -1, 1);
@@ -387,40 +329,33 @@ public class Ship : MonoBehaviour
 
             var torqueMax = CurrentStats.maxTurnSpeed * Mathf.Deg2Rad;
 
-            var localRotation = rigidBody.transform.InverseTransformDirection(rigidBody.angularVelocity);
-            var localVelocity = rigidBody.transform.InverseTransformDirection(rigidBody.velocity);
+            var localRotation = transform.InverseTransformDirection(rigidbody.angularVelocity);
+            var localVelocity = transform.InverseTransformDirection(rigidbody.velocity);
 
             var torqueInput = InputAmountsToRequired(new Vector3(Pitch, Yaw, Roll),
                 localRotation,
                 torqueMax);            
             var forceInput = InputAmountsToRequired(new Vector3(Strafe, Lift, Thrust),
                 localVelocity,
-                CurrentStats.maxSpeed);           
-
-            rigidBody.angularVelocity = DecayRotation(torqueInput,
-                localRotation,
-                CurrentStats.agility * Mathf.Deg2Rad,
-                torqueMax,
-                rigidBody.transform);
-            rigidBody.velocity = DecayRotation(forceInput,
-                localVelocity,
-                CurrentStats.thrust,
-                CurrentStats.maxSpeed,
-                rigidBody.transform);
-
+                CurrentStats.maxSpeed);
+            
             var force = forceInput.normalized * CurrentStats.thrust;
             var torque = torqueInput.normalized * Mathf.Deg2Rad * CurrentStats.agility;
 
             /* apply new forces */
-            rigidBody.AddRelativeTorque(torque);
-            rigidBody.AddRelativeForce(force);
-
-            ApplyBump(rigidBody);
+            rigidbody.AddRelativeTorque(torque);
+            rigidbody.AddRelativeForce(force);
 		}
 	}
 
 	private void Update()
 	{
+        if (!ShipType)
+        {
+            Debug.LogError("missing shiptype for ship object " + gameObject.name);
+            gameObject.SetActive(false);
+        }
+
         //force refresh of stats
         currentStats = null;
 
@@ -458,21 +393,7 @@ public class Ship : MonoBehaviour
             rigidBody.velocity = rigidBody.velocity.normalized * CurrentStats.maxSpeed;
         }
 	}
-	
-	void OnCollisionStay(Collision collision)
-	{
-		//a little bump in the opposite direction
-        var rigidbody = GetComponent<Rigidbody>();
-        if (rigidbody)
-        {
-            var bumpPower = collision.relativeVelocity;
-
-            bumpPower *= -1;
-
-            bumpForce = bumpPower;
-        }
-	}
-	
+		
 	private Vector3 GetFormationPos(int followerId)
 	{
 		var shipPos = GetComponent<Rigidbody>().transform.position;
@@ -561,5 +482,12 @@ public class Ship : MonoBehaviour
         var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(this);
 
         return fleet && fleet.IsMember(other);
+    }
+
+    public float EstimateDps()
+    {
+        return moduleLoadout.Where(mod => mod != null && mod.ModuleType.Behaviour is IWeapon)
+            .Select(mod => ((IWeapon)mod.ModuleType.Behaviour).CalculateDps(this))
+            .Sum();
     }
 }

@@ -4,8 +4,6 @@ using UnityEngine;
 [Serializable]
 public class ShipStats
 {
-    public float estimatedDps;
-
     /// <summary>
     /// Turn acceleration, in degrees/sec^2
     /// </summary>
@@ -29,22 +27,25 @@ public class ShipStats
     [SerializeField]
     private float passengerCapacity;
 
+    [SerializeField]
     private float armor;
 
+    [SerializeField]
     private float shield;
+
+    [SerializeField]
+    private float mass;
 
     /// <summary>
     /// Number of passenger slots
     /// </summary>
-    public uint PassengerCapacity
-    {
-        get { return (uint) Mathf.FloorToInt(passengerCapacity); }
-    }
+    public uint PassengerCapacity { get { return (uint) Mathf.FloorToInt(passengerCapacity); } }
+    public int Armor { get { return Mathf.FloorToInt(armor); } }
+    public int Shield { get { return Mathf.FloorToInt(shield); } }
+    public float Mass { get { return mass; } }
 
     public ShipStats()
     {
-        estimatedDps = 0;
-
         agility = 0;
         thrust = 0;
 
@@ -55,6 +56,8 @@ public class ShipStats
 
         armor = 0;
         shield = 0;
+
+        mass = 10;
     }
 
     public ShipStats Clone()
@@ -64,7 +67,6 @@ public class ShipStats
 
     public void AddFlat(ShipStats other)
     {
-        estimatedDps += other.estimatedDps;
         agility += other.agility;
         thrust += other.thrust;
         maxTurnSpeed += other.maxTurnSpeed;
@@ -73,11 +75,12 @@ public class ShipStats
 
         armor += other.armor;
         shield += other.shield;
+
+        mass += other.mass;
     }
 
     public void ApplyProportional(ShipStats other)
     {
-        other.estimatedDps += agility * other.estimatedDps;
         agility += agility * other.agility;
         thrust += thrust * other.thrust;
         maxTurnSpeed += maxTurnSpeed * other.maxTurnSpeed;
@@ -86,5 +89,7 @@ public class ShipStats
 
         armor += armor * other.armor;
         shield += shield * other.shield;
+
+        mass += mass * other.mass;
     }
 }

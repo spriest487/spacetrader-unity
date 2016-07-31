@@ -20,12 +20,6 @@ public class ShipType : ScriptableObject
     private ShipStats stats;
     
     [SerializeField]
-    private int armor;
-
-    [SerializeField]
-    private int shield;
-
-    [SerializeField]
     private int cargoSize;
 
     [SerializeField]
@@ -33,58 +27,23 @@ public class ShipType : ScriptableObject
 
     [SerializeField]
     private List<Ability> abilities;
-
+    
     [SerializeField]
     private ScalableParticle explosionEffect;
 
-    public ShipStats Stats
-    {
-        get
-        {
-            return stats;
-        }
-    }
+    public ScalableParticle ExplosionEffect { get { return explosionEffect; } }
+    public ShipStats Stats { get { return stats; } }
+    public IEnumerable<Ability> Abilities { get { return abilities; } }
+    public bool Moorable { get { return moorable; } }
+    public int CargoSize { get { return cargoSize; } }
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
         var obj = (Transform) Instantiate(prefab, position, rotation);
         obj.name = this.name;
 
-        var ship = obj.gameObject.AddComponent<Ship>();
-        ship.BaseStats = stats;
-        ship.ExplosionEffect = explosionEffect;
-
-        var newAbilities = new List<Ability>();
-        foreach (var ability in abilities)
-        {
-            if (ability != null)
-            {
-                var abilityInstance = Instantiate(ability);
-                abilityInstance.name = ability.name;
-                abilityInstance.Cooldown = 0;
-                newAbilities.Add(abilityInstance);
-            }
-        }
-        ship.Abilities = newAbilities;
-
-        if (moorable && !obj.gameObject.GetComponent<Moorable>())
-        {
-            obj.gameObject.AddComponent<Moorable>();
-        }   
-                
-        if (cargoSize > 0)
-        {
-            ship.Cargo = CreateInstance<CargoHold>();
-            ship.Cargo.Size = cargoSize;
-        }
-        else
-        {
-            ship.Cargo = null;
-        }
-
-        var hp = obj.gameObject.AddComponent<Hitpoints>();
-        hp.Reset(armor, shield);
-
+        var ship = Ship.Create(obj.gameObject, this);
+        
         return ship;
     }
 }

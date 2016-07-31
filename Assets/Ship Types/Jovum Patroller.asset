@@ -14,11 +14,13 @@ MonoBehaviour:
   prefab: {fileID: 405804, guid: 0b0851bea097c0b40ba32a9237ffba85, type: 2}
   stats:
     agility: 45
-    thrust: 10
+    thrust: 1000
     maxTurnSpeed: 90
     maxSpeed: 20
-  armor: 100
-  shieldSectors: 2800000028000000
+    passengerCapacity: 0
+    armor: 10
+    shield: 20
+    mass: 10
   cargoSize: 10
   moorable: 1
   abilities:

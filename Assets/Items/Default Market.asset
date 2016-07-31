@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Name: Default Market
   m_EditorClassIdentifier: 
   baseHirePrice: 100
+  shipPrices:
+  - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+    price: 5000
+  - shipType: {fileID: 11400000, guid: ace4c34db1c19634fab5ae077d56ec08, type: 2}
+    price: 10

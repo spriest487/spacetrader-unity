@@ -99,7 +99,12 @@ public class AbilityBar : MonoBehaviour
                 }
             }
         }
-
+        else
+        {
+            buttons.Clear();
+            RemoveExistingButtons();
+        }
+        
         bool overButton = false;
         foreach (var button in buttons)
         {

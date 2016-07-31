@@ -106,7 +106,7 @@ public class AICaptain : MonoBehaviour
         var totalAngle = Vector3.Dot(towards, transform.forward);
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
         
-        var facingTowardsAngle = ship.BaseStats.maxTurnSpeed;
+        var facingTowardsAngle = ship.CurrentStats.maxTurnSpeed;
         var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 
@@ -167,7 +167,7 @@ public class AICaptain : MonoBehaviour
             for (int a = 0; a < 3; ++a)
             {
                 var angle = currentLocalRotation[a];
-                counterThrust[a] = -(Mathf.Clamp01(angle / ship.BaseStats.maxTurnSpeed));
+                counterThrust[a] = -(Mathf.Clamp01(angle / ship.CurrentStats.maxTurnSpeed));
             }
 
             ship.Pitch = counterThrust.x;
@@ -194,7 +194,7 @@ public class AICaptain : MonoBehaviour
                     var distance = between.magnitude;
 
                     var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
-                    var currentThrust = rigidbody.velocity.magnitude / ship.BaseStats.maxSpeed;
+                    var currentThrust = rigidbody.velocity.magnitude / ship.CurrentStats.maxSpeed;
 
                     ship.Thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
                 }

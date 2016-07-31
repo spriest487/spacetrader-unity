@@ -13,12 +13,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 498284, guid: 4f20b90fd8f0d62468502a828f4c5a6e, type: 2}
   stats:
-    agility: 1
-    thrust: 1
-    maxTurnSpeed: 1
-    maxSpeed: 1
-  armor: 10
-  shieldSectors: 
+    agility: 0
+    thrust: 0
+    maxTurnSpeed: 0
+    maxSpeed: 0
+    passengerCapacity: 0
+    armor: 0
+    shield: 0
+    mass: 10
   cargoSize: 20
   moorable: 0
+  abilities: []
   explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
