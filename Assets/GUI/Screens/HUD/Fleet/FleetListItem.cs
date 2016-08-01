@@ -112,7 +112,7 @@ public class FleetListItem : MonoBehaviour
 
         var player = PlayerShip.LocalPlayer;
         var shipTargetable = ship.GetComponent<Targetable>();
-        selectionOverlay.gameObject.SetActive(player && player.Ship.Target == shipTargetable);
+        selectionOverlay.gameObject.SetActive(shipTargetable && player && player.Ship.Target == shipTargetable);
     }
 
     public void TargetMember()

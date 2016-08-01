@@ -131,7 +131,7 @@ public class Ship : MonoBehaviour
         set { explosionEffect = value; }
     }
 
-    public IList<StatusEffect> StatusEffects
+    public IEnumerable<StatusEffect> StatusEffects
     {
         get { return activeStatusEffects.AsReadOnly(); }
     }

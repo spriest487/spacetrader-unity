@@ -21,10 +21,7 @@ public class MissionsMenu : MonoBehaviour
 
     [SerializeField]
     private Button[] missionActionButtons;
-
-    [SerializeField]
-    private ConnectingScreen connectingScreen;
-
+    
     [SerializeField]
     private string emptySceneName;
     
@@ -83,57 +80,6 @@ public class MissionsMenu : MonoBehaviour
     {
         SceneManager.LoadScene(selectedMission.SceneName);
     }
-
-#if !UNITY_WEBGL
-
-    public void HostGame()
-    {
-        var error = Network.InitializeServer(8, 30001, true);
-        if (error == NetworkConnectionError.NoError)
-        {
-            SceneManager.LoadScene(selectedMission.SceneName);
-            SelectMission(null);
-        }
-        else
-        {
-            Debug.Log(error.ToString());
-        }
-    }
-
-    public void JoinGame()
-    {
-        var error = Network.Connect("localhost", 30001);
-        if (error == NetworkConnectionError.NoError)
-        {
-            SceneManager.LoadScene(emptySceneName);
-            
-            var connecting = (ConnectingScreen) Instantiate(connectingScreen);
-            DontDestroyOnLoad(connecting);
-
-            connecting.scene = selectedMission.SceneName;
-
-            SelectMission(null);
-        }
-        else
-        {
-            Debug.Log(error.ToString());
-        }
-    }
-    
-    void OnFailedToConnect(NetworkConnectionError e)
-    {
-        Debug.Log("failed to connect: " +e);
-    }
-
-    void OnDisconnectedFromServer()
-    {
-        Debug.Log("disconnected");
-
-        var mainMenu = GetComponentInParent<MainMenu>();
-        mainMenu.EndGame();
-    }
-#endif
-
 }
 
 

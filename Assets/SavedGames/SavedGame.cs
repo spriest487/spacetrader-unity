@@ -39,62 +39,19 @@ namespace SavedGames
         {
             X = quat.x;
             Y = quat.y;
-            Z = quat.y;
+            Z = quat.z;
             W = quat.w;
-        }
-    }
-
-    [Serializable]
-    class ShipInfo
-    {
-        private string shipType;
-
-        private SerializedVector3 position;
-        private SerializedQuaternion rotation;
-        private SerializedVector3 linearVelocity;
-        private SerializedVector3 angularVelocity;
-
-        public ShipInfo()
-        {
-        }
-
-        public ShipInfo(Ship fromShip) : this()
-        {
-            var rb = fromShip.GetComponent<Rigidbody>();
-            
-            position = new SerializedVector3(rb.position);
-            rotation = new SerializedQuaternion(rb.rotation);
-            linearVelocity = new SerializedVector3(rb.velocity);
-            angularVelocity = new SerializedVector3(rb.angularVelocity);
-
-            shipType = fromShip.ShipType.name;
-        }
-
-        public Ship RestoreShip()
-        {
-            var type = SpaceTraderConfig.Market.BuyableShipTypes.Where(st => st.name == shipType).FirstOrDefault();
-            if (!type)
-            {
-                return null;
-            }
-
-            var ship = type.CreateShip(position.AsVector(), rotation.AsQuaternion());
-            var rb = ship.GetComponent<Rigidbody>();
-            rb.velocity = linearVelocity.AsVector();
-            rb.angularVelocity = angularVelocity.AsVector();
-
-            return ship;
         }
     }
 
     [Serializable]
     class SavedGame
     {
-        [SerializeField]
+        //loaded level scene id
         private int level;
 
-        [SerializeField]
         private List<ShipInfo> fleetShips;
+        private int playerMoney;
 
         public static SavedGame CaptureFromCurrentState()
         {
@@ -112,8 +69,10 @@ namespace SavedGames
                 var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
                 if (fleet)
                 {
-                    result.fleetShips.AddRange(fleet.Members.Select(ship => new ShipInfo(ship)));
+                    result.fleetShips.AddRange(fleet.Followers.Select(ship => new ShipInfo(ship)));
                 }
+
+                result.playerMoney = player.Money;
             }
 
             return result;
@@ -134,6 +93,12 @@ namespace SavedGames
             {
                 var player = fleetShips.Select(s => s.RestoreShip())
                     .FirstOrDefault();
+
+                if (player)
+                {
+                    var localPlayer = SpaceTraderConfig.LocalPlayer = player.gameObject.AddComponent<PlayerShip>();
+                    localPlayer.AddMoney(playerMoney);
+                }
 
                 var fleetMembers = fleetShips.Skip(1)
                     .Select(s => s.RestoreShip())

@@ -3,7 +3,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using System;
+using System.Linq;
 
 public class BracketManager : MonoBehaviour
 {
@@ -72,8 +72,9 @@ public class BracketManager : MonoBehaviour
         foreach (var bracket in brackets)
         {
             Destroy(bracket.gameObject);
-            brackets.Clear();
         }
+
+        brackets.Clear();
     }
 
     void LateUpdate()
@@ -84,55 +85,28 @@ public class BracketManager : MonoBehaviour
             return;
         }
 
-        var ships = FindObjectsOfType(typeof(Targetable)) as Targetable[];
+        brackets.RemoveAll(b => !b);
 
-        var existingBrackets = new Dictionary<int, Bracket>();
-        if (brackets != null)
-        {
-            foreach (var bracket in brackets)
+        var targetables = FindObjectsOfType<Targetable>()
+            .Where(t => t.BracketVisible)
+            .ToList();
+
+        targetables.Except(brackets.Select(b => b.Target))
+            .ToList()
+            .ForEach(newTarget =>
             {
-                existingBrackets.Add(bracket.Target.GetInstanceID(), bracket);
-            }
-        }
-        
-		var newBrackets = new Dictionary<int, Bracket>();
-		if (ships != null)
-		{
-			foreach (var ship in ships)
-			{
-				var shipId = ship.GetInstanceID();
+                var newBracket = Bracket.CreateFromPrefab(bracket, this, newTarget);
+                newBracket.transform.SetParent(transform, false);
+                brackets.Add(newBracket);
+            });
 
-                if (!ship.BracketVisible)
-                {
-                    continue;
-                }
-
-				Bracket existingBracket;
-                existingBrackets.TryGetValue(shipId, out existingBracket);
-
-				if (existingBracket)
-				{
-					newBrackets.Add(shipId, existingBracket);
-				}
-				else
-				{
-                    var newBracket = Bracket.CreateFromPrefab(bracket, this, ship);
-                    newBracket.transform.SetParent(transform, false);
-					newBrackets.Add(shipId, newBracket);
-				}
-			}
-		}
-
-		//remove all brackets that don't appear in the new list
-		foreach (var bracket in existingBrackets)
-		{
-			if (!newBrackets.ContainsKey(bracket.Key))
-			{
-                Destroy(bracket.Value.gameObject);
-			}
-		}
-
-        brackets = new List<Bracket>(newBrackets.Values);
+        brackets.Where(b => !targetables.Contains(b.Target))
+            .ToList()
+            .ForEach(removeBracket =>
+            {
+                Destroy(removeBracket.gameObject);
+                brackets.Remove(removeBracket);
+            });
 
         //z-sort (this is one frame behind but it shouldn't matter..?)
         brackets.Sort(bracketOrder);
@@ -160,7 +134,7 @@ public class BracketManager : MonoBehaviour
 
     void OnLevelWasLoaded()
     {
-        brackets = new List<Bracket>();
+        Clear();
     }
 
     public Bracket FindBracket(GameObject obj)
