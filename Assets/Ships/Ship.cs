@@ -147,6 +147,7 @@ public class Ship : MonoBehaviour
         ship.shipType = shipType;
 
         var rb = ship.GetComponent<Rigidbody>();
+        UpdateRigidBodyFromStats(rb, shipType.Stats);
 
         ship.ExplosionEffect = shipType.ExplosionEffect;
 
@@ -183,6 +184,17 @@ public class Ship : MonoBehaviour
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private static void UpdateRigidBodyFromStats(Rigidbody rigidbody, ShipStats stats)
+    {
+        rigidbody.mass = stats.Mass;
+        rigidbody.isKinematic = rigidbody.mass < Mathf.Epsilon;
+
+        rigidbody.drag = 2;
+        rigidbody.angularDrag = 2;
+        rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+        rigidbody.inertiaTensor = new Vector3(1, 1, 1);
     }
    
     /**
@@ -310,13 +322,7 @@ public class Ship : MonoBehaviour
         
         if (rigidbody)
 		{
-            rigidbody.mass = CurrentStats.Mass;
-            rigidbody.isKinematic = rigidbody.mass < Mathf.Epsilon;
-
-            rigidbody.drag = 2;
-            rigidbody.angularDrag = 2;
-            rigidbody.maxAngularVelocity = Mathf.Deg2Rad * CurrentStats.maxTurnSpeed;
-            rigidbody.inertiaTensor = new Vector3(1, 1, 1);
+            UpdateRigidBodyFromStats(rigidbody, CurrentStats);
 
             //all movement vals must be within -1..1
             Thrust = Mathf.Clamp(Thrust, -1, 1);
