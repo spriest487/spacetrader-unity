@@ -14,6 +14,15 @@ public class CrewConfiguration : ScriptableObject
     private string[] forenames;
     private string[] surnames;
 
+    [SerializeField]
+    private List<Sprite> portraits;
+
+    [SerializeField]
+    private Sprite defaultPortrait;
+
+    public IList<Sprite> Portraits { get { return portraits; } }
+    public Sprite DefaultPortrait { get { return defaultPortrait; } }
+
     private static string[] LoadNamesFromTextAsset(TextAsset asset)
     {
         return asset.text.Split('\n');
@@ -25,6 +34,6 @@ public class CrewConfiguration : ScriptableObject
         surnames = LoadNamesFromTextAsset(surnameList);
     }
 
-    private string[] Forenames { get { return forenames; } }
-    private string[] Surnames { get { return surnames; } }
+    private IEnumerable<string> Forenames { get { return forenames; } }
+    private IEnumerable<string> Surnames { get { return surnames; } }
 }
