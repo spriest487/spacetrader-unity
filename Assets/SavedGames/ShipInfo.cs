@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 using System;
 
 namespace SavedGames
@@ -7,6 +8,9 @@ namespace SavedGames
     [Serializable]
     class ShipInfo
     {
+        private int transientId;
+        public int TransientID { get { return transientId; } }
+
         private string name;
 
         private string shipType;
@@ -18,12 +22,17 @@ namespace SavedGames
 
         private bool targetable;
 
+        private List<float> abilityCooldowns;
+        private List<ModuleInfo> equippedModules;
+        
         public ShipInfo()
         {
         }
 
-        public ShipInfo(Ship fromShip) : this()
+        public ShipInfo(Ship fromShip, int transientId) : this()
         {
+            this.transientId = transientId;
+
             var rb = fromShip.GetComponent<Rigidbody>();
 
             name = fromShip.name;
@@ -36,6 +45,12 @@ namespace SavedGames
             targetable = fromShip.GetComponent<Targetable>();
 
             shipType = fromShip.ShipType.name;
+
+            abilityCooldowns = fromShip.Abilities.Select(a => a.Cooldown).ToList();
+
+            equippedModules = fromShip.ModuleLoadout
+                .Select(m => m != null? new ModuleInfo(m) : null)
+                .ToList();
         }
 
         public Ship RestoreShip()
@@ -43,6 +58,7 @@ namespace SavedGames
             var type = SpaceTraderConfig.Market.BuyableShipTypes.Where(st => st.name == shipType).FirstOrDefault();
             if (!type)
             {
+                Debug.Log("no shiptype matches " + shipType);
                 return null;
             }
 
@@ -56,6 +72,24 @@ namespace SavedGames
             if (targetable)
             {
                 ship.gameObject.AddComponent<Targetable>();
+            }
+
+            if (abilityCooldowns == null || ship.Abilities.Count != abilityCooldowns.Count)
+            {
+                Debug.LogWarning("invalid ability count in save");
+            }
+
+            if (equippedModules != null)
+            {
+                equippedModules.Select((m, slot) => new { Slot = slot, Module = m })
+                    .ToList()
+                    .ForEach(em => em.Module.Restore(ship, em.Slot));
+            }
+
+            for (int ac = 0; ac < abilityCooldowns.Count; ++ac)
+            {
+                var cooldown = abilityCooldowns[ac];
+                ship.Abilities[ac].Cooldown = cooldown;
             }
 
             return ship;

@@ -23,7 +23,7 @@ internal static class ListUtility
         return true;
     }
 
-    public static void Resize<T>(this IList<T> list, int size) 
+    public static int Resize<T>(this IList<T> list, int size) 
         where T : class
     {
         int diff = size - list.Count;
@@ -32,7 +32,7 @@ internal static class ListUtility
         {
             for (int i = 0; i < diff; ++i)
             {
-                list.Add(null);
+                list.Add(default(T));
             }
         }
         else if (diff < 0)
@@ -42,5 +42,8 @@ internal static class ListUtility
                 list.RemoveAt(list.Count - 1);
             }
         }
+
+        //number of elements added/removed
+        return -diff;
     }
 }

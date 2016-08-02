@@ -91,15 +91,6 @@ public class BracketManager : MonoBehaviour
             .Where(t => t.BracketVisible)
             .ToList();
 
-        targetables.Except(brackets.Select(b => b.Target))
-            .ToList()
-            .ForEach(newTarget =>
-            {
-                var newBracket = Bracket.CreateFromPrefab(bracket, this, newTarget);
-                newBracket.transform.SetParent(transform, false);
-                brackets.Add(newBracket);
-            });
-
         brackets.Where(b => !targetables.Contains(b.Target))
             .ToList()
             .ForEach(removeBracket =>
@@ -108,6 +99,15 @@ public class BracketManager : MonoBehaviour
                 brackets.Remove(removeBracket);
             });
 
+        targetables.Except(brackets.Select(b => b.Target))
+            .ToList()
+            .ForEach(newTarget =>
+            {
+                var newBracket = Bracket.CreateFromPrefab(bracket, this, newTarget);
+                newBracket.transform.SetParent(transform, false);
+                brackets.Add(newBracket);
+            });
+        
         //z-sort (this is one frame behind but it shouldn't matter..?)
         brackets.Sort(bracketOrder);
         brackets.ForEach(b => b.transform.SetAsFirstSibling());

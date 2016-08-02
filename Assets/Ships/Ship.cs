@@ -178,6 +178,8 @@ public class Ship : MonoBehaviour
         var hp = obj.gameObject.AddComponent<Hitpoints>();
         hp.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
 
+        ship.moduleLoadout.SlotCount = shipType.ModuleSlots;
+
         return ship;
     }
 
@@ -371,6 +373,12 @@ public class Ship : MonoBehaviour
             {
                 ability.Cooldown -= Time.deltaTime;
             }
+        }
+
+        //module ticks
+        foreach (var module in moduleLoadout)
+        {
+            module.UpdateBehaviour(this);
         }
 
         List<StatusEffect> newStatusEffects = new List<StatusEffect>(activeStatusEffects.Count);

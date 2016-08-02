@@ -124,10 +124,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ignoreTranslation: 0
   offset: {x: 0, y: 1.65, z: -8}
-  thrustOffset: 1
-  rotationOffset: 0.05
-  shakeMax: 0.1
-  shakeSpeed: 2
+  thrustOffset: 0.5
+  rotationOffset: 0.02
   shakeCollisionConversion: 0.05
   dragInputCurve:
     serializedVersion: 2

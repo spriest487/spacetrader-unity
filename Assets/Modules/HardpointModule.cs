@@ -29,6 +29,15 @@ public class HardpointModule
     public float Cooldown
     {
         get { return behaviour? behaviour.Cooldown : 0; }
+        set
+        {
+            if (!behaviour)
+            {
+                Debug.LogWarning("setting cooldown on module with no behaviour");
+                return;
+            }
+            behaviour.Cooldown = value;
+        }
     }
     
     public HardpointModule()
@@ -51,7 +60,15 @@ public class HardpointModule
     {
         if (Cooldown <= Mathf.Epsilon) //cd check
         {
-            ModuleType.Behaviour.Activate(activator, slot);
+            behaviour.Activate(activator, slot);
+        }
+    }
+
+    public void UpdateBehaviour(Ship owner)
+    {
+        if (behaviour)
+        {
+            behaviour.UpdateForOwner(owner);
         }
     }
 }

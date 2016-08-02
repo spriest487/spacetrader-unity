@@ -118,6 +118,11 @@ public class PlayerShip : MonoBehaviour
 
         for (int moduleIndex = 0; moduleIndex < loadout.SlotCount; ++moduleIndex)
         {
+            if (loadout.IsFreeSlot(moduleIndex))
+            {
+                continue;
+            }
+
             var module = loadout.GetSlot(moduleIndex);
 
             var hardpoint = ship.GetHardpointAt(moduleIndex);
@@ -218,7 +223,10 @@ public class PlayerShip : MonoBehaviour
             {
                 for (int mod = 0; mod < ship.ModuleLoadout.SlotCount; ++mod)
                 {
-                    ship.ModuleLoadout.Activate(ship, mod);
+                    if (!ship.ModuleLoadout.IsFreeSlot(mod))
+                    {
+                        ship.ModuleLoadout.Activate(ship, mod);
+                    }
                 }
             }
 

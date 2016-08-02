@@ -22,6 +22,7 @@ MonoBehaviour:
     shield: 0
     mass: 10
   cargoSize: 10
+  moduleSlots: 20
   moorable: 1
   abilities:
   - {fileID: 11400000, guid: 3a85a027c019cd34e9ad81668315562f, type: 2}

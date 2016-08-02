@@ -29,7 +29,14 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
         get { return hardpointModules.Count; }
         set
         {
-            hardpointModules.Resize(value);
+            int addedSlots = hardpointModules.Resize(value);
+
+            //fill in any new slots with empty moduleslots
+            for (int i = 0; i < addedSlots; ++i)
+            {
+                int addedSlot = (value - addedSlots) + i;
+                Equip(addedSlot, null);
+            }
         }
     }
 

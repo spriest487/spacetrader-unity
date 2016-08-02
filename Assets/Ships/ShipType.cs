@@ -23,6 +23,9 @@ public class ShipType : ScriptableObject
     private int cargoSize;
 
     [SerializeField]
+    private int moduleSlots;
+
+    [SerializeField]
     private bool moorable;
 
     [SerializeField]
@@ -36,6 +39,7 @@ public class ShipType : ScriptableObject
     public IEnumerable<Ability> Abilities { get { return abilities; } }
     public bool Moorable { get { return moorable; } }
     public int CargoSize { get { return cargoSize; } }
+    public int ModuleSlots { get { return moduleSlots; } }
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {

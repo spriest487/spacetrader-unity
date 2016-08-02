@@ -45,12 +45,41 @@ namespace SavedGames
     }
 
     [Serializable]
+    class FleetInfo
+    {
+        private ShipInfo Leader;
+        private List<ShipInfo> Followers;
+
+        public FleetInfo()
+        {
+        }
+
+        public FleetInfo(Fleet fleet, Dictionary<int, ShipInfo> shipsByInstanceId)
+        {
+            Leader = shipsByInstanceId[fleet.Leader.GetInstanceID()];
+            Followers = fleet.Followers.Select(f => 
+                shipsByInstanceId[f.GetInstanceID()]).ToList();
+        }
+
+        public void Restore(Dictionary<int, Ship> shipsByTransientId)
+        {
+            var leader = shipsByTransientId[Leader.TransientID];
+            Followers.ForEach(f => 
+                SpaceTraderConfig.FleetManager.AddToFleet(leader, shipsByTransientId[f.TransientID]));
+        }
+    }
+    
+    [Serializable]
     class SavedGame
     {
         //loaded level scene id
         private int level;
+        
+        private List<ShipInfo> ships;
+        private List<FleetInfo> fleets;
 
-        private List<ShipInfo> fleetShips;
+        private ShipInfo playerShip;
+        
         private int playerMoney;
 
         public static SavedGame CaptureFromCurrentState()
@@ -59,20 +88,29 @@ namespace SavedGames
 
             result.level = SceneManager.GetActiveScene().buildIndex;
 
-            result.fleetShips = new List<ShipInfo>();
+            result.ships = new List<ShipInfo>();
 
+            var sceneShips = UnityEngine.Object.FindObjectsOfType<Ship>();
+
+            var shipsByInstanceId = new Dictionary<int, ShipInfo>();
+            int nextTransientId = 0;
+            foreach (var ship in sceneShips)
+            {
+                shipsByInstanceId[ship.GetInstanceID()] = new ShipInfo(ship, nextTransientId++);
+            }
+
+            var allFleets = sceneShips.Select<Ship, Fleet>(SpaceTraderConfig.FleetManager.GetFleetOf)
+                .Where(f => !!f)
+                .Distinct();
+
+            result.fleets = allFleets.Select<Fleet, FleetInfo>(f => new FleetInfo(f, shipsByInstanceId)).ToList();
+            result.ships = shipsByInstanceId.Values.ToList();
+            
             var player = PlayerShip.LocalPlayer;
             if (player)
             {
-                result.fleetShips.Add(new ShipInfo(player.Ship));
-
-                var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
-                if (fleet)
-                {
-                    result.fleetShips.AddRange(fleet.Followers.Select(ship => new ShipInfo(ship)));
-                }
-
                 result.playerMoney = player.Money;
+                result.playerShip = shipsByInstanceId[player.Ship.GetInstanceID()];
             }
 
             return result;
@@ -83,30 +121,32 @@ namespace SavedGames
             yield return SceneManager.LoadSceneAsync(level);
 
             //TODO: to prevent dupes, simply delete all pre-existing ships!
-            var ships = UnityEngine.Object.FindObjectsOfType<Ship>();
-            foreach (var ship in ships)
+            var oldShips = UnityEngine.Object.FindObjectsOfType<Ship>();
+            foreach (var ship in oldShips)
             {
                 UnityEngine.Object.Destroy(ship.gameObject);
             }
 
-            if (fleetShips != null)
-            {
-                var player = fleetShips.Select(s => s.RestoreShip())
-                    .FirstOrDefault();
+            //wait for the nice clean scene next frame
+            yield return null;
 
-                if (player)
+            if (ships != null)
+            {
+                var shipsByTransientId = ships.ToDictionary(s => s.TransientID, s => s.RestoreShip());
+
+                if (fleets != null)
                 {
-                    var localPlayer = SpaceTraderConfig.LocalPlayer = player.gameObject.AddComponent<PlayerShip>();
-                    localPlayer.AddMoney(playerMoney);
+                    fleets.ForEach(f => f.Restore(shipsByTransientId));
                 }
 
-                var fleetMembers = fleetShips.Skip(1)
-                    .Select(s => s.RestoreShip())
-                    .Where(ship => ship != null)
-                    .ToList();
+                if (playerShip != null)
+                {
+                    var ship = shipsByTransientId[playerShip.TransientID];
+                    var newLocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+                    newLocalPlayer.AddMoney(playerMoney);
 
-                fleetMembers.ForEach(ship => 
-                    SpaceTraderConfig.FleetManager.AddToFleet(player, ship));
+                    SpaceTraderConfig.LocalPlayer = newLocalPlayer;
+                }
             }
         }
     }

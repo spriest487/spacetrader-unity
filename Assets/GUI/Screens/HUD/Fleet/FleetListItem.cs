@@ -71,6 +71,12 @@ public class FleetListItem : MonoBehaviour
 
     private void Update()
     {
+        if (!ship)
+        {
+            //await sweet death, fleetlist will kill us
+            return;
+        }
+
         nameLabel.text = ship.name;
 
         if (hitpoints && hitpoints.GetMaxArmor() > 0)

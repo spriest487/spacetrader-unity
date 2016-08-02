@@ -32,18 +32,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
     
     [SerializeField]
     private float fireRate = 0.2f;
-
-    [SerializeField]
-    private float lastShot = 0;
     
-    public override float Cooldown
-    {
-        get
-        {
-            return (lastShot + fireRate) - Time.time;
-        }
-    }
-
     public override string Description
     {
         get
@@ -61,7 +50,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
     
     public override void Equip(HardpointModule slot)
     {
-        lastShot = 0;
+        Cooldown = 0;
     }
 
     private int CalculateDamage(Ship activator, int slot)
@@ -117,7 +106,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
                 flash.SetParent(firedTransform, true);
             }
 
-            lastShot = Time.time;
+            Cooldown = fireRate;
         }        
 	}
     
@@ -163,5 +152,5 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         targetPos += speedDiff;
 
         return targetPos;
-    }
+    } 
 }

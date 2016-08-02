@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 using System.Collections.Generic;
 
 public class FleetList : MonoBehaviour
@@ -36,14 +37,14 @@ public class FleetList : MonoBehaviour
     public void Update()
     {
         var player = PlayerShip.LocalPlayer;
-        if (!player)
+        if (!player || !player.Ship)
         {
             Clear();
             return;
         }
 
         var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
-        if (fleet == null)
+        if (!fleet)
         {
             Clear();
             return;
@@ -52,7 +53,7 @@ public class FleetList : MonoBehaviour
         var ships = new List<Ship>(fleet.Members);
         ships.RemoveAll(ship => ship == player.Ship);
 
-        bool dirty = currentShips == null || !currentShips.ElementsEquals(ships);
+        bool dirty = currentShips == null || !currentShips.ElementsEquals(ships) || currentShips.Any(s => !s);
 
         if (dirty)
         {
