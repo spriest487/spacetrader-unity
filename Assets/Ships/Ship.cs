@@ -10,10 +10,7 @@ public class Ship : MonoBehaviour
 {
     [SerializeField]
 	private FormationManager formationManager = new FormationManager();
-
-    [SerializeField]
-    private ShipCrewAssignments crewAssignments = new ShipCrewAssignments();
-    
+        
     [SerializeField]
     private Targetable target;
     
@@ -135,10 +132,19 @@ public class Ship : MonoBehaviour
     {
         get { return activeStatusEffects.AsReadOnly(); }
     }
-
-    public ShipCrewAssignments CrewAssignments
+    
+    public CrewMember GetCaptain()
     {
-        get { return crewAssignments; }
+        return SpaceTraderConfig.CrewConfiguration.Characters
+            .Where(c => c.AssignedShip == this && c.AssignedRole == CrewAssignment.Captain)
+            .FirstOrDefault();
+    }
+
+    public IEnumerable<CrewMember> GetPassengers()
+    {
+        return SpaceTraderConfig.CrewConfiguration.Characters
+            .Where(c => c.AssignedShip == this && c.AssignedRole == CrewAssignment.Passenger)
+            .ToList();
     }
 
     public static Ship Create(GameObject obj, ShipType shipType)

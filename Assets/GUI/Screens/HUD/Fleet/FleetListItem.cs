@@ -89,7 +89,7 @@ public class FleetListItem : MonoBehaviour
             armorBar.gameObject.SetActive(false);
         }
 
-        var captain = ship.CrewAssignments.Captain;
+        var captain = ship.GetCaptain();
         if (captain)
         {
             captainPortrait.sprite = captain.Portrait;

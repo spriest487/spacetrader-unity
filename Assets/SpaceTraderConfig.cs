@@ -64,6 +64,13 @@ public class SpaceTraderConfig : MonoBehaviour
     
     private void OnEnable()
     {
+        //clone configs on startup so we don't modify the global assets
+        crewConfig = CrewConfiguration.Create(crewConfig);
+        cargoConfig = Instantiate(cargoConfig);
+        missionsConfig = Instantiate(missionsConfig);
+        market = Instantiate(market);
+        fleetManager = Instantiate(fleetManager);
+
         if (Instance != null && instance != this)
         {
             //can't have two in a scene, and the existing one takes priority
@@ -83,6 +90,15 @@ public class SpaceTraderConfig : MonoBehaviour
         {
             instance = null;
         }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(crewConfig);
+        Destroy(cargoConfig);
+        Destroy(missionsConfig);
+        Destroy(market);
+        Destroy(fleetManager);
     }
 
     private void OnLevelWasLoaded()

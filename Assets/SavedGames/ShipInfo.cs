@@ -24,12 +24,14 @@ namespace SavedGames
 
         private List<float> abilityCooldowns;
         private List<ModuleInfo> equippedModules;
+
+        private CharacterInfo captain;
         
         public ShipInfo()
         {
         }
 
-        public ShipInfo(Ship fromShip, int transientId) : this()
+        public ShipInfo(Ship fromShip, CharacterInfo captain, int transientId) : this()
         {
             this.transientId = transientId;
 
@@ -51,9 +53,11 @@ namespace SavedGames
             equippedModules = fromShip.ModuleLoadout
                 .Select(m => m != null? new ModuleInfo(m) : null)
                 .ToList();
+
+            this.captain = captain;
         }
 
-        public Ship RestoreShip()
+        public Ship RestoreShip(IDictionary<int, CrewMember> charactersByTransientId)
         {
             var type = SpaceTraderConfig.Market.BuyableShipTypes.Where(st => st.name == shipType).FirstOrDefault();
             if (!type)
@@ -68,6 +72,15 @@ namespace SavedGames
             rb.angularVelocity = angularVelocity.AsVector();
 
             ship.name = name;
+
+            if (captain != null)
+            {
+                CrewMember captainCharacter;
+                if (charactersByTransientId.TryGetValue(captain.TransientID, out captainCharacter))
+                {
+                    captainCharacter.Assign(ship, CrewAssignment.Captain);
+                }
+            }
 
             if (targetable)
             {

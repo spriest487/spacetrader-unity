@@ -44,6 +44,6 @@ internal static class ListUtility
         }
 
         //number of elements added/removed
-        return -diff;
+        return diff;
     }
 }

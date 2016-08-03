@@ -59,15 +59,9 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
         float crewBonus;
 
-        if (activator.CrewAssignments.Captain != null)
-        {
-            crewBonus = activator.CrewAssignments.Captain.WeaponsSkill * 0.1f;
-        }
-        else
-        {
-            crewBonus = 0;
-        }
-
+        var captain = activator.GetCaptain();
+        crewBonus = captain ? captain.WeaponsSkill * 0.1f : 0;
+        
         float crewMultiplier = 1.0f + Mathf.Max(0.0f, crewBonus);
 
         return Mathf.FloorToInt(randomBase * crewMultiplier);

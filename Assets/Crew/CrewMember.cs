@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+public enum CrewAssignment
+{
+    Unassigned,
+    Passenger,
+    Captain,
+}
+
 public class CrewMember : ScriptableObject
 {
 #if UNITY_EDITOR
@@ -23,16 +30,51 @@ public class CrewMember : ScriptableObject
     [SerializeField]
     private Sprite portrait;
 
-    public int PilotSkill { get { return pilotSkill; } }
-    public int WeaponsSkill { get { return weaponsSkill; } }
-    public Sprite Portrait { get { return portrait; } }
+    [SerializeField]
+    private Ship assignedShip;
 
-    public static CrewMember Create(string name, Sprite portrait)
+    [SerializeField]
+    private CrewAssignment assignedRole;
+    
+    public int PilotSkill
     {
-        CrewMember result = CreateInstance<CrewMember>();
-        result.name = name;
-        result.portrait = portrait;
+        get { return pilotSkill; }
+        set { pilotSkill = value; }
+    }
 
-        return result;
+    public int WeaponsSkill
+    {
+        get { return weaponsSkill; }
+        set { weaponsSkill = value; }
+    }
+
+    public Sprite Portrait
+    {
+        get { return portrait; }
+        set { portrait = value; }
+    }
+
+    public Ship AssignedShip
+    {
+        get { return assignedShip; }
+    }
+
+    public CrewAssignment AssignedRole
+    {
+        get { return assignedRole; }
+    }
+
+    public void Assign(Ship ship, CrewAssignment role)
+    {
+        Debug.Assert(role != CrewAssignment.Unassigned);
+
+        assignedShip = ship;
+        assignedRole = role;
+    }
+
+    public void Unassign()
+    {
+        assignedRole = CrewAssignment.Unassigned;
+        assignedShip = null;
     }
 }

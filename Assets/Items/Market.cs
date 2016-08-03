@@ -3,6 +3,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Market : ScriptableObject {
     public static string FormatCurrency(int amount)
@@ -50,7 +51,7 @@ public class Market : ScriptableObject {
         Debug.Assert(ship != null, "can't buy stuff without a ship");
 
         //check ship has space
-        var passengerCount = ship.CrewAssignments.Passengers.Count;
+        var passengerCount = ship.GetPassengers().Count();
         if (passengerCount == ship.CurrentStats.PassengerCapacity)
         {
             throw new InvalidOperationException("no room for more passengers");
@@ -64,7 +65,7 @@ public class Market : ScriptableObject {
         }
 
         player.AddMoney(-price);
-        ship.CrewAssignments.Passengers.Add(crewMember);
+        crewMember.Assign(ship, CrewAssignment.Passenger);
         fromStation.AvailableCrew.Remove(crewMember);
     }
 
@@ -72,10 +73,10 @@ public class Market : ScriptableObject {
     {
         var ship = player.Ship;
         Debug.Assert(ship != null, "can't sell stuff without a ship");
-        Debug.Assert(ship.CrewAssignments.Passengers.Contains(crewMember), "can't fire someone who doesn't work for you");
+        Debug.Assert(ship.GetPassengers().Contains(crewMember), "can't fire someone who doesn't work for you");
 
         atStation.AvailableCrew.Add(crewMember);
-        ship.CrewAssignments.Passengers.Remove(crewMember);
+        crewMember.Unassign();
     }
 
     private ShipForSale GetShipForSale(ShipType type)
@@ -103,10 +104,13 @@ public class Market : ScriptableObject {
 
         //check price
         Debug.Assert(player.Money >= shipForSale.Price, 
-            "player can't afford to buy ship");                
+            "player can't afford to buy ship");
+
+        var passengers = oldShip.GetPassengers();
+        var captain = oldShip.GetCaptain();
 
         //check crew space
-        Debug.Assert(shipForSale.ShipType.Stats.PassengerCapacity < oldShip.CrewAssignments.Passengers.Count,
+        Debug.Assert(shipForSale.ShipType.Stats.PassengerCapacity < passengers.Count(),
             "ship being bought doesn't have enough room for existing passengers");
 
         var newShip = shipType.CreateShip(player.transform.position, player.transform.rotation);
@@ -116,8 +120,11 @@ public class Market : ScriptableObject {
         newPlayer.AddMoney(player.Money - shipForSale.Price);
 
         //copy crew
-        newShip.CrewAssignments.Captain = oldShip.CrewAssignments.Captain;
-        newShip.CrewAssignments.Passengers = oldShip.CrewAssignments.Passengers;
+        captain.Assign(newShip, CrewAssignment.Captain);
+        foreach (var passenger in passengers)
+        {
+            passenger.Assign(newShip, CrewAssignment.Passenger);
+        }
             
         Destroy(player.gameObject);
         SpaceTraderConfig.LocalPlayer = newPlayer;

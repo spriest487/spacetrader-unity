@@ -13,3 +13,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forenameList: {fileID: 4900000, guid: 280dc26b388a64342a705426d16bb39e, type: 3}
   surnameList: {fileID: 4900000, guid: f97fb8b99106d8a458502fc396413549, type: 3}
+  portraits:
+  - {fileID: 21300000, guid: c1d24538f06e39740bff07d3ec9499dd, type: 3}
+  - {fileID: 21300000, guid: 5807dceb8a7245944b5c7f62e36bcd25, type: 3}
+  - {fileID: 21300000, guid: 14ba675fe429efc4e9a9ec0a201f85d9, type: 3}
+  - {fileID: 21300000, guid: 74323d4aadc973a48af4eb16b1d2072b, type: 3}
+  - {fileID: 21300000, guid: c573220f8c5074c479558dd6a83d1071, type: 3}
+  - {fileID: 21300000, guid: b8e4a153638c21249900ebf8a4988648, type: 3}
+  - {fileID: 21300000, guid: bb530b3b7b682b347a1097348571b0ab, type: 3}
+  - {fileID: 21300000, guid: 4ea0e6aadd507f147a9f91d35f6f3f9a, type: 3}
+  - {fileID: 21300000, guid: 1e5b6a167571d9c439db8c02824118b0, type: 3}
+  - {fileID: 21300000, guid: dcfea73f5ce7feb4bb6d2928e87edd0d, type: 3}
+  defaultPortrait: {fileID: 21300000, guid: 3c085367ae1b84545a0b3e7930420ce9, type: 3}
+  defaultCharacters:
+  - {fileID: 11400000, guid: f361f9e26f88b8344a563289fa89cbc2, type: 2}
+  - {fileID: 11400000, guid: 9b870d3d0fcaad84f922176d2119ac5a, type: 2}
+  characters: []

@@ -14,13 +14,15 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
 
     public void Populate()
     {
+        station.AvailableCrew.ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
+
         var crewCount = UnityEngine.Random.Range(0, 5);
         var newCrew = new List<CrewMember>(crewCount);
         
         for (int crewNo = 0; crewNo < crewCount; ++crewNo)
         {
             //TODO: people have faces
-            var member = CrewMember.Create("No name", null);
+            var member = SpaceTraderConfig.CrewConfiguration.NewCharacter("No name", null);
             newCrew.Add(member);
         }
 

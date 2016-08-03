@@ -12,6 +12,8 @@ namespace SavedGames
     {
         //loaded level scene id
         private int level;
+
+        private List<CharacterInfo> characters;
         
         private List<ShipInfo> ships;
         private List<FleetInfo> fleets;
@@ -19,22 +21,38 @@ namespace SavedGames
         private ShipInfo playerShip;
         
         private int playerMoney;
-
+        
         public static SavedGame CaptureFromCurrentState()
         {
             var result = new SavedGame();
 
             result.level = SceneManager.GetActiveScene().buildIndex;
 
-            result.ships = new List<ShipInfo>();
+            var charactersByInstanceId = new Dictionary<int, CharacterInfo>();
 
+            int nextCharacterId = 0;
+            foreach (var character in SpaceTraderConfig.CrewConfiguration.Characters)
+            {
+                charactersByInstanceId[character.GetInstanceID()] = new CharacterInfo(character, nextCharacterId++);
+            }
+
+            result.characters = charactersByInstanceId.Values.ToList();
+            
             var sceneShips = UnityEngine.Object.FindObjectsOfType<Ship>();
 
             var shipsByInstanceId = new Dictionary<int, ShipInfo>();
             int nextTransientId = 0;
             foreach (var ship in sceneShips)
             {
-                shipsByInstanceId[ship.GetInstanceID()] = new ShipInfo(ship, nextTransientId++);
+                var captain = ship.GetCaptain();
+
+                CharacterInfo captainInfo;
+                if (!captain || !charactersByInstanceId.TryGetValue(captain.GetInstanceID(), out captainInfo))
+                {
+                    captainInfo = null;
+                }
+
+                shipsByInstanceId[ship.GetInstanceID()] = new ShipInfo(ship, captainInfo, nextTransientId++);
             }
 
             var allFleets = sceneShips.Select<Ship, Fleet>(SpaceTraderConfig.FleetManager.GetFleetOf)
@@ -65,12 +83,21 @@ namespace SavedGames
                 UnityEngine.Object.Destroy(ship.gameObject);
             }
 
+            //TODO: need a better way of storing non-scene game session state!
+            SpaceTraderConfig.CrewConfiguration.Characters.ToList().ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
+
             //wait for the nice clean scene next frame
             yield return null;
 
+            var charactersByTransientId = new Dictionary<int, CrewMember>();
+            if (characters != null)
+            {
+                characters.ForEach(c => charactersByTransientId.Add(c.TransientID, c.Restore()));
+            }
+
             if (ships != null)
             {
-                var shipsByTransientId = ships.ToDictionary(s => s.TransientID, s => s.RestoreShip());
+                var shipsByTransientId = ships.ToDictionary(s => s.TransientID, s => s.RestoreShip(charactersByTransientId));
 
                 if (fleets != null)
                 {
