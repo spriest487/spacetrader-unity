@@ -243,7 +243,7 @@ public class Ship : MonoBehaviour
         target = null;
     }
 
-    private void RecalculateCurrentStats()
+    public void RecalculateCurrentStats()
     {
         var result = ShipType.Stats.Clone();
         var proportionalTotals = new ShipStats();

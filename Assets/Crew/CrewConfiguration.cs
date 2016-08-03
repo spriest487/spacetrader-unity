@@ -20,10 +20,7 @@ public class CrewConfiguration : ScriptableObject
 
     [SerializeField]
     private Sprite defaultPortrait;
-
-    [SerializeField]
-    private List<CrewMember> defaultCharacters;
-
+    
     //global list of all characters in the game!
     [SerializeField]
     private List<CrewMember> characters;
@@ -34,7 +31,10 @@ public class CrewConfiguration : ScriptableObject
     private IEnumerable<string> Forenames { get { return forenames; } }
     private IEnumerable<string> Surnames { get { return surnames; } }
 
-    public IEnumerable<CrewMember> Characters { get { return characters; } }
+    public IEnumerable<CrewMember> Characters
+    {
+        get { return characters; }
+    }
 
     public static CrewConfiguration Create(CrewConfiguration prefab)
     {
@@ -44,10 +44,6 @@ public class CrewConfiguration : ScriptableObject
         result.surnames = LoadNamesFromTextAsset(result.surnameList);
         
         result.characters = new List<CrewMember>();
-        foreach (var defaultChar in result.defaultCharacters)
-        {
-            result.characters.Add(Instantiate(defaultChar));
-        }
 
         return result;
     }
@@ -65,6 +61,15 @@ public class CrewConfiguration : ScriptableObject
         var result = CreateInstance<CrewMember>();
         result.name = name;
         result.Portrait = portrait;
+
+        characters.Add(result);
+
+        return result;
+    }
+
+    public CrewMember NewCharacter(CrewMember source)
+    {
+        var result = Instantiate(source);
 
         characters.Add(result);
 

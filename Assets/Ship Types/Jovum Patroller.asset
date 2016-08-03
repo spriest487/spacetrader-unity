@@ -17,7 +17,7 @@ MonoBehaviour:
     thrust: 1000
     maxTurnSpeed: 120
     maxSpeed: 20
-    passengerCapacity: 0
+    passengerCapacity: 2
     armor: 10
     shield: 20
     mass: 10
