@@ -32,7 +32,7 @@ namespace SavedGames
         {
             var allPortraits = SpaceTraderConfig.CrewConfiguration.Portraits;
             Sprite portrait;
-            if (portraitIndex < 0 || portraitIndex < allPortraits.Count)
+            if (portraitIndex < 0 || portraitIndex >= allPortraits.Count)
             {
                 portrait = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
             }

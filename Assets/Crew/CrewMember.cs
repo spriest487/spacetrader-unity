@@ -28,6 +28,9 @@ public class CrewMember : ScriptableObject
     private int weaponsSkill;
 
     [SerializeField]
+    private int mechanicalSkill;
+
+    [SerializeField]
     private Sprite portrait;
 
     [SerializeField]
