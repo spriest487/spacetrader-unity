@@ -24,7 +24,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190862}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.012331, y: 2.5402308, z: 5.7732496}
+  m_LocalPosition: {x: 95.859055, y: 155.11081, z: 5.7732496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -64,32 +64,27 @@ MonoBehaviour:
     playerStatus: 2
     root: {fileID: 100888, guid: fc687701ec2e7e846ba30174b20d4670, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
   - screenId: 1
     playerStatus: 0
     root: {fileID: 135988, guid: bb2d55d6d136b8e44a9d34aaf4035fb6, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
   - screenId: 2
     playerStatus: 0
     root: {fileID: 147768, guid: 0efc36eaa7ccd9e44829cd465c1756a2, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
   - screenId: 3
     playerStatus: 0
     root: {fileID: 136996, guid: 004c2a0be90239e48a97a797e0e1f37c, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
   - screenId: 4
     playerStatus: 0
     root: {fileID: 124816, guid: 161b0cceaa8592b41825467a41cee42a, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
   - screenId: 0
     playerStatus: 1
     root: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
     overlayInstance: {fileID: 0}
-    canvasScaler: {fileID: 0}
+  loadingScreen: {fileID: 11493570, guid: 5168b642295bf244b8955068e17940fe, type: 2}
   menuState: 0
   cutscene: {fileID: 0}
 --- !u!1001 &100100000

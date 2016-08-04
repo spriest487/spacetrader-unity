@@ -66,7 +66,10 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private List<ScreenMapping> screens = new List<ScreenMapping>();
-    
+
+    [SerializeField]
+    private LoadingScreen loadingScreen;
+        
     [SerializeField]
     private bool menuState;
 
@@ -273,5 +276,15 @@ public class ScreenManager : MonoBehaviour
     private void OnLevelWasLoaded(int level)
     {
         Start();
+    }
+
+    public LoadingScreen CreateLoadingScreen()
+    {
+        var instance = Instantiate(loadingScreen);
+
+        DontDestroyOnLoad(instance);
+        instance.gameObject.SetActive(true);
+
+        return instance;
     }
 }

@@ -57,6 +57,8 @@ public class NewGameMenu : MonoBehaviour
 
     private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
+        var loading = ScreenManager.Instance.CreateLoadingScreen();
+        
         yield return SceneManager.LoadSceneAsync(newGameScene);
         yield return new WaitForEndOfFrame();
 
@@ -66,5 +68,7 @@ public class NewGameMenu : MonoBehaviour
             var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);
             pc.Assign(ship, CrewAssignment.Captain);
         }
+
+        loading.Dismiss();
     }
 }

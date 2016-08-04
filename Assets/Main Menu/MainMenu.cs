@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -28,6 +29,11 @@ public class MainMenu : MonoBehaviour
     public void GoToRoot()
     {
         GoToScreen(null);
+    }
+
+    public void OnScreenActive()
+    {
+        GoToRoot();
     }
 
     public void GoToScreen(string screenId)
@@ -96,11 +102,26 @@ public class MainMenu : MonoBehaviour
     public void SaveGame()
     {
         SavedGames.SavesFolder.SaveGame();
+
+        if (PlayerShip.LocalPlayer)
+        {
+            ScreenManager.Instance.ScreenID = ScreenID.None;
+            ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", "Game saved");
+        }
     }
 
     public void LoadGame()
     {
-        SavedGames.SavesFolder.LoadGame();
+        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine());
+    }
+
+    private IEnumerator LoadGameRoutine()
+    {
+        var loading = ScreenManager.Instance.CreateLoadingScreen();
+
+        yield return SavedGames.SavesFolder.LoadGame();
+
+        loading.Dismiss();
     }
 
     public void BackToGame()
