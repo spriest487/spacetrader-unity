@@ -1,6 +1,9 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -14,11 +17,24 @@ public class NewGameMenu : MonoBehaviour
     private InputField nameInput;
 
     [SerializeField]
+    private Text careerDescription;
+
+    [SerializeField]
+    private Text shipDescription;
+    
+    [SerializeField]
     private string newGameScene;
+
+    [SerializeField]
+    private CareerOptionButton selectedCareer;
+
+    [SerializeField]
+    private List<CareerOptionButton> careers;
 
     public void OnMenuScreenActivate()
     {
         portrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+        SelectCareer(0);
     }
 
     public void CyclePortrait(int diff)
@@ -47,6 +63,17 @@ public class NewGameMenu : MonoBehaviour
         }
 
         portrait.sprite = portraits[selected];
+    }
+
+    public void SelectCareer(int index)
+    {
+        Debug.Assert(index >= 0 && index < careers.Count);
+        var career = careers[index];
+
+        careerDescription.text = career.Description;
+        shipDescription.text = career.ShipType.name;
+
+        careers.ForEach(c => c.SetHighlight(c == career));
     }
 
     public void Submit()
