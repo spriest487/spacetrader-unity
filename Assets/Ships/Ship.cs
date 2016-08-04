@@ -505,7 +505,7 @@ public class Ship : MonoBehaviour
 
     public float EstimateDps()
     {
-        return moduleLoadout.Where(mod => mod != null && mod.ModuleType.Behaviour is IWeapon)
+        return moduleLoadout.Where(mod => mod.ModuleType.Behaviour is IWeapon)
             .Select(mod => ((IWeapon)mod.ModuleType.Behaviour).CalculateDps(this))
             .Sum();
     }
