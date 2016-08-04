@@ -11,6 +11,12 @@ public class MinimumSizeCanvasScaler : MonoBehaviour
     [SerializeField]
     private int minHeight = 768;
 
+    [SerializeField]
+    private int maxWidth = 1920;
+
+    [SerializeField]
+    private int maxHeight = 1080;
+
     private CanvasScaler canvasScaler;
 
     private void Start()
@@ -30,6 +36,10 @@ public class MinimumSizeCanvasScaler : MonoBehaviour
         if (Screen.height < minHeight || Screen.width < minWidth)
         {
             scale = Mathf.Min(Screen.height / (float)minHeight, Screen.width / (float)minWidth);
+        }
+        else if (Screen.height > maxHeight || Screen.width > maxWidth)
+        {
+            scale = Mathf.Max(Screen.height / (float)maxHeight, Screen.width / (float)maxWidth);
         }
         else
         {
