@@ -72,47 +72,62 @@ namespace SavedGames
             return result;
         }
 
-        public IEnumerator RestoreState()
+        private class RestoreOperation : LoadValueOperation<bool>
         {
-            yield return SceneManager.LoadSceneAsync(level);
-
-            //TODO: to prevent dupes, simply delete all pre-existing ships!
-            var oldShips = UnityEngine.Object.FindObjectsOfType<Ship>();
-            foreach (var ship in oldShips)
+            IEnumerator Restore(SavedGame save)
             {
-                UnityEngine.Object.Destroy(ship.gameObject);
-            }
+                yield return SceneManager.LoadSceneAsync(save.level);
 
-            //TODO: need a better way of storing non-scene game session state!
-            SpaceTraderConfig.CrewConfiguration.Characters.ToList().ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
-
-            //wait for the nice clean scene next frame
-            yield return null;
-
-            var charactersByTransientId = new Dictionary<int, CrewMember>();
-            if (characters != null)
-            {
-                characters.ForEach(c => charactersByTransientId.Add(c.TransientID, c.Restore()));
-            }
-
-            if (ships != null)
-            {
-                var shipsByTransientId = ships.ToDictionary(s => s.TransientID, s => s.RestoreShip(charactersByTransientId));
-
-                if (fleets != null)
+                //TODO: to prevent dupes, simply delete all pre-existing ships!
+                var oldShips = UnityEngine.Object.FindObjectsOfType<Ship>();
+                foreach (var ship in oldShips)
                 {
-                    fleets.ForEach(f => f.Restore(shipsByTransientId));
+                    UnityEngine.Object.Destroy(ship.gameObject);
                 }
 
-                if (playerShip != null)
-                {
-                    var ship = shipsByTransientId[playerShip.TransientID];
-                    var newLocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
-                    newLocalPlayer.AddMoney(playerMoney);
+                //TODO: need a better way of storing non-scene game session state!
+                SpaceTraderConfig.CrewConfiguration.Characters.ToList().ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
 
-                    SpaceTraderConfig.LocalPlayer = newLocalPlayer;
+                //wait for the nice clean scene next frame
+                yield return null;
+
+                var charactersByTransientId = new Dictionary<int, CrewMember>();
+                if (save.characters != null)
+                {
+                    save.characters.ForEach(c => charactersByTransientId.Add(c.TransientID, c.Restore()));
                 }
+
+                if (save.ships != null)
+                {
+                    var shipsByTransientId = save.ships.ToDictionary(s => s.TransientID, s => s.RestoreShip(charactersByTransientId));
+
+                    if (save.fleets != null)
+                    {
+                        save.fleets.ForEach(f => f.Restore(shipsByTransientId));
+                    }
+
+                    if (save.playerShip != null)
+                    {
+                        var ship = shipsByTransientId[save.playerShip.TransientID];
+                        var newLocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+                        newLocalPlayer.AddMoney(save.playerMoney);
+
+                        SpaceTraderConfig.LocalPlayer = newLocalPlayer;
+                    }
+                }
+
+                Result = true;
             }
+
+            public RestoreOperation(SavedGame save)
+            {
+                SpaceTraderConfig.Instance.StartCoroutine(Restore(save));
+            }
+        }
+
+        public LoadValueOperation<bool> RestoreState()
+        {
+            return new RestoreOperation(this);
         }
     }
 }

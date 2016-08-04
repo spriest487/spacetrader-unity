@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Runtime.Serialization;
 
 namespace SavedGames
 {
@@ -20,7 +21,15 @@ namespace SavedGames
                 SavedGame save;
                 using (var saveFile = File.OpenRead(path))
                 {
-                    save = binary.Deserialize(saveFile) as SavedGame;
+                    try
+                    {
+                        save = binary.Deserialize(saveFile) as SavedGame;
+                    }
+                    catch (Exception ex)
+                    {
+                        save = null;
+                        Error = ex;
+                    }
                 }
 
                 if (save != null)

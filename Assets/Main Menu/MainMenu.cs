@@ -119,9 +119,15 @@ public class MainMenu : MonoBehaviour
     {
         var loading = ScreenManager.Instance.CreateLoadingScreen();
 
-        yield return SavedGames.SavesFolder.LoadGame();
-
+        var loadSave = SavedGames.SavesFolder.LoadGame();
+        yield return loadSave;
+        
         loading.Dismiss();
+
+        if (loadSave.Error != null)
+        {
+            Debug.LogException(loadSave.Error);
+        }
     }
 
     public void BackToGame()
