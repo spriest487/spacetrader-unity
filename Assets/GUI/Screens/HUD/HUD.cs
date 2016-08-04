@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
@@ -13,6 +14,15 @@ public class HUD : MonoBehaviour
 
     [SerializeField]
     private SpeechBubble speechBubble;
+
+    [SerializeField]
+    private ImageEffectOpaque playerPortrait;
+
+    [SerializeField]
+    private Text playerName;
+
+    [SerializeField]
+    private Text playerMoney;
 
     private BracketManager bracketManager;
 
@@ -31,11 +41,28 @@ public class HUD : MonoBehaviour
         }
 
         content.gameObject.SetActive(visible);
-
-        bool playerInfoVisible = PlayerShip.LocalPlayer ? PlayerShip.LocalPlayer.Ship : false;
+        
+        bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
         foreach (var shipInfoItem in playerShipInfo)
         {
             shipInfoItem.gameObject.SetActive(playerInfoVisible);
+        }
+        
+        if (playerInfoVisible)
+        {
+            //TODO: slow
+            var captain = PlayerShip.LocalPlayer.Ship.GetCaptain();
+            if (captain)
+            {
+                playerName.text = captain.name;
+            }
+            else
+            {
+                playerName.text = "Player";
+            }
+
+            var money = Market.FormatCurrency(PlayerShip.LocalPlayer.Money);
+            playerMoney.text = money;
         }
     }
 
