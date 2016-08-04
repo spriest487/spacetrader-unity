@@ -13,9 +13,10 @@ public class NewGameMenu : MonoBehaviour
     [SerializeField]
     private InputField nameInput;
 
-    private int loadScene;
+    [SerializeField]
+    private string newGameScene;
 
-    public void ScreenActive(int loadScene)
+    public void OnMenuScreenActivate()
     {
         portrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
     }
@@ -50,15 +51,14 @@ public class NewGameMenu : MonoBehaviour
 
     public void Submit()
     {
-        StartCoroutine(LoadNextLevel());
+        //run on global obj to persist through level change
+        SpaceTraderConfig.Instance.StartCoroutine(LoadNextLevel(nameInput.text, portrait.sprite));
     }
 
-    private IEnumerator LoadNextLevel()
+    private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
-        var pcPortrait = portrait.sprite;
-        var pcName = nameInput.text;
-
-        yield return SceneManager.LoadSceneAsync(loadScene);
+        yield return SceneManager.LoadSceneAsync(newGameScene);
+        yield return new WaitForEndOfFrame();
 
         var ship = SpaceTraderConfig.LocalPlayer.Ship;
         if (ship)

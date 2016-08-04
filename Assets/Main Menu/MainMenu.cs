@@ -8,22 +8,14 @@ public class MainMenu : MonoBehaviour
     [System.Serializable]
     public class Screens
     {
-        [SerializeField]
+        public Transform newGameScreen;
         public Transform rootScreen;
-
-        [SerializeField]
         public Transform missionsScreen;
     }
 
     [SerializeField]
-    private Text screenTitle;
-
-    [SerializeField]
     private Screens screens = new Screens();
-
-    [SerializeField]
-    private string newGameScene;
-        
+            
     [SerializeField]
     private string menuScene;
 
@@ -32,7 +24,7 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField]
     private Transform[] activeWhenNoPlayerExists;
-
+    
     public void GoToRoot()
     {
         GoToScreen(null);
@@ -41,6 +33,7 @@ public class MainMenu : MonoBehaviour
     public void GoToScreen(string screenId)
     {
         var allScreens = new Transform[] {
+            screens.newGameScreen,
             screens.rootScreen,
             screens.missionsScreen
         };
@@ -49,6 +42,11 @@ public class MainMenu : MonoBehaviour
 
         switch (screenId)
         {
+            case "newgame":
+                {
+                    showScreen = screens.newGameScreen;
+                    break;
+                }
             case "missions":
                 {
                     showScreen = screens.missionsScreen;
@@ -74,23 +72,11 @@ public class MainMenu : MonoBehaviour
         }
 
         showScreen.SendMessage("OnMenuScreenActivate", SendMessageOptions.DontRequireReceiver);
-
-        if (screenTitle) 
-        {
-            if (showScreen == screens.rootScreen)
-            {
-                screenTitle.text = "";
-            }
-            else
-            {
-                screenTitle.text = showScreen.name;
-            }
-        }
     }
 
     public void NewGame()
     {
-        SceneManager.LoadScene(newGameScene);
+        GoToScreen("newgame");
     }
 
     public void EndGame()
