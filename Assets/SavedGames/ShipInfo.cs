@@ -25,6 +25,9 @@ namespace SavedGames
         private List<float> abilityCooldowns;
         private List<ModuleInfo> equippedModules;
 
+        private int shield;
+        private int armor;
+
         private CharacterInfo captain;
         
         public ShipInfo()
@@ -54,6 +57,18 @@ namespace SavedGames
                 .Select(m => m != null? new ModuleInfo(m) : null)
                 .ToList();
 
+            var hp = fromShip.GetComponent<Hitpoints>();
+            if (hp)
+            {
+                armor = hp.GetArmor();
+                shield = hp.GetShield();
+            }
+            else
+            {
+                armor = -1;
+                shield = -1;
+            }
+
             this.captain = captain;
         }
 
@@ -70,6 +85,13 @@ namespace SavedGames
             var rb = ship.GetComponent<Rigidbody>();
             rb.velocity = linearVelocity.AsVector();
             rb.angularVelocity = angularVelocity.AsVector();
+
+            //doesn't have HP? values should be -1
+            if (armor < 0 || shield < 0)
+            {
+                var hp = ship.GetComponent<Hitpoints>();
+                UnityEngine.Object.Destroy(hp);
+            }
 
             ship.name = name;
 
