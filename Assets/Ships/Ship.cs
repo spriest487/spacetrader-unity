@@ -320,6 +320,11 @@ public class Ship : MonoBehaviour
             }
         }
 
+        if (inputAdjusted.sqrMagnitude > 1)
+        {
+            inputAdjusted.Normalize();
+        }
+
         return inputAdjusted;
     }
     
@@ -347,13 +352,13 @@ public class Ship : MonoBehaviour
 
             var torqueInput = InputAmountsToRequired(new Vector3(Pitch, Yaw, Roll),
                 localRotation,
-                torqueMax);            
+                torqueMax);
             var forceInput = InputAmountsToRequired(new Vector3(Strafe, Lift, Thrust),
                 localVelocity,
                 CurrentStats.maxSpeed);
-            
-            var force = forceInput.normalized * CurrentStats.thrust;
-            var torque = torqueInput.normalized * Mathf.Deg2Rad * CurrentStats.agility;
+                                    
+            var force = forceInput * CurrentStats.thrust;
+            var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.agility;
 
             /* apply new forces */
             rigidbody.AddRelativeTorque(torque);
