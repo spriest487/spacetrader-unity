@@ -156,26 +156,6 @@ public class FollowCamera : MonoBehaviour
         return new Vector2(screenPos.x, screenPos.y);
     }
     
-    private Vector2? GetDragTurnAmount(Vector3 mouseRayOrigin)
-    {
-        var screenAim = GetScreenAimPoint(mouseRayOrigin);
-
-        if (screenAim.HasValue)
-        {
-            var x = Mathf.Clamp((2 * (screenAim.Value.x / Screen.width)) - 1, -1, 1);
-            var y = -Mathf.Clamp((2 * (screenAim.Value.y / Screen.height)) - 1, -1, 1);
-
-            x *= dragInputCurve.Evaluate(Mathf.Abs(x));
-            y *= dragInputCurve.Evaluate(Mathf.Abs(y));
-
-            return new Vector2(x, y);
-        }
-        else
-        {
-            return Vector2.zero;
-        }
-    }
-
     public Vector3? GetWorldAimPoint(Vector3 origin)
     {
         var cursorPos = GetAimCursorPos();
@@ -186,10 +166,9 @@ public class FollowCamera : MonoBehaviour
 
         const float AIM_DEPTH = 1000;
         
-        Vector3 mousePos = new Vector3(cursorPos.Value.x, cursorPos.Value.y, AIM_DEPTH);
-
+        var mousePos = new Vector3(cursorPos.Value.x, cursorPos.Value.y, AIM_DEPTH);
         var mouseRay = Camera.ScreenPointToRay(mousePos);
-        
+
         RaycastHit hit;
         if (Physics.Raycast(mouseRay, out hit))
         {
@@ -222,17 +201,30 @@ public class FollowCamera : MonoBehaviour
 
     private void UpdateDrag()
     {
-        var player = PlayerShip.LocalPlayer;
-        if (player)
+        var touchPos = FindTouchPos();
+        var playerShip = PlayerShip.LocalPlayer;
+        
+        if (!touchPos.HasValue || !playerShip)
         {
-            dragInput = GetDragTurnAmount(player.transform.position);
+            dragInput = Vector2.zero;
+            return;
         }
-        else
-        {
-            dragInput = null;
-        }
-    }
 
+        float screenDragX = touchPos.Value.x / Screen.width;
+        float screenDragY = touchPos.Value.y / Screen.height;
+        
+        //assume this is onscreen for now (ignore z)
+        var playerPos = Camera.WorldToViewportPoint(playerShip.transform.position);
+
+        var dragX = (screenDragX - playerPos.x);
+        var dragY = -(screenDragY - playerPos.y);
+        
+        dragInput = new Vector2(dragX, dragY);
+
+        if (!ignoreTranslation)
+            Debug.LogFormat("world: {0}, drag: {1}", playerPos.ToString("F2"), dragInput.Value.ToString("F2"));
+    }
+    
     private IEnumerator WaitToDragOnGui()
     {
         var pointerData = new PointerEventData(EventSystem.current);
@@ -261,9 +253,7 @@ public class FollowCamera : MonoBehaviour
     private void Update()
     {
         if (Input.GetButton("look"))
-        {
-            var dragInput = GetDragTurnAmount(transform.position);
-            
+        {            
             float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
             float pitchInput = Mathf.Clamp(dragInput.Value.y, -1, 1);
 

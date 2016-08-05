@@ -21,10 +21,7 @@ public class MissionsMenu : MonoBehaviour
 
     [SerializeField]
     private Button[] missionActionButtons;
-    
-    [SerializeField]
-    private string emptySceneName;
-    
+        
     private MissionDefinition selectedMission;
 
     public void SelectMission(MissionDefinition mission)
