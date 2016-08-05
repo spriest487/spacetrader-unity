@@ -13,6 +13,7 @@ GameObject:
   - 124: {fileID: 12425040}
   - 81: {fileID: 8125040}
   - 114: {fileID: 11425038}
+  - 45: {fileID: 4583352}
   m_Layer: 0
   m_Name: FollowCamera
   m_TagString: MainCamera
@@ -97,6 +98,14 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
+--- !u!45 &4583352
+Skybox:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125038}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 2107c06a502c0314bb2fda2f24f90554, type: 2}
 --- !u!81 &8125040
 AudioListener:
   m_ObjectHideFlags: 1
@@ -145,7 +154,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    m_PreInfinity: 2
+    m_PreInfinity: 0
     m_PostInfinity: 2
     m_RotationOrder: 0
   lookSnapBackCurve:

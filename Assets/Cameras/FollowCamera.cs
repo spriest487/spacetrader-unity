@@ -212,17 +212,16 @@ public class FollowCamera : MonoBehaviour
 
         float screenDragX = touchPos.Value.x / Screen.width;
         float screenDragY = touchPos.Value.y / Screen.height;
-        
-        //assume this is onscreen for now (ignore z)
-        var playerPos = Camera.WorldToViewportPoint(playerShip.transform.position);
 
-        var dragX = (screenDragX - playerPos.x);
-        var dragY = -(screenDragY - playerPos.y);
-        
+        var eyePos = new Vector2(0.5f, 0.5f);
+
+        var dragX = (screenDragX - eyePos.x) / eyePos.x;
+        var dragY = -((screenDragY - eyePos.y) / eyePos.y);
+
+        dragX = dragInputCurve.Evaluate(dragX) * Mathf.Sign(dragX);
+        dragY = dragInputCurve.Evaluate(dragY) * Mathf.Sign(dragY);
+
         dragInput = new Vector2(dragX, dragY);
-
-        if (!ignoreTranslation)
-            Debug.LogFormat("world: {0}, drag: {1}", playerPos.ToString("F2"), dragInput.Value.ToString("F2"));
     }
     
     private IEnumerator WaitToDragOnGui()
