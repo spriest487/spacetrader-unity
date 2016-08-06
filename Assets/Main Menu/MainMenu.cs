@@ -87,6 +87,11 @@ public class MainMenu : MonoBehaviour
 
     public void EndGame()
     {
+        SpaceTraderConfig.Instance.StartCoroutine(EndGameRoutine());
+    }
+
+    private IEnumerator EndGameRoutine()
+    {
         var worldLifecycleListeners = GameObject.FindGameObjectsWithTag("WorldListener");
         if (worldLifecycleListeners != null)
         {
@@ -96,7 +101,18 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        SceneManager.LoadScene(menuScene);
+        var loading = ScreenManager.Instance.CreateLoadingScreen();
+
+        if (PlayerShip.LocalPlayer)
+        {
+            Destroy(PlayerShip.LocalPlayer.gameObject);
+        }
+
+        yield return SceneManager.LoadSceneAsync(menuScene);
+        yield return new WaitForEndOfFrame();
+        GoToRoot();
+
+        loading.Dismiss();
     }
 
     public void SaveGame()

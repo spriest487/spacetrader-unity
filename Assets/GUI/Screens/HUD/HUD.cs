@@ -68,8 +68,7 @@ public class HUD : MonoBehaviour
 
     private void OnPlayerActivatedLoot(LootContainer loot)
     {
-        lootWindow.gameObject.SetActive(true);
-        lootWindow.Container = loot;
+        lootWindow.ShowLoot(loot);
     }
 
     private void OnScreenActive()

@@ -1,18 +1,20 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CargoHoldList))]
 public class LootWindow : MonoBehaviour
 {
     [SerializeField]
     private LootContainer loot;
+
+    [SerializeField]
+    private Text title;
    
     public LootContainer Container
     {
         get { return loot; }
-        set { loot = value; }
     }
     
     private CargoHoldList cargoList;
@@ -58,5 +60,13 @@ public class LootWindow : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    public void ShowLoot(LootContainer loot)
+    {
+        this.loot = loot;
+        title.text = loot.name;
+        gameObject.SetActive(true);
+        cargoList.Refresh();
     }
 }

@@ -74,36 +74,7 @@ public class CargoHoldList : MonoBehaviour
             }
         }
     }
-
-    private void Prepare(int capacity)
-    {
-        int index = 0;
-        foreach (var child in itemsHolder.GetComponentsInChildren<CargoHoldListItem>())
-        {
-            if (index >= capacity)
-            {
-                child.gameObject.SetActive(false);
-            }
-            ++index;
-        }
-
-        var newItems = new List<CargoHoldListItem>(capacity - index);
-        while (index < capacity)
-        {
-            
-
-            ++index;
-        }
-
-        if (newItems.Count > 0)
-        {
-            
-        }
-
-        currentItems = null;
-        highlightedIndex = -1;
-    }
-
+    
     private void Update()
     {
         Refresh();
