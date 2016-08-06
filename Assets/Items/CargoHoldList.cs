@@ -3,7 +3,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 public class CargoHoldList : MonoBehaviour
 {
@@ -25,7 +24,7 @@ public class CargoHoldList : MonoBehaviour
     [SerializeField]
     private Text sizeLabel;
     
-    private List<ItemType> currentItems;
+    private PooledList<CargoHoldListItem, ItemType> currentItems;
 
     public CargoHold CargoHold
     {
@@ -67,10 +66,12 @@ public class CargoHoldList : MonoBehaviour
 
     private void UpdateHighlight()
     {
-        foreach (Transform child in itemsHolder.transform)
+        if (currentItems != null)
         {
-            var item = child.GetComponent<CargoHoldListItem>();
-            item.Highlighted = highlightedIndex == item.ItemIndex;
+            foreach (var item in currentItems)
+            {
+                item.Highlighted = highlightedIndex == item.ItemIndex;
+            }
         }
     }
 
@@ -89,17 +90,14 @@ public class CargoHoldList : MonoBehaviour
         var newItems = new List<CargoHoldListItem>(capacity - index);
         while (index < capacity)
         {
-            var item = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, index);
-            item.transform.SetParent(itemsHolder.transform, false);
-
-            newItems.Add(item);
+            
 
             ++index;
         }
 
         if (newItems.Count > 0)
         {
-            SendMessageUpwards("OnCargoListNewItems", newItems, SendMessageOptions.DontRequireReceiver);
+            
         }
 
         currentItems = null;
@@ -114,35 +112,31 @@ public class CargoHoldList : MonoBehaviour
 
     public void Refresh()
     {
-        if (!CargoHold)
+        if (currentItems == null)
         {
-            Prepare(0);
+            currentItems = new PooledList<CargoHoldListItem, ItemType>(itemsHolder);
+        }
+
+        var newItems = new List<CargoHoldListItem>();
+
+        if (cargoHold)
+        {
+            currentItems.Refresh(CargoHold.Items,
+                (i, cargoItem) =>
+                {
+                    var newListItem = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, i);
+                    newItems.Add(newListItem);
+                    return newListItem;
+                });
+
+            highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.ItemCount - 1);
         }
         else
         {
-            if (currentItems == null || !currentItems.ElementsEquals(CargoHold.Items))
-            {
-                int oldHighlight = highlightedIndex;
+            currentItems.Clear();
 
-                var slotCount = CargoHold.Size;
-                Prepare(CargoHold.Size);
-
-                if (sizeLabel)
-                {
-                    sizeLabel.text = string.Format(sizeFormat, CargoHold.ItemCount, slotCount);
-                }
-
-                var itemSlots = itemsHolder.GetComponentsInChildren<CargoHoldListItem>();
-                for (int itemIndex = 0; itemIndex < slotCount; ++itemIndex)
-                {
-                    itemSlots[itemIndex].Assign(cargoHold, itemIndex);
-                }
-
-                currentItems = new List<ItemType>(CargoHold.Items);
-
-                highlightedIndex = System.Math.Min(oldHighlight, currentItems.Count - 1);
-            }
-        } 
+            highlightedIndex = CargoHold.BAD_INDEX;
+        }
     }
 
     private void OnSelectCargoItem(CargoHoldListItem item)

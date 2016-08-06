@@ -53,7 +53,7 @@ public class BracketManager : MonoBehaviour
     [HideInInspector]
     [SerializeField]
     private List<Bracket> brackets;
-
+    
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
     public Color FleetMemberColor { get { return fleetMemberColor; } }

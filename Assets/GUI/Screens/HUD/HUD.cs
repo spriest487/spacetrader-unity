@@ -14,15 +14,15 @@ public class HUD : MonoBehaviour
 
     [SerializeField]
     private SpeechBubble speechBubble;
-
-    [SerializeField]
-    private ImageEffectOpaque playerPortrait;
-
+    
     [SerializeField]
     private Text playerName;
 
     [SerializeField]
     private Text playerMoney;
+
+    [SerializeField]
+    private LootWindow lootWindow;
 
     private BracketManager bracketManager;
 
@@ -64,6 +64,12 @@ public class HUD : MonoBehaviour
             var money = Market.FormatCurrency(PlayerShip.LocalPlayer.Money);
             playerMoney.text = money;
         }
+    }
+
+    private void OnPlayerActivatedLoot(LootContainer loot)
+    {
+        lootWindow.gameObject.SetActive(true);
+        lootWindow.Container = loot;
     }
 
     private void OnScreenActive()

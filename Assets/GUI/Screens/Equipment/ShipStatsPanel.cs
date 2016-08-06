@@ -46,7 +46,7 @@ public class ShipStatsPanel : MonoBehaviour
         }
 
         items.Refresh(entries,
-            onNewItem: entry => ShipStatsEntry.Create(statsEntryPrefab, entry.Key, entry.Value),
-            onUpdateItem: (item, entry) => item.SetText(entry.Key, entry.Value));
+            onNewItem: (i, entry) => ShipStatsEntry.Create(statsEntryPrefab, entry.Key, entry.Value),
+            onUpdateItem: (i, item, entry) => item.SetText(entry.Key, entry.Value));
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
-public class PooledList<TItem, TData>
+public class PooledList<TItem, TData> : IEnumerable<TItem>
     where TItem: MonoBehaviour
 {
-    public delegate TItem CreateItemCallback(TData source);
-    public delegate void UpdateItemCallback(TItem existing, TData source);
+    public delegate TItem CreateItemCallback(int index, TData source);
+    public delegate void UpdateItemCallback(int index, TItem existing, TData source);
 
     private Transform root;
 
@@ -26,7 +27,7 @@ public class PooledList<TItem, TData>
         currentData = null;
     }
     
-    public void Refresh(IEnumerable<TData> data, CreateItemCallback onNewItem, UpdateItemCallback onUpdateItem)
+    public void Refresh(IEnumerable<TData> data, CreateItemCallback onNewItem, UpdateItemCallback onUpdateItem = null)
     {
         if (currentData != null && currentData.ElementsEquals(data))
         {
@@ -44,27 +45,48 @@ public class PooledList<TItem, TData>
             currentItems.Resize(newCount);
         }
 
-        int dataItem;
-        for (dataItem = 0; dataItem < newCount; ++dataItem)
+        int itemIndex;
+        for (itemIndex = 0; itemIndex < newCount; ++itemIndex)
         {
-            var dataValue = currentData[dataItem];
-            if (dataItem < existingItemsCount)
+            var dataValue = currentData[itemIndex];
+            if (itemIndex < existingItemsCount)
             {
-                onUpdateItem(currentItems[dataItem], dataValue);
+                if (onUpdateItem != null)
+                {
+                    onUpdateItem(itemIndex, currentItems[itemIndex], dataValue);
+                }
             }
             else
             {
-                var newItem = currentItems[dataItem] = onNewItem(dataValue);
+                var newItem = currentItems[itemIndex] = onNewItem(itemIndex, dataValue);
                 
                 newItem.transform.SetParent(root, false);
             }
         }
 
         //if there are less items than previously, deactivate any extras
-        while (dataItem < existingItemsCount)
+        while (itemIndex < existingItemsCount)
         {
-            currentItems[dataItem].gameObject.SetActive(false);
-            ++dataItem;
+            currentItems[itemIndex].gameObject.SetActive(false);
+            ++itemIndex;
         }
+    }
+
+    public IEnumerator<TItem> GetEnumerator()
+    {
+        if (currentItems == null)
+        {
+            yield break;
+        }
+
+        foreach (var item in currentItems)
+        {
+            yield return item;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
