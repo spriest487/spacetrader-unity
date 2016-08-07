@@ -27,6 +27,11 @@ public class ErrorMessage : MonoBehaviour
         group.alpha = 0;
     }
 
+    void OnScreenActive()
+    {
+        Reset();
+    }
+
     private IEnumerator ErrorFade(string message)
     {
         group.GetComponentInChildren<Text>().text = message;

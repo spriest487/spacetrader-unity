@@ -58,8 +58,19 @@ public class LootWindow : MonoBehaviour
                 items.RemoveAt(slot);
             }
 
-            Destroy(gameObject);
+            Destroy(loot.gameObject);
         }
+        else
+        {
+            var message = "Not enough free cargo space";
+            ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerError", message);
+        }
+    }
+
+    public void Dismiss()
+    {
+        loot = null;
+        gameObject.SetActive(false);
     }
 
     public void ShowLoot(LootContainer loot)

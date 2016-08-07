@@ -24,6 +24,9 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private LootWindow lootWindow;
 
+    [SerializeField]
+    private ErrorMessage errorMessage;
+
     private BracketManager bracketManager;
 
     private void Start()
@@ -68,7 +71,14 @@ public class HUD : MonoBehaviour
 
     private void OnPlayerActivatedLoot(LootContainer loot)
     {
-        lootWindow.ShowLoot(loot);
+        if (lootWindow.Container == loot)
+        {
+            lootWindow.TakeAll();
+        }
+        else
+        {
+            lootWindow.ShowLoot(loot);
+        }
     }
 
     private void OnScreenActive()
@@ -84,5 +94,10 @@ public class HUD : MonoBehaviour
         {
             speechBubble.Show(message.Message, 3, bracket.transform);
         }
+    }
+
+    private void OnPlayerError(string message)
+    {
+        errorMessage.ShowError(message);
     }
 }
