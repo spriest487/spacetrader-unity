@@ -75,7 +75,7 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
     {
         if (!cargoHold.IsIndexFree(itemIndex))
         {
-            Debug.Log("dragged from slot " + itemIndex);
+            //Debug.Log("dragged from slot " + itemIndex);
             SendMessageUpwards("OnDragCargoItem", this, SendMessageOptions.DontRequireReceiver);
         }
     }

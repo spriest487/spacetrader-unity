@@ -3,7 +3,9 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
+using MarketRequests;
 
 public class Market : ScriptableObject {
     public static string FormatCurrency(int amount)
@@ -185,5 +187,76 @@ public class Market : ScriptableObject {
         stationCargo.Add(itemType);
 
         player.AddMoney(price);
+    }
+
+    private IEnumerator TakeLoot(PlayerTakeLootRequest request)
+    {
+        var items = request.Loot.Ship.Cargo;
+        var activator = request.Player.Ship;
+        
+        var freeSpace = activator.Cargo.FreeCapacity;
+
+        const string notEnoughSpace = "Not enough free cargo space";
+
+        if (request.ItemIndex < 0)
+        {
+            var itemCount = items.ItemCount;
+
+            if (freeSpace >= itemCount)
+            {
+                for (int slot = 0; slot < items.Size; ++slot)
+                {
+                    if (items.IsIndexFree(slot))
+                    {
+                        continue;
+                    }
+
+                    var item = items[slot];
+                    activator.Cargo.Add(item);
+                    items.RemoveAt(slot);
+                }
+                
+                request.Done = true;
+            }
+            else
+            {
+                request.Error = notEnoughSpace;
+            }
+        }
+        else
+        {
+            if (freeSpace > 0)
+            {
+                if (!items.IsIndexFree(request.ItemIndex) && items.IsValidIndex(request.ItemIndex))
+                {
+                    var itemType = items[request.ItemIndex];
+
+                    activator.Cargo.Add(itemType);
+                    items.RemoveAt(request.ItemIndex);
+
+                    request.Done = true;
+                }
+                else
+                {
+                    request.Error = "Item not found";
+                }
+            }
+            else
+            {
+                request.Error = notEnoughSpace;
+            }
+        }
+
+        if (items.FreeCapacity == items.Size)
+        {
+            Destroy(request.Loot.gameObject);
+        }
+
+        yield break;
+    }
+
+    public void PlayerTakeLoot(PlayerTakeLootRequest request)
+    {
+        SpaceTraderConfig.Instance.StartCoroutine(TakeLoot(request));
     }
 }

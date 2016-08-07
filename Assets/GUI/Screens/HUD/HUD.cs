@@ -84,6 +84,10 @@ public class HUD : MonoBehaviour
     private void OnScreenActive()
     {
         speechBubble.Dismiss();
+
+        errorMessage.Reset();
+
+        lootWindow.Dismiss();
     }
 
     private void OnRadioSpeech(PlayerRadioMessage message)

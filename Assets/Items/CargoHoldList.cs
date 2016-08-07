@@ -98,6 +98,10 @@ public class CargoHoldList : MonoBehaviour
                     var newListItem = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, i);
                     newItems.Add(newListItem);
                     return newListItem;
+                },
+                (i, existingItem, cargoItem) =>
+                {
+                    existingItem.Assign(CargoHold, i);
                 });
 
             highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.ItemCount - 1);

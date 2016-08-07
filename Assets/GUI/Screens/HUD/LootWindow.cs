@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 [RequireComponent(typeof(CargoHoldList))]
 public class LootWindow : MonoBehaviour
@@ -18,12 +19,7 @@ public class LootWindow : MonoBehaviour
     }
     
     private CargoHoldList cargoList;
-
-    private void Start()
-    {
-        cargoList = GetComponent<CargoHoldList>();
-    }
-        
+            
     private void Update()
     {
         if (!loot)
@@ -36,37 +32,6 @@ public class LootWindow : MonoBehaviour
         }
     }
 
-    public void TakeAll()
-    {
-        var items = Container.Ship.Cargo;
-        var activator = PlayerShip.LocalPlayer.Ship;
-
-        var itemCount = items.ItemCount;
-        var freeSpace = activator.Cargo.FreeCapacity;
-
-        if (freeSpace >= itemCount)
-        {
-            for (int slot = 0; slot < items.Size; ++slot)
-            {
-                if (items.IsIndexFree(slot))
-                {
-                    continue;
-                }
-
-                var item = items[slot];
-                activator.Cargo.Add(item);
-                items.RemoveAt(slot);
-            }
-
-            Destroy(loot.gameObject);
-        }
-        else
-        {
-            var message = "Not enough free cargo space";
-            ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerError", message);
-        }
-    }
-
     public void Dismiss()
     {
         loot = null;
@@ -75,9 +40,42 @@ public class LootWindow : MonoBehaviour
 
     public void ShowLoot(LootContainer loot)
     {
+        //this can actually get called before Start(), so make sure the ref is set here
+        cargoList = GetComponent<CargoHoldList>();
+
         this.loot = loot;
         title.text = loot.name;
         gameObject.SetActive(true);
         cargoList.Refresh();
+    }
+
+    private IEnumerator TakeItemRoutine(int itemIndex)
+    {
+        var request = new MarketRequests.PlayerTakeLootRequest(PlayerShip.LocalPlayer, Container, itemIndex);
+
+        SpaceTraderConfig.Market.PlayerTakeLoot(request);
+
+        do
+        {
+            yield return null;
+        }
+        while (!request.Done);
+
+        if (request.Error != null)
+        {
+            ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerError", request.Error);
+        }
+    }
+
+    public void TakeAll()
+    {
+        SpaceTraderConfig.Instance.StartCoroutine(TakeItemRoutine(-1));
+    }
+
+    public void OnSelectCargoItem(CargoHoldListItem selected)
+    {
+        cargoList.HighlightedIndex = CargoHold.BAD_INDEX;
+
+        SpaceTraderConfig.Instance.StartCoroutine(TakeItemRoutine(selected.ItemIndex));
     }
 }
