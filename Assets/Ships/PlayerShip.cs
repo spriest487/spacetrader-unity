@@ -152,7 +152,9 @@ public class PlayerShip : MonoBehaviour
 
     void Update()
     {
-        if (LocalPlayerHasControl())
+        if (LocalPlayerHasControl() 
+            && ScreenManager.Instance.ScreenID == ScreenID.None 
+            && ScreenManager.Instance.State == PlayerStatus.Flight)
         {
             ProcessLocalInput();
         }
