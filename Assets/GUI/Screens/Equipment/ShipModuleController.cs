@@ -98,15 +98,4 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
 
         Highlighted = false;
     }
-
-    public static ShipModuleController CreateFromPrefab(ShipModuleController prefab,
-        Ship ship,
-        int moduleIndex)
-    {
-        var result = Instantiate(prefab);
-
-        result.Assign(ship, moduleIndex);
-
-        return result;
-    }
 }

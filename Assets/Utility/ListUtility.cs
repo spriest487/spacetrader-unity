@@ -46,4 +46,35 @@ internal static class ListUtility
         //number of elements added/removed
         return diff;
     }
+
+    public static IEnumerable<T> AsEnumerable<T>(this T value)
+    {
+        yield return value;
+    }
+
+    public static IEnumerable<T> AsOptional<T>(this T value) 
+        where T : class
+    {
+        if (value != null)
+        {
+            yield return value;
+        }
+        else
+        {
+            yield break;
+        }
+    }
+
+    public static IEnumerable<T> AsOptionalObject<T>(this T obj) 
+        where T : UnityEngine.Object
+    {
+        if (obj)
+        {
+            yield return obj;
+        }
+        else
+        {
+            yield break;
+        }
+    }
 }

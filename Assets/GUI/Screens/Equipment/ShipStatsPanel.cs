@@ -29,8 +29,6 @@ public class ShipStatsPanel : MonoBehaviour
         var ship = PlayerShip.LocalPlayer.Ship;
         var stats = ship.CurrentStats;
         var hp = ship.GetComponent<Hitpoints>();
-
-        var hardpoints = ship.ModuleLoadout;
       
         var entries = new Dictionary<string, string>();
         entries.Add("DPS", ship.EstimateDps().ToString("F2"));
@@ -46,7 +44,7 @@ public class ShipStatsPanel : MonoBehaviour
         }
 
         items.Refresh(entries,
-            onNewItem: (i, entry) => ShipStatsEntry.Create(statsEntryPrefab, entry.Key, entry.Value),
+            onNewItem: (i, entry) => Instantiate(statsEntryPrefab),
             onUpdateItem: (i, item, entry) => item.SetText(entry.Key, entry.Value));
     }
 }

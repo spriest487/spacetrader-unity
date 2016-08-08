@@ -129,14 +129,4 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
             rarityHighlight.color = SpaceTraderConfig.CargoItemConfiguration.RarityColor(itemType.Rarity);
         }
     }
-    
-    public static CargoHoldListItem CreateFromPrefab(CargoHoldListItem prefab,
-        CargoHold cargoHold,
-        int itemIndex)
-    {
-        var result = Instantiate(prefab);
-        result.Assign(cargoHold, itemIndex);
-
-        return result;
-    }
 }

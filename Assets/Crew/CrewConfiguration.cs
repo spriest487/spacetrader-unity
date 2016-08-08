@@ -70,6 +70,7 @@ public class CrewConfiguration : ScriptableObject
     public CrewMember NewCharacter(CrewMember source)
     {
         var result = Instantiate(source);
+        result.name = source.name; //get rid of (Clone)
 
         characters.Add(result);
 

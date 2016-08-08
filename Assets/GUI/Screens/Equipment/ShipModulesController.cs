@@ -47,7 +47,7 @@ public class ShipModulesController : MonoBehaviour
         var slots = new List<HardpointModule>(player.Ship.ModuleLoadout);
         
         modules.Refresh(slots,
-            (i, slot) => ShipModuleController.CreateFromPrefab(moduleTemplate, player.Ship, i),
+            (i, slot) => Instantiate(moduleTemplate),
             (i, module, slot) => { module.Assign(player.Ship, i); });
     }
 

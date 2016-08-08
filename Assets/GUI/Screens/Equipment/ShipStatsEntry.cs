@@ -10,14 +10,7 @@ public class ShipStatsEntry : MonoBehaviour
 
     [SerializeField]
     private Text value;
-
-    public static ShipStatsEntry Create(ShipStatsEntry prefab, string label, string value)
-    {
-        var entry = Instantiate(prefab);
-        entry.SetText(label, value);
-        return entry;
-    }
-
+    
     public void SetText(string label, string value)
     {
         this.label.text = label;

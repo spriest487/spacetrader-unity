@@ -13,17 +13,21 @@ public class CargoHoldList : MonoBehaviour
     private int highlightedIndex;
 
     [SerializeField]
+    private string sizeFormat = "{0}/{1}";
+
+    [Header("Prefabs")]
+
+    [SerializeField]
     private CargoHoldListItem listItem;
+
+    [Header("UI")]
 
     [SerializeField]
     private Transform itemsHolder;
 
     [SerializeField]
-    private string sizeFormat = "{0}/{1}";
-
-    [SerializeField]
     private Text sizeLabel;
-    
+
     private PooledList<CargoHoldListItem, ItemType> currentItems;
 
     public CargoHold CargoHold
@@ -95,7 +99,7 @@ public class CargoHoldList : MonoBehaviour
             currentItems.Refresh(CargoHold.Items,
                 (i, cargoItem) =>
                 {
-                    var newListItem = CargoHoldListItem.CreateFromPrefab(listItem, CargoHold, i);
+                    var newListItem = Instantiate(listItem);
                     newItems.Add(newListItem);
                     return newListItem;
                 },

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class PooledList<TItem, TData> : IEnumerable<TItem>
@@ -24,10 +25,14 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
     public void Clear()
     {
         currentItems.ForEach(item => item.gameObject.SetActive(false));
-        currentData = null;
+
+        if (currentData != null)
+        {
+            currentData.Clear();
+        }
     }
     
-    public void Refresh(IEnumerable<TData> data, CreateItemCallback onNewItem, UpdateItemCallback onUpdateItem = null)
+    public void Refresh(IEnumerable<TData> data, CreateItemCallback onNewItem, UpdateItemCallback onUpdateItem)
     {
         if (currentData != null && currentData.ElementsEquals(data))
         {
@@ -49,18 +54,23 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         for (itemIndex = 0; itemIndex < newCount; ++itemIndex)
         {
             var dataValue = currentData[itemIndex];
-            if (itemIndex < existingItemsCount)
+
+            TItem item;
+            if (itemIndex >= existingItemsCount)
             {
-                if (onUpdateItem != null)
-                {
-                    onUpdateItem(itemIndex, currentItems[itemIndex], dataValue);
-                }
+                item = currentItems[itemIndex] = onNewItem(itemIndex, dataValue);
+                item.transform.SetParent(root, false);
             }
             else
             {
-                var newItem = currentItems[itemIndex] = onNewItem(itemIndex, dataValue);
-                
-                newItem.transform.SetParent(root, false);
+                item = currentItems[itemIndex];
+            }
+
+            item.gameObject.SetActive(true);
+
+            if (onUpdateItem != null)
+            {
+                onUpdateItem(itemIndex, item, dataValue);
             }
         }
 
@@ -74,14 +84,13 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
 
     public IEnumerator<TItem> GetEnumerator()
     {
-        if (currentItems == null)
+        if (currentItems != null)
         {
-            yield break;
+            return currentItems.GetEnumerator();
         }
-
-        foreach (var item in currentItems)
+        else
         {
-            yield return item;
+            return Enumerable.Empty<TItem>().GetEnumerator();
         }
     }
 

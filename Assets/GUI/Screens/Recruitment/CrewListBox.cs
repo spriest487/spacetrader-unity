@@ -1,83 +1,106 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
 public class CrewListBox : MonoBehaviour
 {
-    [SerializeField]
-    private CrewListItem itemPrefab;
-
-    [SerializeField]
-    private Transform contentArea;
+    public enum TargetCrew
+    {
+        Player,
+        Station
+    }
 
     [SerializeField]
     private TargetCrew targetCrew;
 
     [SerializeField]
-    private GameObject emptyLabel;
+    private CrewAssignment forAssignment;
 
-    //cache to save unnecessary reloads
-    private List<CrewMember> currentItems;
+    [Header("Prefabs")]
 
-    public enum TargetCrew
+    [SerializeField]
+    private CrewListItem itemPrefab;
+
+    [Header("UI")]
+
+    [SerializeField]
+    private Transform contentArea;
+        
+    [SerializeField]
+    private Transform emptyLabel;
+    
+    private PooledList<CrewListItem, CrewMember> crewItems;
+
+    private void OnScreenActive()
     {
-        Current,
-        Available
-    }
-
-    private void Clear()
-    {
-        foreach (var child in contentArea.GetComponentsInChildren<CrewListItem>())
+        if (crewItems != null)
         {
-            Destroy(child.gameObject);
+            crewItems.Clear();
         }
-
-        currentItems = null;
+        Update();
     }
-
+    
     private void Update()
     {
-        List<CrewMember> crew = null;
+        IEnumerable<CrewMember> crew;
 
-        if (PlayerShip.LocalPlayer)
+        if (targetCrew == TargetCrew.Station)
         {
-            if (targetCrew == TargetCrew.Current)
+            var moorable = PlayerShip.LocalPlayer.GetComponent<Moorable>();
+
+            if (moorable && moorable.SpaceStation)
             {
-                var playerShip = PlayerShip.LocalPlayer.Ship;
-                
-                crew = playerShip.GetPassengers().ToList();
+                crew = moorable.SpaceStation.AvailableCrew;
             }
             else
             {
-                var moorable = PlayerShip.LocalPlayer.GetComponent<Moorable>();
-
-                if (moorable && moorable.SpaceStation)
+                crew = null;
+            }
+        }
+        else
+        {
+            Ship ship;
+            if (PlayerShip.LocalPlayer && (ship = PlayerShip.LocalPlayer.Ship))
+            {
+                switch (forAssignment)
                 {
-                    crew = moorable.SpaceStation.AvailableCrew;
+                    case CrewAssignment.Captain:
+                        crew = ship.GetCaptain().AsOptionalObject();
+                        break;
+                    default:
+                        crew = ship.GetPassengers();
+                        break;
                 }
             }
-        }
-
-        if (crew == null || crew.Count == 0)
-        {
-            Clear();
-            emptyLabel.gameObject.SetActive(true);
-            return;
-        }
-
-        if (!crew.ElementsEquals(currentItems))
-        {
-            Clear();
-            emptyLabel.gameObject.SetActive(false);
-
-            foreach (var member in crew)
+            else
             {
-                var newItem = CrewListItem.CreateFromPrefab(itemPrefab, member);
-                newItem.transform.SetParent(contentArea.transform, false);
+                crew = null;
             }
+        }
 
-            currentItems = new List<CrewMember>(crew);
+        if (crewItems == null)
+        {
+            crewItems = new PooledList<CrewListItem, CrewMember>(contentArea);
+        }
+
+        if (crew != null && crew.Any())
+        {
+            var editable = ScreenManager.Instance.State == PlayerStatus.Docked;
+
+            crewItems.Refresh(crew,
+                (i, newCrewMember) => Instantiate(itemPrefab),
+                (i, existingItem, newCrewMember) => existingItem.Assign(newCrewMember, editable));
+
+            emptyLabel.gameObject.SetActive(false);
+        }
+        else
+        {
+            crewItems.Clear();
+
+            emptyLabel.gameObject.SetActive(true);
         }
     }
 }

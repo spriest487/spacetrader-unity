@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopScreen : MonoBehaviour
@@ -78,7 +80,6 @@ public class ShopScreen : MonoBehaviour
         }
 
         var player = SpaceTraderConfig.LocalPlayer;
-        var station = player.GetComponent<Moorable>().SpaceStation;
         SpaceTraderConfig.Market.BuyItemFromStation(player, forSaleItems.HighlightedIndex);
     }
 
@@ -91,7 +92,6 @@ public class ShopScreen : MonoBehaviour
         }
 
         var player = SpaceTraderConfig.LocalPlayer;
-        var station = player.GetComponent<Moorable>().SpaceStation;
         SpaceTraderConfig.Market.SellItemToStation(player, cargoItems.HighlightedIndex);
     }
 }
