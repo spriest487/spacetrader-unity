@@ -20,6 +20,15 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private bool ignoreTranslation;
 
+    [Header("Cockpit")]
+
+    [SerializeField]
+    private Camera cockpitCam;
+
+    [SerializeField]
+    private bool cockpitMode;
+    
+    [Header("Positioning")]
     [SerializeField]
 	private Vector3 offset;
 
@@ -29,10 +38,6 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private float rotationOffset;
     
-    ///world speeds multiplied by this to get the added amount of shake
-    [SerializeField]
-    private float shakeCollisionConversion;
-
     [SerializeField]
     private AnimationCurve dragInputCurve;
 
@@ -49,13 +54,19 @@ public class FollowCamera : MonoBehaviour
     private AnimationCurve lookSnapBackCurve;
 
     private Coroutine waitToDragOnGui = null;
+
+    private int invisibleLayer;
+    private int defaultLayer;
     
 	void Start()
 	{
         Camera = GetComponent<Camera>();
 
 		currentSpeedOffset = Vector3.zero;
-	}
+
+        invisibleLayer = LayerMask.NameToLayer("Invisible");
+        defaultLayer = LayerMask.NameToLayer("Default");
+    }
 
     void DockedCam(PlayerShip player, SpaceStation station)
     {
@@ -88,31 +99,37 @@ public class FollowCamera : MonoBehaviour
             return;
         }
 
-        var forwardPoint = player.transform.position + player.transform.forward * 1000;
-        var forwardDirection = (forwardPoint - player.transform.position).normalized;
-
-        var shipRot = Quaternion.LookRotation(forwardDirection, player.transform.up);
-        var avOffset = GetAngularVelocityOffset(player);
-        shipRot = avOffset * shipRot;
-
-        var shipPos = player.transform.position;
-
-        var lookRot = Quaternion.Euler(new Vector3(lookPitch, lookYaw));
-        lookRot = shipRot * lookRot;
-
-        var lookMat = new Matrix4x4();
-        lookMat.SetTRS(Vector3.zero, lookRot, Vector3.one);
-        
-        var lookOffset = lookMat.MultiplyPoint(offset);
-        if (!ignoreTranslation)
+        if (cockpitCam && cockpitMode)
         {
-            lookOffset += shipPos + currentSpeedOffset;
+            transform.rotation = player.transform.rotation;
+            transform.position = player.transform.position;
         }
+        else
+        {
+            var forwardPoint = player.transform.position + player.transform.forward * 1000;
+            var forwardDirection = (forwardPoint - player.transform.position).normalized;
 
-        transform.rotation = lookRot;
-        transform.position = lookOffset;
-        
-        return;
+            var shipRot = Quaternion.LookRotation(forwardDirection, player.transform.up);
+            var avOffset = GetAngularVelocityOffset(player);
+            shipRot = avOffset * shipRot;
+
+            var shipPos = player.transform.position;
+
+            var lookRot = Quaternion.Euler(new Vector3(lookPitch, lookYaw));
+            lookRot = shipRot * lookRot;
+
+            var lookMat = new Matrix4x4();
+            lookMat.SetTRS(Vector3.zero, lookRot, Vector3.one);
+
+            var lookOffset = lookMat.MultiplyPoint(offset);
+            if (!ignoreTranslation)
+            {
+                lookOffset += shipPos + currentSpeedOffset;
+            }
+
+            transform.rotation = lookRot;
+            transform.position = lookOffset;
+        }
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -302,6 +319,19 @@ public class FollowCamera : MonoBehaviour
 
             if (player)
             {
+                if (!ignoreTranslation)
+                {
+                    if (cockpitCam)
+                    {
+                        cockpitCam.gameObject.SetActive(cockpitMode);
+                        player.gameObject.SetLayerRecursive(cockpitMode ? invisibleLayer : defaultLayer);
+                    }
+                    else
+                    {
+                        player.gameObject.SetLayerRecursive(defaultLayer);
+                    }
+                }
+
                 var moorable = player.GetComponent<Moorable>();
                 if (moorable && moorable.Moored)
                 {
@@ -314,6 +344,11 @@ public class FollowCamera : MonoBehaviour
             }
             else
             {
+                if (cockpitCam)
+                {
+                    cockpitCam.gameObject.SetActive(false);
+                }
+
                 transform.position = Vector3.zero;
                 transform.rotation = Quaternion.identity;
             }
