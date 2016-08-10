@@ -11,6 +11,11 @@ using UnityEngine.SceneManagement;
 public class NewGameMenu : MonoBehaviour
 {
     [SerializeField]
+    private string newGameScene;
+
+    [Header("UI")]
+
+    [SerializeField]
     private Image portrait;
 
     [SerializeField]
@@ -23,13 +28,19 @@ public class NewGameMenu : MonoBehaviour
     private Text shipDescription;
     
     [SerializeField]
-    private string newGameScene;
-
-    [SerializeField]
     private CareerOptionButton selectedCareer;
 
     [SerializeField]
     private List<CareerOptionButton> careers;
+
+    [SerializeField]
+    private Text pilotSkillLabel;
+
+    [SerializeField]
+    private Text weaponsSkillLabel;
+
+    [SerializeField]
+    private Text mechSkillLabel;
 
     public void OnMenuScreenActivate()
     {
@@ -74,6 +85,10 @@ public class NewGameMenu : MonoBehaviour
         shipDescription.text = career.ShipType.name;
 
         careers.ForEach(c => c.SetHighlight(c == career));
+
+        pilotSkillLabel.text = career.PilotSkill.ToString();
+        weaponsSkillLabel.text = career.WeaponsSkill.ToString();
+        mechSkillLabel.text = career.MechanicalSkill.ToString();
     }
 
     public void Submit()

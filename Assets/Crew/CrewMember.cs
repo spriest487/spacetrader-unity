@@ -51,6 +51,12 @@ public class CrewMember : ScriptableObject
         set { weaponsSkill = value; }
     }
 
+    public int MechanicalSkill
+    {
+        get { return mechanicalSkill; }
+        set { mechanicalSkill = value; }
+    }
+
     public Sprite Portrait
     {
         get { return portrait; }
