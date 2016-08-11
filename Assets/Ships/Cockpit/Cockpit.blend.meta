@@ -29,6 +29,7 @@ ModelImporter:
     4300002: Cube
     4300004: Computer
     4300006: Frame
+    4300008: Frame_001
     7400000: Default Take
     9500000: //RootNode
   materials:
