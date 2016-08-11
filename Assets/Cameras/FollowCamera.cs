@@ -27,6 +27,10 @@ public class FollowCamera : MonoBehaviour
 
     [SerializeField]
     private bool cockpitMode;
+
+    [SerializeField]
+    [HideInInspector]
+    private ShipType cockpitShipType;
     
     [Header("Positioning")]
     [SerializeField]
@@ -306,6 +310,44 @@ public class FollowCamera : MonoBehaviour
         }
     }
 
+    private void SetupCockpit(PlayerShip player)
+    {
+        if (Camera.main != Camera)
+        {
+            return;
+        }
+
+        if (cockpitCam && (!player || player.Ship.ShipType != cockpitShipType))
+        {
+            Destroy(cockpitCam.gameObject);
+        }
+        
+        if (!cockpitCam && player && player.Ship.ShipType.HasCockpit)
+        {
+            cockpitCam = player.Ship.ShipType.CreateCockpit();
+            cockpitCam.transform.SetParent(transform, false);
+            cockpitShipType = player.Ship.ShipType;
+        }
+
+        if (player && cockpitMode && cockpitCam)
+        {
+            cockpitCam.gameObject.SetActive(true);
+            player.gameObject.SetLayerRecursive(invisibleLayer);
+        }
+        else
+        {
+            if (cockpitCam)
+            {
+                cockpitCam.gameObject.SetActive(false);                
+            }
+
+            if (player)
+            {
+                player.gameObject.SetLayerRecursive(defaultLayer);
+            }
+        }
+    }
+
     void LateUpdate()
     {
         var cutsceneCamRig = ScreenManager.Instance.CurrentCutsceneCameraRig;
@@ -319,19 +361,6 @@ public class FollowCamera : MonoBehaviour
 
             if (player)
             {
-                if (!ignoreTranslation)
-                {
-                    if (cockpitCam)
-                    {
-                        cockpitCam.gameObject.SetActive(cockpitMode);
-                        player.gameObject.SetLayerRecursive(cockpitMode ? invisibleLayer : defaultLayer);
-                    }
-                    else
-                    {
-                        player.gameObject.SetLayerRecursive(defaultLayer);
-                    }
-                }
-
                 var moorable = player.GetComponent<Moorable>();
                 if (moorable && moorable.Moored)
                 {
@@ -339,16 +368,12 @@ public class FollowCamera : MonoBehaviour
                 }
                 else
                 {
+                    SetupCockpit(player);
                     FlightCam(player);
                 }
             }
             else
             {
-                if (cockpitCam)
-                {
-                    cockpitCam.gameObject.SetActive(false);
-                }
-
                 transform.position = Vector3.zero;
                 transform.rotation = Quaternion.identity;
             }

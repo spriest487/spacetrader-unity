@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Jovum Patroller
   m_EditorClassIdentifier: 
   prefab: {fileID: 405804, guid: 0b0851bea097c0b40ba32a9237ffba85, type: 2}
+  cockpitPrefab: {fileID: 2053628, guid: 373fd67befda144419268dd2e099b462, type: 2}
   stats:
     agility: 180
     thrust: 1000

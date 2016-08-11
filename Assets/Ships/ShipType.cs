@@ -17,6 +17,9 @@ public class ShipType : ScriptableObject
     private Transform prefab;
 
     [SerializeField]
+    private Camera cockpitPrefab;
+
+    [SerializeField]
     private ShipStats stats;
     
     [SerializeField]
@@ -40,6 +43,7 @@ public class ShipType : ScriptableObject
     public bool Moorable { get { return moorable; } }
     public int CargoSize { get { return cargoSize; } }
     public int ModuleSlots { get { return moduleSlots; } }
+    public bool HasCockpit { get { return !!cockpitPrefab; } }
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
@@ -49,5 +53,10 @@ public class ShipType : ScriptableObject
         var ship = Ship.Create(obj.gameObject, this);
         
         return ship;
+    }
+
+    public Camera CreateCockpit()
+    {
+        return (Camera) Instantiate(cockpitPrefab, Vector3.zero, Quaternion.identity);
     }
 }
