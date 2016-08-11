@@ -79,16 +79,16 @@ public class NewGameMenu : MonoBehaviour
     public void SelectCareer(int index)
     {
         Debug.Assert(index >= 0 && index < careers.Count);
-        var career = careers[index];
+        selectedCareer = careers[index];
 
-        careerDescription.text = career.Description;
-        shipDescription.text = career.ShipType.name;
+        careerDescription.text = selectedCareer.Description;
+        shipDescription.text = selectedCareer.ShipType.name;
 
-        careers.ForEach(c => c.SetHighlight(c == career));
+        careers.ForEach(c => c.SetHighlight(c == selectedCareer));
 
-        pilotSkillLabel.text = career.PilotSkill.ToString();
-        weaponsSkillLabel.text = career.WeaponsSkill.ToString();
-        mechSkillLabel.text = career.MechanicalSkill.ToString();
+        pilotSkillLabel.text = selectedCareer.PilotSkill.ToString();
+        weaponsSkillLabel.text = selectedCareer.WeaponsSkill.ToString();
+        mechSkillLabel.text = selectedCareer.MechanicalSkill.ToString();
     }
 
     public void Submit()
@@ -103,13 +103,23 @@ public class NewGameMenu : MonoBehaviour
         
         yield return SceneManager.LoadSceneAsync(newGameScene);
         yield return new WaitForEndOfFrame();
-
+        
         var ship = SpaceTraderConfig.LocalPlayer.Ship;
         if (ship)
         {
-            var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);
-            pc.Assign(ship, CrewAssignment.Captain);
+            Debug.LogWarning("loaded a new game scene which already had a player!");
+            Destroy(ship.gameObject);
         }
+
+        ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
+        var player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+        player.AddMoney(1000);
+
+        var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);
+        pc.Assign(ship, CrewAssignment.Captain);
+        pc.PilotSkill = selectedCareer.PilotSkill;
+        pc.MechanicalSkill = selectedCareer.MechanicalSkill;
+        pc.WeaponsSkill = selectedCareer.WeaponsSkill;
 
         loading.Dismiss();
     }

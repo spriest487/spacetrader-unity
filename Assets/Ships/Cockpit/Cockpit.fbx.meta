@@ -9,15 +9,30 @@ ModelImporter:
     100002: //RootNode
     100004: Lamp
     100006: Plane
+    100008: Cube
+    100010: Computer
+    100012: Frame
     400000: Camera.001
     400002: //RootNode
     400004: Lamp
     400006: Plane
+    400008: Cube
+    400010: Computer
+    400012: Frame
     2300000: Plane
     2300002: //RootNode
+    2300004: Cube
+    2300006: Computer
+    2300008: Frame
     3300000: Plane
     3300002: //RootNode
+    3300004: Cube
+    3300006: Computer
+    3300008: Frame
     4300000: Plane
+    4300002: Cube
+    4300004: Computer
+    4300006: Frame
   materials:
     importMaterials: 1
     materialName: 0

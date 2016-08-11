@@ -79,5 +79,14 @@ public class ShipInspector : Editor
         {
             EditorGUILayout.LabelField("(crew assignment not available when not playing)");
         }
+
+        Hitpoints hp;
+        if (Application.isPlaying && (hp = ship.GetComponent<Hitpoints>()))
+        {
+            if (GUILayout.Button("Destroy"))
+            {
+                hp.TakeDamage(1000000);
+            }
+        }
     }
 }
