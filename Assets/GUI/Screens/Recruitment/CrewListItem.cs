@@ -30,6 +30,15 @@ public class CrewListItem : MonoBehaviour
     private Text hirePriceLabel;
 
     [SerializeField]
+    private Text pilotSkillLabel;
+
+    [SerializeField]
+    private Text weaponsSkillLabel;
+
+    [SerializeField]
+    private Text mechSkillLabel;
+
+    [SerializeField]
     private Image portrait;
 
     public CrewMember CrewMember
@@ -42,6 +51,10 @@ public class CrewListItem : MonoBehaviour
         this.member = member;
         nameLabel.text = member.name;
         portrait.sprite = member.Portrait;
+
+        pilotSkillLabel.text = member.PilotSkill.ToString();
+        weaponsSkillLabel.text = member.WeaponsSkill.ToString();
+        mechSkillLabel.text = member.MechanicalSkill.ToString();
 
         if (hirePriceLabel)
         {
