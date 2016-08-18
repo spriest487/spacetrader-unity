@@ -83,16 +83,15 @@ public class CrewListBox : MonoBehaviour
 
         if (crewItems == null)
         {
-            crewItems = new PooledList<CrewListItem, CrewMember>(contentArea);
+            crewItems = new PooledList<CrewListItem, CrewMember>(contentArea, itemPrefab);
         }
 
         if (crew != null && crew.Any())
         {
             var editable = ScreenManager.Instance.State == PlayerStatus.Docked;
 
-            crewItems.Refresh(crew,
-                (i, newCrewMember) => Instantiate(itemPrefab),
-                (i, existingItem, newCrewMember) => existingItem.Assign(newCrewMember, editable));
+            crewItems.Refresh(crew, (i, existingItem, newCrewMember) => 
+                existingItem.Assign(newCrewMember, editable));
 
             emptyLabel.gameObject.SetActive(false);
         }

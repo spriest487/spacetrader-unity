@@ -89,24 +89,13 @@ public class CargoHoldList : MonoBehaviour
     {
         if (currentItems == null)
         {
-            currentItems = new PooledList<CargoHoldListItem, ItemType>(itemsHolder);
+            currentItems = new PooledList<CargoHoldListItem, ItemType>(itemsHolder, listItem);
         }
-
-        var newItems = new List<CargoHoldListItem>();
-
+        
         if (cargoHold)
         {
-            currentItems.Refresh(CargoHold.Items,
-                (i, cargoItem) =>
-                {
-                    var newListItem = Instantiate(listItem);
-                    newItems.Add(newListItem);
-                    return newListItem;
-                },
-                (i, existingItem, cargoItem) =>
-                {
-                    existingItem.Assign(CargoHold, i);
-                });
+            currentItems.Refresh(CargoHold.Items, (i, existingItem, cargoItem) =>
+                existingItem.Assign(CargoHold, i));
 
             highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.ItemCount - 1);
         }

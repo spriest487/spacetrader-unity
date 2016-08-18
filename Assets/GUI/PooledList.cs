@@ -7,19 +7,21 @@ using UnityEngine;
 public class PooledList<TItem, TData> : IEnumerable<TItem>
     where TItem: MonoBehaviour
 {
-    public delegate TItem CreateItemCallback(int index, TData source);
     public delegate void UpdateItemCallback(int index, TItem existing, TData source);
+
+    private TItem itemPrefab;
 
     private Transform root;
 
     private List<TItem> currentItems;
     private List<TData> currentData;
 
-    public PooledList(Transform root)
+    public PooledList(Transform root, TItem itemPrefab)
     {
         currentItems = new List<TItem>(root.GetComponentsInChildren<TItem>());
         currentData = null;
         this.root = root;
+        this.itemPrefab = itemPrefab;
     }
 
     public void Clear()
@@ -32,7 +34,7 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         }
     }
     
-    public void Refresh(IEnumerable<TData> data, CreateItemCallback onNewItem, UpdateItemCallback onUpdateItem)
+    public void Refresh(IEnumerable<TData> data, UpdateItemCallback onUpdateItem)
     {
         if (currentData != null && currentData.ElementsEquals(data))
         {
@@ -58,7 +60,7 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
             TItem item;
             if (itemIndex >= existingItemsCount)
             {
-                item = currentItems[itemIndex] = onNewItem(itemIndex, dataValue);
+                item = currentItems[itemIndex] = UnityEngine.Object.Instantiate(itemPrefab);
                 item.transform.SetParent(root, false);
             }
             else

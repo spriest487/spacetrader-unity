@@ -32,19 +32,17 @@ public class ShipStatsPanel : MonoBehaviour
       
         var entries = new Dictionary<string, string>();
         entries.Add("DPS", ship.EstimateDps().ToString("F2"));
-        entries.Add("Max speed", stats.maxSpeed.ToString("F2") +"m/s");
-        entries.Add("Agility", stats.maxTurnSpeed.ToString("F2") + "deg/s");
+        entries.Add("Max speed", stats.MaxSpeed.ToString("F2") +"m/s");
+        entries.Add("Agility", stats.MaxTurnSpeed.ToString("F2") + "deg/s");
         entries.Add("Armor", hp.GetMaxArmor().ToString());
         entries.Add("Shield", hp.GetMaxShields().ToString());
         entries.Add("Mass", (stats.Mass * 0.001f).ToString("F2") + "t");
 
         if (items == null)
         {
-            items = new PooledList<ShipStatsEntry, KeyValuePair<string, string>>(content);
+            items = new PooledList<ShipStatsEntry, KeyValuePair<string, string>>(content, statsEntryPrefab);
         }
 
-        items.Refresh(entries,
-            onNewItem: (i, entry) => Instantiate(statsEntryPrefab),
-            onUpdateItem: (i, item, entry) => item.SetText(entry.Key, entry.Value));
+        items.Refresh(entries, (i, item, entry) => item.SetText(entry.Key, entry.Value));
     }
 }

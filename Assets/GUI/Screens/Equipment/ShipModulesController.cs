@@ -35,7 +35,7 @@ public class ShipModulesController : MonoBehaviour
 
         if (modules == null)
         {
-            modules = new PooledList<ShipModuleController, HardpointModule>(transform);
+            modules = new PooledList<ShipModuleController, HardpointModule>(transform, moduleTemplate);
         }
 
         if (!player)
@@ -46,9 +46,7 @@ public class ShipModulesController : MonoBehaviour
 
         var slots = new List<HardpointModule>(player.Ship.ModuleLoadout);
         
-        modules.Refresh(slots,
-            (i, slot) => Instantiate(moduleTemplate),
-            (i, module, slot) => { module.Assign(player.Ship, i); });
+        modules.Refresh(slots, (i, module, slot) => { module.Assign(player.Ship, i); });
     }
 
     public void Refresh()
