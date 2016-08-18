@@ -96,7 +96,7 @@ public class NavigateTask : AITask
                     float lookAhead;
                     if (!GuessSizeOfObstacleInFront(between, out lookAhead))
                     {
-                        lookAhead = TaskFollower.Captain.Ship.CurrentStats.maxSpeed;
+                        lookAhead = TaskFollower.Captain.Ship.CurrentStats.MaxSpeed;
                     }
 
                     var aheadDest = pos + (between.normalized * lookAhead);

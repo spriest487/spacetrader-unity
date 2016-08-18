@@ -393,7 +393,7 @@ public class FollowCamera : MonoBehaviour
 		
 		if (playerRb && ship)
 		{
-			var speed = -playerRb.velocity / Mathf.Max(1, ship.CurrentStats.maxSpeed);
+			var speed = -playerRb.velocity / Mathf.Max(1, ship.CurrentStats.MaxSpeed);
 			var targetSpeedOffset = speed * thrustOffset;
             currentSpeedOffset = Vector3.MoveTowards(currentSpeedOffset, targetSpeedOffset, 0.1f);
 		}

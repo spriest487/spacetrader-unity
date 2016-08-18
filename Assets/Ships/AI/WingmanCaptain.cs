@@ -57,7 +57,7 @@ public class WingmanCaptain : MonoBehaviour
 	private void FlyInFormation(Ship leader)
 	{
 		//fly in same direction as leader
-		captain.Destination = transform.position + (leader.transform.forward * ship.CurrentStats.maxSpeed);
+		captain.Destination = transform.position + (leader.transform.forward * ship.CurrentStats.MaxSpeed);
 		
 		//keep adjusting to match our formation pos if possible
 		captain.AdjustTarget = leader.GetFormationPos(ship);
@@ -93,7 +93,7 @@ public class WingmanCaptain : MonoBehaviour
 		captain.Destination = leaderPos;
 
 		//throttle down as we approach the min formation distance
-		float throttleDownDist = ship.CurrentStats.maxSpeed * Time.deltaTime;
+		float throttleDownDist = ship.CurrentStats.MaxSpeed * Time.deltaTime;
 		float remainingDist = Mathf.Max(0, distance - minFormationDistance);
 
 		float catchupThrottle = Mathf.Min(1, remainingDist / throttleDownDist);

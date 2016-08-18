@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CustomEditor(typeof(Moorable))]
-class MoorableInspector : Editor
+public class MoorableInspector : Editor
 {
     public override void OnInspectorGUI()
     {

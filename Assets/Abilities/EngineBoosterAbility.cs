@@ -28,8 +28,8 @@ public class EngineBoosterAbility : Ability
         if (!(Cooldown > 0 || activeEffect))
         {
             activeEffect = CreateInstance<StatusEffect>();
-            activeEffect.FlatStats.maxSpeed = boostAmount;
-            activeEffect.FlatStats.thrust = boostAmount;
+            activeEffect.FlatStats.MaxSpeed = boostAmount;
+            activeEffect.FlatStats.Thrust = boostAmount;
             activeEffect.Expires = true;
             activeEffect.Lifetime = boostDuration;
 
