@@ -201,7 +201,7 @@ public class Ship : MonoBehaviour
 
         rigidbody.drag = 2;
         rigidbody.angularDrag = 2;
-        rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.maxTurnSpeed;
+        rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.MaxTurnSpeed;
         rigidbody.inertiaTensor = new Vector3(1, 1, 1);
     }
    
@@ -213,7 +213,7 @@ public class Ship : MonoBehaviour
     public static float EquivalentThrust(Ship from, Ship target)
 	{
 		var targetSpeed = target.rigidbody.velocity.magnitude;
-		var maxSpeed = Mathf.Max(1, from.CurrentStats.maxSpeed);
+		var maxSpeed = Mathf.Max(1, from.CurrentStats.MaxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
 		return result;
@@ -246,6 +246,7 @@ public class Ship : MonoBehaviour
     public void RecalculateCurrentStats()
     {
         var result = ShipType.Stats.Clone();
+        
         var proportionalTotals = new ShipStats();
 
         foreach (var statusEffect in activeStatusEffects)
@@ -255,6 +256,21 @@ public class Ship : MonoBehaviour
         }
 
         result.ApplyProportional(proportionalTotals);
+
+        var captain = GetCaptain();
+        if (captain)
+        {
+            var skillStats = new ShipStats()
+            {
+                Agility = 0.05f * captain.PilotSkill,
+                Thrust = 0.05f * captain.PilotSkill,
+                ArmorRaw = 0.05f * captain.MechanicalSkill,
+                ShieldRaw = 0.05f * captain.MechanicalSkill,
+                DamageMultiplier = 0.05f * captain.WeaponsSkill
+            };
+
+            result.ApplyProportional(skillStats);
+        }
 
         currentStats = result;
     }
@@ -345,7 +361,7 @@ public class Ship : MonoBehaviour
             Yaw = Mathf.Clamp(Yaw, -1, 1);
             Roll = Mathf.Clamp(Roll, -1, 1);
 
-            var torqueMax = CurrentStats.maxTurnSpeed * Mathf.Deg2Rad;
+            var torqueMax = CurrentStats.MaxTurnSpeed * Mathf.Deg2Rad;
 
             var localRotation = transform.InverseTransformDirection(rigidbody.angularVelocity);
             var localVelocity = transform.InverseTransformDirection(rigidbody.velocity);
@@ -355,10 +371,10 @@ public class Ship : MonoBehaviour
                 torqueMax);
             var forceInput = InputAmountsToRequired(new Vector3(Strafe, Lift, Thrust),
                 localVelocity,
-                CurrentStats.maxSpeed);
+                CurrentStats.MaxSpeed);
                                     
-            var force = forceInput * CurrentStats.thrust;
-            var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.agility;
+            var force = forceInput * CurrentStats.Thrust;
+            var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.Agility;
 
             /* apply new forces */
             rigidbody.AddRelativeTorque(torque);
@@ -412,9 +428,9 @@ public class Ship : MonoBehaviour
         var rigidBody = GetComponent<Rigidbody>();
         
         float speed = rigidBody.velocity.magnitude;
-        if (speed > CurrentStats.maxSpeed)
+        if (speed > CurrentStats.MaxSpeed)
         {
-            rigidBody.velocity = rigidBody.velocity.normalized * CurrentStats.maxSpeed;
+            rigidBody.velocity = rigidBody.velocity.normalized * CurrentStats.MaxSpeed;
         }
 	}
 		
@@ -513,5 +529,14 @@ public class Ship : MonoBehaviour
         return moduleLoadout.Where(mod => mod.ModuleType.Behaviour is IWeapon)
             .Select(mod => ((IWeapon)mod.ModuleType.Behaviour).CalculateDps(this))
             .Sum();
+    }
+
+    public int ApplyDamageModifier(int baseDamage)
+    {
+        var mod = currentStats.DamageMultiplier;
+
+        mod = Mathf.Max(1f, mod);
+
+        return Mathf.FloorToInt(baseDamage * mod);
     }
 }

@@ -7,22 +7,26 @@ public class ShipStats
     /// <summary>
     /// Turn acceleration, in degrees/sec^2
     /// </summary>
-	public float agility;
+	[SerializeField]
+    private float agility;
 
     /// <summary>
     /// Main engine acceleration, in m/s^2
     /// </summary>
-	public float thrust;
+	[SerializeField]
+    private float thrust;
 
     /// <summary>
     /// Turn speed cap, in degrees/sec
     /// </summary>
-	public float maxTurnSpeed;
+	[SerializeField]
+    private float maxTurnSpeed;
 
     /// <summary>
     /// Main engine speed cap, in m/s
     /// </summary>
-	public float maxSpeed;
+    [SerializeField]
+	private float maxSpeed;
 
     [SerializeField]
     private float passengerCapacity;
@@ -36,13 +40,80 @@ public class ShipStats
     [SerializeField]
     private float mass;
 
+    [SerializeField]
+    private float damageMultiplier;
+
     /// <summary>
     /// Number of passenger slots
     /// </summary>
-    public uint PassengerCapacity { get { return (uint) Mathf.FloorToInt(passengerCapacity); } }
-    public int Armor { get { return Mathf.FloorToInt(armor); } }
-    public int Shield { get { return Mathf.FloorToInt(shield); } }
-    public float Mass { get { return mass; } }
+    public uint PassengerCapacity
+    {
+        get { return (uint) Mathf.FloorToInt(passengerCapacity); }
+    }
+
+    public int Armor
+    {
+        get { return Mathf.FloorToInt(armor); }
+    }
+
+    public int Shield
+    {
+        get { return Mathf.FloorToInt(shield); }
+    }
+
+    public float PassengerCapacityRaw
+    {
+        get { return passengerCapacity; }
+        set { passengerCapacity = value; }
+    }
+
+    public float ArmorRaw
+    {
+        get { return armor; }
+        set { armor = value; }
+    }
+
+    public float ShieldRaw
+    {
+        get { return shield; }
+        set { shield = value; }
+    }
+
+    public float Mass
+    {
+        get { return mass; }
+        set { mass = value; }
+    }
+
+    public float Agility
+    {
+        get { return agility; }
+        set { agility = value; }
+    }
+
+    public float Thrust
+    {
+        get { return thrust; }
+        set { thrust = value; }
+    }
+
+    public float MaxTurnSpeed
+    {
+        get { return maxTurnSpeed; }
+        set { maxTurnSpeed = value; }
+    }
+
+    public float MaxSpeed
+    {
+        get { return maxSpeed; }
+        set { maxSpeed = value; }
+    }
+
+    public float DamageMultiplier
+    {
+        get { return damageMultiplier; }
+        set { damageMultiplier = value; }
+    }
 
     public ShipStats()
     {
@@ -58,6 +129,8 @@ public class ShipStats
         shield = 0;
 
         mass = 0;
+
+        damageMultiplier = 0;
     }
 
     public ShipStats Clone()
@@ -77,6 +150,8 @@ public class ShipStats
         shield += other.shield;
 
         mass += other.mass;
+
+        damageMultiplier += other.damageMultiplier;
     }
 
     public void ApplyProportional(ShipStats other)
@@ -91,5 +166,7 @@ public class ShipStats
         shield += shield * other.shield;
 
         mass += mass * other.mass;
+
+        damageMultiplier += mass * other.damageMultiplier;
     }
 }

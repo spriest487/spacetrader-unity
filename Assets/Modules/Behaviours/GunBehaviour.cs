@@ -45,28 +45,18 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
     public int CalculateDps(Ship owner)
     {
-        return (int) Mathf.Ceil((minDamage + maxDamage / 2) / fireRate);
+        var meanDamage = (minDamage + maxDamage) / 2f;
+
+        meanDamage = owner.ApplyDamageModifier(Mathf.FloorToInt(meanDamage));
+
+        return (int) Mathf.Ceil(meanDamage / fireRate);
     }
     
     public override void Equip(HardpointModule slot)
     {
         Cooldown = 0;
     }
-
-    private int CalculateDamage(Ship activator, int slot)
-    {
-        float randomBase = UnityEngine.Random.Range(minDamage, maxDamage);
-
-        float crewBonus;
-
-        var captain = activator.GetCaptain();
-        crewBonus = captain ? captain.WeaponsSkill * 0.1f : 0;
-        
-        float crewMultiplier = 1.0f + Mathf.Max(0.0f, crewBonus);
-
-        return Mathf.FloorToInt(randomBase * crewMultiplier);
-    }
-
+    
     public override void Activate(Ship activator, int slot)
 	{
         if (Cooldown > 0)
@@ -87,7 +77,8 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
             var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
 
             bulletInstance.owner = activator.gameObject;
-            bulletInstance.damage = CalculateDamage(activator, slot);
+            var randomDamage = UnityEngine.Random.Range(minDamage, maxDamage);
+            bulletInstance.damage = activator.ApplyDamageModifier(randomDamage);
 
             if (activator.GetComponent<Rigidbody>())
             {
