@@ -10,6 +10,8 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
     public void Start()
     {
         station = GetComponent<SpaceStation>();
+
+        Populate();
     }
 
     public void Populate()
