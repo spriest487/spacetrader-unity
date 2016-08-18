@@ -62,7 +62,7 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private FleetManager fleetManager;
     
-    private void OnEnable()
+    private void Start()
     {
         //clone configs on startup so we don't modify the global assets
         crewConfig = CrewConfiguration.Create(crewConfig);
@@ -70,7 +70,10 @@ public class SpaceTraderConfig : MonoBehaviour
         missionsConfig = Instantiate(missionsConfig);
         market = Instantiate(market);
         fleetManager = Instantiate(fleetManager);
+    }
 
+    private void OnEnable()
+    {
         if (Instance != null && instance != this)
         {
             //can't have two in a scene, and the existing one takes priority

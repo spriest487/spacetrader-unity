@@ -35,7 +35,7 @@ public class CrewConfiguration : ScriptableObject
     {
         get { return characters; }
     }
-
+    
     public static CrewConfiguration Create(CrewConfiguration prefab)
     {
         var result = Instantiate(prefab);
