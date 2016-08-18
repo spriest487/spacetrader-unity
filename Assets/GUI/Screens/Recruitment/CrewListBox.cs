@@ -88,10 +88,25 @@ public class CrewListBox : MonoBehaviour
 
         if (crew != null && crew.Any())
         {
-            var editable = ScreenManager.Instance.State == PlayerStatus.Docked;
+            CrewListItem.BuySellMode buySellMode;
+            if (ScreenManager.Instance.State == PlayerStatus.Docked)
+            {
+                if (targetCrew == TargetCrew.Player)
+                {
+                    buySellMode = CrewListItem.BuySellMode.Sellable;
+                }
+                else
+                {
+                    buySellMode = CrewListItem.BuySellMode.Buyable;
+                }
+            }
+            else
+            {
+                buySellMode = CrewListItem.BuySellMode.ReadOnly;
+            }
 
             crewItems.Refresh(crew, (i, existingItem, newCrewMember) => 
-                existingItem.Assign(newCrewMember, editable));
+                existingItem.Assign(newCrewMember, buySellMode));
 
             emptyLabel.gameObject.SetActive(false);
         }

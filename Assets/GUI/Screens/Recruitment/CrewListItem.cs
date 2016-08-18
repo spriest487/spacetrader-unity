@@ -7,6 +7,13 @@ public class CrewListItem : MonoBehaviour
 {
     private static readonly Color AFFORDABLE_COLOR = Color.white;
     private static readonly Color UNAFFORDABLE_COLOR = Color.red;
+
+    public enum BuySellMode
+    {
+        ReadOnly,
+        Buyable,
+        Sellable
+    }
         
     [SerializeField]
     private CrewMember member;
@@ -30,7 +37,7 @@ public class CrewListItem : MonoBehaviour
         get { return member; }
     }
 
-    public void Assign(CrewMember member, bool editable)
+    public void Assign(CrewMember member, BuySellMode buySellMode)
     {
         this.member = member;
         nameLabel.text = member.name;
@@ -43,8 +50,8 @@ public class CrewListItem : MonoBehaviour
             hirePriceLabel.text = "*" + price.ToString();
         }
 
-        hireFireButton.gameObject.SetActive(editable);
-        hirePriceLabel.gameObject.SetActive(editable);
+        hireFireButton.gameObject.SetActive(buySellMode != BuySellMode.ReadOnly);
+        hirePriceLabel.gameObject.SetActive(buySellMode == BuySellMode.Buyable);
     }
 
     void Update()
