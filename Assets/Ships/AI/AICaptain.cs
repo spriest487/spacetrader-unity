@@ -106,7 +106,7 @@ public class AICaptain : MonoBehaviour
         var totalAngle = Vector3.Dot(towards, transform.forward);
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
         
-        var facingTowardsAngle = ship.CurrentStats.maxTurnSpeed;
+        var facingTowardsAngle = ship.CurrentStats.MaxTurnSpeed;
         var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 
@@ -167,7 +167,7 @@ public class AICaptain : MonoBehaviour
             for (int a = 0; a < 3; ++a)
             {
                 var angle = currentLocalRotation[a];
-                counterThrust[a] = -(Mathf.Clamp01(angle / ship.CurrentStats.maxTurnSpeed));
+                counterThrust[a] = -(Mathf.Clamp01(angle / ship.CurrentStats.MaxTurnSpeed));
             }
 
             ship.Pitch = counterThrust.x;
@@ -194,7 +194,7 @@ public class AICaptain : MonoBehaviour
                     var distance = between.magnitude;
 
                     var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
-                    var currentThrust = rigidbody.velocity.magnitude / ship.CurrentStats.maxSpeed;
+                    var currentThrust = rigidbody.velocity.magnitude / ship.CurrentStats.MaxSpeed;
 
                     ship.Thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
                 }
@@ -254,7 +254,7 @@ public class AICaptain : MonoBehaviour
         var dist = between.magnitude;
 
         //TODO: could calculate stopping time exactly, this is assuming 1 second
-        var slowdownDist = CloseDistance + ship.CurrentStats.maxSpeed;
+        var slowdownDist = CloseDistance + ship.CurrentStats.MaxSpeed;
 
         var slowdownFactor = Mathf.Clamp01(dist / slowdownDist);
 
