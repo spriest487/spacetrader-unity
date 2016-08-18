@@ -75,7 +75,7 @@ public class Market : ScriptableObject {
     {
         var ship = player.Ship;
         Debug.Assert(ship != null, "can't sell stuff without a ship");
-        Debug.Assert(ship.GetPassengers().Contains(crewMember), "can't fire someone who doesn't work for you");
+        Debug.Assert(crewMember == ship.GetCaptain() || ship.GetPassengers().Contains(crewMember), "can't fire someone who doesn't work for you");
 
         atStation.AvailableCrew.Add(crewMember);
         crewMember.Unassign();
