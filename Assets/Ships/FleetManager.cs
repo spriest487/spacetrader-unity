@@ -5,19 +5,39 @@ using System.Collections.Generic;
 
 public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
 {
+    private class LeaderComparer : IEqualityComparer<Fleet>
+    {
+        public bool Equals(Fleet f1, Fleet f2)
+        {
+            return f1.Leader == f2.Leader;
+        }
+
+        public int GetHashCode(Fleet f)
+        {
+            return f.Leader.GetInstanceID();
+        }
+    }
+
     [SerializeField]
     private List<Fleet> fleetsList;
 
     private Dictionary<Ship, Fleet> fleets;
-
+    
     public FleetManager()
     {
         fleets = new Dictionary<Ship, Fleet>();
-    }
+    } 
 
     public void OnBeforeSerialize()
     {
-        fleetsList = new List<Fleet>(fleets.Values.Distinct());
+        if (fleets != null)
+        {
+            fleetsList = new List<Fleet>(fleets.Values.Distinct(new LeaderComparer()));
+        }
+        else
+        {
+            fleetsList = null;
+        }        
     }
     
     public void OnAfterDeserialize()
@@ -25,11 +45,14 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
         fleets = new Dictionary<Ship, Fleet>(fleetsList.Count);
         fleetsList.ForEach(fleet =>
         {
-            if (fleet)
+            if (!fleet.Leader)
             {
-                fleets.Add(fleet.Leader, fleet);
-                fleet.Followers.ForEach(follower => fleets.Add(follower, fleet));
+                Debug.LogWarningFormat("bad fleet when deserializing (no leader, {0} members)", fleet.Followers.Count());
+                return;
             }
+
+            fleets.Add(fleet.Leader, fleet);
+            fleet.Followers.ForEach(follower => fleets.Add(follower, fleet));
         });
         fleetsList = null;
     }
