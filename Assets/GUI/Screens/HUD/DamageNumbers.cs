@@ -21,6 +21,6 @@ public class DamageNumbers : MonoBehaviour
 
         var pos = bracket.transform.position;
 
-        var damageNo = DamageNumber.CreateFromPrefab(damageNumber, notification.Amount, pos, this);        
+        DamageNumber.CreateFromPrefab(damageNumber, notification.Amount, pos, this);        
     }
 }

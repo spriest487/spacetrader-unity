@@ -52,7 +52,6 @@ public class Predictor : MonoBehaviour
         var newMarkerPositions = new List<Vector3>(modCount);
 
         var playerTargetable = player.GetComponent<Targetable>();
-        var playerFaction = playerTargetable ? playerTargetable.Faction : null;
         
         /* one marker per active hardpoint module which returns true for
         IsPredictable. we get the prediction points from the module's 

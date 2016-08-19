@@ -12,8 +12,8 @@ public class CargoHoldList : MonoBehaviour
     [SerializeField]
     private int highlightedIndex;
 
-    [SerializeField]
-    private string sizeFormat = "{0}/{1}";
+    //[SerializeField]
+    //private string sizeFormat = "{0}/{1}";
 
     [Header("Prefabs")]
 

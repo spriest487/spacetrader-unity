@@ -14,9 +14,7 @@ public static class MathUtils
 	}
 
     public static void OrderByDistance(Transform[] transforms, Vector3 point)
-    {
-        var result = new Transform[transforms.Length];
-        
+    {        
         Array.Sort(transforms, (a, b) =>
         {
             var aDist = (a.position - point).sqrMagnitude;

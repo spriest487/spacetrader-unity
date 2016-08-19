@@ -13,14 +13,7 @@ public class MissionTeamSlotList : MonoBehaviour
 
     [SerializeField]
     private MissionTeamDividerItem teamDividerPrefab;
-
-    private RectTransform rectTransform;
-
-    void Start()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
-
+    
     public void OnScreenActive()
     {
         var mission = MissionManager.Instance.Mission;
