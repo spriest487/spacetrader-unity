@@ -11,8 +11,8 @@ public class MissionPrepScreen : MonoBehaviour
     [SerializeField]
     private Text missionTitleText;
     
-    [SerializeField]
-    private Button readyButton;
+    //[SerializeField]
+    //private Button readyButton;
 
     [SerializeField]
     private Text readyText;

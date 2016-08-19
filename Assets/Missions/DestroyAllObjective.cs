@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 
 [RequireComponent(typeof(MissionObjective))]
 public class DestroyAllObjective : MonoBehaviour

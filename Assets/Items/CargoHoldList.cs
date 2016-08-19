@@ -25,8 +25,8 @@ public class CargoHoldList : MonoBehaviour
     [SerializeField]
     private Transform itemsHolder;
 
-    [SerializeField]
-    private Text sizeLabel;
+    //[SerializeField]
+    //private Text sizeLabel;
 
     private PooledList<CargoHoldListItem, ItemType> currentItems;
 
