@@ -55,6 +55,11 @@ public class CrewConfiguration : ScriptableObject
    
     public CrewMember NewCharacter(string name, Sprite portrait)
     {
+        if (!portrait)
+        {
+            portrait = DefaultPortrait;
+        }
+
         Debug.Assert(portrait == defaultPortrait || portraits.Contains(portrait), 
             "portrait for character must be in the portraits list");
 
