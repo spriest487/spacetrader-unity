@@ -42,7 +42,7 @@ public class Market : ScriptableObject {
 
     public int GetHirePrice(CrewMember crewMember)
     {
-        return baseHirePrice;
+        return baseHirePrice * crewMember.Level;
     }
 
     public void HireCrewMember(PlayerShip player, SpaceStation fromStation, CrewMember crewMember)
