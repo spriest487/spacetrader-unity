@@ -325,6 +325,7 @@ MonoBehaviour:
   weaponsSkillLabel: {fileID: 11467182}
   mechSkillLabel: {fileID: 11428576}
   portrait: {fileID: 11453654}
+  hireFireLabel: {fileID: 11459022}
 --- !u!114 &11413270
 MonoBehaviour:
   m_ObjectHideFlags: 1

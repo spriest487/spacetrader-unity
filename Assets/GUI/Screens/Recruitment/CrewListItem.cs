@@ -41,16 +41,22 @@ public class CrewListItem : MonoBehaviour
     [SerializeField]
     private Image portrait;
 
+    [SerializeField]
+    private Text hireFireLabel;
+
+    private BuySellMode buySellMode;
+
     public CrewMember CrewMember
     {
         get { return member; }
     }
-
+    
     public void Assign(CrewMember member, BuySellMode buySellMode)
     {
         this.member = member;
         nameLabel.text = member.name;
         portrait.sprite = member.Portrait;
+        this.buySellMode = buySellMode;
 
         pilotSkillLabel.text = member.PilotSkill.ToString();
         weaponsSkillLabel.text = member.WeaponsSkill.ToString();
@@ -64,12 +70,13 @@ public class CrewListItem : MonoBehaviour
         }
 
         hireFireButton.gameObject.SetActive(buySellMode != BuySellMode.ReadOnly);
+        hireFireLabel.text = buySellMode == BuySellMode.Buyable ? "Hire" : "Dismiss";
         hirePriceLabel.gameObject.SetActive(buySellMode == BuySellMode.Buyable);
     }
 
     void Update()
     {
-        if (hirePriceLabel)
+        if (buySellMode == BuySellMode.Buyable)
         {
             var price = SpaceTraderConfig.Market.GetHirePrice(member);
             var money = PlayerShip.LocalPlayer.Money;
@@ -77,11 +84,17 @@ public class CrewListItem : MonoBehaviour
             if (price > money)
             {
                 hirePriceLabel.color = UNAFFORDABLE_COLOR;
+                hireFireButton.interactable = false;
             }
             else
             {
                 hirePriceLabel.color = AFFORDABLE_COLOR;
+                hireFireButton.interactable = true;
             }
+        }
+        else
+        {
+            hireFireButton.interactable = true;
         }
     }
 
