@@ -25,6 +25,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         {
             //TODO: people have faces
             var member = SpaceTraderConfig.CrewConfiguration.NewCharacter("No name", null);
+            member.RandomStats(3);
             newCrew.Add(member);
         }
 

@@ -57,6 +57,11 @@ public class CrewMember : ScriptableObject
         set { mechanicalSkill = value; }
     }
 
+    public int Level
+    {
+        get { return pilotSkill + weaponsSkill + mechanicalSkill; }
+    }
+
     public Sprite Portrait
     {
         get { return portrait; }
@@ -93,4 +98,39 @@ public class CrewMember : ScriptableObject
         Debug.Log("destroying crew member " +name);
     }
 #endif
+
+    public void RandomStats(int budget)
+    {
+        var weights = new float[3];
+        float weightSum = 0;
+        for (int skill = 0; skill < 3; ++skill)
+        {
+            var weight = UnityEngine.Random.Range(0, 1.0f);
+            weightSum += weight;
+            weights[skill] = weight;
+        }
+
+        for (int skill = 0; skill < 3; ++skill)
+        {
+            weights[skill] /= weightSum;
+        }
+
+        var skills = new int[3];
+        int skillTotal = 0;
+        for (int skill = 0; skill < 3; ++skill)
+        {
+            var points = Mathf.FloorToInt(weights[skill] * budget);
+            skillTotal += points;
+            skills[skill] = points;
+        }
+
+        if (skillTotal < budget)
+        {
+            skills[UnityEngine.Random.Range(0, 3)] += budget - skillTotal;
+        }
+
+        PilotSkill = skills[0];
+        WeaponsSkill = skills[1];
+        MechanicalSkill = skills[2];
+    }
 }
