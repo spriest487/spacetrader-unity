@@ -178,9 +178,9 @@ public class WingmanCaptain : MonoBehaviour
 
         //if we get too close, panic for a little bit and fly away
         var between = transform.position - ship.Target.transform.position;
-        if (between.sqrMagnitude < captain.CloseDistanceSqr * PANIC_DIST_FACTOR)
+        if (between.sqrMagnitude < captain.Ship.CloseDistanceSqr * PANIC_DIST_FACTOR)
         {
-            var panicVec = Random.onUnitSphere * captain.CloseDistance * PANIC_DIST_FACTOR;
+            var panicVec = Random.onUnitSphere * captain.Ship.CloseDistance * PANIC_DIST_FACTOR;
             immediateManeuver = ship.Target.transform.position + panicVec;
         }
 
@@ -272,7 +272,7 @@ public class WingmanCaptain : MonoBehaviour
         captain.Destination = immediateManeuver.Value;
         captain.Throttle = 1;
 
-        if (captain.IsCloseTo(immediateManeuver.Value))
+        if (captain.Ship.IsCloseTo(immediateManeuver.Value))
         {
             immediateManeuver = null;
         }

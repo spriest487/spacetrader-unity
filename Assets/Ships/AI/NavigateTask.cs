@@ -34,8 +34,8 @@ public class NavigateTask : AITask
 
             if (seeker == null || !AstarPath.active || !AstarPath.active.isActiveAndEnabled)
             {
-                TaskFollower.Captain.Destination = destination;
-                TaskFollower.Captain.Throttle = 1;
+                TaskFollower.Ship.ResetControls(thrust: 1);
+                TaskFollower.Ship.RotateToPoint(destination);
             }
             else
             {
@@ -46,21 +46,18 @@ public class NavigateTask : AITask
 
     private IEnumerator Navigate(Seeker seeker)
     {
-        var captain = TaskFollower.Captain;
-
         while (!Done)
         {
-            if (captain.CanSee(destination))
+            if (TaskFollower.Ship.CanSee(destination))
             {
-                captain.Destination = destination;
-                captain.Throttle = 1;
-
-                Debug.Log("can see target, going straight for it");
+                TaskFollower.Ship.ResetControls(thrust: 1);
+                TaskFollower.Ship.RotateToPoint(destination);                
+                
                 yield return new WaitForSeconds(SHORT_THINK);
             }
             else
             {
-                captain.Throttle = 0;
+                TaskFollower.Ship.ResetControls();
                 yield return seeker.StartCoroutine(FollowWorldPath(seeker));
             }
         }
@@ -68,8 +65,6 @@ public class NavigateTask : AITask
 
     private IEnumerator FollowWorldPath(Seeker seeker)
     {
-        var captain = TaskFollower.Captain;
-
         //get a world path to target
         Debug.Log("getting a new world path...");
         var path = seeker.StartPath(TaskFollower.transform.position, destination, null, 1);
@@ -81,10 +76,10 @@ public class NavigateTask : AITask
 
             do
             {
-                if (captain.CanSee(destination))
+                if (TaskFollower.Ship.CanSee(destination))
                 {
-                    captain.Destination = destination;
-                    captain.Throttle = 1;
+                    TaskFollower.Ship.ResetControls(thrust: 1);
+                    TaskFollower.Ship.RotateToPoint(destination);
                     yield return new WaitForSeconds(LONG_THINK);
                 }
                 else
@@ -96,7 +91,7 @@ public class NavigateTask : AITask
                     float lookAhead;
                     if (!GuessSizeOfObstacleInFront(between, out lookAhead))
                     {
-                        lookAhead = TaskFollower.Captain.Ship.CurrentStats.MaxSpeed;
+                        lookAhead = TaskFollower.Ship.CurrentStats.MaxSpeed;
                     }
 
                     var aheadDest = pos + (between.normalized * lookAhead);
@@ -114,11 +109,11 @@ public class NavigateTask : AITask
         do
         {
             //if at any point we can see the destination directly, go for that instead
-            if (captain.CanSee(destination))
+            if (TaskFollower.Ship.CanSee(destination))
             {
                 Debug.Log("giving up on world nav path because we can see the destination");
-                captain.Destination = destination;
-                captain.Throttle = 1;
+                TaskFollower.Ship.ResetControls(thrust: 1);
+                TaskFollower.Ship.RotateToPoint(destination);
                 yield return new WaitForSeconds(LONG_THINK);
                 yield break;
             }
@@ -127,7 +122,7 @@ public class NavigateTask : AITask
             bool lastPoint = pointIt == path.vectorPath.Count - 1;
 
             //can we see it?
-            if (!captain.CanSee(point))
+            if (!TaskFollower.Ship.CanSee(point))
             {
                 Debug.Log("can't see next world node, trying a local obstacle route");
                 yield return seeker.StartCoroutine(FollowLocalPath(seeker, point));
@@ -141,17 +136,17 @@ public class NavigateTask : AITask
                 /* when doing world nav, skip a point if we can already see a clear path
                 to the next point*/
                 var nextPoint = path.vectorPath[pointIt + 1];
-                if (captain.CanSee(nextPoint))
+                if (TaskFollower.Ship.CanSee(nextPoint))
                 {
                     ++pointIt;
                     continue;
                 }
             }
 
-            captain.Destination = point;
-            captain.Throttle = 1;
+            TaskFollower.Ship.ResetControls(thrust: 1);
+            TaskFollower.Ship.RotateToPoint(point);
 
-            if (captain.IsCloseTo(point))
+            if (TaskFollower.Ship.IsCloseTo(point))
             {
                 ++pointIt;
             }
@@ -164,7 +159,7 @@ public class NavigateTask : AITask
 
         //if we reach the end of a world path and still can't see the target, look for a local obstacle path
         if (pointIt == path.vectorPath.Count
-            && !TaskFollower.Captain.CanSee(destination))
+            && !TaskFollower.Ship.CanSee(destination))
         {
             Debug.Log("reached end of world path and couldn't see the dest, trying to navigate local obstacles");
             yield return seeker.StartCoroutine(FollowLocalPath(seeker, destination));
@@ -175,15 +170,14 @@ public class NavigateTask : AITask
 
     private IEnumerator FollowLocalPath(Seeker seeker, Vector3 worldDest)
     {
-        var captain = TaskFollower.Captain;
         var localPath = seeker.StartPath(TaskFollower.transform.position, worldDest, null, ~1);
         yield return seeker.StartCoroutine(localPath.WaitForPath());
 
         if (localPath.error)
         {
             Debug.Log("local path failed, going back to world nav");
-            captain.Throttle = 1;
-            captain.Destination = worldDest;
+            TaskFollower.Ship.ResetControls(thrust: 1);
+            TaskFollower.Ship.RotateToPoint(worldDest);
 
             yield return new WaitForSeconds(LONG_THINK);
             yield break;
@@ -196,11 +190,10 @@ public class NavigateTask : AITask
             var point = localPath.vectorPath[pointIt];
             bool lastPoint = pointIt == localPath.vectorPath.Count - 1;
 
-            captain.Destination = point;
-            captain.Throttle = 1;
-            captain.TargetUp = Vector3.up;
+            TaskFollower.Ship.ResetControls(thrust: 1);
+            TaskFollower.Ship.RotateToPoint(point, Vector3.up);
             
-            if (!captain.CanSee(point))
+            if (!TaskFollower.Ship.CanSee(point))
             {
                 Debug.Log("cancelling local route since we can't see the next node");
                 yield return new WaitForSeconds(LONG_THINK);
@@ -211,14 +204,14 @@ public class NavigateTask : AITask
             {
                 /* skip points if we can already see the next point */
                 var nextPoint = localPath.vectorPath[pointIt + 1];
-                if (TaskFollower.Captain.CanSee(nextPoint))
+                if (TaskFollower.Ship.CanSee(nextPoint))
                 {
                     ++pointIt;
                     continue;
                 }
             }
 
-            if (captain.IsCloseTo(point))
+            if (TaskFollower.Ship.IsCloseTo(point))
             {
                 ++pointIt;
                 Debug.Log("reached a waypoint on our local route");
@@ -266,9 +259,9 @@ public class NavigateTask : AITask
     {
         get
         {
-            Debug.Assert(TaskFollower && TaskFollower.Captain, "should have an AI captain when checking done, don't check Done on same frame as follower is created!");
+            Debug.Assert(TaskFollower && TaskFollower.Ship, "should have a ship when checking done, don't check Done on same frame as follower is created!");
 
-            return TaskFollower.Captain.IsCloseTo(destination);
+            return TaskFollower.Ship.IsCloseTo(destination);
         }
     }
 }

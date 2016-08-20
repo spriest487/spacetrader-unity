@@ -37,8 +37,9 @@ public class AimAtTask : AITask
 
     public override void Update()
     {
-        TaskFollower.Captain.AdjustTarget = dest;
-        TaskFollower.Captain.Destination = aimAtPos;
-        TaskFollower.Captain.Throttle = 0;
+        var between = aimAtPos - TaskFollower.transform.position;
+
+        TaskFollower.Ship.ResetControls();
+        TaskFollower.Ship.RotateToPoint(aimAtPos, null, accuracy);
     }
 }

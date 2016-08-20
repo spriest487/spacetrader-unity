@@ -21,7 +21,7 @@ public class AttackTask : AITask
 
     private Targetable Target
     {
-        get { return TaskFollower.Captain.Ship.Target; }
+        get { return TaskFollower.Ship.Target; }
     }
 
     public static AttackTask Create(Targetable ship)
@@ -37,7 +37,7 @@ public class AttackTask : AITask
             return;
         }
         
-        canSeeTarget = TaskFollower.Captain.CanSee(Target.transform.position);
+        canSeeTarget = TaskFollower.Ship.CanSee(Target.transform.position);
 
         bool navigatingToTarget = false;
         if (!canSeeTarget)
@@ -69,7 +69,7 @@ public class AttackTask : AITask
                 dest += behindOffset;
             }
 
-            if (TaskFollower.Captain.IsCloseTo(dest))
+            if (TaskFollower.Ship.IsCloseTo(dest))
             {
                 /* we're close to where we want to be, now aim at them */
                 if (!aimCloseEnough)

@@ -17,7 +17,7 @@ public class CombatCaptain : MonoBehaviour
     {
         if (taskFollower.Idle)
         {
-            var target = taskFollower.Captain.Ship.Target;
+            var target = taskFollower.Ship.Target;
 
             if (target)
             {

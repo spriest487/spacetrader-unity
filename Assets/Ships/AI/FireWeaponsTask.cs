@@ -20,7 +20,7 @@ class FireWeaponsTask : AITask
     
     public override void Update()
     {
-        var ship = TaskFollower.Captain.Ship;
+        var ship = TaskFollower.Ship;
 
         if (!ship.Target)
         {

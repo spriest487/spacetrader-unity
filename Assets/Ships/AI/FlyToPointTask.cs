@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class FlyToPointTask : AITask
 {
@@ -16,6 +17,8 @@ public class FlyToPointTask : AITask
     [SerializeField]
     private float accuracy;
 
+    private Coroutine flyRoutine;
+    
     public override bool Done
     {
         get
@@ -26,18 +29,39 @@ public class FlyToPointTask : AITask
         }
     }
 
+    private IEnumerator FlyRoutine()
+    {
+        var checkInterval = new WaitForSeconds(.1f);
+        var ship = TaskFollower.Ship;
+
+        while (!Done)
+        {
+            var between = (dest - TaskFollower.transform.position).normalized;
+            var dotToTarget = Vector3.Dot(TaskFollower.transform.forward, between);
+
+            /* slow down if we're not facing where we want to go (slower the
+            further away from the correct heading we are) */
+            ship.Thrust = Mathf.Clamp01(dotToTarget);
+            ship.RotateToDirection(between);
+
+            yield return checkInterval;            
+        }
+    }
+
     public override void Update()
     {
-        var between = dest - TaskFollower.transform.position;
-        var dotToTarget = Vector3.Dot(TaskFollower.transform.forward, between.normalized);
+        if (flyRoutine == null)
+        {
+            flyRoutine = TaskFollower.StartCoroutine(FlyRoutine());
+        }
+    }
 
-        /* slow down if we're not facing where we want to go (slower the
-        further away from the correct heading we are) */
-        TaskFollower.Captain.Throttle = Mathf.Clamp01(dotToTarget);
-
-        TaskFollower.Captain.Destination = dest;
-        TaskFollower.Captain.AdjustTarget = null;
-        
-        TaskFollower.Captain.MinimumThrust = 0;
+    public override void End()
+    {
+        if (flyRoutine != null)
+        {
+            TaskFollower.StopCoroutine(flyRoutine);
+            flyRoutine = null;
+        }
     }
 }

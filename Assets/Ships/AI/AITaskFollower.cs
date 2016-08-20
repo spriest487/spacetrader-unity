@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(AICaptain))]
+[RequireComponent(typeof(Ship))]
 public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 {
     private LinkedList<AITask> tasks;
@@ -13,13 +13,13 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     private AITask lastTask;
 
     [SerializeField]
-    private AICaptain captain;
+    private Ship ship;
 
-    public AICaptain Captain
+    public Ship Ship
     {
         get
         {
-            return captain;
+            return ship;
         }
     }
 
@@ -59,7 +59,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     
     public void AssignTask(AITask task)
     {
-        Debug.Assert(Captain, "can't assign tasks without a captain (don't assign tasks on same frame as follower was instantiated)");
+        Debug.Assert(ship, "can't assign tasks without a ship (don't assign tasks on same frame as follower was instantiated)");
 
         task.CheckRequiredConstraints();
         task.Status = AITask.TaskStatus.NEW;
@@ -85,7 +85,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 
     void Start()
     {
-        captain = GetComponent<AICaptain>();
+        ship = GetComponent<Ship>();
     }
     
     void Update()

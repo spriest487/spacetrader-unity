@@ -98,7 +98,7 @@ public class Moorable : MonoBehaviour
     }
 
     //TODO
-    const float DOCK_DISTANCE = 50;
+    const float DOCK_DISTANCE = 25;
 
     private float GetDockProximity()
     {
@@ -114,6 +114,8 @@ public class Moorable : MonoBehaviour
         var endPoint = points[pointIndex];
         var startPoint = points[pointIndex] + (endPoint - spaceStation.transform.position).normalized * DOCK_DISTANCE; //TODO
 
+        var proximity = GetDockProximity();
+
         //TODO
         var shipAi = ship.GetComponent<AITaskFollower>();
         if (!shipAi)
@@ -122,13 +124,13 @@ public class Moorable : MonoBehaviour
             yield return null; //Start() needs to run
         }
 
-        var goToEnd = NavigateTask.Create(endPoint);
+        var goToEnd = FlyToPointTask.Create(endPoint, proximity);
 
         shipAi.AssignTask(goToEnd);
 
-        if (!shipAi.Captain.CanSee(endPoint) && !goToEnd.Done)
+        if (!ship.CanSee(endPoint) && !goToEnd.Done)
         {
-            var goToStart = NavigateTask.Create(startPoint);
+            var goToStart = FlyToPointTask.Create(startPoint, proximity);
             shipAi.AssignTask(goToStart);
 
             while (!goToStart.Done)
@@ -144,8 +146,7 @@ public class Moorable : MonoBehaviour
 
         state = DockingState.Docked;
         spaceStation.AddDockedShip(this);
-
-        shipAi.Captain.Destination = null;
+        
         shipAi.ClearTasks();
     }
 
@@ -176,7 +177,6 @@ public class Moorable : MonoBehaviour
         var shipAi = ship.GetComponent<AITaskFollower>();
         if (shipAi)
         {
-            shipAi.Captain.Destination = null;
             shipAi.ClearTasks();
         }
     }

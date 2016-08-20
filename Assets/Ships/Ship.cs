@@ -50,6 +50,7 @@ public class Ship : MonoBehaviour
     private float roll;
 
     private new Rigidbody rigidbody;
+    private new Collider collider;
 
     private Hitpoints hitPoints;
 
@@ -179,6 +180,24 @@ private ShipStats currentStats;
         get { return activeStatusEffects.AsReadOnly(); }
     }
 
+    public float CloseDistance
+    {
+        get
+        {
+            var extents = collider.bounds.extents;
+            return Mathf.Max(extents.x, extents.y, extents.z) * 4;
+        }
+    }
+
+    public float CloseDistanceSqr
+    {
+        get
+        {
+            var closeDistance = CloseDistance;
+            return closeDistance * closeDistance;
+        }
+    }
+
     public void ResetControls(float pitch = 0, float yaw = 0, float roll = 0, float thrust = 0, float strafe = 0, float lift = 0)
     {
         Pitch = pitch;
@@ -262,6 +281,7 @@ private ShipStats currentStats;
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
     }
 
     private static void UpdateRigidBodyFromStats(Rigidbody rigidbody, ShipStats stats)
@@ -288,6 +308,164 @@ private ShipStats currentStats;
 		
 		return result;
 	}
+
+    private bool IsCloseTo(Vector3 point, Vector3 between, float distance)
+    {
+        return between.sqrMagnitude < CloseDistanceSqr;
+    }
+
+    public bool IsCloseTo(Vector3 point, float distance)
+    {
+        var between = point - transform.position;
+
+        return IsCloseTo(point, between, distance);
+    }
+
+    public bool IsCloseTo(Vector3 point)
+    {
+        return IsCloseTo(point, CloseDistance);
+    }
+
+    public bool CanSee(Vector3 target)
+    {
+        /* the between ray is backwards from the target, since raycasts ignore colliders
+        that the origin point is inside */
+        var between = transform.position - target;
+        var ray = new Ray(target, between);
+
+        foreach (var hit in Physics.RaycastAll(ray, between.magnitude))
+        {
+            if (hit.collider != collider)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void RotateToPoint(Vector3 aimPoint, Vector3? targetUp = null, float aimAccuracy = 1)
+    {
+        var between = aimPoint - transform.position;
+
+        if (between.sqrMagnitude < Mathf.Epsilon)
+        {
+            return;
+        }
+
+        RotateToDirection(between.normalized, targetUp, aimAccuracy);
+    }
+
+    public void RotateToDirection(Vector3 aimDir, Vector3? targetUp = null, float aimAccuracy = 1)
+    {
+        var aimDirLocal = transform.InverseTransformDirection(aimDir);
+
+        Debug.DrawLine(transform.position, transform.position + (aimDir * 5), Color.cyan, Time.deltaTime);
+
+        //local rotation required to get to target
+        var rotateTo = Quaternion.LookRotation(aimDirLocal, targetUp.HasValue ? targetUp.Value : transform.up);
+
+        var totalAngle = Mathf.Clamp(Vector3.Dot(aimDir, transform.forward), -1, 1);
+        totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
+
+        var facingTowardsAngle = Mathf.Max(1, CurrentStats.MaxTurnSpeed);
+        var facingTowards = totalAngle < facingTowardsAngle;
+        var facingDirectlyTowards = totalAngle < aimAccuracy;
+
+        //var closeEnough = IsCloseTo(Destination.Value, between, CloseDistance);
+
+        var currentLocalRotation = transform.InverseTransformDirection(rigidbody.angularVelocity) * Mathf.Rad2Deg;
+
+        if (!facingDirectlyTowards)
+        {
+            float turnFactor = Mathf.Clamp01(Mathf.Abs(totalAngle) / facingTowardsAngle);
+            turnFactor = Mathf.Log10(1 + (turnFactor * 9)); //log10 slowdown instead of linear so we slow down more dramatically closer to the goal
+
+            //Debug.Log(string.Format("turnFactor is {0:F4} (total angle is {1:F4}, slowdown angle is {2:F4})", turnFactor, totalAngle, facingTowardsAngle));
+
+            //turn rotation into pitch/yaw/roll angles (with 90 being up, -90 being down, etc)
+            var angles = rotateTo.eulerAngles;
+            for (int angleIt = 0; angleIt < 3; ++angleIt)
+            {
+                var angle = angles[angleIt];
+                angle = (angle > 180 ? -(360 - angle) : angle);
+
+                var currentRotationThisAxis = currentLocalRotation[angleIt];
+
+                if (MathUtils.SameSign(angle, currentRotationThisAxis) && Mathf.Abs(angle) < Mathf.Abs(currentRotationThisAxis))
+                {
+                    /*if we're already rotating in this direction faster than the
+                     target speed, don't add any more thrust! */
+                    angle = 0;
+                }
+                else
+                {
+                    if (angle > Vector3.kEpsilon)
+                    {
+                        angle = 1;
+                    }
+                    else if (angle < -Vector3.kEpsilon)
+                    {
+                        angle = -1;
+                    }
+                    else
+                    {
+                        angle = 0;
+                    }
+                }
+
+                angle *= turnFactor;
+
+                angles[angleIt] = angle;
+            }
+
+            Pitch = angles.x;
+            Yaw = angles.y;
+        }
+        else
+        {
+            //within the "target zone" - try to counteract existing rotation to zero if possible
+            Vector3 counterThrust = new Vector3();
+            for (int a = 0; a < 3; ++a)
+            {
+                var angle = currentLocalRotation[a];
+                counterThrust[a] = -(Mathf.Clamp01(angle / Mathf.Max(1, CurrentStats.MaxTurnSpeed)));
+            }
+
+            Pitch = counterThrust.x;
+            Yaw = counterThrust.y;
+            Roll = counterThrust.z;
+        }
+
+        //if (!facingTowards)
+        //{
+        //    //if not in danger, only thrust slowly when not facing target
+        //    Thrust = 0.0f;
+        //}
+        //else
+        //{
+        //    if (closeEnough)
+        //    {
+        //        if (facingDirectlyTowards)
+        //        {
+        //            //if we know we're not rotating, and we're close to the target, use strafe and lift to adjust our pos towards the target
+        //            Thrust = 0;
+        //        }
+        //        else
+        //        {
+        //            var distance = between.magnitude;
+
+        //            var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
+        //            var currentThrust = rigidbody.velocity.magnitude / CurrentStats.MaxSpeed;
+
+        //            Thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Thrust = 1;
+        //    }
+        //}
+    }
 
     private void OnDestroy()
     {

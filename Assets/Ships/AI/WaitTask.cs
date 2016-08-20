@@ -25,7 +25,7 @@ public class WaitTask : AITask
 
     public override void Update()
     {
-        TaskFollower.Captain.Throttle = 0;
+        TaskFollower.Ship.ResetControls();
     }
 
     public override void Begin()
