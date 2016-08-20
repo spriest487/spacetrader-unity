@@ -253,7 +253,10 @@ public class ScreenManager : MonoBehaviour
 
     private void Start()
     {
-        ScreenID = DefaultHudOverlay;
+        screenId = DefaultHudOverlay;
+        playerStatus = PlayerStatus.Flight;
+
+        Apply();
     }
 
     private void Update()
