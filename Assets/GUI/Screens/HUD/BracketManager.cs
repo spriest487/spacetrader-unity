@@ -27,8 +27,8 @@ public class BracketManager : MonoBehaviour
     [SerializeField]
     private Color resourceColor = Color.yellow;
 
-    [SerializeField]
-    private Color unselectedTint = new Color(1, 1, 1, 0.5f);
+    //[SerializeField]
+    //private Color unselectedTint = new Color(1, 1, 1, 0.5f);
 
     [SerializeField]
     private Sprite corner;

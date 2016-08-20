@@ -25,7 +25,13 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1e5b6a167571d9c439db8c02824118b0, type: 3}
   - {fileID: 21300000, guid: dcfea73f5ce7feb4bb6d2928e87edd0d, type: 3}
   defaultPortrait: {fileID: 21300000, guid: 3c085367ae1b84545a0b3e7930420ce9, type: 3}
-  defaultCharacters:
-  - {fileID: 11400000, guid: f361f9e26f88b8344a563289fa89cbc2, type: 2}
-  - {fileID: 11400000, guid: 9b870d3d0fcaad84f922176d2119ac5a, type: 2}
-  characters: []
+  characters:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

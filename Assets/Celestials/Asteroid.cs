@@ -11,8 +11,8 @@ public class Asteroid : MonoBehaviour
         public Targetable targetable;
     }
 
-    [SerializeField]
-    private int seed = new System.Random().Next(0, int.MaxValue);
+    //[SerializeField]
+    //private int seed = new System.Random().Next(0, int.MaxValue);
 
     [SerializeField]
     private List<Targetable> deposits;

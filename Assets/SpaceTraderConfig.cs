@@ -4,23 +4,7 @@ using UnityEngine;
 
 public class SpaceTraderConfig : MonoBehaviour
 {
-    private static SpaceTraderConfig instance;
-    public static SpaceTraderConfig Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<SpaceTraderConfig>();
-            }
-
-            return instance;
-        }
-        private set
-        {
-            instance = value;
-        }
-    }
+    public static SpaceTraderConfig Instance { get; private set; }
 
     public static CrewConfiguration CrewConfiguration { get { return Instance.crewConfig; } }
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
@@ -62,8 +46,17 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private FleetManager fleetManager;
     
-    private void Start()
+    private void OnEnable()
     {
+        if (Instance)
+        {
+            Debug.Assert(Instance == this);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(this);
+
         //clone configs on startup so we don't modify the global assets
         crewConfig = CrewConfiguration.Create(crewConfig);
         cargoConfig = Instantiate(cargoConfig);
@@ -71,28 +64,10 @@ public class SpaceTraderConfig : MonoBehaviour
         market = Instantiate(market);
         fleetManager = Instantiate(fleetManager);
     }
-
-    private void OnEnable()
-    {
-        if (Instance != null && instance != this)
-        {
-            //can't have two in a scene, and the existing one takes priority
-            Destroy(gameObject);
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            instance = this;
-            DontDestroyOnLoad(this);
-        }
-    }
-
+    
     private void OnDisable()
     {
-        if (instance == this)
-        {
-            instance = null;
-        }
+        Instance = null;
     }
 
     private void OnDestroy()

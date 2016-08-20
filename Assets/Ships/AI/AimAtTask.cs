@@ -26,7 +26,6 @@ public class AimAtTask : AITask
     {
         get
         {
-            var forward = TaskFollower.transform.forward;
             var between = aimAtPos - TaskFollower.transform.position;
             var dotToDest = Vector3.Dot(TaskFollower.transform.forward, between.normalized);
 

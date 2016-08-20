@@ -19,10 +19,13 @@ public class DestroyAllObjective : MonoBehaviour
     {
         bool remaining = false;
 
-        foreach (var target in targets)
+        for (int target = 0; target < targets.Length; ++target)
         {
-            remaining = true;
-            break;
+            if (targets[target])
+            {
+                remaining = true;
+                break;
+            }
         }
 
         if (!remaining)

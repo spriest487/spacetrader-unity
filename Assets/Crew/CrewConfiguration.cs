@@ -21,7 +21,6 @@ public class CrewConfiguration : ScriptableObject
     [SerializeField]
     private Sprite defaultPortrait;
     
-    //global list of all characters in the game!
     [SerializeField]
     private List<CrewMember> characters;
 

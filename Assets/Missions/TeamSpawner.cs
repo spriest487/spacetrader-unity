@@ -24,8 +24,6 @@ public class TeamSpawner : MonoBehaviour
 
         public void SpawnAll(MissionDefinition.TeamDefinition teamDefinition, ActiveTeam activeTeam)
         {
-            var mission = MissionManager.Instance.Mission;
-
             if (spawnedShips != null && spawnedShips.Length != 0)
             {
                 throw new UnityException("already spawned this team once");

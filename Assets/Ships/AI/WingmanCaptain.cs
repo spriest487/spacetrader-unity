@@ -173,11 +173,7 @@ public class WingmanCaptain : MonoBehaviour
     }
 
     private void ChaseTarget()
-    {
-        //try to get on their six
-        var TODO_CHASEDIST = 20;
-        var behindTarget = ship.Target.transform.TransformPoint(new Vector3(0, 0, -TODO_CHASEDIST));
-        
+    {        
         var PANIC_DIST_FACTOR = 10;
 
         //if we get too close, panic for a little bit and fly away

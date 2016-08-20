@@ -97,14 +97,7 @@ public class CrewMember : ScriptableObject
         assignedRole = CrewAssignment.Unassigned;
         assignedShip = null;
     }
-
-#if UNITY_EDITOR
-    private void OnDestroy()
-    {
-        Debug.Log("destroying crew member " +name);
-    }
-#endif
-
+    
     public void RandomStats(int budget)
     {
         var weights = new float[3];
