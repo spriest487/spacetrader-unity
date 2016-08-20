@@ -104,7 +104,7 @@ public class CrewListItem : MonoBehaviour
         var moorable = player.GetComponent<Moorable>();
         Debug.Assert(moorable, "player must have a moorable!");
 
-        var station = moorable.SpaceStation;
+        var station = player.Moorable.DockedAtStation;
         Debug.Assert(station, "must be docked!");
         
         bool hiring = station.AvailableCrew.Contains(member);

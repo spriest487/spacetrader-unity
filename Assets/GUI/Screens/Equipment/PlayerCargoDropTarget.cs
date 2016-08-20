@@ -14,7 +14,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
     private void OnDropCargoItem(CargoHoldListItem item)
     {
         var player = PlayerShip.LocalPlayer;
-        var station = player.CurrentStation;
+        var station = player.Moorable.DockedAtStation;
         var playerCargo = player.Ship.Cargo;
         var sourceCargo = item.CargoHold;
 

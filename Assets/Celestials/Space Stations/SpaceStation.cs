@@ -6,6 +6,8 @@ using System;
 
 public class SpaceStation : MonoBehaviour
 {
+    [Header("Outside")]
+
     [SerializeField]
     private MooringTrigger mooringTrigger;
 
@@ -14,6 +16,11 @@ public class SpaceStation : MonoBehaviour
 
     [SerializeField]
     private List<Transform> undockPoints;
+
+    [SerializeField]
+    private Transform dockingViewpoint;
+
+    [Header("Inside")]
 
     [SerializeField]
     private List<CrewMember> availableCrew;
@@ -27,6 +34,22 @@ public class SpaceStation : MonoBehaviour
     public MooringTrigger MooringTrigger
     {
         get { return mooringTrigger; }
+    }
+
+    public IEnumerable<Vector3> UndockPoints
+    {
+        get
+        {
+            foreach (var point in undockPoints)
+            {
+                yield return point.position;
+            }
+        }
+    }
+
+    public Vector3 DockingViewpoint
+    {
+        get { return dockingViewpoint.position; }
     }
 
     public CargoHold ItemsForSale
@@ -70,16 +93,17 @@ public class SpaceStation : MonoBehaviour
                 new List<ShipForSale>(value);
         }
     }
-
-    public void RequestMooring(Moorable moorable)
+    
+    //eat a ship, disabling it and storing it in the hangar
+    public void AddDockedShip(Moorable docked)
     {
-        Debug.Assert(!mooredShips.Contains(moorable) && moorable.gameObject.activeInHierarchy,
-            "tried to moor an already moored or disabled ship");
+        //just in case...
+        docked.transform.position = transform.position;
 
-        moorable.gameObject.SendMessage("OnMoored", this, SendMessageOptions.DontRequireReceiver);
+        docked.gameObject.SendMessage("OnMoored", this, SendMessageOptions.DontRequireReceiver);
 
-        moorable.gameObject.SetActive(false);
-        mooredShips.Add(moorable);
+        docked.gameObject.SetActive(false);
+        mooredShips.Add(docked);
     }
 
     public void Unmoor(Moorable moorable)
@@ -120,7 +144,7 @@ public class SpaceStation : MonoBehaviour
         var moorable = activator.GetComponent<Moorable>();
         if (moorable)
         {
-            RequestMooring(moorable);
+            moorable.BeginAutoDocking(this);
         }
     }
 }

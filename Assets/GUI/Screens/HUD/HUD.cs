@@ -7,19 +7,28 @@ using UnityEngine.UI;
 public class HUD : MonoBehaviour
 {
     [SerializeField]
-    public Transform content;
+    private Transform content;
 
+    [SerializeField]
+    private Transform cinemaBars;
+
+    [SerializeField]
+    private SpeechBubble speechBubble;
+
+    [Header("Player Info")]
     [SerializeField]
     private Transform[] playerShipInfo;
 
     [SerializeField]
-    private SpeechBubble speechBubble;
-    
+    private Image playerPortrait;
+
     [SerializeField]
     private Text playerName;
 
     [SerializeField]
     private Text playerMoney;
+
+    [Header("Overlays")]
 
     [SerializeField]
     private LootWindow lootWindow;
@@ -36,36 +45,41 @@ public class HUD : MonoBehaviour
 
     private void Update()
     {
-        bool visible = true;
+        var player = PlayerShip.LocalPlayer;
 
-        if (ScreenManager.Instance.CurrentCutscenePage != null)
-        {
-            visible = false;
-        }
-
-        content.gameObject.SetActive(visible);
+        bool cinemaMode = ScreenManager.Instance.CurrentCutscenePage != null
+            || player.Moorable.State == DockingState.AutoDocking;
         
-        bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
-        foreach (var shipInfoItem in playerShipInfo)
-        {
-            shipInfoItem.gameObject.SetActive(playerInfoVisible);
-        }
+        content.gameObject.SetActive(!cinemaMode);
+        cinemaBars.gameObject.SetActive(cinemaMode);
         
-        if (playerInfoVisible)
+        
+        if (!cinemaMode)
         {
-            //TODO: slow
-            var captain = PlayerShip.LocalPlayer.Ship.GetCaptain();
-            if (captain)
+            bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
+            foreach (var shipInfoItem in playerShipInfo)
             {
-                playerName.text = captain.name;
-            }
-            else
-            {
-                playerName.text = "Player";
+                shipInfoItem.gameObject.SetActive(playerInfoVisible);
             }
 
-            var money = Market.FormatCurrency(PlayerShip.LocalPlayer.Money);
-            playerMoney.text = money;
+            if (playerInfoVisible)
+            {
+                //TODO: slow
+                var captain = PlayerShip.LocalPlayer.Ship.GetCaptain();
+                if (captain)
+                {
+                    playerName.text = captain.name;
+                    playerPortrait.sprite = captain.Portrait;
+                }
+                else
+                {
+                    playerName.text = "Player";
+                    playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+                }
+
+                var money = Market.FormatCurrency(PlayerShip.LocalPlayer.Money);
+                playerMoney.text = money;
+            }
         }
     }
 

@@ -22,15 +22,12 @@ public class MooringNotice : MonoBehaviour
         if (player)
         {
             var moorable = player.GetComponent<Moorable>();
-            if (moorable)
+            if (moorable && moorable.LocalStation && moorable.State == DockingState.InSpace)
             {
-                if (moorable.SpaceStation)
-                {
-                    text.text = string.Format(template, 
-                        "ACTIVATE",
-                        moorable.SpaceStation.name);
-                    active = true;
-                }
+                text.text = string.Format(template, 
+                    "ACTIVATE",
+                    moorable.LocalStation.name);
+                active = true;
             }
         }
 

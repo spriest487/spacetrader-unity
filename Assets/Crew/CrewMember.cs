@@ -22,6 +22,10 @@ public class CrewMember : ScriptableObject
 #endif
 
     [SerializeField]
+    private Sprite portrait;
+
+    [Header("Skill Points")]
+    [SerializeField]
     private int pilotSkill;
 
     [SerializeField]
@@ -31,7 +35,9 @@ public class CrewMember : ScriptableObject
     private int mechanicalSkill;
 
     [SerializeField]
-    private Sprite portrait;
+    private int xp;
+
+    [Header("Crew Assignment")]
 
     [SerializeField]
     private Ship assignedShip;

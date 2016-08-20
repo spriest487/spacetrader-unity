@@ -14,7 +14,7 @@ public class MoorableInspector : Editor
         var moorable = (Moorable)target;
 
         GUI.enabled = false;
-        EditorGUILayout.ObjectField(moorable.SpaceStation, typeof(SpaceStation), true);
+        EditorGUILayout.ObjectField(moorable.LocalStation, typeof(SpaceStation), true);
         GUI.enabled = true;
     }
 }

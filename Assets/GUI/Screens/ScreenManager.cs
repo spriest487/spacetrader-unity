@@ -264,7 +264,7 @@ public class ScreenManager : MonoBehaviour
         if (player)
         {
             var moorable = player.GetComponent<Moorable>();
-            if (moorable && moorable.Moored)
+            if (moorable && moorable.State == DockingState.Docked)
             {
                 docked = true;
             }

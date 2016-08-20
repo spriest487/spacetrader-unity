@@ -1,21 +1,22 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class MooringTrigger : MonoBehaviour
 {
-    public SpaceStation spaceStation;
+    [SerializeField]
+    private SpaceStation spaceStation;
+    
+    public Collider Collider { get; private set; }
+    public SpaceStation SpaceStation { get { return spaceStation; } }
 
     void Start()
     {
-        if (!spaceStation)
-        {
-            throw new UnityException("mooring trigger has no station");
-        }
+        Collider = GetComponent<Collider>();
 
-        if (!GetComponent<Collider>().isTrigger)
-        {
-            throw new UnityException("Mooring trigger set up with a non-trigger collider");
-        }
+        Debug.Assert(spaceStation);
+        Debug.Assert(Collider.isTrigger);
     }
 }

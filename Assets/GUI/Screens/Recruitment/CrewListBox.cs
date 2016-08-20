@@ -49,11 +49,11 @@ public class CrewListBox : MonoBehaviour
 
         if (targetCrew == TargetCrew.Station)
         {
-            var moorable = PlayerShip.LocalPlayer.GetComponent<Moorable>();
+            var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
 
-            if (moorable && moorable.SpaceStation)
+            if (station)
             {
-                crew = moorable.SpaceStation.AvailableCrew;
+                crew = station.AvailableCrew;
             }
             else
             {

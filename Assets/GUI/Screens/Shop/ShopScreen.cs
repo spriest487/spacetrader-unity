@@ -23,7 +23,7 @@ public class ShopScreen : MonoBehaviour
     private void Update()
     {
         var player = SpaceTraderConfig.LocalPlayer;
-        var station = player.GetComponent<Moorable>().SpaceStation;
+        var station = player.Moorable.DockedAtStation;
 
         cargoItems.CargoHold = player.Ship.Cargo;
         forSaleItems.CargoHold = station.ItemsForSale;

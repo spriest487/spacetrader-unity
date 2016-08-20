@@ -11,26 +11,15 @@ public class StationMenu : MonoBehaviour
 
     [SerializeField]
     private Text headerText;
-
-    private Moorable GetPlayerMoorable()
-    {
-        var player = PlayerShip.LocalPlayer;
-        if (player)
-        {
-            return player.GetComponent<Moorable>();
-        }
-        else
-        {
-            return null;
-        }
-    }
-        
+            
     public void Undock()
     {
-        var moorable = GetPlayerMoorable();
-        if (moorable && moorable.SpaceStation)
+        var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
+
+        if (station)
         {
-            moorable.SpaceStation.Unmoor(moorable);
+            //TODO?
+            station.Unmoor(PlayerShip.LocalPlayer.GetComponent<Moorable>());
         }
 
         ScreenManager.Instance.ScreenID = ScreenID.None;
@@ -38,11 +27,11 @@ public class StationMenu : MonoBehaviour
     
     void OnScreenActive()
     {
-        var moorable = GetPlayerMoorable();
+        var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
 
-        if (headerText)
+        if (station)
         {
-            headerText.text = string.Format(headerFormat, moorable.SpaceStation.name.ToUpper());
+            headerText.text = string.Format(headerFormat, station.name.ToUpper());
         }
     }
 }

@@ -10,7 +10,7 @@ struct PlayerRadioMessage
     public Ship Source;
 }
 
-[RequireComponent(typeof(Ship))]
+[RequireComponent(typeof(Ship), typeof(Moorable))]
 public class PlayerShip : MonoBehaviour
 {
     public static PlayerShip LocalPlayer
@@ -32,17 +32,9 @@ public class PlayerShip : MonoBehaviour
         get { return ship; }
     }
 
-    public SpaceStation CurrentStation
+    public Moorable Moorable
     {
-        get
-        {
-            if (!moorable || !moorable.Moored)
-            {
-                return null;
-            }
-
-            return moorable.SpaceStation;
-        }
+        get { return moorable; }
     }
 
     public int Money
@@ -73,7 +65,8 @@ public class PlayerShip : MonoBehaviour
 
     bool LocalPlayerHasControl()
     {
-        return LocalPlayer == this;
+        return LocalPlayer == this
+            && moorable.State == DockingState.InSpace;
     }
 
     private Vector3 AutoaimSnapToPredictor(Vector3 mousePos, int slot)

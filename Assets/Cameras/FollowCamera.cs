@@ -72,10 +72,10 @@ public class FollowCamera : MonoBehaviour
         defaultLayer = LayerMask.NameToLayer("Default");
     }
 
-    void DockedCam(PlayerShip player, SpaceStation station)
+    void DockedCam(PlayerShip player)
     {
         transform.rotation = Quaternion.identity;
-        transform.position = station.transform.position;
+        transform.position = player.Moorable.DockedAtStation.transform.position;
         transform.position -= new Vector3(0, 0, 100);
     }
     
@@ -134,6 +134,14 @@ public class FollowCamera : MonoBehaviour
             transform.rotation = lookRot;
             transform.position = lookOffset;
         }
+    }
+
+    void AutoDockingCam(PlayerShip player, SpaceStation station)
+    {
+        transform.position = station.DockingViewpoint;
+
+        var look = (player.transform.position - transform.position).normalized;
+        transform.rotation = Quaternion.LookRotation(look, station.transform.up);
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -310,7 +318,7 @@ public class FollowCamera : MonoBehaviour
         }
     }
 
-    private void SetupCockpit(PlayerShip player)
+    private void SetupCockpit(PlayerShip player, bool showCockpit)
     {
         if (Camera.main != Camera)
         {
@@ -329,7 +337,7 @@ public class FollowCamera : MonoBehaviour
             cockpitShipType = player.Ship.ShipType;
         }
 
-        if (player && cockpitMode && cockpitCam)
+        if (player && showCockpit && cockpitCam)
         {
             cockpitCam.gameObject.SetActive(true);
             player.gameObject.SetLayerRecursive(invisibleLayer);
@@ -362,13 +370,23 @@ public class FollowCamera : MonoBehaviour
             if (player)
             {
                 var moorable = player.GetComponent<Moorable>();
-                if (moorable && moorable.Moored)
+                if (moorable && moorable.State != DockingState.InSpace)
                 {
-                    DockedCam(player, moorable.SpaceStation);
+                    SetupCockpit(player, false);
+
+                    switch (moorable.State)
+                    {
+                        case DockingState.AutoDocking:
+                            AutoDockingCam(player, moorable.AutoDockingStation);
+                            break;
+                        case DockingState.Docked:
+                            DockedCam(player);
+                            break;
+                    }
                 }
                 else
                 {
-                    SetupCockpit(player);
+                    SetupCockpit(player, cockpitMode);
                     FlightCam(player);
                 }
             }
