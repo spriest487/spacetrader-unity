@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-using System;
-using System.Reflection;
-#endif
 
 [RequireComponent(typeof(AICaptain))]
 public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
@@ -60,42 +56,12 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     {
         tasks = new LinkedList<AITask>(serializedTasks);
     }
-
-#if UNITY_EDITOR
-    void CheckRequiredTypes(AITask task)
-    {
-        object[] requireAttrs = task.GetType().GetCustomAttributes(typeof(RequireComponent), true);
-        foreach (var attr in requireAttrs)
-        {
-            var require = (RequireComponent)attr;
-            var requiredComponents = new[]
-            {
-                require.m_Type0,
-                require.m_Type1,
-                require.m_Type2
-            };
-
-            foreach (var requiredComponent in requiredComponents) 
-            {
-                if (requiredComponent != null)
-                {
-                    if (GetComponent(requiredComponent) == null)
-                    {
-                        throw new UnityException("missing required component " +requiredComponent +" for task type " +task.GetType());
-                    }
-                }
-            }
-        }
-    }
-#endif
-
+    
     public void AssignTask(AITask task)
     {
         Debug.Assert(Captain, "can't assign tasks without a captain (don't assign tasks on same frame as follower was instantiated)");
 
-#if UNITY_EDITOR
-        CheckRequiredTypes(task);
-#endif
+        task.CheckRequiredConstraints();
         task.Status = AITask.TaskStatus.NEW;
         task.TaskFollower = this;
         tasks.AddLast(task);

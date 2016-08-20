@@ -40,4 +40,31 @@ public abstract class AITask : ScriptableObject
     public virtual void End()
     {
     }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    public void CheckRequiredConstraints()
+    {
+        object[] requireAttrs = GetType().GetCustomAttributes(typeof(RequireComponent), true);
+        foreach (var attr in requireAttrs)
+        {
+            var require = (RequireComponent)attr;
+            var requiredComponents = new[]
+            {
+            require.m_Type0,
+            require.m_Type1,
+            require.m_Type2
+        };
+
+            foreach (var requiredComponent in requiredComponents)
+            {
+                if (requiredComponent != null)
+                {
+                    if (taskFollower.GetComponent(requiredComponent) == null)
+                    {
+                        throw new UnityException("missing required component " + requiredComponent + " for task type " + GetType());
+                    }
+                }
+            }
+        }
+    }
 }
