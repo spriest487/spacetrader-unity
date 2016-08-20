@@ -117,13 +117,15 @@ public class Moorable : MonoBehaviour
         //TODO
         ship.transform.position = startPoint;
         ship.transform.rotation = Quaternion.LookRotation(endPoint - startPoint, spaceStation.transform.up);
+        ship.RigidBody.angularVelocity = Vector3.zero;
+        ship.RigidBody.velocity = Vector3.zero;
 
         float dockProximity = GetDockProximity();
 
         while ((ship.transform.position - endPoint).sqrMagnitude > dockProximity) //TODO
         {
-            ship.Thrust = 1;
-            
+            ship.ResetControls(thrust: 1);
+
             yield return null;
         }
 
@@ -147,7 +149,7 @@ public class Moorable : MonoBehaviour
 
         while ((ship.transform.position - dest).sqrMagnitude > proximity)
         {
-            ship.Thrust = 1;
+            ship.ResetControls(thrust: 1);
 
             yield return null;
         }

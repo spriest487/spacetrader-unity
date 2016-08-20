@@ -31,6 +31,8 @@ public class Ship : MonoBehaviour
 
     private new Rigidbody rigidbody;
 
+    private Hitpoints hitPoints;
+
     private List<WeaponHardpoint> hardpoints;
     
     public float Thrust;
@@ -56,14 +58,7 @@ public class Ship : MonoBehaviour
         {
             if (hardpoints == null)
             {
-                hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());
-
-                if (hardpoints.Count == 0)
-                {
-                    var defaultHardpoint = gameObject.AddComponent<WeaponHardpoint>();
-                    defaultHardpoint.Arc = 360;
-                    hardpoints.Add(defaultHardpoint);
-                }
+                UpdateHardpoints();
             }
 
             return hardpoints;
@@ -116,6 +111,8 @@ public class Ship : MonoBehaviour
         set { cargo = value; }
     }
 
+    public Rigidbody RigidBody { get { return rigidbody; } }
+
     public IList<Ability> Abilities
     {
         get { return abilities.AsReadOnly(); }
@@ -132,6 +129,16 @@ public class Ship : MonoBehaviour
     {
         get { return activeStatusEffects.AsReadOnly(); }
     }
+
+    public void ResetControls(float pitch = 0, float yaw = 0, float roll = 0, float thrust = 0, float strafe = 0, float lift = 0)
+    {
+        Pitch = pitch;
+        Yaw = yaw;
+        Roll = roll;
+        Thrust = thrust;
+        Strafe = strafe;
+        Lift = lift;
+    }
     
     public CrewMember GetCaptain()
     {
@@ -145,6 +152,18 @@ public class Ship : MonoBehaviour
         return SpaceTraderConfig.CrewConfiguration.Characters
             .Where(c => c.AssignedShip == this && c.AssignedRole == CrewAssignment.Passenger)
             .ToList();
+    }
+
+    private void UpdateHardpoints()
+    {
+        hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());
+
+        if (hardpoints.Count == 0)
+        {
+            var defaultHardpoint = gameObject.AddComponent<WeaponHardpoint>();
+            defaultHardpoint.Arc = 360;
+            hardpoints.Add(defaultHardpoint);
+        }
     }
 
     public static Ship Create(GameObject obj, ShipType shipType)
@@ -181,10 +200,12 @@ public class Ship : MonoBehaviour
         }
         ship.Cargo.Size = shipType.CargoSize;
 
-        var hp = obj.gameObject.AddComponent<Hitpoints>();
-        hp.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
+        ship.hitPoints = obj.gameObject.AddComponent<Hitpoints>();
+        ship.hitPoints.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
 
         ship.moduleLoadout.SlotCount = shipType.ModuleSlots;
+
+        ship.UpdateHardpoints();
 
         return ship;
     }
@@ -422,27 +443,23 @@ public class Ship : MonoBehaviour
             }
         }
         activeStatusEffects = newStatusEffects;
-
-		//limit speed
-		//float maxCurrentSpeed = stats.maxSpeed - rigidbody.drag;
-        var rigidBody = GetComponent<Rigidbody>();
-        
-        float speed = rigidBody.velocity.magnitude;
+                
+        float speed = RigidBody.velocity.magnitude;
         if (speed > CurrentStats.MaxSpeed)
         {
-            rigidBody.velocity = rigidBody.velocity.normalized * CurrentStats.MaxSpeed;
+            RigidBody.velocity = RigidBody.velocity.normalized * CurrentStats.MaxSpeed;
         }
 	}
 		
 	private Vector3 GetFormationPos(int followerId)
 	{
-		var shipPos = GetComponent<Rigidbody>().transform.position;
+        var shipPos = transform.position;
 
 		var posIndex = formationManager.IncludeFollower(followerId);
 		if (posIndex != 0)
 		{
-			var spacing = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 4;
-			var offset = GetComponent<Rigidbody>().transform.right * posIndex * spacing;
+			var spacing = RigidBody.GetComponent<Collider>().bounds.extents.magnitude * 4;
+			var offset = RigidBody.transform.right * posIndex * spacing;
 
 			return shipPos + offset;
 		}
@@ -456,14 +473,17 @@ public class Ship : MonoBehaviour
 	{
 		return GetFormationPos(follower.GetInstanceID());
 	}
-
-	private void DebugDrawFollowerPositions()
+   
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    private void DebugDrawFollowerPositions()
 	{
+        var collider = RigidBody.GetComponent<Collider>();
+
 		foreach (var follower in formationManager.followers)
 		{
 			var pos = GetFormationPos(follower);
 
-			var debugOff = (GetComponent<Rigidbody>().transform.forward * GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 0.5f);
+			var debugOff = (RigidBody.transform.forward * collider.bounds.extents.magnitude * 0.5f);
 
 			Debug.DrawLine(pos - debugOff, pos + debugOff, Color.green, Time.deltaTime);
 			//Debug.Log("pos: " +pos);

@@ -82,7 +82,7 @@ namespace SavedGames
             }
 
             var ship = type.CreateShip(position.AsVector(), rotation.AsQuaternion());
-            var rb = ship.GetComponent<Rigidbody>();
+            var rb = ship.RigidBody;
             rb.velocity = linearVelocity.AsVector();
             rb.angularVelocity = angularVelocity.AsVector();
 
