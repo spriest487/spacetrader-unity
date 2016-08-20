@@ -113,8 +113,8 @@ public class Bracket : MonoBehaviour
         width = (int)(diff.x / canvas.scaleFactor);
         height = (int)(diff.y / canvas.scaleFactor);
 
-        width = Mathf.Clamp(width, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 3);
-        height = Mathf.Clamp(height, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 3);
+        width = Mathf.Clamp(width, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 2);
+        height = Mathf.Clamp(height, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 2);
     }
 
     private void RotateEdgeMarkerToTarget(int x, int y)
@@ -279,7 +279,7 @@ public class Bracket : MonoBehaviour
         var player = PlayerShip.LocalPlayer;
         if (player)
         {
-            player.GetComponent<Ship>().Target = target;
+            player.Ship.Target = target;
         }
     }
 }

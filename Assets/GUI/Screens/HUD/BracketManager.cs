@@ -120,13 +120,30 @@ public class BracketManager : MonoBehaviour
             }
             else if (Input.GetButtonUp("turn"))
             {
-                if (Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+                var player = PlayerShip.LocalPlayer;
+
+                if (player && Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
                 {
-                    var player = PlayerShip.LocalPlayer;
-                    if (player)
+                    /* the select button was un-pressed, but no bracket was under the cursor
+                     (they block raycasts). do a world raycast to see if we hit any 3d objects*/
+                    var mousePos = Input.mousePosition;
+                    var mouseRay = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
+                    RaycastHit mouseHit;
+                    if (Physics.Raycast(mouseRay, out mouseHit))
+                    {
+                        for (int bracket = 0; bracket < brackets.Count; ++bracket)
+                        {
+                            if (brackets[bracket].Target.transform == mouseHit.transform)
+                            {
+                                brackets[bracket].SetPlayerTarget();
+                                break;
+                            }
+                        }
+                    }
+                    else
                     {
                         player.Ship.Target = null;
-                    }
+                    }                    
                 }
             }
         }
