@@ -29,20 +29,69 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private ModuleLoadout moduleLoadout;
 
+    [Header("Controls")]
+
+    [SerializeField]
+    private float thrust;
+
+    [SerializeField]
+    private float strafe;
+
+    [SerializeField]
+    private float lift;
+
+    [SerializeField]
+    private float pitch;
+
+    [SerializeField]
+    private float yaw;
+
+    [SerializeField]
+    private float roll;
+
     private new Rigidbody rigidbody;
 
     private Hitpoints hitPoints;
 
     private List<WeaponHardpoint> hardpoints;
     
-    public float Thrust;
-    public float Strafe;
-    public float Lift;
-    public float Pitch;
-    public float Yaw;
-    public float Roll;
-    
-    private ShipStats currentStats;
+    public float Thrust
+    {
+        get { return thrust; }
+        set { thrust = value; }
+    }
+
+    public float Strafe
+    {
+        get { return strafe; }
+        set { strafe = value; }
+    }
+
+    public float Lift
+    {
+        get { return lift; }
+        set { lift = value; }
+    }
+
+    public float Pitch
+    {
+        get { return pitch; }
+        set { pitch = value; }
+    }
+
+    public float Yaw
+    {
+        get { return yaw; }
+        set { yaw = value; }
+    }
+
+    public float Roll
+    {
+        get { return roll; }
+        set { roll = value; }
+    }
+
+private ShipStats currentStats;
 
     [SerializeField]
     private ShipType shipType;
@@ -344,7 +393,7 @@ public class Ship : MonoBehaviour
         var inputAdjusted = input;
         for (int i = 0; i < 3; ++i)
         {
-            var localAmt = localCurrentValue[i] / maxSpeed;
+            var localAmt = maxSpeed == 0f? 0f : localCurrentValue[i] / maxSpeed;
             var inputAmt = input[i];
             var sign = Mathf.Sign(inputAmt);
 
@@ -396,6 +445,12 @@ public class Ship : MonoBehaviour
                                     
             var force = forceInput * CurrentStats.Thrust;
             var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.Agility;
+
+            for (int i = 0; i <3; ++i)
+            {
+                if (float.IsNaN(torque[i]))
+                    Debug.Log("test");
+            }
 
             /* apply new forces */
             rigidbody.AddRelativeTorque(torque);

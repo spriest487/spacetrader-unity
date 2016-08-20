@@ -115,22 +115,38 @@ public class Moorable : MonoBehaviour
         var startPoint = points[pointIndex] + (endPoint - spaceStation.transform.position).normalized * DOCK_DISTANCE; //TODO
 
         //TODO
-        ship.transform.position = startPoint;
-        ship.transform.rotation = Quaternion.LookRotation(endPoint - startPoint, spaceStation.transform.up);
-        ship.RigidBody.angularVelocity = Vector3.zero;
-        ship.RigidBody.velocity = Vector3.zero;
-
-        float dockProximity = GetDockProximity();
-
-        while ((ship.transform.position - endPoint).sqrMagnitude > dockProximity) //TODO
+        var shipAi = ship.GetComponent<AITaskFollower>();
+        if (!shipAi)
         {
-            ship.ResetControls(thrust: 1);
+            shipAi = ship.gameObject.AddComponent<AITaskFollower>();
+            yield return null; //Start() needs to run
+        }
 
+        var goToEnd = NavigateTask.Create(endPoint);
+
+        shipAi.AssignTask(goToEnd);
+
+        if (!shipAi.Captain.CanSee(endPoint) && !goToEnd.Done)
+        {
+            var goToStart = NavigateTask.Create(startPoint);
+            shipAi.AssignTask(goToStart);
+
+            while (!goToStart.Done)
+            {
+                yield return null;
+            }
+        }
+        
+        while (!goToEnd.Done)
+        {
             yield return null;
         }
 
         state = DockingState.Docked;
         spaceStation.AddDockedShip(this);
+
+        shipAi.Captain.Destination = null;
+        shipAi.ClearTasks();
     }
 
     public void BeginAutoDocking(SpaceStation spaceStation)
@@ -155,6 +171,14 @@ public class Moorable : MonoBehaviour
         }
 
         state = DockingState.InSpace;
+        localStation = null;
+
+        var shipAi = ship.GetComponent<AITaskFollower>();
+        if (shipAi)
+        {
+            shipAi.Captain.Destination = null;
+            shipAi.ClearTasks();
+        }
     }
 
     private void BeginAutoUndocking(SpaceStation station)

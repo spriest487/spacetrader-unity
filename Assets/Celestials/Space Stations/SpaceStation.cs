@@ -135,6 +135,12 @@ public class SpaceStation : MonoBehaviour
             rigidBody.velocity = Vector3.zero;
         }
 
+        var ship = moorable.GetComponent<Ship>();
+        if (ship)
+        {
+            ship.ResetControls();
+        }
+
         moorable.gameObject.SetActive(true);
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
     }

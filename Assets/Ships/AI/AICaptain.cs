@@ -9,7 +9,7 @@ public class AICaptain : MonoBehaviour
 {
 	private const float AIM_ACCURACY = 2f;
     
-	public Vector3 Destination;
+	public Vector3? Destination;
 
     /// <summary>
     /// if set we will try to rotate until our up vector matches this one.
@@ -92,6 +92,52 @@ public class AICaptain : MonoBehaviour
         return true;
     }
 
+    void Start()
+    {
+        ship = GetComponent<Ship>();
+        rigidbody = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
+
+        Destination = null;
+        TargetUp = null;
+    }
+    					
+	void Update()
+    {        
+        if (!Destination.HasValue)
+        {
+            return;
+        }
+
+		Debug.DrawLine(transform.position, Destination.Value, Color.red, Time.deltaTime);
+
+        if (AdjustTarget.HasValue)
+        {
+            Debug.DrawLine(transform.position, AdjustTarget.Value, Color.magenta, Time.deltaTime);
+        }
+        
+		var between = Destination.Value - transform.position;
+        if (between.sqrMagnitude > Vector3.kEpsilon)
+        {
+            RotateTo(between);
+        }
+
+		ship.Strafe = Mathf.Clamp(ship.Strafe, -1, Throttle);
+		ship.Lift = Mathf.Clamp(ship.Lift, -1, Throttle);
+		ship.Thrust = Mathf.Clamp(ship.Thrust, -1, Throttle);
+
+        //if we're not facing where we want to go, slow down so we can turn
+        var shipToDest = (Destination.Value - transform.position).normalized;
+        var forwardToDestDot = Vector3.Dot(shipToDest, transform.forward);
+        var slowDownToTurnFactor = (forwardToDestDot + 1) * 0.5f;
+        ship.Thrust = Mathf.Clamp(ship.Thrust, MinimumThrust, slowDownToTurnFactor);
+
+        AdjustThrottleForProximity(between);
+
+		//adjustments are applied AFTER the clamping, so we can go beyond the throttle if necessary
+		ApplyAdjustThrust(ship);
+	}
+
     private void RotateTo(Vector3 between)
     {
         //direction vector towards dest, in local space
@@ -101,16 +147,16 @@ public class AICaptain : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + (towards * 5), Color.cyan, Time.deltaTime);
 
         //local rotation required to get to target
-        var rotateTo = Quaternion.LookRotation(localTowards, TargetUp.HasValue? TargetUp.Value : transform.up);
+        var rotateTo = Quaternion.LookRotation(localTowards, TargetUp.HasValue ? TargetUp.Value : transform.up);
 
-        var totalAngle = Vector3.Dot(towards, transform.forward);
+        var totalAngle = Mathf.Clamp(Vector3.Dot(towards, transform.forward), -1, 1);
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
-        
-        var facingTowardsAngle = ship.CurrentStats.MaxTurnSpeed;
+
+        var facingTowardsAngle = Mathf.Max(1, ship.CurrentStats.MaxTurnSpeed);
         var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < AIM_ACCURACY;
 
-        var closeEnough = IsCloseTo(Destination, between, CloseDistance);
+        var closeEnough = IsCloseTo(Destination.Value, between, CloseDistance);
 
         var currentLocalRotation = transform.InverseTransformDirection(rigidbody.angularVelocity) * Mathf.Rad2Deg;
 
@@ -167,7 +213,7 @@ public class AICaptain : MonoBehaviour
             for (int a = 0; a < 3; ++a)
             {
                 var angle = currentLocalRotation[a];
-                counterThrust[a] = -(Mathf.Clamp01(angle / ship.CurrentStats.MaxTurnSpeed));
+                counterThrust[a] = -(Mathf.Clamp01(angle / Mathf.Max(1, ship.CurrentStats.MaxTurnSpeed)));
             }
 
             ship.Pitch = counterThrust.x;
@@ -207,47 +253,6 @@ public class AICaptain : MonoBehaviour
 
         ship.Thrust = Mathf.Max(MinimumThrust, ship.Thrust);
     }
-
-    void Start()
-    {
-        ship = GetComponent<Ship>();
-        rigidbody = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
-
-        Destination = transform.position;
-        TargetUp = transform.up;
-    }
-    					
-	void Update()
-    {        
-		Debug.DrawLine(transform.position, Destination, Color.red, Time.deltaTime);
-
-        if (AdjustTarget.HasValue)
-        {
-            Debug.DrawLine(transform.position, AdjustTarget.Value, Color.magenta, Time.deltaTime);
-        }
-        
-		var between = Destination - transform.position;
-        if (between.sqrMagnitude > Vector3.kEpsilon)
-        {
-            RotateTo(between);
-        }
-
-		ship.Strafe = Mathf.Clamp(ship.Strafe, -1, Throttle);
-		ship.Lift = Mathf.Clamp(ship.Lift, -1, Throttle);
-		ship.Thrust = Mathf.Clamp(ship.Thrust, -1, Throttle);
-
-        //if we're not facing where we want to go, slow down so we can turn
-        var shipToDest = (Destination - transform.position).normalized;
-        var forwardToDestDot = Vector3.Dot(shipToDest, transform.forward);
-        var slowDownToTurnFactor = (forwardToDestDot + 1) * 0.5f;
-        ship.Thrust = Mathf.Clamp(ship.Thrust, MinimumThrust, slowDownToTurnFactor);
-
-        AdjustThrottleForProximity(between);
-
-		//adjustments are applied AFTER the clamping, so we can go beyond the throttle if necessary
-		ApplyAdjustThrust(ship);
-	}
 
     private void AdjustThrottleForProximity(Vector3 between)
     {

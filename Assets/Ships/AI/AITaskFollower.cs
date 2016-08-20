@@ -91,6 +91,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 
     public void AssignTask(AITask task)
     {
+        Debug.Assert(Captain, "can't assign tasks without a captain (don't assign tasks on same frame as follower was instantiated)");
+
 #if UNITY_EDITOR
         CheckRequiredTypes(task);
 #endif
@@ -110,9 +112,13 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
         }
     }
 
-    void Start()
+    void Awake()
     {
         tasks = new LinkedList<AITask>();
+    }
+
+    void Start()
+    {
         captain = GetComponent<AICaptain>();
     }
     

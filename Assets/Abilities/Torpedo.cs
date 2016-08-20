@@ -68,7 +68,9 @@ public class Torpedo : MonoBehaviour
             captain.Throttle = 1f;
             captain.MinimumThrust = 1f;
 
-            var dist2 = (transform.position - captain.Destination).sqrMagnitude;
+            Debug.Assert(captain.Destination.HasValue);
+
+            var dist2 = (transform.position - captain.Destination.Value).sqrMagnitude;
             var proximity2 = explodeProximity * explodeProximity;
 
             if (dist2 < proximity2)

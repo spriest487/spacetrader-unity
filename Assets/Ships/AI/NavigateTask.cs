@@ -266,6 +266,8 @@ public class NavigateTask : AITask
     {
         get
         {
+            Debug.Assert(TaskFollower && TaskFollower.Captain, "should have an AI captain when checking done, don't check Done on same frame as follower is created!");
+
             return TaskFollower.Captain.IsCloseTo(destination);
         }
     }
