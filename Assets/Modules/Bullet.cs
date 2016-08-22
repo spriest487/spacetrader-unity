@@ -3,7 +3,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class Bullet : MonoBehaviour {
-	public GameObject owner;
+	public Ship owner;
 	
 	public Transform hitEffect;
 

@@ -50,11 +50,9 @@ public class ModuleItemType : ItemType
     {
         string result;
 
-        var weapon = behaviour as IWeapon;
-        if (weapon != null)
+        var dps = behaviour.CalculateDps(owner);
+        if (dps > 0)
         {
-            float dps = weapon.CalculateDps(owner);
-
             result = string.Format("<size=32><color=#ffffffaa>DPS:</color> {0:0.0}</size>\n", dps);
         }
         else

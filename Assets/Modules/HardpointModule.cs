@@ -15,6 +15,11 @@ public class HardpointModule
     [SerializeField]
     private ModuleItemType definition;
 
+    public ModuleBehaviour Behaviour
+    {
+        get { return behaviour; }
+    }
+
     public Vector3 Aim
     {
         get { return aim; }

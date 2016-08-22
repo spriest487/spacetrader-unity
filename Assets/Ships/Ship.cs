@@ -222,6 +222,15 @@ private ShipStats currentStats;
             .ToList();
     }
 
+    public IEnumerable<CrewMember> GetAllCrew()
+    {
+        yield return GetCaptain();
+        foreach (var passenger in GetPassengers())
+        {
+            yield return passenger;
+        }
+    }
+
     private void UpdateHardpoints()
     {
         hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());
@@ -744,6 +753,16 @@ private ShipStats currentStats;
         var hp = GetComponent<Hitpoints>();
         if (hp && hp.GetArmor() - hd.Amount <= 0)
         {
+            if (hd.Owner)
+            {
+                var xp = CalculateXPReward();
+
+                foreach (var crew in hd.Owner.GetAllCrew())
+                {
+                    crew.GrantXP(xp);
+                }
+            }
+
             Explode();
         }
     }
@@ -779,8 +798,7 @@ private ShipStats currentStats;
 
     public float EstimateDps()
     {
-        return moduleLoadout.Where(mod => mod.ModuleType.Behaviour is IWeapon)
-            .Select(mod => ((IWeapon)mod.ModuleType.Behaviour).CalculateDps(this))
+        return moduleLoadout.Select(mod => mod.Behaviour.CalculateDps(this))
             .Sum();
     }
 
@@ -791,5 +809,14 @@ private ShipStats currentStats;
         mod = Mathf.Max(1f, mod);
 
         return Mathf.FloorToInt(baseDamage * mod);
+    }
+
+    public int CalculateXPReward()
+    {
+        var baseXp = shipType.XPReward;
+
+        var captain = GetCaptain();
+
+        return baseXp + Mathf.FloorToInt(baseXp * 0.5f * (captain? captain.Level : 0));
     }
 }

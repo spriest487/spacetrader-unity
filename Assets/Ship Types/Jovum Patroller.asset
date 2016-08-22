@@ -30,3 +30,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3a85a027c019cd34e9ad81668315562f, type: 2}
   - {fileID: 11400000, guid: 2db10c4da026b9c478e21e6c840b7584, type: 2}
   explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  xpReward: 100

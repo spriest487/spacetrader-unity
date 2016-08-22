@@ -17,6 +17,11 @@ public abstract class ModuleBehaviour : ScriptableObject
         set { cooldown = value; }
     }
 
+    public virtual float CalculateDps(Ship activator)
+    {
+        return 0;
+    }
+
     public void UpdateForOwner(Ship owner)
     {
         cooldown -= Time.deltaTime;

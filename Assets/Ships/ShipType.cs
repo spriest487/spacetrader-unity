@@ -37,6 +37,9 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private ScalableParticle explosionEffect;
 
+    [SerializeField]
+    private int xpReward;
+
     public ScalableParticle ExplosionEffect { get { return explosionEffect; } }
     public ShipStats Stats { get { return stats; } }
     public IEnumerable<Ability> Abilities { get { return abilities; } }
@@ -44,6 +47,7 @@ public class ShipType : ScriptableObject
     public int CargoSize { get { return cargoSize; } }
     public int ModuleSlots { get { return moduleSlots; } }
     public bool HasCockpit { get { return !!cockpitPrefab; } }
+    public int XPReward { get { return xpReward; } }
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {

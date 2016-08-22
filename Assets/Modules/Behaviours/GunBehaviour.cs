@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-public class GunBehaviour : ModuleBehaviour, IWeapon
+public class GunBehaviour : ModuleBehaviour
 {
     private const string DESCRIPTION_FORMAT =
 @"<color=#ffffffaa>Damage: </color> {0}-{1}
@@ -43,13 +43,13 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
         }
     }
 
-    public int CalculateDps(Ship owner)
+    public override float CalculateDps(Ship owner)
     {
         var meanDamage = (minDamage + maxDamage) / 2f;
 
         meanDamage = owner.ApplyDamageModifier(Mathf.FloorToInt(meanDamage));
 
-        return (int) Mathf.Ceil(meanDamage / fireRate);
+        return meanDamage / fireRate;
     }
     
     public override void Equip(HardpointModule slot)
@@ -76,7 +76,7 @@ public class GunBehaviour : ModuleBehaviour, IWeapon
 
             var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
 
-            bulletInstance.owner = activator.gameObject;
+            bulletInstance.owner = activator;
             var randomDamage = UnityEngine.Random.Range(minDamage, maxDamage);
             bulletInstance.damage = activator.ApplyDamageModifier(randomDamage);
 
