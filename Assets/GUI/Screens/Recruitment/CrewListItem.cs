@@ -27,6 +27,22 @@ public class CrewListItem : MonoBehaviour
     private Text nameLabel;
 
     [SerializeField]
+    private Image portrait;
+
+    [SerializeField]
+    private Text hireFireLabel;
+
+    [Header("XP")]
+
+    [SerializeField]
+    private Image xpBar;
+
+    [SerializeField]
+    private Text xpLabel;
+
+    [Header("Skills")]
+
+    [SerializeField]
     private Text hirePriceLabel;
 
     [SerializeField]
@@ -37,13 +53,7 @@ public class CrewListItem : MonoBehaviour
 
     [SerializeField]
     private Text mechSkillLabel;
-
-    [SerializeField]
-    private Image portrait;
-
-    [SerializeField]
-    private Text hireFireLabel;
-
+    
     private BuySellMode buySellMode;
 
     public CrewMember CrewMember
@@ -61,6 +71,12 @@ public class CrewListItem : MonoBehaviour
         pilotSkillLabel.text = member.PilotSkill.ToString();
         weaponsSkillLabel.text = member.WeaponsSkill.ToString();
         mechSkillLabel.text = member.MechanicalSkill.ToString();
+
+        var prevLevel = 0f;
+        var nextLevel = 1000f; //todo
+
+        xpBar.fillAmount = (member.XP - prevLevel) / (nextLevel - prevLevel);
+        xpLabel.text = string.Format("{0:F2}/{1} XP", member.XP, nextLevel);
 
         if (hirePriceLabel)
         {
