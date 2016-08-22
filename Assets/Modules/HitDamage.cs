@@ -4,9 +4,9 @@ class HitDamage
 {
 	public Vector3 Location;
 	public int Amount;
-    public GameObject Owner;
+    public Ship Owner;
 
-    public HitDamage(Vector3 location, int amount, GameObject owner)
+    public HitDamage(Vector3 location, int amount, Ship owner)
 	{
 		this.Location = location;
 		this.Amount = amount;

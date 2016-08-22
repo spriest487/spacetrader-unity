@@ -78,7 +78,7 @@ public class Torpedo : MonoBehaviour
                 //TODO: damage in a sphere instead
                 if (captain.Ship.Target)
                 {
-                    var damage = new HitDamage(transform.position, explodeDamage, owner ? owner.gameObject : null);
+                    var damage = new HitDamage(transform.position, explodeDamage, owner);
 
                     captain.Ship.Target.gameObject.SendMessage("OnTakeDamage", damage, SendMessageOptions.DontRequireReceiver);
                 }
