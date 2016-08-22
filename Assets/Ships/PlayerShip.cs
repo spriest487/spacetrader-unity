@@ -289,6 +289,13 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
+    private void OnCrewMemberGainedXP(XPGain xpGain)
+    {
+        var msg = string.Format("{0} gained {1} XP", xpGain.CrewMember.name, xpGain.Amount);
+
+        ScreenManager.Instance.BroadcastPlayerNotification(msg);
+    }
+
 	void Start()
 	{
 		ship = GetComponent<Ship>();

@@ -191,6 +191,11 @@ public class ScreenManager : MonoBehaviour
             }
         }
     }
+
+    public void BroadcastPlayerNotification(string message)
+    {
+        BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", message);
+    }
     
     private void Apply()
     {

@@ -84,6 +84,11 @@ public class CrewMember : ScriptableObject
         get { return assignedRole; }
     }
 
+    public int XP
+    {
+        get { return xp; }
+    }
+
     public void Assign(Ship ship, CrewAssignment role)
     {
         Debug.Assert(role != CrewAssignment.Unassigned);
@@ -131,5 +136,23 @@ public class CrewMember : ScriptableObject
         PilotSkill = skills[0];
         WeaponsSkill = skills[1];
         MechanicalSkill = skills[2];
+    }
+
+    public void GrantXP(int amount)
+    {
+        Debug.Assert(amount >= 0, "xp should never go down");
+
+        xp += amount;
+
+        if (assignedShip)
+        {
+            var gain = new XPGain()
+            {
+                Amount = amount,
+                CrewMember = this
+            };
+
+            assignedShip.SendMessage("OnCrewMemberGainedXP", gain, SendMessageOptions.DontRequireReceiver);
+        }
     }
 }

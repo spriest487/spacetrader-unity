@@ -50,7 +50,8 @@ public class SpaceTraderConfig : MonoBehaviour
     {
         if (Instance)
         {
-            Debug.Assert(Instance == this);
+            //if already loaded in a previous scene, the old one takes precedence
+            Destroy(this.gameObject);
             return;
         }
 
