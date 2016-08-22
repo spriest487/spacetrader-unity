@@ -76,7 +76,7 @@ public class CrewListItem : MonoBehaviour
         var nextLevel = 1000f; //todo
 
         xpBar.fillAmount = (member.XP - prevLevel) / (nextLevel - prevLevel);
-        xpLabel.text = string.Format("{0:F2}/{1} XP", member.XP, nextLevel);
+        xpLabel.text = string.Format("{0}/{1} XP", member.XP, nextLevel);
 
         if (hirePriceLabel)
         {

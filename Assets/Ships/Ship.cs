@@ -572,6 +572,13 @@ private ShipStats currentStats;
 
     void OnTakeDamage(HitDamage hd)
     {
+        //multiple hits can happen in the same frame, and destroy us
+        //check we're still alive
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
         var hp = GetComponent<Hitpoints>();
         if (hp && hp.GetArmor() - hd.Amount <= 0)
         {
