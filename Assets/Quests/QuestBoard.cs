@@ -16,14 +16,14 @@ public class QuestBoard : ScriptableObject
     }
 
     [SerializeField]
-    private List<QuestBehaviour> questTypes;
+    private List<Quest> questTypes;
     
     [Header("Runtime")]
 
     [SerializeField]
     private List<QuestAssignment> quests;
 
-    public IEnumerable<QuestBehaviour> QuestTypes
+    public IEnumerable<Quest> QuestTypes
     {
         get { return questTypes; }
     }
@@ -64,9 +64,9 @@ public class QuestBoard : ScriptableObject
 
     public void AcceptQuest(PlayerShip player, Quest quest)
     {
-        Debug.Assert(!quests.Any(a => a.Quest == quest && a.Player), "quest should not already be assigned");
+        Debug.Assert(quests.Any(a => a.Quest == quest && !a.Player), "quest should not already be assigned");
 
-        var assignment = quests.Where(a => a.Quest).First();
+        var assignment = quests.Where(a => a.Quest == quest).First();
         assignment.Player = player;
     }
 
@@ -75,22 +75,18 @@ public class QuestBoard : ScriptableObject
         var owner = OwnerOf(quest);
 
         Debug.Assert(owner);
-        Debug.Assert(quest.Behaviour.Done(quest));
-        quest.Behaviour.OnFinish(quest);
+        Debug.Assert(quest.Done);
+        quest.OnFinish(quest);
 
-        owner.AddMoney(quest.Behaviour.MoneyReward);
-        
-        foreach (var crew in owner.Ship.GetAllCrew())
-        {
-            crew.GrantXP(quest.Behaviour.XPReward);
-        }
+        owner.AddMoney(quest.MoneyReward);
+        owner.Ship.GrantCrewXP(quest.XPReward);
 
         DestroyQuest(quest);
     }
 
     public void CancelQuest(Quest quest)
     {
-        quest.Behaviour.OnAbandon(quest);
+        quest.OnAbandon(quest);
         DestroyQuest(quest);
     }
 
@@ -99,5 +95,13 @@ public class QuestBoard : ScriptableObject
         quests.RemoveAll(a => a.Quest == quest);
 
         Destroy(quest);
+    }
+
+    public void NotifyDeath(Ship ship, Ship killer)
+    {
+        foreach (var quest in quests)
+        {
+            quest.Quest.NotifyDeath(ship, killer);
+        }
     }
 }

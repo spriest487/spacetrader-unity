@@ -19,3 +19,5 @@ MonoBehaviour:
     price: 10
   - shipType: {fileID: 11400000, guid: b8c3a5b52e5149b438bdad98dd38b3fa, type: 2}
     price: 0
+  - shipType: {fileID: 11400000, guid: a36afa290d49a3a45869c766d2e0396b, type: 2}
+    price: 0

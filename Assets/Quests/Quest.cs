@@ -3,40 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Quest : ScriptableObject
+public abstract class Quest : ScriptableObject
 {
-    [SerializeField]
-    private QuestBehaviour behaviour;
+    public abstract int XPReward { get; }
+    public abstract int MoneyReward { get; }
+    
+    public abstract void OnFinish(Quest quest);
+    public abstract void OnAbandon(Quest quest);
+
+    public abstract bool Done { get; }
+    public abstract string Description { get; }
+
+    public PlayerShip Owner
+    {
+        get
+        {
+            //TODO: cache?
+            return SpaceTraderConfig.QuestBoard.OwnerOf(this);
+        }
+    }
 
     [SerializeField]
     private SpaceStation station;
-
-    public QuestBehaviour Behaviour { get { return behaviour; } }
+    
     public SpaceStation Station { get { return station; } }
 
-    public static Quest Create(QuestBehaviour behaviour, SpaceStation station)
+    public static Quest Create(Quest template, SpaceStation station)
     {
-        var quest = CreateInstance<Quest>();
-        quest.name = behaviour.name;
-        quest.behaviour = behaviour;
+        var quest = Instantiate(template);
+        quest.name = template.name;
         quest.station = station;
 
         return quest;
     }
 
-    public bool Done
+    public virtual void NotifyDeath(Ship ship, Ship killer)
     {
-        get
-        {
-            return behaviour.Done(this);
-        } 
-    }
-
-    public string Description
-    {
-        get
-        {
-            return behaviour.Describe(this);
-        }
     }
 }

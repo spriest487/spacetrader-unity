@@ -37,8 +37,8 @@ public class QuestListItem : MonoBehaviour
 
         title.text = quest.name;
         description.text = quest.Description;
-        xpLabel.text = string.Format("{0:N0} XP", quest.Behaviour.XPReward);
-        moneyLabel.text = Market.FormatCurrency(quest.Behaviour.MoneyReward);
+        xpLabel.text = string.Format("{0:N0} XP", quest.XPReward);
+        moneyLabel.text = Market.FormatCurrency(quest.MoneyReward);
     }
 
     public void UpdateStatus()

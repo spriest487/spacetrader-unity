@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-public class CollectItemsQuest : QuestBehaviour
+public class CollectItemsQuest : Quest
 {
     [SerializeField]
     private string itemTypeName;
@@ -41,22 +41,28 @@ public class CollectItemsQuest : QuestBehaviour
         return SpaceTraderConfig.CargoItemConfiguration.FindType(itemTypeName);
     }
 
-    public override bool Done(Quest quest)
+    public override bool Done
     {
-        var owner = SpaceTraderConfig.QuestBoard.OwnerOf(quest);
-        if (!owner)
+        get
         {
-            return false;
-        }
-        
-        var cargo = owner.Ship.Cargo;
+            var owner = SpaceTraderConfig.QuestBoard.OwnerOf(this);
+            if (!owner)
+            {
+                return false;
+            }
 
-        return cargo.ContainsItems(GetItemType(), quantity);
+            var cargo = owner.Ship.Cargo;
+
+            return cargo.ContainsItems(GetItemType(), quantity);
+        }
     }
 
-    public override string Describe(Quest quest)
+    public override string Description
     {
-        return string.Format("Bring {0} {1}s to {2}", quantity, itemTypeName, quest.Station.name);
+        get
+        {
+            return string.Format("Bring {0} {1}s to {2}", quantity, itemTypeName, Station.name);
+        }
     }
 
     public override void OnFinish(Quest quest)
