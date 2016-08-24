@@ -36,7 +36,7 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
         }
         else
         {
-            fleetsList = null;
+            fleetsList = new List<Fleet>();
         }        
     }
     

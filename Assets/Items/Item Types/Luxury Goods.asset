@@ -13,5 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseValue: 100
   icon: {fileID: 21300000, guid: 462578a51d3ad474284b34540054525f, type: 3}
+  rarity: 1
   displayName: Luxury Goods
   description: Some really nice stuff

@@ -15,6 +15,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
   - {fileID: 11400000, guid: b217c3208d41c724f9c7007007fe1f9d, type: 2}
   - {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
+  - {fileID: 11400000, guid: bc48b99a98eaccd4082a3c963c98211b, type: 2}
   commonColor: {r: 0.75735295, g: 0.75735295, b: 0.75735295, a: 1}
   uncommonColor: {r: 0.8412272, g: 1, b: 0.6517241, a: 1}
   rareColor: {r: 0.6517241, g: 0.81561863, b: 1, a: 1}

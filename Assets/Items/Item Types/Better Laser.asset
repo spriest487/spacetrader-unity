@@ -13,6 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseValue: 200
   icon: {fileID: 21300000, guid: 42354fbfd1ff481429355f69234d4fab, type: 3}
+  rarity: 2
   behaviour: {fileID: 11400000, guid: 991a7a1e19492084cac800549a091f5e, type: 2}
-  cooldownLength: 0.125
   flavorText: 

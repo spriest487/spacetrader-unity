@@ -27,6 +27,10 @@ public class ButtonPreset
             label.font = font;
             label.fontSize = 24;
             label.color = Color.white;
+            label.raycastTarget = false;
+            label.supportRichText = false;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
 
             if (!label.GetComponent<Outline>())
             {
@@ -36,7 +40,9 @@ public class ButtonPreset
         }
 
         var bg = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/GUI/Backing Blur.psd");
-        button.GetComponent<Image>().sprite = bg;
+        var bgImage = button.GetComponent<Image>();
+        bgImage.type = Image.Type.Simple;
+        bgImage.sprite = bg;
         button.targetGraphic = label;
 
         var colors = button.colors;

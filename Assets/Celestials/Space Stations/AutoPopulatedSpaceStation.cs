@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(SpaceStation))]
 public class AutoPopulatedSpaceStation : MonoBehaviour
@@ -14,13 +15,13 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         Populate();
     }
 
-    public void Populate()
+    private void PopulateCrew()
     {
         station.AvailableCrew.ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
 
         var crewCount = UnityEngine.Random.Range(0, 5);
         var newCrew = new List<CrewMember>(crewCount);
-        
+
         for (int crewNo = 0; crewNo < crewCount; ++crewNo)
         {
             //TODO: people have faces
@@ -53,6 +54,36 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         {
             station.ItemsForSale.Add(itemType);
         }
+    }
+
+    public void PopulateQuests()
+    {
+        var questBoard = SpaceTraderConfig.QuestBoard;
+
+        var questsWithOwners = questBoard.QuestsAtStation(station)
+            .Where(q => questBoard.OwnerOf(q))
+            .ToList();
+
+        questBoard.QuestsAtStation(station)
+            .Except(questsWithOwners)
+            .ToList()
+            .ForEach(questBoard.CancelQuest);
+
+        var targetQuestCount = UnityEngine.Random.Range(0, 5);
+        var questTypes = questBoard.QuestTypes.ToList();
+        for (int i = questsWithOwners.Count; i < targetQuestCount; ++i)
+        {
+            var randomType = UnityEngine.Random.Range(0, questTypes.Count);
+            var newQuest = Quest.Create(questTypes[randomType], station);
+
+            questBoard.NewQuest(newQuest);
+        }
+    }
+
+    public void Populate()
+    {
+        PopulateCrew();
+        PopulateQuests();
     }
 }
 

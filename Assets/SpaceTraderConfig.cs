@@ -6,6 +6,7 @@ public class SpaceTraderConfig : MonoBehaviour
 {
     public static SpaceTraderConfig Instance { get; private set; }
 
+    public static QuestBoard QuestBoard { get { return Instance.questBoard; } }
     public static CrewConfiguration CrewConfiguration { get { return Instance.crewConfig; } }
     public static CargoItemConfiguration CargoItemConfiguration { get { return Instance.cargoConfig; } }
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
@@ -27,6 +28,9 @@ public class SpaceTraderConfig : MonoBehaviour
             Instance.localPlayer = value;
         }
     }
+
+    [SerializeField]
+    private QuestBoard questBoard;
     
     [SerializeField]
     private CrewConfiguration crewConfig;
@@ -59,6 +63,7 @@ public class SpaceTraderConfig : MonoBehaviour
         DontDestroyOnLoad(this);
 
         //clone configs on startup so we don't modify the global assets
+        questBoard = QuestBoard.Create(questBoard);
         crewConfig = CrewConfiguration.Create(crewConfig);
         cargoConfig = Instantiate(cargoConfig);
         missionsConfig = Instantiate(missionsConfig);
@@ -73,6 +78,7 @@ public class SpaceTraderConfig : MonoBehaviour
 
     private void OnDestroy()
     {
+        Destroy(questBoard);
         Destroy(crewConfig);
         Destroy(cargoConfig);
         Destroy(missionsConfig);

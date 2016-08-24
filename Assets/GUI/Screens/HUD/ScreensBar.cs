@@ -28,6 +28,11 @@ public class ScreensBar : MonoBehaviour
         ScreenManager.Instance.ScreenID = ScreenID.MissionPrep;
     }
 
+    public void ShowQuests()
+    {
+        ScreenManager.Instance.ScreenID = ScreenID.Quests;
+    }
+
     public void OnScreenActive()
     {
         if (missionButton)
