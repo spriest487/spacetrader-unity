@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 408038}
   - 33: {fileID: 3375066}
-  - 135: {fileID: 13548812}
   - 23: {fileID: 2307914}
   m_Layer: 9
   m_Name: Sky
@@ -45,7 +44,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 486622}
   - 33: {fileID: 3323704}
-  - 135: {fileID: 13541488}
   - 23: {fileID: 2364060}
   - 114: {fileID: 11482902}
   m_Layer: 9
@@ -213,30 +211,6 @@ SphereCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 152984}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &13541488
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 179918}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &13548812
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 145976}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
