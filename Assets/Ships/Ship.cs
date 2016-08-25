@@ -647,7 +647,7 @@ private ShipStats currentStats;
 
     public float EstimateDps()
     {
-        return moduleLoadout.Select(mod => mod.Behaviour.CalculateDps(this))
+        return moduleLoadout.Select(mod => mod.Behaviour? mod.Behaviour.CalculateDps(this) : 0)
             .Sum();
     }
 
