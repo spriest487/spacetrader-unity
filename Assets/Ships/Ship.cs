@@ -224,7 +224,12 @@ private ShipStats currentStats;
 
     public IEnumerable<CrewMember> GetAllCrew()
     {
-        yield return GetCaptain();
+        var captain = GetCaptain();
+        if (captain)
+        {
+            yield return GetCaptain();
+        }
+        
         foreach (var passenger in GetPassengers())
         {
             yield return passenger;
@@ -764,12 +769,12 @@ private ShipStats currentStats;
             {
                 var xp = CalculateXPReward();
 
-                foreach (var crew in hd.Owner.GetAllCrew())
-                {
-                    crew.GrantXP(xp);
-                }
+                hd.Owner.GrantCrewXP(xp);
             }
 
+            SpaceTraderConfig.QuestBoard.NotifyDeath(this, hd.Owner);
+
+            //:(
             Explode();
         }
     }
@@ -803,9 +808,24 @@ private ShipStats currentStats;
         return fleet && fleet.IsMember(other);
     }
 
+    public void GrantCrewXP(int amount)
+    {
+        var crewMembers = GetAllCrew().ToList();
+        if (crewMembers.Count == 0)
+        {
+            return;
+        }
+
+        var perMember = Mathf.FloorToInt((float)amount / crewMembers.Count);
+        for (int member = 0; member < crewMembers.Count; ++member)
+        {
+            crewMembers[member].GrantXP(perMember);
+        }
+    }
+
     public float EstimateDps()
     {
-        return moduleLoadout.Select(mod => mod.Behaviour.CalculateDps(this))
+        return moduleLoadout.Select(mod => mod.Behaviour? mod.Behaviour.CalculateDps(this) : 0)
             .Sum();
     }
 

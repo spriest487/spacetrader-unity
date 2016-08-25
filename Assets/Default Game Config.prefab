@@ -24,8 +24,9 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190862}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 95.859055, y: 155.11081, z: 5.7732496}
+  m_LocalPosition: {x: -3.012331, y: 2.5402308, z: 5.7732496}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -40,6 +41,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0c0cd5e10a0ba4e9e669262ee234ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  questBoard: {fileID: 11400000, guid: fdd518b8dc0d28944a56ee46647c5a88, type: 2}
   crewConfig: {fileID: 11400000, guid: 6842b45ae68327a40aeae75aa689b914, type: 2}
   cargoConfig: {fileID: 11400000, guid: 16667b47347b6a44c94e090aefe428c6, type: 2}
   missionsConfig: {fileID: 11400000, guid: a32ad9dc69ee3764c8643f4f6a09c3cb, type: 2}
@@ -83,6 +85,10 @@ MonoBehaviour:
   - screenId: 0
     playerStatus: 1
     root: {fileID: 174434, guid: 6cda6753cc872334abff72d85a3fdd86, type: 2}
+    overlayInstance: {fileID: 0}
+  - screenId: 5
+    playerStatus: 0
+    root: {fileID: 163950, guid: 7bb29badc4c08a743b728f0ec9906bce, type: 2}
     overlayInstance: {fileID: 0}
   loadingScreen: {fileID: 11493570, guid: 5168b642295bf244b8955068e17940fe, type: 2}
   menuState: 0

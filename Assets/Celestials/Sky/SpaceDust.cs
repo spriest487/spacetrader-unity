@@ -2,14 +2,28 @@
 using System.Collections;
 
 [RequireComponent(typeof(ParticleSystem))]
-public class SpaceDust : MonoBehaviour {
-	public int count = 100;
-	public int radius = 10;
-	public int fadeDistance = 10;
+public class SpaceDust : MonoBehaviour
+{
+    [SerializeField]
+    private int count = 100;
 
-	public float size = 0.05f;
+    [SerializeField]
+    private int radius = 10;
+
+    [SerializeField]
+    private int fadeDistance = 10;
+
+    [SerializeField]
+    private float size = 0.05f;
 	
 	private ParticleSystem.Particle[] particles;
+
+    private new ParticleSystem particleSystem;
+
+    private void Start()
+    {
+        particleSystem = GetComponent<ParticleSystem>();
+    }
 	
 	private ParticleSystem.Particle NewPoint(Vector3 center)
 	{
@@ -25,7 +39,7 @@ public class SpaceDust : MonoBehaviour {
 		return result;
 	}
 
-	public void Update()
+	private void Update()
 	{
 		Vector3 center = transform.position;
 
@@ -64,7 +78,7 @@ public class SpaceDust : MonoBehaviour {
 				fadeAmt);
 		}
 
-		GetComponent<ParticleSystem>().maxParticles = particles.Length;
-		GetComponent<ParticleSystem>().SetParticles(particles, particles.Length);
+        particleSystem.maxParticles = particles.Length;
+        particleSystem.SetParticles(particles, particles.Length);
 	}
 }

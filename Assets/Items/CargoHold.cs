@@ -84,11 +84,7 @@ public class CargoHold : ScriptableObject
     /// <param name="item">non-null item type to add</param>
     public void Add(ItemType item)
     {
-        if (!item)
-        {
-            throw new System.ArgumentException("item must not be null");
-        }
-
+        Debug.Assert(!!item, "item must not be null");        
         Debug.AssertFormat(FreeCapacity > 0, "cargo hold does not have space to add item {0}, size is {1} and free capacity is {2}",
             item, Size, FreeCapacity);
 
@@ -112,10 +108,7 @@ public class CargoHold : ScriptableObject
 
     public void Swap(int src, int dest)
     {
-        if (!IsValidIndex(src) || !IsValidIndex(dest))
-        {
-            throw new System.ArgumentException("invalid indices for swap");
-        }
+        Debug.Assert(IsValidIndex(src) && IsValidIndex(dest));
 
         var old = this[dest];
         this[dest] = this[src];
@@ -130,5 +123,20 @@ public class CargoHold : ScriptableObject
     public bool IsIndexFree(int index)
     {
         return IsValidIndex(index) && this[index] == null;
+    }
+
+    public bool ContainsItems(ItemType itemType, int quantity)
+    {
+        int count = 0;
+
+        for (int slot = 0; slot < Size; ++slot)
+        {
+            if (this[slot] == itemType)
+            {
+                ++count;
+            }
+        }
+
+        return count >= quantity;
     }
 }

@@ -8,6 +8,9 @@ using System;
 
 public class FollowCamera : MonoBehaviour
 {
+    const float NORMAL_FOV = 60;
+    const float CINEMATIC_FOV = 25;
+
     public const float UI_DRAG_DELAY = 0.2f;
 
     public Camera Camera { get; private set; }
@@ -74,6 +77,7 @@ public class FollowCamera : MonoBehaviour
 
     void DockedCam(PlayerShip player)
     {
+        Camera.fieldOfView = NORMAL_FOV;
         transform.rotation = Quaternion.identity;
         transform.position = player.Moorable.DockedAtStation.transform.position;
         transform.position -= new Vector3(0, 0, 100);
@@ -95,6 +99,8 @@ public class FollowCamera : MonoBehaviour
 
     void FlightCam(PlayerShip player)
     {
+        Camera.fieldOfView = NORMAL_FOV;
+
         transform.position = offset;
 
         if (!player)
@@ -138,6 +144,8 @@ public class FollowCamera : MonoBehaviour
 
     void AutoDockingCam(PlayerShip player, SpaceStation station)
     {
+        Camera.fieldOfView = CINEMATIC_FOV;
+
         transform.position = station.DockingViewpoint;
 
         var look = (player.transform.position - transform.position).normalized;
@@ -146,6 +154,8 @@ public class FollowCamera : MonoBehaviour
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
     {
+        Camera.fieldOfView = CINEMATIC_FOV;
+
         transform.position = cutsceneCamRig.View;
 
         var lookDirection = (cutsceneCamRig.Focus - cutsceneCamRig.View).normalized;

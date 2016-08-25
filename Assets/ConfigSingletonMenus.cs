@@ -2,6 +2,12 @@
 
 public static class ConfigSingletonMenus
 {
+    [MenuItem("Assets/Create/SpaceTrader/Quests/Quest board")]
+    public static void QuestBoard()
+    {
+        ScriptableObjectUtility.CreateAsset<QuestBoard>();
+    }
+
     [MenuItem("Assets/Create/SpaceTrader/Items/Item configuration")]
     public static void CargoItemsConfig()
     {

@@ -4,5 +4,6 @@
     MainMenu,
     Equipment,
     MissionPrep,
-    Recruitment
+    Recruitment,
+    Quests
 }

@@ -99,7 +99,6 @@ GameObject:
   - 54: {fileID: 5408120}
   - 114: {fileID: 11453806}
   - 114: {fileID: 11470580}
-  - 114: {fileID: 11455868}
   - 65: {fileID: 6548620}
   m_Layer: 0
   m_Name: Dummy Flat Station
@@ -578,24 +577,13 @@ MonoBehaviour:
   cargo: {fileID: 0}
   moduleLoadout:
     hardpointModules: []
-  Thrust: 0
-  Strafe: 0
-  Lift: 0
-  Pitch: 0
-  Yaw: 0
-  Roll: 0
+  thrust: 0
+  strafe: 0
+  lift: 0
+  pitch: 0
+  yaw: 0
+  roll: 0
   shipType: {fileID: 11400000, guid: b8c3a5b52e5149b438bdad98dd38b3fa, type: 2}
---- !u!114 &11455868
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 155668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2861e6aea542fd46a3fc079a3d7c46e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11470580
 MonoBehaviour:
   m_ObjectHideFlags: 1
