@@ -15,25 +15,7 @@ public class Starfield : MonoBehaviour {
 	
 	public int starCount = 20000;
 	public int seed = 123;
-	
-	private static Vector3 RandomStarPos(System.Random random)
-	{
-		var theta = 2f * Mathf.PI * MathUtils.NextFloat(random);
-
-		var range = MathUtils.NextFloat(random);
-
-		var result = new Vector3();
-		result.x = Mathf.Cos(theta) * range;
-		result.z = Mathf.Sin(theta) * range;
-
-		result.y = (MathUtils.NextFloat(random) - 0.5f) * 2;
-		bool posY = result.y > 0;
-		result.y = Mathf.Pow(result.y, 2);
-		result.y = posY ? result.y : -result.y;
-
-		return result;
-	}
-	
+		
 	private Mesh Generate()
 	{
 		if (starCount >= 65536) {
@@ -49,7 +31,7 @@ public class Starfield : MonoBehaviour {
 
 		for (var i = 0; i < starCount; ++i)
 		{
-			vertices[i] = RandomStarPos(random);
+            vertices[i] = random.OnUnitSphere();
 
 			indices[i] = i;
 
