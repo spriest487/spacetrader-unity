@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-internal static class ListUtility
+public static class ListUtility
 {
     public static bool ElementsEquals<T>(this IList<T> list, IEnumerable<T> other)
     {
