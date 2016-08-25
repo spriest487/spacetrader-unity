@@ -32,7 +32,8 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
     {
         if (fleets != null)
         {
-            fleetsList = new List<Fleet>(fleets.Values.Distinct(new LeaderComparer()));
+            fleetsList = new List<Fleet>(fleets.Values.Where(f => !!f)
+                .Distinct(new LeaderComparer()));
         }
         else
         {
@@ -42,12 +43,19 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
     
     public void OnAfterDeserialize()
     {
-        fleets = new Dictionary<Ship, Fleet>(fleetsList.Count);
+        if (fleets == null)
+        {
+            fleets = new Dictionary<Ship, Fleet>(fleetsList.Count);
+        }
+        else
+        {
+            fleets.Clear();
+        }
+
         fleetsList.ForEach(fleet =>
         {
-            if (!fleet.Leader)
+            if (!fleet || !fleet.Leader)
             {
-                Debug.LogWarningFormat("bad fleet when deserializing (no leader, {0} members)", fleet.Followers.Count());
                 return;
             }
 
