@@ -47,6 +47,7 @@ GameObject:
   - 33: {fileID: 3323704}
   - 135: {fileID: 13541488}
   - 23: {fileID: 2364060}
+  - 114: {fileID: 11482902}
   m_Layer: 9
   m_Name: Test Planet
   m_TagString: Untagged
@@ -87,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179918}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.04, y: -2.78, z: 0.29}
+  m_LocalPosition: {x: 0, y: -2.49, z: 3.5}
   m_LocalScale: {x: 4.8771777, y: 4.877176, z: 4.877176}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -194,6 +195,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 152984}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &11482902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1f9b77b33a4f63488e137f4bf08940b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spinSpeed: 1
 --- !u!135 &13507150
 SphereCollider:
   m_ObjectHideFlags: 1
