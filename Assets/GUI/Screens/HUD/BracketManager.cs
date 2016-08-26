@@ -6,26 +6,11 @@ using UnityEngine.EventSystems;
 using System.Linq;
 
 public class BracketManager : MonoBehaviour
-{
-    private class DistanceComparator : IComparer<Targetable>
+{    
+    struct TargetableWithDistance
     {
-        public int Compare(Targetable t1, Targetable t2)
-        {
-            float dist = t1.transform.position.z - t2.transform.position.z;
-
-            if (dist > Mathf.Epsilon)
-            {
-                return 1;
-            }
-            else if (dist < -Mathf.Epsilon)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        public Targetable Targetable;
+        public float DistanceToCam;
     }
 
     [SerializeField]
@@ -61,8 +46,6 @@ public class BracketManager : MonoBehaviour
 
     private float clickOffTargetTime;
 
-    private IComparer<Targetable> bracketOrder = new DistanceComparator();
-
     private PooledList<Bracket, Targetable> brackets;
     
     public Color FriendlyColor { get { return friendlyColor; } }
@@ -91,10 +74,7 @@ public class BracketManager : MonoBehaviour
             return;
         }
 
-        var allTargetables = FindObjectsOfType<Targetable>().ToList();
-        allTargetables.Sort(bracketOrder);
-
-        brackets.Refresh(allTargetables, (i, bracket, targetable) =>
+        brackets.Refresh(FindObjectsOfType<Targetable>(), (i, bracket, targetable) =>
         {
             bracket.Assign(this, targetable);
         });
