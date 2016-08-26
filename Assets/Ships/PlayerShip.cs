@@ -32,9 +32,9 @@ public class PlayerShip : MonoBehaviour
 
     public Moorable Moorable
     {
-        get { return moorable; }
+        get { return Ship? Ship.Moorable : null; }
     }
-
+    
     public int Money
     {
         get { return money; }
@@ -225,10 +225,7 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("activate"))
             {
-                if (ship.Target)
-                {
-                    ship.Target.SendMessage("OnActivated", Ship, SendMessageOptions.DontRequireReceiver);
-                }
+                ActivateTarget();
             }
 
             if (Input.GetButtonDown("radio"))
@@ -284,6 +281,19 @@ public class PlayerShip : MonoBehaviour
                 }
 
                 break;
+        }
+    }
+
+    public void ActivateTarget()
+    {
+        if (!Ship.Target)
+        {
+            return;
+        }
+
+        if (Ship.Target.ActionOnActivate && Ship.Target.ActionOnActivate.CanBeActivatedBy(Ship))
+        {
+            Ship.Target.ActionOnActivate.Activate(Ship);
         }
     }
 

@@ -47,7 +47,7 @@ public class Moorable : MonoBehaviour
     
     void OnTriggerEnter(Collider collider)
     {
-        if (State == DockingState.AutoDocking)
+        if (State != DockingState.InSpace)
         {
             return;
         }
@@ -68,7 +68,7 @@ public class Moorable : MonoBehaviour
 
     void OnTriggerExit(Collider collider)
     {
-        if (State == DockingState.AutoDocking)
+        if (State != DockingState.InSpace)
         {
             return;
         }
@@ -94,6 +94,7 @@ public class Moorable : MonoBehaviour
 
     void OnUnmoored(SpaceStation station)
     {
+        localStation = null;
         BeginAutoUndocking(station);
     }
 
@@ -150,12 +151,16 @@ public class Moorable : MonoBehaviour
         shipAi.ClearTasks();
     }
 
-    public void BeginAutoDocking(SpaceStation spaceStation)
+    public void BeginAutoDocking(SpaceStation station)
     {
-        state = DockingState.AutoDocking;
-        localStation = spaceStation;
+        if (LocalStation != station)
+        {
+            return;
+        }
 
-        StartCoroutine(AutoDockingRoutine(spaceStation));
+        state = DockingState.AutoDocking;
+
+        StartCoroutine(AutoDockingRoutine(station));
     }
 
     private IEnumerator AutoUndockingRoutine(SpaceStation station)
@@ -183,8 +188,10 @@ public class Moorable : MonoBehaviour
 
     private void BeginAutoUndocking(SpaceStation station)
     {
-        localStation = station;
         state = DockingState.AutoDocking;
+
+        //make sure our local station is set, so AutoDockingStation points to it
+        localStation = station;
 
         StartCoroutine(AutoUndockingRoutine(station));
     }

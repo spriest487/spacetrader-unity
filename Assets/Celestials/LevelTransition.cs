@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 
-public class LevelTransition : MonoBehaviour
+public class LevelTransition : ActionOnActivate
 {
     private static LevelTransition activeTransition = null;
 
@@ -11,8 +11,22 @@ public class LevelTransition : MonoBehaviour
 
     [SerializeField]
     private string level = null;
-    
-    private void OnActivated(Ship activator)
+
+    public override string ActionName
+    {
+        get
+        {
+            return "JUMP TO " + level.ToUpper();
+        }
+    }
+
+    public override bool CanBeActivatedBy(Ship activator)
+    {
+        //TODO
+        return true;
+    }
+
+    public override void Activate(Ship activator)
     {
         if (!PlayerShip.LocalPlayer || activator != PlayerShip.LocalPlayer.Ship)
         {

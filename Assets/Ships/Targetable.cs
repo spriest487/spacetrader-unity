@@ -18,8 +18,9 @@ public class Targetable : MonoBehaviour
 
     [SerializeField]
     private bool hideBracket;
-
+    
     private Ship ship;
+    private ActionOnActivate actionOnActivate;
 
     public bool BracketVisible
     {
@@ -39,11 +40,14 @@ public class Targetable : MonoBehaviour
         }
     }
 
+    public ActionOnActivate ActionOnActivate { get { return actionOnActivate; } }
+    
     public string Faction { get { return faction; } set { faction = value; } }
 
     private void Start()
     {
         ship = GetComponent<Ship>();
+        actionOnActivate = GetComponent<ActionOnActivate>();
     }
 
     public TargetRelationship RelationshipTo(Targetable other)

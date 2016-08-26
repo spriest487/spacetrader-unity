@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class SpaceStation : MonoBehaviour
+public class SpaceStation : ActionOnActivate
 {
     [Header("Outside")]
 
@@ -30,6 +30,24 @@ public class SpaceStation : MonoBehaviour
 
     [SerializeField]
     private CargoHold itemsForSale;
+
+    public override string ActionName
+    {
+        get { return "ENTER STATION"; }
+    }
+
+    public override void Activate(Ship activator)
+    {
+        var moorable = activator.Moorable;
+        Debug.Assert(moorable);
+
+        moorable.BeginAutoDocking(this);
+    }
+
+    public override bool CanBeActivatedBy(Ship activator)
+    {
+        return activator.Moorable.LocalStation == this;
+    }
 
     public MooringTrigger MooringTrigger
     {
@@ -93,7 +111,7 @@ public class SpaceStation : MonoBehaviour
                 new List<ShipForSale>(value);
         }
     }
-    
+            
     //eat a ship, disabling it and storing it in the hangar
     public void AddDockedShip(Moorable docked)
     {
@@ -143,14 +161,5 @@ public class SpaceStation : MonoBehaviour
 
         moorable.gameObject.SetActive(true);
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
-    }
-
-    private void OnActivated(Ship activator)
-    {
-        var moorable = activator.GetComponent<Moorable>();
-        if (moorable)
-        {
-            moorable.BeginAutoDocking(this);
-        }
     }
 }

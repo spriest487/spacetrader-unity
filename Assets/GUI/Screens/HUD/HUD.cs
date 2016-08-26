@@ -29,18 +29,24 @@ public class HUD : MonoBehaviour
     private Text playerMoney;
 
     [Header("Overlays")]
-
+    
     [SerializeField]
     private LootWindow lootWindow;
 
     [SerializeField]
     private ErrorMessage errorMessage;
 
-    private BracketManager bracketManager;
+    [SerializeField]
+    private Button useTargetButton;
+    private Text useTargetText;
 
+    private BracketManager bracketManager;
+    
     private void Start()
     {
         bracketManager = GetComponentInChildren<BracketManager>();
+
+        useTargetText = useTargetButton.GetComponentInChildren<Text>();
     }
 
     private void Update()
@@ -53,7 +59,6 @@ public class HUD : MonoBehaviour
         content.gameObject.SetActive(!cinemaMode);
         cinemaBars.gameObject.SetActive(cinemaMode);
         
-        
         if (!cinemaMode)
         {
             bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
@@ -64,6 +69,21 @@ public class HUD : MonoBehaviour
 
             if (playerInfoVisible)
             {
+                var playerTarget = PlayerShip.LocalPlayer.Ship.Target;
+
+                if (playerTarget 
+                    && playerTarget.ActionOnActivate
+                    && playerTarget.ActionOnActivate.CanBeActivatedBy(player.Ship)
+                    && !lootWindow.isActiveAndEnabled)
+                {
+                    useTargetButton.gameObject.SetActive(true);
+                    useTargetText.text = playerTarget.ActionOnActivate.ActionName;
+                }
+                else
+                {
+                    useTargetButton.gameObject.SetActive(false);
+                }
+
                 //TODO: slow
                 var captain = PlayerShip.LocalPlayer.Ship.GetCaptain();
                 if (captain)
@@ -83,6 +103,13 @@ public class HUD : MonoBehaviour
         }
     }
 
+    //"use target" hud button event
+    public void PlayerActivateTarget()
+    {
+        PlayerShip.LocalPlayer.ActivateTarget();
+    }
+
+    //activated a loot can, pop up the loot display window
     private void OnPlayerActivatedLoot(LootContainer loot)
     {
         if (lootWindow.Container == loot)

@@ -162,6 +162,7 @@ private ShipStats currentStats;
 
     public Rigidbody RigidBody { get; private set; }
     public Targetable Targetable { get; private set; }
+    public Moorable Moorable { get; private set; }
 
     public IList<Ability> Abilities
     {
@@ -304,6 +305,7 @@ private ShipStats currentStats;
         }
 
         collider = GetComponent<Collider>();
+        Moorable = GetComponent<Moorable>();
     }
 
     private static void UpdateRigidBodyFromStats(Rigidbody rigidbody, ShipStats stats)

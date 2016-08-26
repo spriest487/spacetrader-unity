@@ -379,7 +379,7 @@ public class FollowCamera : MonoBehaviour
 
             if (player)
             {
-                var moorable = player.GetComponent<Moorable>();
+                var moorable = player.Moorable;
                 if (moorable && moorable.State != DockingState.InSpace)
                 {
                     SetupCockpit(player, false);

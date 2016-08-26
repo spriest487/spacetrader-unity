@@ -117,10 +117,10 @@ public class CrewListItem : MonoBehaviour
     public void HireOrFire()
     {
         var player = PlayerShip.LocalPlayer;
-        var moorable = player.GetComponent<Moorable>();
+        var moorable = player.Moorable;
         Debug.Assert(moorable, "player must have a moorable!");
-
-        var station = player.Moorable.DockedAtStation;
+        
+        var station = moorable.DockedAtStation;
         Debug.Assert(station, "must be docked!");
         
         bool hiring = station.AvailableCrew.Contains(member);

@@ -18,8 +18,7 @@ public class StationMenu : MonoBehaviour
 
         if (station)
         {
-            //TODO?
-            station.Unmoor(PlayerShip.LocalPlayer.GetComponent<Moorable>());
+            station.Unmoor(PlayerShip.LocalPlayer.Moorable);
         }
 
         ScreenManager.Instance.ScreenID = ScreenID.None;
