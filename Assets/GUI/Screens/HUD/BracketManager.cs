@@ -85,32 +85,44 @@ public class BracketManager : MonoBehaviour
             return;
         }
 
-        brackets.RemoveAll(b => !b);
+        var allTargetables = FindObjectsOfType<Targetable>().ToList();
 
-        var targetables = FindObjectsOfType<Targetable>()
-            .Where(t => t.BracketVisible)
-            .ToList();
-
-        brackets.Where(b => !targetables.Contains(b.Target))
-            .ToList()
-            .ForEach(removeBracket =>
+        var updatedBrackets = new List<Bracket>(brackets.Count);
+        for (int b = 0; b < brackets.Count; ++b)
+        {
+            var bracket = brackets[b];
+            if (!bracket)
             {
-                Destroy(removeBracket.gameObject);
-                brackets.Remove(removeBracket);
-            });
+                continue;
+            }
 
-        targetables.Except(brackets.Select(b => b.Target))
-            .ToList()
-            .ForEach(newTarget =>
+            var existingBracketForTargetable = allTargetables.Remove(bracket.Target);
+            
+            if (existingBracketForTargetable)
             {
-                var newBracket = Bracket.CreateFromPrefab(bracket, this, newTarget);
-                newBracket.transform.SetParent(transform, false);
-                brackets.Add(newBracket);
-            });
+                updatedBrackets.Add(bracket);
+            }
+            else
+            {
+                Destroy(bracket);
+            }
+        }
+
+        for (int t = 0; t < allTargetables.Count; ++t)
+        {
+            var newBracket = Bracket.CreateFromPrefab(bracket, this, allTargetables[t]);
+            newBracket.transform.SetParent(transform, false);
+            updatedBrackets.Add(newBracket);
+        }
+
+        brackets = updatedBrackets;
         
         //z-sort (this is one frame behind but it shouldn't matter..?)
         brackets.Sort(bracketOrder);
-        brackets.ForEach(b => b.transform.SetAsFirstSibling());
+        for (int b = 0; b < brackets.Count; ++b)
+        {
+            brackets[b].transform.SetSiblingIndex(b);
+        }
 
         if (!EventSystem.current.IsPointerOverGameObject())
         { 
