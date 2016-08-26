@@ -13,7 +13,7 @@
 
 /Tests/Properties
 
-/Assets/UnityVS/Editor/*.dll
+/Assets/UnityVS
 
 *.unityproj
 /Windows-x86
