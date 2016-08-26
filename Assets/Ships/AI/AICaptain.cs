@@ -30,7 +30,6 @@ public class AICaptain : MonoBehaviour
 
     //hiding the obsolete builtin Unity fields
     new private Rigidbody rigidbody;
-    new private Collider collider;
 
     public Ship Ship
     {
@@ -44,7 +43,6 @@ public class AICaptain : MonoBehaviour
     {
         ship = GetComponent<Ship>();
         rigidbody = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
 
         Destination = null;
         TargetUp = null;

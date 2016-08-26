@@ -31,23 +31,20 @@ public class FleetListItem : MonoBehaviour
     [HideInInspector]
     [SerializeField]
     private Hitpoints hitpoints;
-
-    public static FleetListItem CreateFromPrefab(FleetListItem prefab, Ship ship, Color labelColor)
+    
+    public void Assign(Ship ship, Color labelColor)
     {
-        var item = Instantiate(prefab);
-        item.ship = ship;
-        item.hitpoints = ship.GetComponent<Hitpoints>();
-        item.wingmanCaptain = ship.GetComponent<WingmanCaptain>();
+        this.ship = ship;
+        hitpoints = ship.GetComponent<Hitpoints>();
+        wingmanCaptain = ship.GetComponent<WingmanCaptain>();
 
-        item.nameLabel.color = labelColor;
-        foreach (var selectionImage in item.selectionOverlay.GetComponentsInChildren<Image>())
+        nameLabel.color = labelColor;
+        foreach (var selectionImage in selectionOverlay.GetComponentsInChildren<Image>())
         {
             selectionImage.color = labelColor;
         }
 
-        item.Update();
-
-        return item;
+        Update();
     }
 
     private string OrderString(WingmanOrder order)
@@ -88,17 +85,11 @@ public class FleetListItem : MonoBehaviour
         {
             armorBar.gameObject.SetActive(false);
         }
-
+        
         var captain = ship.GetCaptain();
-        if (captain)
-        {
-            captainPortrait.sprite = captain.Portrait;
-            captainPortrait.gameObject.SetActive(true);
-        }
-        else
-        {
-            captainPortrait.gameObject.SetActive(false);
-        }
+        var portrait = captain ? captain.Portrait : SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+        
+        captainPortrait.sprite = portrait;
 
         string wingmanOrder = null;
         if (wingmanCaptain)

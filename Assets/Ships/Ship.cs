@@ -382,7 +382,6 @@ private ShipStats currentStats;
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;
 
         var facingTowardsAngle = Mathf.Max(1, CurrentStats.MaxTurnSpeed);
-        var facingTowards = totalAngle < facingTowardsAngle;
         var facingDirectlyTowards = totalAngle < aimAccuracy;
 
         //var closeEnough = IsCloseTo(Destination.Value, between, CloseDistance);

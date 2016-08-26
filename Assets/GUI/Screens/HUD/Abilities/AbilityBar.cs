@@ -8,10 +8,7 @@ public class AbilityBar : MonoBehaviour
 {
     [SerializeField]
     private AbilityButton buttonPrefab;
-
-    [SerializeField]
-    private Text inspectAbilityLabel;
-
+    
     [SerializeField]
     private Transform buttonHolder;
 
@@ -103,28 +100,6 @@ public class AbilityBar : MonoBehaviour
         {
             buttons.Clear();
             RemoveExistingButtons();
-        }
-        
-        bool overButton = false;
-        foreach (var button in buttons)
-        {
-            if (button.PointerOver)
-            {
-                string inspectText = button.Ability.name.ToUpper()
-                    + "\n"
-                    + button.Ability.Describe();
-
-                inspectAbilityLabel.gameObject.SetActive(true);
-                inspectAbilityLabel.text = inspectText;
-
-                overButton = true;
-                break;
-            }
-        }
-
-        if (!overButton)
-        {
-            inspectAbilityLabel.gameObject.SetActive(false);
         }
     }
 }

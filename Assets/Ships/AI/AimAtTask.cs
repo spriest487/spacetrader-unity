@@ -4,9 +4,6 @@ using UnityEngine;
 public class AimAtTask : AITask
 {
     [SerializeField]
-    private Vector3 dest;
-
-    [SerializeField]
     private Vector3 aimAtPos;
     
     [SerializeField]
@@ -15,7 +12,6 @@ public class AimAtTask : AITask
     public static AimAtTask Create(Vector3 dest, Vector3 aimAtPos, float accuracy)
     {
         AimAtTask task = CreateInstance<AimAtTask>();
-        task.dest = dest;
         task.aimAtPos = aimAtPos;
         task.accuracy = Mathf.Deg2Rad * accuracy;
 
@@ -37,8 +33,6 @@ public class AimAtTask : AITask
 
     public override void Update()
     {
-        var between = aimAtPos - TaskFollower.transform.position;
-
         TaskFollower.Ship.ResetControls();
         TaskFollower.Ship.RotateToPoint(aimAtPos, null, accuracy);
     }

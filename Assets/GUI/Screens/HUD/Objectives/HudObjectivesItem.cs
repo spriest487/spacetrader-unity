@@ -27,4 +27,10 @@ public class HudObjectivesItem : MonoBehaviour
             }
         }
     }
+
+    public void Assign(MissionObjective objective)
+    {
+        this.objective = objective;
+        Update();
+    }
 }

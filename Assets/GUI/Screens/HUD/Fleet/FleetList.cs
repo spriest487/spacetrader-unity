@@ -7,66 +7,43 @@ using System.Collections.Generic;
 
 public class FleetList : MonoBehaviour
 {
-    private BracketManager bracketManager;
-
-    private List<Ship> currentShips;
-
-    [SerializeField]
-    private List<FleetListItem> items;
-
     [SerializeField]
     private FleetListItem itemPrefab;
 
     [SerializeField]
     private Transform content;
 
+    private BracketManager bracketManager;
+    private PooledList<FleetListItem, Ship> items;
+
     private void Start()
     {
         var hud = GetComponentInParent<HUD>();
         bracketManager = hud.GetComponentInChildren<BracketManager>();
     }
-
-    private void Clear()
-    {
-        items.ForEach(item => Destroy(item.gameObject));
-        items.Clear();
-
-        currentShips = null;
-    }
-
+    
     public void Update()
     {
         var player = PlayerShip.LocalPlayer;
-        if (!player || !player.Ship)
+
+        if (items == null)
         {
-            Clear();
-            return;
+            items = new PooledList<FleetListItem, Ship>(content, itemPrefab);
         }
 
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
-        if (!fleet)
+        Fleet playerFleet;
+        if (!player 
+            || !player.Ship 
+            || !(playerFleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship)))
         {
-            Clear();
-            return;
+            items.Clear();
         }
-        
-        var ships = new List<Ship>(fleet.Members);
-        ships.RemoveAll(ship => ship == player.Ship);
-
-        bool dirty = currentShips == null || !currentShips.ElementsEquals(ships) || currentShips.Any(s => !s);
-
-        if (dirty)
+        else
         {
-            Clear();
-            currentShips = ships;
+            var ships = playerFleet.Members.ToList();
+            ships.Remove(player.Ship);
 
-            ships.ForEach(ship =>
-            {
-                var newItem = FleetListItem.CreateFromPrefab(itemPrefab, ship, bracketManager.FleetMemberColor);
-                newItem.transform.SetParent(content, false);
-
-                items.Add(newItem);
-            });
+            items.Refresh(ships, (i, item, ship) => item.Assign(ship, bracketManager.FleetMemberColor));
         }
     }
 }
