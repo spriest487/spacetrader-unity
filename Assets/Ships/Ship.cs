@@ -275,10 +275,7 @@ private ShipStats currentStats;
         {
             obj.gameObject.AddComponent<Moorable>();
         }
-
-        //ships are targetable by default 
-        ship.gameObject.AddComponent<Targetable>();
-
+        
         if (!ship.cargo)
         {
             ship.Cargo = ScriptableObject.CreateInstance<CargoHold>();
@@ -298,7 +295,14 @@ private ShipStats currentStats;
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
+
+        //ships are targetable by default 
         Targetable = GetComponent<Targetable>();
+        if (!Targetable)
+        {
+            Targetable = gameObject.AddComponent<Targetable>();
+        }
+
         collider = GetComponent<Collider>();
     }
 
