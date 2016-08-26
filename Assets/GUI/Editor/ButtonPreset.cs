@@ -1,19 +1,12 @@
 ﻿using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Linq;
 
 public class ButtonPreset
 {
-    [MenuItem("SpaceTrader/Apply button preset")]
-    public static void ConfigureButton()
+    private static void ConfigureButton(Button button)
     {
-        var selection = Selection.activeGameObject;
-        if (!selection)
-        {
-            return;
-        }
-
-        var button = selection.GetComponent<Button>();
         if (!button)
         {
             return;
@@ -25,7 +18,7 @@ public class ButtonPreset
         if (label)
         {
             label.font = font;
-            label.fontSize = 24;
+            label.fontSize = 32;
             label.color = Color.white;
             label.raycastTarget = false;
             label.supportRichText = false;
@@ -52,5 +45,28 @@ public class ButtonPreset
         colors.disabledColor = new Color(1, 0.21f, 0.39f, 0.5f);
 
         button.colors = colors;
+
+        var layout = button.GetComponent<LayoutElement>();
+        if (layout)
+        {
+            layout.preferredHeight = 48;
+        }
+    }
+
+    [MenuItem("SpaceTrader/Apply button preset")]
+    public static void ConfigureSelection()
+    {
+        var selection = Selection.activeGameObject;
+        if (!selection)
+        {
+            return;
+        }
+
+        foreach (var button in Selection.gameObjects
+            .Select(o => o.GetComponent<Button>())
+            .Where(button => button))
+        {
+            ConfigureButton(button);
+        }
     }
 }
