@@ -227,12 +227,15 @@ public class Bracket : MonoBehaviour
                 childImage.sprite = cornerSprite;
             });
 
-            nameplate.gameObject.SetActive(isTarget);
-            nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, 1);
+            nameplate.gameObject.SetActive(true);
+
+            float nameplateAlpha = isTarget ? 1 : 0.75f;
+            nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, nameplateAlpha);
 
             nameplate.text = target.name.ToUpper();
+            nameplate.fontSize = isTarget ? 24 : 16;
 
-            healthbar.gameObject.SetActive(true);
+            healthbar.gameObject.SetActive(isTarget);
             edgeMarker.gameObject.SetActive(false);
 
             var width = bracketManager.DefaultWidth;
