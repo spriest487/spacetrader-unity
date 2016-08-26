@@ -94,7 +94,6 @@ GameObject:
   - 4: {fileID: 480894}
   - 33: {fileID: 3338768}
   - 23: {fileID: 2328590}
-  - 114: {fileID: 11414636}
   - 114: {fileID: 11423814}
   - 54: {fileID: 5408120}
   - 114: {fileID: 11453806}
@@ -467,19 +466,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &11414636
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 155668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02737b6f59e574eb760004b4dcef28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  faction: 
-  hideBracket: 0
 --- !u!114 &11423814
 MonoBehaviour:
   m_ObjectHideFlags: 1

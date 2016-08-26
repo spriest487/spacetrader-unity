@@ -48,8 +48,7 @@ public class Ship : MonoBehaviour
 
     [SerializeField]
     private float roll;
-
-    private new Rigidbody rigidbody;
+    
     private new Collider collider;
 
     private Hitpoints hitPoints;
@@ -161,7 +160,8 @@ private ShipStats currentStats;
         set { cargo = value; }
     }
 
-    public Rigidbody RigidBody { get { return rigidbody; } }
+    public Rigidbody RigidBody { get; private set; }
+    public Targetable Targetable { get; private set; }
 
     public IList<Ability> Abilities
     {
@@ -276,6 +276,9 @@ private ShipStats currentStats;
             obj.gameObject.AddComponent<Moorable>();
         }
 
+        //ships are targetable by default 
+        ship.gameObject.AddComponent<Targetable>();
+
         if (!ship.cargo)
         {
             ship.Cargo = ScriptableObject.CreateInstance<CargoHold>();
@@ -294,7 +297,8 @@ private ShipStats currentStats;
 
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        RigidBody = GetComponent<Rigidbody>();
+        Targetable = GetComponent<Targetable>();
         collider = GetComponent<Collider>();
     }
 
@@ -316,7 +320,7 @@ private ShipStats currentStats;
 	 */
     public static float EquivalentThrust(Ship from, Ship target)
 	{
-		var targetSpeed = target.rigidbody.velocity.magnitude;
+		var targetSpeed = target.RigidBody.velocity.magnitude;
 		var maxSpeed = Mathf.Max(1, from.CurrentStats.MaxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
 		
@@ -386,7 +390,7 @@ private ShipStats currentStats;
 
         //var closeEnough = IsCloseTo(Destination.Value, between, CloseDistance);
 
-        var currentLocalRotation = transform.InverseTransformDirection(rigidbody.angularVelocity) * Mathf.Rad2Deg;
+        var currentLocalRotation = transform.InverseTransformDirection(RigidBody.angularVelocity) * Mathf.Rad2Deg;
 
         if (!facingDirectlyTowards)
         {
@@ -610,9 +614,9 @@ private ShipStats currentStats;
 		formationManager.Update();
 		DebugDrawFollowerPositions();
         
-        if (rigidbody)
+        if (RigidBody)
 		{
-            UpdateRigidBodyFromStats(rigidbody, CurrentStats);
+            UpdateRigidBodyFromStats(RigidBody, CurrentStats);
 
             //all movement vals must be within -1..1
             Thrust = Mathf.Clamp(Thrust, -1, 1);
@@ -624,8 +628,8 @@ private ShipStats currentStats;
 
             var torqueMax = CurrentStats.MaxTurnSpeed * Mathf.Deg2Rad;
 
-            var localRotation = transform.InverseTransformDirection(rigidbody.angularVelocity);
-            var localVelocity = transform.InverseTransformDirection(rigidbody.velocity);
+            var localRotation = transform.InverseTransformDirection(RigidBody.angularVelocity);
+            var localVelocity = transform.InverseTransformDirection(RigidBody.velocity);
 
             var torqueInput = InputAmountsToRequired(new Vector3(Pitch, Yaw, Roll),
                 localRotation,
@@ -644,8 +648,8 @@ private ShipStats currentStats;
             }
 
             /* apply new forces */
-            rigidbody.AddRelativeTorque(torque);
-            rigidbody.AddRelativeForce(force);
+            RigidBody.AddRelativeTorque(torque);
+            RigidBody.AddRelativeForce(force);
 		}
 	}
 
@@ -704,7 +708,7 @@ private ShipStats currentStats;
 		var posIndex = formationManager.IncludeFollower(followerId);
 		if (posIndex != 0)
 		{
-			var spacing = RigidBody.GetComponent<Collider>().bounds.extents.magnitude * 4;
+			var spacing = collider.bounds.extents.magnitude * 4;
 			var offset = RigidBody.transform.right * posIndex * spacing;
 
 			return shipPos + offset;
@@ -723,8 +727,6 @@ private ShipStats currentStats;
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void DebugDrawFollowerPositions()
 	{
-        var collider = RigidBody.GetComponent<Collider>();
-
 		foreach (var follower in formationManager.followers)
 		{
 			var pos = GetFormationPos(follower);
@@ -761,8 +763,7 @@ private ShipStats currentStats;
             return;
         }
 
-        var hp = GetComponent<Hitpoints>();
-        if (hp && hp.GetArmor() - hd.Amount <= 0)
+        if (hitPoints && hitPoints.GetArmor() - hd.Amount <= 0)
         {
             if (hd.Owner)
             {

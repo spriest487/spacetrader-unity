@@ -16,6 +16,16 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
     private List<TItem> currentItems;
     private List<TData> currentData;
 
+    public int Count
+    {
+        get { return currentItems == null? 0 : currentItems.Count; }
+    }
+
+    public TItem this[int index]
+    {
+        get { return currentItems == null ? null : currentItems[index]; }
+    }
+
     public PooledList(Transform root, TItem itemPrefab)
     {
         currentItems = new List<TItem>(root.GetComponentsInChildren<TItem>());

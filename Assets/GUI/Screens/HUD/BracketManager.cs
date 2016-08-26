@@ -7,11 +7,24 @@ using System.Linq;
 
 public class BracketManager : MonoBehaviour
 {
-    private class BracketOrderComparer : IComparer<Bracket>
+    private class DistanceComparator : IComparer<Targetable>
     {
-        public int Compare(Bracket b1, Bracket b2)
+        public int Compare(Targetable t1, Targetable t2)
         {
-            return (int) (b2.transform.position.z - b1.transform.position.z);
+            float dist = t1.transform.position.z - t2.transform.position.z;
+
+            if (dist > Mathf.Epsilon)
+            {
+                return 1;
+            }
+            else if (dist < -Mathf.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 
@@ -48,11 +61,9 @@ public class BracketManager : MonoBehaviour
 
     private float clickOffTargetTime;
 
-    private IComparer<Bracket> bracketOrder = new BracketOrderComparer();
+    private IComparer<Targetable> bracketOrder = new DistanceComparator();
 
-    [HideInInspector]
-    [SerializeField]
-    private List<Bracket> brackets;
+    private PooledList<Bracket, Targetable> brackets;
     
     public Color FriendlyColor { get { return friendlyColor; } }
     public Color HostileColor { get { return hostileColor; } }
@@ -67,63 +78,27 @@ public class BracketManager : MonoBehaviour
     public int DefaultHeight { get { return defaultHeight; } }
     public float SelectedExpand { get { return selectedExpand; } }
 
-    private void Clear()
-    {
-        foreach (var bracket in brackets)
-        {
-            Destroy(bracket.gameObject);
-        }
-
-        brackets.Clear();
-    }
-
     void LateUpdate()
 	{
+        if (brackets == null)
+        {
+            brackets = new PooledList<Bracket, Targetable>(transform, bracket);
+        }
+
         if (!Camera.main)
         {
-            Clear();
+            brackets.Clear();
             return;
         }
 
         var allTargetables = FindObjectsOfType<Targetable>().ToList();
+        allTargetables.Sort(bracketOrder);
 
-        var updatedBrackets = new List<Bracket>(brackets.Count);
-        for (int b = 0; b < brackets.Count; ++b)
+        brackets.Refresh(allTargetables, (i, bracket, targetable) =>
         {
-            var bracket = brackets[b];
-            if (!bracket)
-            {
-                continue;
-            }
-
-            var existingBracketForTargetable = allTargetables.Remove(bracket.Target);
-            
-            if (existingBracketForTargetable)
-            {
-                updatedBrackets.Add(bracket);
-            }
-            else
-            {
-                Destroy(bracket);
-            }
-        }
-
-        for (int t = 0; t < allTargetables.Count; ++t)
-        {
-            var newBracket = Bracket.CreateFromPrefab(bracket, this, allTargetables[t]);
-            newBracket.transform.SetParent(transform, false);
-            updatedBrackets.Add(newBracket);
-        }
-
-        brackets = updatedBrackets;
+            bracket.Assign(this, targetable);
+        });
         
-        //z-sort (this is one frame behind but it shouldn't matter..?)
-        brackets.Sort(bracketOrder);
-        for (int b = 0; b < brackets.Count; ++b)
-        {
-            brackets[b].transform.SetSiblingIndex(b);
-        }
-
         if (!EventSystem.current.IsPointerOverGameObject())
         { 
             if (Input.GetButtonDown("turn"))
@@ -163,7 +138,10 @@ public class BracketManager : MonoBehaviour
 
     void OnLevelWasLoaded()
     {
-        Clear();
+        if (brackets != null)
+        {
+            brackets.Clear();
+        }
     }
 
     public Bracket FindBracket(GameObject obj)

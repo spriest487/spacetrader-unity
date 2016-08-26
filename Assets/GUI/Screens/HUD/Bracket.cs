@@ -40,20 +40,14 @@ public class Bracket : MonoBehaviour
     [HideInInspector]
     private Hitpoints targetHitpoints;
    
-    public static Bracket CreateFromPrefab(Bracket prefab,
-        BracketManager manager,
-        Targetable target)
+    public void Assign(BracketManager manager, Targetable target)
     {
-        var newBracket = Instantiate(prefab);
+        bracketManager = manager;
+        name = "Bracket for " + target.name;
+        this.target = target;
 
-        newBracket.bracketManager = manager;
-        newBracket.name = "Bracket for " + target.name;
-        newBracket.target = target;
-
-        newBracket.targetCollider = target.GetComponent<Collider>();
-        newBracket.targetHitpoints = target.GetComponent<Hitpoints>();
-
-        return newBracket;
+        targetCollider = target.GetComponent<Collider>();
+        targetHitpoints = target.GetComponent<Hitpoints>();
     }
 
     void Start()

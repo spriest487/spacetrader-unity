@@ -26,7 +26,9 @@ public class HudObjectivesList : MonoBehaviour
             objectivesItems = new PooledList<HudObjectivesItem, MissionObjective>(objectivesRoot, objectiveItemPrefab);
         }
 
-        var objectives = ActiveMission.FindObjectives(player.GetComponent<Targetable>().Faction);
+        var faction = player.Ship.Targetable.Faction;
+
+        var objectives = ActiveMission.FindObjectives(faction);
 
         objectivesItems.Refresh(objectives, (i, item, objective) =>
         {
