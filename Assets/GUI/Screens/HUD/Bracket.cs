@@ -234,8 +234,7 @@ public class Bracket : MonoBehaviour
 
             nameplate.text = target.name.ToUpper();
             nameplate.fontSize = isTarget ? 24 : 16;
-
-            healthbar.gameObject.SetActive(isTarget);
+            
             edgeMarker.gameObject.SetActive(false);
 
             var width = bracketManager.DefaultWidth;
@@ -254,7 +253,7 @@ public class Bracket : MonoBehaviour
 
             rectTransform.sizeDelta = new Vector2(width, height);
 
-            if (targetHitpoints)
+            if (targetHitpoints && isTarget)
             {
                 healthbar.gameObject.SetActive(true);
                 healthbar.ship = targetHitpoints;
