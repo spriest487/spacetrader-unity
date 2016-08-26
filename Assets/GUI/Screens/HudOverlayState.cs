@@ -1,9 +1,10 @@
-﻿public enum ScreenID
+public enum ScreenID
 {
     None,
     MainMenu,
     Equipment,
     MissionPrep,
     Recruitment,
-    Quests
+    Quests,
+    LoadMenu
 }
