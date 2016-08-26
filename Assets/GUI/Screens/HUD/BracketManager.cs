@@ -74,10 +74,10 @@ public class BracketManager : MonoBehaviour
             return;
         }
 
-        brackets.Refresh(FindObjectsOfType<Targetable>(), (i, bracket, targetable) =>
-        {
-            bracket.Assign(this, targetable);
-        });
+        var targetables = FindObjectsOfType<Targetable>()
+            .Where(t => t.BracketVisible);
+
+        brackets.Refresh(targetables, (i, bracket, targetable) => bracket.Assign(this, targetable));
         
         if (!EventSystem.current.IsPointerOverGameObject())
         { 

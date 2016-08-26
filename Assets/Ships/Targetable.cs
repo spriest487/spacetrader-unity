@@ -32,7 +32,7 @@ public class Targetable : MonoBehaviour
             else
             {
                 var isPlayer = PlayerShip.LocalPlayer
-                    && PlayerShip.LocalPlayer.gameObject == this.gameObject;
+                    && PlayerShip.LocalPlayer.Ship == ship;
 
                 return !isPlayer;
             }
