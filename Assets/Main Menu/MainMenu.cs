@@ -1,4 +1,4 @@
-﻿#pragma warning disable 0649
+#pragma warning disable 0649
 
 using System.Collections.Generic;
 using System.Collections;
@@ -14,6 +14,7 @@ public class MainMenu : MonoBehaviour
         public Transform newGameScreen;
         public Transform rootScreen;
         public Transform missionsScreen;
+        public Transform loadScreen;
     }
 
     [SerializeField]
@@ -43,7 +44,8 @@ public class MainMenu : MonoBehaviour
         var allScreens = new Transform[] {
             screens.newGameScreen,
             screens.rootScreen,
-            screens.missionsScreen
+            screens.missionsScreen,
+            screens.loadScreen
         };
         
         Transform showScreen;
@@ -58,6 +60,11 @@ public class MainMenu : MonoBehaviour
             case "missions":
                 {
                     showScreen = screens.missionsScreen;
+                    break;
+                }
+            case "load":
+                {
+                    showScreen = screens.loadScreen;
                     break;
                 }
             default:
