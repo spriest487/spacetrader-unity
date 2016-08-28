@@ -142,17 +142,18 @@ public class MainMenu : MonoBehaviour
 
     private IEnumerator LoadGameRoutine()
     {
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
-
-        var loadSave = SavedGames.SavesFolder.LoadGame();
-        yield return loadSave;
-        
-        loading.Dismiss();
-
-        if (loadSave.Error != null)
-        {
-            Debug.LogException(loadSave.Error);
-        }
+        yield return null;
+//        var loading = ScreenManager.Instance.CreateLoadingScreen();
+//
+//        var loadSave = SavedGames.SavesFolder.LoadGame();
+//        yield return loadSave;
+//        
+//        loading.Dismiss();
+//
+//        if (loadSave.Error != null)
+//        {
+//            Debug.LogException(loadSave.Error);
+//        }
     }
 
     public void BackToGame()

@@ -1,17 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Collections.Generic;
 using System.Collections;
 using System;
-using System.Runtime.Serialization;
 
 namespace SavedGames
 {
     public static class SavesFolder
     {
         private static readonly string Root = Path.Combine(Application.persistentDataPath, "Saves");
-        
+
         private class LoadSaveOperation : LoadValueOperation<bool>
         {
             private IEnumerator Load(string path)
@@ -65,11 +63,19 @@ namespace SavedGames
             }
         }
 
-        public static LoadValueOperation<bool> LoadGame()
+        public static LoadValueOperation<bool> LoadGame(string path)
         {
-            var path = Path.Combine(Root, "Save1.dat");
-
             return new LoadSaveOperation(path);
+        }
+
+        public static void DeleteGame(string path)
+        {
+            File.Delete(path);
+        }
+
+        public static string[] GetFilePaths()
+        {
+            return Directory.Exists(Root) ? Directory.GetFiles(Root) : new string[0];
         }
     }
 }
