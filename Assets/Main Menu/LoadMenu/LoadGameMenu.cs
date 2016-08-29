@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using SavedGames;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,9 +12,8 @@ public class LoadGameMenu : MonoBehaviour
     private SaveFileEntry entryPrefab;
 
     private PooledList<SaveFileEntry, string> entries;
-
-    private string[] filePaths;
-    private string selectedPath;
+    private int selectedIndex, fileCount;
+    private string selectedFilePath;
 
     private void OnEnable()
     {
@@ -25,76 +23,71 @@ public class LoadGameMenu : MonoBehaviour
             return;
         }
 
-        Refresh(true);
-    }
-
-    private void Refresh(bool first = false)
-    {
         if (entries == null)
             entries = new PooledList<SaveFileEntry, string>(fileList.transform, entryPrefab);
 
-        if (first)
-            selectedPath = "";
+        ClearSelection();
+        Select(-1, "");
+        Refresh();
+    }
 
+    private void Refresh()
+    {
         var paths = SavesFolder.GetFilePaths();
 
-        var anyOn = false;
+        fileCount = paths.Length;
 
         entries.Refresh(paths, (i, entry, path) =>
         {
-            if (entry.isOn)
-            {
-                anyOn |= entry.isOn;
-                Select(path);
-            }
-                
             entry.Init();
             entry.group = fileList;
             entry.SetText(Path.GetFileNameWithoutExtension(path));
-            entry.onValueChanged.AddListener(value =>
+            entry.onValueChanged.AddListener(isOn =>
             {
-                if (value)
-                    Select(path);
+                if (isOn)
+                    Select(i, path);
             });
 
-            if (!first && !anyOn && i == entries.Count - 1) //then the entry previously at this position was deleted
-            {
-                anyOn = true;
-                entry.isOn = true;
-            }
-                
         });
 
-        if (!first && !anyOn && paths.Length > 0) //then entry was deleted from the bottom select bottom
-        {
-            for (var i = 0; i < entries.Count; i++)
-            {
-                if (!entries[i].IsActive())
-                    entries[i - 1].isOn = true;
-            }
-        }         
+        if (fileCount == 0 || selectedIndex < 0)
+            return;
+
+        ClearSelection();
+
+        entries[Mathf.Clamp(selectedIndex, 0, fileCount - 1)].isOn = true;            
     }
 
-    public void Select(string path)
+    public void Select(int index, string path)
     {
-        selectedPath = path;
-        Debug.Log("Selected: " + path);
+        selectedIndex = index;
+        selectedFilePath = path;
+    }
+
+    public void ClearSelection()
+    {
+        if (selectedIndex < 0 || selectedIndex >= entries.Count)
+            return;
+
+        fileList.allowSwitchOff = true;
+        entries[selectedIndex].isOn = false;
+        fileList.allowSwitchOff = false;
     }
 
     public void Load()
     {
-        if (string.IsNullOrEmpty(selectedPath))
+        if (string.IsNullOrEmpty(selectedFilePath))
             return;
 
-        SavesFolder.LoadGame(selectedPath);
+        SavesFolder.LoadGame(selectedFilePath);
     }
 
     public void Delete()
     {
-        if (string.IsNullOrEmpty(selectedPath))
+        if (string.IsNullOrEmpty(selectedFilePath))
             return;
 
-        SavesFolder.DeleteGame(selectedPath);
+        SavesFolder.DeleteGame(selectedFilePath);
         Refresh();
     }
 

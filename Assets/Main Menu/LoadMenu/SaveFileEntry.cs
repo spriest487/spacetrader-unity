@@ -19,8 +19,12 @@ public class SaveFileEntry : Toggle {
 
     public void Init()
     {
-        SetText("INIT");
         onValueChanged.RemoveAllListeners();
+
+        image.color = colors.normalColor;
+        image.sprite = image.sprite = normalSprite;
+
+        isOn = false;
 
         normalSprite = ((Image)targetGraphic).sprite;
         onValueChanged.AddListener(value =>
@@ -38,5 +42,4 @@ public class SaveFileEntry : Toggle {
         if (entryText != null)
         entryText.text = text;
     }
-
 }
