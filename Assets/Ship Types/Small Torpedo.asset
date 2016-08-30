@@ -9,9 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90b9b35c56399ef4faa1890285f37814, type: 3}
-  m_Name: New ShipType
+  m_Name: Small Torpedo
   m_EditorClassIdentifier: 
   prefab: {fileID: 0}
+  cockpitPrefab: {fileID: 0}
   stats:
     agility: 0
     thrust: 0
@@ -21,7 +22,10 @@ MonoBehaviour:
     armor: 0
     shield: 0
     mass: 10
+    damageMultiplier: 0
   cargoSize: 0
+  moduleSlots: 0
   moorable: 0
   abilities: []
   explosionEffect: {fileID: 0}
+  xpReward: 0
