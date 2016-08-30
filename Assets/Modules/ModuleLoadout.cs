@@ -35,7 +35,7 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
             for (int i = 0; i < addedSlots; ++i)
             {
                 int addedSlot = (value - addedSlots) + i;
-                Equip(addedSlot, null);
+                hardpointModules[addedSlot] = new HardpointModule();
             }
         }
     }
@@ -97,7 +97,7 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
 
     public bool IsFreeSlot(int slot)
     {
-        return hardpointModules[slot] == null;
+        return !hardpointModules[slot].ModuleType;
     }
 
     public int FindFirstFreeSlot()

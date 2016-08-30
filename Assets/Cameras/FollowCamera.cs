@@ -377,7 +377,7 @@ public class FollowCamera : MonoBehaviour
         {
             var player = PlayerShip.LocalPlayer;
 
-            if (player)
+            if (player && player.Ship)
             {
                 var moorable = player.Moorable;
                 if (moorable && moorable.State != DockingState.InSpace)
