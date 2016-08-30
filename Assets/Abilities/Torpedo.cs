@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AICaptain))]
+[RequireComponent(typeof(Ship))]
 public class Torpedo : MonoBehaviour
 {
     [SerializeField]
@@ -15,17 +15,17 @@ public class Torpedo : MonoBehaviour
     [SerializeField]
     private float lifetime = 10;
 
-    private AICaptain captain;
-
     public Ship Owner
     {
         get { return owner; }
         set { owner = value; }
     }
+    
+    private Ship torpedoShip;
 
     void Start()
     {
-        captain = GetComponent<AICaptain>();
+        torpedoShip = GetComponent<Ship>();
     }
 
     public void UpdateCollisions()
@@ -46,7 +46,7 @@ public class Torpedo : MonoBehaviour
 
     void Explode()
     {
-        captain.Ship.Explode();
+        torpedoShip.Explode();
     }
 
     void Update()
@@ -57,35 +57,30 @@ public class Torpedo : MonoBehaviour
         {
             Explode();
         }
-        else
+        else if (torpedoShip.Target)
         {
-            /* if target dies, the ai will just keep moving towards its
-               last position*/
-            if (captain.Ship.Target)
-            {
-                captain.Destination = captain.Ship.Target.transform.position;
-            }
-            captain.Throttle = 1f;
-            captain.MinimumThrust = 1f;
-
-            Debug.Assert(captain.Destination.HasValue);
-
-            var dist2 = (transform.position - captain.Destination.Value).sqrMagnitude;
+            /* if target dies, the ship will just keep moving towards its
+            last position */
+            var toTarget = torpedoShip.Target.transform.position - transform.position;
+            
+            var dist2 = toTarget.sqrMagnitude;
             var proximity2 = explodeProximity * explodeProximity;
 
             if (dist2 < proximity2)
             {
                 //TODO: damage in a sphere instead
-                if (captain.Ship.Target)
-                {
-                    var damage = new HitDamage(transform.position, explodeDamage, owner);
+                var damage = new HitDamage(transform.position, explodeDamage, owner);
 
-                    captain.Ship.Target.gameObject.SendMessage("OnTakeDamage", damage, SendMessageOptions.DontRequireReceiver);
-                }
+                torpedoShip.Target.SendMessage("OnTakeDamage", damage, SendMessageOptions.DontRequireReceiver);
 
                 Explode();
             }
-        }        
+            else
+            {
+                torpedoShip.ResetControls(thrust: 1);
+                torpedoShip.RotateToDirection(toTarget.normalized);
+            }
+        }
     }
 
     void OnCollisionEnter(Collision collision)

@@ -165,6 +165,7 @@ public class Moorable : MonoBehaviour
         while ((ship.transform.position - dest).sqrMagnitude > proximity)
         {
             ship.ResetControls(thrust: 1);
+            ship.RotateToPoint(dest);
 
             yield return null;
         }

@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< 9c8ac147fca31971b3a7b517a860421f1eaa5c4f
 guid: 2b81de8673d1134449ce5ff740490226
 folderAsset: yes
 timeCreated: 1473082346
+=======
+guid: 8516b754bf0a2fe48aa05769ece3b398
+folderAsset: yes
+timeCreated: 1472479560
+>>>>>>> Removed AICaptain in favour of individual scripts assigning tasks
 licenseType: Free
 DefaultImporter:
   userData: 

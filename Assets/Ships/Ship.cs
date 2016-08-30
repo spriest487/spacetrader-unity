@@ -555,38 +555,7 @@ public partial class Ship : MonoBehaviour
         activeStatusEffects.RemoveAll(e => e == null);
 	}
     
-    private static Vector3 InputAmountsToRequired(Vector3 input,
-        Vector3 localCurrentValue,
-        float maxSpeed)
-    {
-        if (maxSpeed < float.Epsilon)
-        {
-            return Vector3.zero;
-        }
-
-        var inputAdjusted = input;
-        for (int i = 0; i < 3; ++i)
-        {
-            var localAmt = maxSpeed == 0f? 0f : localCurrentValue[i] / maxSpeed;
-            var inputAmt = input[i];
-            var sign = Mathf.Sign(inputAmt);
-
-            var localAmtAbs = Mathf.Abs(localAmt);
-            var inputAmtAbs = Mathf.Abs(inputAmt);
-
-            if (inputAmtAbs > Mathf.Epsilon)
-            {
-                inputAdjusted[i] = (inputAmtAbs - localAmtAbs) * sign;
-            }
-        }
-
-        if (inputAdjusted.sqrMagnitude > 1)
-        {
-            inputAdjusted.Normalize();
-        }
-
-        return inputAdjusted;
-    }
+    
     
 	void FixedUpdate()
 	{
@@ -610,12 +579,8 @@ public partial class Ship : MonoBehaviour
             var localRotation = transform.InverseTransformDirection(RigidBody.angularVelocity);
             var localVelocity = transform.InverseTransformDirection(RigidBody.velocity);
 
-            var torqueInput = InputAmountsToRequired(new Vector3(Pitch, Yaw, Roll),
-                localRotation,
-                torqueMax);
-            var forceInput = InputAmountsToRequired(new Vector3(Strafe, Lift, Thrust),
-                localVelocity,
-                CurrentStats.MaxSpeed);
+            var torqueInput = new Vector3(Pitch, Yaw, Roll);
+            var forceInput = new Vector3(Strafe, Lift, Thrust);
                                     
             var force = forceInput * CurrentStats.Thrust;
             var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.Agility;

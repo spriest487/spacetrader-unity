@@ -6,27 +6,20 @@ using System.Collections;
 
 public enum WingmanOrder
 {
-    Follow,
-    Wait,
-    Attack
+    FollowLeader = RadioMessageType.FollowMe,
+    Wait = RadioMessageType.Wait,
+    AttackLeaderTarget = RadioMessageType.Attack,
 }
 
 [RequireComponent(typeof(AITaskFollower))]
 public class WingmanCaptain : MonoBehaviour
-{
-    private const float FORMATION_MATCH_ANGLE = 15f;
-
-    private Ship ship;
-    private AICaptain captain;
-    private AITaskFollower taskFollower;
-
-    private Targetable targetable;
-
-    private Vector3? immediateManeuver;
-
+{ 
     [SerializeField]
     private WingmanOrder activeOrder;
 
+    private AITaskFollower taskFollower;
+    private AITask orderTask;
+    
     private float lastTargetCheck = 0;
     const float TARGET_CHECK_INTERVAL = 1;
 
@@ -36,6 +29,11 @@ public class WingmanCaptain : MonoBehaviour
         public Targetable Target;
     }
 
+    public Ship Ship
+    {
+        get { return taskFollower.Ship; }
+    }
+
     public WingmanOrder ActiveOrder
     {
         get { return activeOrder; }
@@ -43,8 +41,8 @@ public class WingmanCaptain : MonoBehaviour
 	
 	private Ship FindLeader()
 	{
-        var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(ship);
-        if (myFleet && myFleet.Leader != ship)
+        var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+        if (myFleet && myFleet.Leader != Ship)
         {
             return myFleet.Leader;
         }
@@ -54,111 +52,27 @@ public class WingmanCaptain : MonoBehaviour
         }
 	}
 
-	private void FlyInFormation(Ship leader)
-	{
-		//fly in same direction as leader
-		captain.Destination = transform.position + (leader.transform.forward * ship.CurrentStats.MaxSpeed);
-		
-		//keep adjusting to match our formation pos if possible
-		captain.AdjustTarget = leader.GetFormationPos(ship);
-		
-		float angleDiffBetweenHeadings;		
-		if (leader.GetComponent<Rigidbody>().velocity.sqrMagnitude > Vector3.kEpsilon)
-		{
-			angleDiffBetweenHeadings = Mathf.Acos(Vector3.Dot(leader.GetComponent<Rigidbody>().velocity.normalized, leader.GetComponent<Rigidbody>().transform.forward));
-		}
-		else
-		{
-			angleDiffBetweenHeadings = 0;
-		}
-		
-		angleDiffBetweenHeadings *= Mathf.Rad2Deg;
-
-		if (angleDiffBetweenHeadings < FORMATION_MATCH_ANGLE)
-		{
-			//max speed is leader's speed
-			captain.Throttle = Ship.EquivalentThrust(ship, leader);
-		}
-		else
-		{
-			//leader is going in a different direction to the one they are facing, wait and see what they do
-			captain.Throttle = 0;
-		}
-	}
-
-	private void CatchUpToLeader(Ship leader, float distance, float minFormationDistance)
-	{
-		var leaderPos = leader.transform.position;
-		
-		captain.Destination = leaderPos;
-
-		//throttle down as we approach the min formation distance
-		float throttleDownDist = ship.CurrentStats.MaxSpeed * Time.deltaTime;
-		float remainingDist = Mathf.Max(0, distance - minFormationDistance);
-
-		float catchupThrottle = Mathf.Min(1, remainingDist / throttleDownDist);
-
-		//minimum speed is the leader's current speed
-		//todo: take relative travel direction into account (facing away = full speed)		
-		captain.Throttle = Mathf.Max(catchupThrottle, Ship.EquivalentThrust(ship, leader));
-	}
-
-    private void FollowLeader()
+    private void SetOrder(WingmanOrder newOrder)
     {
-        var leader = FindLeader();
-
-        if (!leader)
+        if (activeOrder != newOrder)
         {
-            return;
-        }
+            taskFollower.CancelTask(orderTask);
 
-        var myPos = GetComponent<Rigidbody>().transform.position;
-        //var leaderBound = leader.rigidbody.ClosestPointOnBounds(transform.position);
-        var leaderPos = leader.GetFormationPos(ship);
-
-        //captain.adjustTarget = leaderPos;
-
-        var distance = (myPos - leaderPos).magnitude;
-        var minFormationDistance = GetComponent<Rigidbody>().GetComponent<Collider>().bounds.extents.magnitude * 1f;
-
-        captain.TargetUp = null;
-        captain.AdjustTarget = null;
-
-        if (distance < minFormationDistance)
-        {
-            FlyInFormation(leader);
-        }
-        else
-        {
-            captain.Destination = leaderPos;
-            captain.Throttle = 1;
+            activeOrder = newOrder;
         }
     }
-
+    
     private void OnRadioMessage(RadioMessage message)
     {
         if (message.SourceShip == FindLeader())
-        { 
-            switch (message.MessageType)
-            {
-                case RadioMessageType.FollowMe:
-                    activeOrder = WingmanOrder.Follow;
-                    break;
-                case RadioMessageType.Wait:
-                    activeOrder = WingmanOrder.Wait;
-                    captain.Destination = FindLeader().transform.position;
-                    captain.Throttle = 1;
-                    break;
-                case RadioMessageType.Attack:
-                    activeOrder = WingmanOrder.Attack;
-                    break;
-            }
+        {
+            SetOrder((WingmanOrder) message.MessageType);
 
             //if we're the player's number two, acknowledge the order
             if (PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship == message.SourceShip)
             {
-                var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(ship);
-                if (myFleet && myFleet.Followers.IndexOf(ship) == 0)
+                var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+                if (myFleet && myFleet.Followers.IndexOf(Ship) == 0)
                 {
                     StartCoroutine(AcknowledgeOrder(message));
                 }
@@ -169,36 +83,16 @@ public class WingmanCaptain : MonoBehaviour
     private IEnumerator AcknowledgeOrder(RadioMessage order)
     {
         yield return new WaitForSeconds(0.5f);
-        ship.SendRadioMessage(RadioMessageType.AcknowledgeOrder, order.SourceShip);
+        Ship.SendRadioMessage(RadioMessageType.AcknowledgeOrder, order.SourceShip);
     }
-
-    private void ChaseTarget()
-    {        
-        var PANIC_DIST_FACTOR = 10;
-
-        //if we get too close, panic for a little bit and fly away
-        var between = transform.position - ship.Target.transform.position;
-        if (between.sqrMagnitude < captain.Ship.CloseDistanceSqr * PANIC_DIST_FACTOR)
-        {
-            var panicVec = Random.onUnitSphere * captain.Ship.CloseDistance * PANIC_DIST_FACTOR;
-            immediateManeuver = ship.Target.transform.position + panicVec;
-        }
-
-        for (int module = 0; module < ship.ModuleLoadout.SlotCount; ++module)
-        {
-            ship.ModuleLoadout.GetSlot(module).Aim = ship.Target.transform.position;
-            ship.ModuleLoadout.Activate(ship, module);
-        }
-
-        taskFollower.AssignTask(AttackTask.Create(ship.Target));
-    }
-
+    
     private int CalculateThreat(Targetable target)
     {
         int threat = 1;
 
         //invert threat for friendlies
-        if (targetable && targetable.RelationshipTo(target) != TargetRelationship.Hostile)
+        if (Ship.Targetable 
+            && Ship.Targetable.RelationshipTo(target) != TargetRelationship.Hostile)
         {
             threat = -threat;
         }
@@ -216,7 +110,7 @@ public class WingmanCaptain : MonoBehaviour
 
     private void AcquireTarget()
     {
-        var needsTarget = !ship.Target
+        var needsTarget = !Ship.Target
                 || Time.time > (lastTargetCheck + TARGET_CHECK_INTERVAL);
         lastTargetCheck = Time.time;
 
@@ -251,69 +145,56 @@ public class WingmanCaptain : MonoBehaviour
 
             if (potentialTargets.Count == 0)
             {
-                ship.Target = null;
+                Ship.Target = null;
             }
             else
             {
                 //highest threat comes first
                 potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
 
-                ship.Target = potentialTargets[0].Target;
+                Ship.Target = potentialTargets[0].Target;
             }
         }
         else
         {
-            ship.Target = null;
-        }
-    }
-
-    void FollowImmediateManeuver()
-    {
-        captain.Destination = immediateManeuver.Value;
-        captain.Throttle = 1;
-
-        if (captain.Ship.IsCloseTo(immediateManeuver.Value))
-        {
-            immediateManeuver = null;
+            Ship.Target = null;
         }
     }
 
 	void Start()
 	{
         taskFollower = GetComponent<AITaskFollower>();
-        captain = GetComponent<AICaptain>();
-        ship = GetComponent<Ship>();
-        targetable = GetComponent<Targetable>();
+
+        activeOrder = WingmanOrder.FollowLeader;
     }
 
 	void Update()
     {
-        if (immediateManeuver.HasValue)
+        var leader = FindLeader();
+
+        if (!leader)
         {
-            FollowImmediateManeuver();
+            SetOrder(WingmanOrder.Wait);
         }
-        else
+
+        if (!orderTask && leader)
         {
             switch (activeOrder)
             {
-                case WingmanOrder.Attack:
-                    AcquireTarget();
-                    if (ship.Target)
+                case WingmanOrder.FollowLeader:
+                    orderTask = FlyInFormationTask.Create(leader);
+                    break;
+                case WingmanOrder.AttackLeaderTarget:
+                    if (leader.Target)
                     {
-                        ChaseTarget();
-                    }
-                    else
-                    {
-                        FollowLeader();
+                        orderTask = AttackTask.Create(leader.Target);
                     }
                     break;
-                case WingmanOrder.Follow:
-                    ship.Target = null;
-                    FollowLeader();
-                    break;
-                default:
-                    ship.Target = null;
-                    break;
+            }
+
+            if (orderTask)
+            {
+                taskFollower.AssignTask(orderTask);
             }
         }
 	}

@@ -74,8 +74,29 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
         {
             last.Value.Status = AITask.TaskStatus.FINISHED;
             last.Value.End();
+            Destroy(last.Value);
             tasks.RemoveLast();
         }
+    }
+
+    /// <summary>
+    /// cancel a task and every task above it in the stack
+    /// </summary>
+    public void CancelTask(AITask cancelled)
+    {
+        Debug.Assert(!!cancelled, "cancelled task must exist");
+        Debug.Assert(tasks.Contains(cancelled), "can't cancel a task we don't have");
+
+        var last = tasks.Last;
+
+        do
+        {
+            last.Value.Status = AITask.TaskStatus.FINISHED;
+            last.Value.End();
+            Destroy(last.Value);
+            tasks.RemoveLast();
+        }
+        while ((last = tasks.Last) != null);
     }
 
     void Awake()
@@ -120,6 +141,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
             {
                 nextTask.Status = AITask.TaskStatus.FINISHED;
                 nextTask.End();
+                Destroy(nextTask);
                 tasks.Remove(nextTaskNode);
 
                 lastTask = nextTask;

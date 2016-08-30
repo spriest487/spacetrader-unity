@@ -60,7 +60,7 @@ public class TeamSpawner : MonoBehaviour
                         SpaceTraderConfig.FleetManager.AddToFleet(firstSpawned, ship);
                     }
 
-                    switch(activeSlot.Status)
+                    switch (activeSlot.Status)
                     {
                         case SlotStatus.AI:
                             SetupAIPlayer(ship);
@@ -83,7 +83,6 @@ public class TeamSpawner : MonoBehaviour
 
         private void SetupAIPlayer(Ship ship)
         {
-            ship.gameObject.AddComponent<AICaptain>();
             ship.gameObject.AddComponent<WingmanCaptain>();
         }
     }
