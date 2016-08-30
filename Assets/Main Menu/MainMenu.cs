@@ -1,9 +1,7 @@
-﻿#pragma warning disable 0649
+#pragma warning disable 0649
 
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
@@ -14,6 +12,7 @@ public class MainMenu : MonoBehaviour
         public Transform newGameScreen;
         public Transform rootScreen;
         public Transform missionsScreen;
+        public Transform loadScreen;
     }
 
     [SerializeField]
@@ -43,7 +42,8 @@ public class MainMenu : MonoBehaviour
         var allScreens = new Transform[] {
             screens.newGameScreen,
             screens.rootScreen,
-            screens.missionsScreen
+            screens.missionsScreen,
+            screens.loadScreen
         };
         
         Transform showScreen;
@@ -58,6 +58,11 @@ public class MainMenu : MonoBehaviour
             case "missions":
                 {
                     showScreen = screens.missionsScreen;
+                    break;
+                }
+            case "load":
+                {
+                    showScreen = screens.loadScreen;
                     break;
                 }
             default:
@@ -125,26 +130,6 @@ public class MainMenu : MonoBehaviour
         {
             ScreenManager.Instance.ScreenID = ScreenID.None;
             ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", "Game saved");
-        }
-    }
-
-    public void LoadGame()
-    {
-        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine());
-    }
-
-    private IEnumerator LoadGameRoutine()
-    {
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
-
-        var loadSave = SavedGames.SavesFolder.LoadGame();
-        yield return loadSave;
-        
-        loading.Dismiss();
-
-        if (loadSave.Error != null)
-        {
-            Debug.LogException(loadSave.Error);
         }
     }
 
