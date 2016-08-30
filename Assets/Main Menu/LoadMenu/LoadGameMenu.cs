@@ -1,3 +1,4 @@
+using System.Collections;
 using System.IO;
 using SavedGames;
 using UnityEngine;
@@ -79,7 +80,23 @@ public class LoadGameMenu : MonoBehaviour
         if (string.IsNullOrEmpty(selectedFilePath))
             return;
 
-        SavesFolder.LoadGame(selectedFilePath);
+        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(selectedFilePath));
+    }
+
+    private IEnumerator LoadGameRoutine(string path)
+    {
+        yield return null;
+        var loading = ScreenManager.Instance.CreateLoadingScreen();
+
+        var loadSave = SavesFolder.LoadGame(path);
+        yield return loadSave;
+
+        loading.Dismiss();
+
+        if (loadSave.Error != null)
+        {
+            Debug.LogException(loadSave.Error);
+        }
     }
 
     public void Delete()
@@ -90,5 +107,4 @@ public class LoadGameMenu : MonoBehaviour
         SavesFolder.DeleteGame(selectedFilePath);
         Refresh();
     }
-
 }
