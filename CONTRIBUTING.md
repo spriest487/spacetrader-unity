@@ -1,0 +1,1 @@
+To get started, <a href="https://www.clahub.com/agreements/spriest487/spacetrader-unity">sign the Contributor License Agreement</a>.
