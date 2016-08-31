@@ -8,9 +8,6 @@ namespace SavedGames
     [Serializable]
     class ShipInfo
     {
-        private int transientId;
-        public int TransientID { get { return transientId; } }
-
         private string name;
 
         private string shipType;
@@ -28,7 +25,9 @@ namespace SavedGames
         private int shield;
         private int armor;
 
-        private CharacterInfo captain;
+        public int TransientID { get; private set; }
+
+        public CharacterInfo Captain { get; private set; }
         
         public ShipInfo()
         {
@@ -36,7 +35,7 @@ namespace SavedGames
 
         public ShipInfo(Ship fromShip, CharacterInfo captain, int transientId) : this()
         {
-            this.transientId = transientId;
+            TransientID = transientId;
 
             var rb = fromShip.GetComponent<Rigidbody>();
 
@@ -69,7 +68,7 @@ namespace SavedGames
                 shield = -1;
             }
 
-            this.captain = captain;
+            Captain = captain;
         }
 
         public Ship RestoreShip(IDictionary<int, CrewMember> charactersByTransientId)
@@ -95,10 +94,10 @@ namespace SavedGames
 
             ship.name = name;
 
-            if (captain != null)
+            if (Captain != null)
             {
                 CrewMember captainCharacter;
-                if (charactersByTransientId.TryGetValue(captain.TransientID, out captainCharacter))
+                if (charactersByTransientId.TryGetValue(Captain.TransientID, out captainCharacter))
                 {
                     captainCharacter.Assign(ship, CrewAssignment.Captain);
                 }

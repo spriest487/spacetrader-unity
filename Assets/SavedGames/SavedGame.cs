@@ -25,7 +25,7 @@ namespace SavedGames
         public static SavedGame CaptureFromCurrentState()
         {
             var result = new SavedGame();
-
+            
             result.level = SceneManager.GetActiveScene().buildIndex;
 
             var charactersByInstanceId = new Dictionary<int, CharacterInfo>();
@@ -68,8 +68,14 @@ namespace SavedGames
                 result.playerMoney = player.Money;
                 result.playerShip = shipsByInstanceId[player.Ship.GetInstanceID()];
             }
-
+            
             return result;
+        }
+
+        public SaveHeader CreateHeader()
+        {
+            var pc = playerShip.Captain;
+            return new SaveHeader(pc);
         }
 
         private class RestoreOperation : LoadValueOperation<bool>

@@ -26,6 +26,11 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         get { return currentItems == null ? null : currentItems[index]; }
     }
 
+    public IEnumerable<TData> Data
+    {
+        get { return currentData != null ? currentData : Enumerable.Empty<TData>(); }
+    }
+
     public PooledList(Transform root, TItem itemPrefab)
     {
         currentItems = new List<TItem>(root.GetComponentsInChildren<TItem>());

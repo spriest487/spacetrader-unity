@@ -1,70 +1,100 @@
+#pragma warning disable 0649
+
 using System.Collections;
-using System.IO;
 using SavedGames;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections.Generic;
 
 public class LoadGameMenu : MonoBehaviour
 {
+    public class SaveDateOrder : IComparer<SavesFolder.Entry>
+    {
+        public int Compare(SavesFolder.Entry x, SavesFolder.Entry y)
+        {
+            return x.Header.TimeStamp.CompareTo(y.Header.TimeStamp);
+        }
+    }
+
     [SerializeField]
     private ToggleGroup fileList;
+
+    [SerializeField]
+    private Image selectedPortrait;
 
     [SerializeField]
     private SaveFileEntry entryPrefab;
 
     private PooledList<SaveFileEntry, string> entries;
-    private int selectedIndex, fileCount;
-    private string selectedFilePath;
-
-    private void OnEnable()
+    private int selectedIndex;
+    
+    private string GetSelectedFilePath()
     {
-        if (fileList == null || entryPrefab == null)
-        {
-            Debug.LogWarning("LoadGameMenu: missing reference", this);
-            return;
-        }
+        return entries.Data.Skip(selectedIndex).FirstOrDefault();
+    }
 
-        if (entries == null)
-            entries = new PooledList<SaveFileEntry, string>(fileList.transform, entryPrefab);
-
-        ClearSelection();
-        Select(-1, "");
+    private void OnMenuScreenActivate()
+    {
+        Debug.Assert(fileList);
+        Debug.Assert(entryPrefab);
+                
         Refresh();
     }
 
     private void Refresh()
     {
-        var paths = SavesFolder.GetFilePaths();
+        if (entries == null)
+        {
+            entries = new PooledList<SaveFileEntry, string>(fileList.transform, entryPrefab);
+        }
 
-        fileCount = paths.Length;
+        var saves = SavesFolder.GetSaves().ToList();
+        saves.Sort(new SaveDateOrder());
+
+        var paths = saves.Select(s => s.Path);
+
+        var fileCount = saves.Count;
 
         entries.Refresh(paths, (i, entry, path) =>
         {
+            var header = saves[i].Header;
+
+            string caption;
+
+            var incompatible = header.Version != SaveHeader.CURRENT_VERSION;
+            if (incompatible)
+            {
+                caption = "Incompatible save";
+            }
+            else
+            {
+                caption = string.Format("{0} ({1})", header.CharacterName, header.TimeStamp);
+            }
+
             entry.Init();
             entry.group = fileList;
-            entry.SetText(Path.GetFileNameWithoutExtension(path));
+            entry.SetText(caption);
+            entry.interactable = !incompatible;
             entry.onValueChanged.AddListener(isOn =>
             {
                 if (isOn)
-                    Select(i, path);
+                {
+                    selectedIndex = i;
+                    selectedPortrait.sprite = header.GetPortraitSprite();
+                }
             });
 
         });
 
-        if (fileCount == 0 || selectedIndex < 0)
-            return;
+        selectedIndex = Mathf.Clamp(selectedIndex, 0, fileCount - 1);
 
-        ClearSelection();
-
-        entries[Mathf.Clamp(selectedIndex, 0, fileCount - 1)].isOn = true;            
+        if (selectedIndex >= 0 && selectedIndex < entries.Count)
+        {
+            entries[selectedIndex].isOn = true;
+        }
     }
-
-    public void Select(int index, string path)
-    {
-        selectedIndex = index;
-        selectedFilePath = path;
-    }
-
+    
     public void ClearSelection()
     {
         if (selectedIndex < 0 || selectedIndex >= entries.Count)
@@ -77,10 +107,12 @@ public class LoadGameMenu : MonoBehaviour
 
     public void Load()
     {
-        if (string.IsNullOrEmpty(selectedFilePath))
+        var path = GetSelectedFilePath();
+
+        if (string.IsNullOrEmpty(path))
             return;
 
-        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(selectedFilePath));
+        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(path));
     }
 
     private IEnumerator LoadGameRoutine(string path)
@@ -101,10 +133,12 @@ public class LoadGameMenu : MonoBehaviour
 
     public void Delete()
     {
-        if (string.IsNullOrEmpty(selectedFilePath))
+        var path = GetSelectedFilePath();
+
+        if (string.IsNullOrEmpty(path))
             return;
 
-        SavesFolder.DeleteGame(selectedFilePath);
+        SavesFolder.DeleteGame(path);
         Refresh();
     }
 }
