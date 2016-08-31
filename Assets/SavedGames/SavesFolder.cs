@@ -10,7 +10,7 @@ namespace SavedGames
     public static class SavesFolder
     {
         public const int CURRENT_VERSION = 1;
-
+        
         public class Entry
         {
             public string Path { get; private set; }

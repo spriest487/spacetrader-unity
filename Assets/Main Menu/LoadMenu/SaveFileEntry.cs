@@ -1,56 +1,46 @@
+#pragma warning disable 0649
+
 using UnityEngine;
 using UnityEngine.UI;
+using SavedGames;
 
 public class SaveFileEntry : Toggle {
 
     [SerializeField]
     private Text entryText;
+    
+    private LoadGameMenu loadGameMenu;
+        
+    public SavesFolder.Entry SaveEntry { get; private set; }
 
-    private ColorBlock startColors;
-    private Sprite startSprite;
-
-    protected override void Awake()
+    protected override void Start()
     {
-        entryText = GetComponentInChildren<Text>();
-
-        if (entryText == null)
-            Debug.LogWarning("SaveFileEntry: missing text reference");
-
-        startColors = colors;
-        startSprite = image.sprite;
-
-        base.Awake();
+        Debug.Assert(entryText);        
+        
+        base.Start();
     }
 
-    public void Init()
+    public void Assign(LoadGameMenu menu, SavesFolder.Entry save)
     {
-        onValueChanged.RemoveAllListeners();
+        Debug.Assert(menu);
+        Debug.Assert(save != null);
 
-        isOn = false;
+        loadGameMenu = menu;
+        SaveEntry = save;
 
-        startSprite = ((Image)targetGraphic).sprite;
-        onValueChanged.AddListener(value =>
+        var incompatible = save.Header.Version != SaveHeader.CURRENT_VERSION;
+        if (incompatible)
         {
-            var newColors = colors;
-
-            switch (transition)
-            {
-                case Transition.ColorTint:
-                    newColors.normalColor = isOn ? colors.pressedColor : startColors.normalColor;
-                    newColors.highlightedColor = isOn ? colors.pressedColor : startColors.highlightedColor;
-                    break;
-                case Transition.SpriteSwap:
-                    image.sprite = isOn ? spriteState.pressedSprite : startSprite; // untested
-                    break;
-            }
-
-            colors = newColors;
-        });
+            entryText.text = "Incompatible save";
+        }
+        else
+        {
+            entryText.text = string.Format("{0} - {1}", save.Header.CharacterName, save.Header.TimeStamp);
+        }
     }
 
-    public void SetText(string text)
+    public void SelectInMenu()
     {
-        if (entryText != null)
-        entryText.text = text;
-    }
+        loadGameMenu.SelectEntry(this);
+    }    
 }

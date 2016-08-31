@@ -27,13 +27,9 @@ public class LoadGameMenu : MonoBehaviour
     private SaveFileEntry entryPrefab;
 
     private PooledList<SaveFileEntry, string> entries;
-    private int selectedIndex;
-    
-    private string GetSelectedFilePath()
-    {
-        return entries.Data.Skip(selectedIndex).FirstOrDefault();
-    }
 
+    private SaveFileEntry selectedEntry;
+    
     private void OnMenuScreenActivate()
     {
         Debug.Assert(fileList);
@@ -58,61 +54,26 @@ public class LoadGameMenu : MonoBehaviour
 
         entries.Refresh(paths, (i, entry, path) =>
         {
-            var header = saves[i].Header;
-
-            string caption;
-
-            var incompatible = header.Version != SaveHeader.CURRENT_VERSION;
-            if (incompatible)
-            {
-                caption = "Incompatible save";
-            }
-            else
-            {
-                caption = string.Format("{0} ({1})", header.CharacterName, header.TimeStamp);
-            }
-
-            entry.Init();
             entry.group = fileList;
-            entry.SetText(caption);
-            entry.interactable = !incompatible;
-            entry.onValueChanged.AddListener(isOn =>
-            {
-                if (isOn)
-                {
-                    selectedIndex = i;
-                    selectedPortrait.sprite = header.GetPortraitSprite();
-                }
-            });
-
+            entry.Assign(this, saves[i]);
         });
 
-        selectedIndex = Mathf.Clamp(selectedIndex, 0, fileCount - 1);
+        selectedEntry = entries.FirstOrDefault();
 
-        if (selectedIndex >= 0 && selectedIndex < entries.Count)
+        if (selectedEntry)
         {
-            entries[selectedIndex].isOn = true;
+            selectedEntry.isOn = true;
         }
     }
     
-    public void ClearSelection()
-    {
-        if (selectedIndex < 0 || selectedIndex >= entries.Count)
-            return;
-
-        fileList.allowSwitchOff = true;
-        entries[selectedIndex].isOn = false;
-        fileList.allowSwitchOff = false;
-    }
-
     public void Load()
     {
-        var path = GetSelectedFilePath();
-
-        if (string.IsNullOrEmpty(path))
+        if (selectedEntry == null)
+        {
             return;
+        }
 
-        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(path));
+        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(selectedEntry.SaveEntry.Path));
     }
 
     private IEnumerator LoadGameRoutine(string path)
@@ -133,12 +94,27 @@ public class LoadGameMenu : MonoBehaviour
 
     public void Delete()
     {
-        var path = GetSelectedFilePath();
-
-        if (string.IsNullOrEmpty(path))
+        if (selectedEntry == null)
+        {
             return;
+        }
 
-        SavesFolder.DeleteGame(path);
+        SavesFolder.DeleteGame(selectedEntry.SaveEntry.Path);
         Refresh();
+    }
+
+    public void SelectEntry(SaveFileEntry entry)
+    {
+        if (entry != null)
+        {
+            selectedEntry = entry;
+            selectedPortrait.gameObject.SetActive(true);
+            selectedPortrait.sprite = entry.SaveEntry.Header.GetPortraitSprite();
+        }
+        else
+        {
+            selectedEntry = null;
+            selectedPortrait.gameObject.SetActive(false);
+        }
     }
 }
