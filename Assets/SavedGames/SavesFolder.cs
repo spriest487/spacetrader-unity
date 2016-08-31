@@ -78,7 +78,7 @@ namespace SavedGames
                 }
                 else
                 {
-                    Error = new InvalidOperationException("invalid or corrupt save file");
+                    Error = new IOException("invalid or corrupt save file");
                 }
             }
 
@@ -150,7 +150,7 @@ namespace SavedGames
                         headers.Add(new Entry(fileName, header));
                     }
                 }
-                catch (IOException e)
+                catch (Exception e)
                 {
                     Debug.LogWarningFormat("error reading header for file in save folder: {0} ({1})", fileName, e.Message);
                 }
