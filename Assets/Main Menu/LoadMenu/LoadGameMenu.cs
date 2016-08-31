@@ -26,6 +26,12 @@ public class LoadGameMenu : MonoBehaviour
     [SerializeField]
     private SaveFileEntry entryPrefab;
 
+    [SerializeField]
+    private Button loadButton;
+
+    [SerializeField]
+    private Button deleteButton;
+
     private PooledList<SaveFileEntry, string> entries;
 
     private SaveFileEntry selectedEntry;
@@ -34,7 +40,7 @@ public class LoadGameMenu : MonoBehaviour
     {
         Debug.Assert(fileList);
         Debug.Assert(entryPrefab);
-                
+        
         Refresh();
     }
 
@@ -58,11 +64,11 @@ public class LoadGameMenu : MonoBehaviour
             entry.Assign(this, saves[i]);
         });
 
-        selectedEntry = entries.FirstOrDefault();
+        SelectEntry(entries.FirstOrDefault());
 
-        if (selectedEntry)
+        foreach (var entry in entries)
         {
-            selectedEntry.isOn = true;
+            entry.isOn = entry == selectedEntry;
         }
     }
     
@@ -105,16 +111,17 @@ public class LoadGameMenu : MonoBehaviour
 
     public void SelectEntry(SaveFileEntry entry)
     {
+        selectedEntry = entry;
+
         if (entry != null)
         {
-            selectedEntry = entry;
-            selectedPortrait.gameObject.SetActive(true);
             selectedPortrait.sprite = entry.SaveEntry.Header.GetPortraitSprite();
         }
-        else
-        {
-            selectedEntry = null;
-            selectedPortrait.gameObject.SetActive(false);
-        }
+
+        bool hasEntry = entry;
+
+        loadButton.interactable = hasEntry;
+        deleteButton.interactable = hasEntry;
+        selectedPortrait.gameObject.SetActive(hasEntry);
     }
 }
