@@ -39,6 +39,8 @@ public class CrewConfiguration : ScriptableObject
     {
         var result = Instantiate(prefab);
 
+        Debug.Assert(result.Portraits.Contains(result.DefaultPortrait), "crew config portrait list must contain the default portrait");
+
         result.forenames = LoadNamesFromTextAsset(result.forenameList);
         result.surnames = LoadNamesFromTextAsset(result.surnameList);
         

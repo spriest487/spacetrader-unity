@@ -116,6 +116,10 @@ public class LoadGameMenu : MonoBehaviour
         if (entry != null)
         {
             selectedPortrait.sprite = entry.SaveEntry.Header.GetPortraitSprite();
+            if (!selectedPortrait.sprite)
+            {
+                selectedPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+            }
         }
 
         bool hasEntry = entry;
