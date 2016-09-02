@@ -6,7 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Ship : MonoBehaviour
+public partial class Ship : MonoBehaviour
 {
     [SerializeField]
 	private FormationManager formationManager = new FormationManager();
@@ -49,8 +49,6 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private float roll;
     
-    private new Collider collider;
-
     private Hitpoints hitPoints;
 
     private List<WeaponHardpoint> hardpoints;
@@ -91,7 +89,7 @@ public class Ship : MonoBehaviour
         set { roll = value; }
     }
 
-private ShipStats currentStats;
+    private ShipStats currentStats;
 
     [SerializeField]
     private ShipType shipType;
@@ -161,6 +159,7 @@ private ShipStats currentStats;
     }
 
     public Rigidbody RigidBody { get; private set; }
+    public Collider Collider { get; private set; }
     public Targetable Targetable { get; private set; }
     public Moorable Moorable { get; private set; }
 
@@ -185,7 +184,7 @@ private ShipStats currentStats;
     {
         get
         {
-            var extents = collider.bounds.extents;
+            var extents = Collider.bounds.extents;
             return Mathf.Max(extents.x, extents.y, extents.z) * 4;
         }
     }
@@ -304,7 +303,8 @@ private ShipStats currentStats;
             Targetable = gameObject.AddComponent<Targetable>();
         }
 
-        collider = GetComponent<Collider>();
+        hitPoints = GetComponent<Hitpoints>();
+        Collider = GetComponent<Collider>();
         Moorable = GetComponent<Moorable>();
     }
 
@@ -359,7 +359,7 @@ private ShipStats currentStats;
 
         foreach (var hit in Physics.RaycastAll(ray, between.magnitude))
         {
-            if (hit.collider != collider)
+            if (hit.collider != Collider)
             {
                 return false;
             }
@@ -458,36 +458,6 @@ private ShipStats currentStats;
             Yaw = counterThrust.y;
             Roll = counterThrust.z;
         }
-
-        //if (!facingTowards)
-        //{
-        //    //if not in danger, only thrust slowly when not facing target
-        //    Thrust = 0.0f;
-        //}
-        //else
-        //{
-        //    if (closeEnough)
-        //    {
-        //        if (facingDirectlyTowards)
-        //        {
-        //            //if we know we're not rotating, and we're close to the target, use strafe and lift to adjust our pos towards the target
-        //            Thrust = 0;
-        //        }
-        //        else
-        //        {
-        //            var distance = between.magnitude;
-
-        //            var desiredSpeed = Mathf.Clamp01(distance / CloseDistance);
-        //            var currentThrust = rigidbody.velocity.magnitude / CurrentStats.MaxSpeed;
-
-        //            Thrust = currentThrust > desiredSpeed ? -1 : desiredSpeed;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Thrust = 1;
-        //    }
-        //}
     }
 
     private void OnDestroy()
@@ -714,7 +684,7 @@ private ShipStats currentStats;
 		var posIndex = formationManager.IncludeFollower(followerId);
 		if (posIndex != 0)
 		{
-			var spacing = collider.bounds.extents.magnitude * 4;
+			var spacing = Collider.bounds.extents.magnitude * 4;
 			var offset = RigidBody.transform.right * posIndex * spacing;
 
 			return shipPos + offset;
@@ -737,7 +707,7 @@ private ShipStats currentStats;
 		{
 			var pos = GetFormationPos(follower);
 
-			var debugOff = (RigidBody.transform.forward * collider.bounds.extents.magnitude * 0.5f);
+			var debugOff = (RigidBody.transform.forward * Collider.bounds.extents.magnitude * 0.5f);
 
 			Debug.DrawLine(pos - debugOff, pos + debugOff, Color.green, Time.deltaTime);
 			//Debug.Log("pos: " +pos);

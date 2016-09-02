@@ -1,6 +1,8 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 struct PlayerRadioMessage
 {
@@ -64,7 +66,8 @@ public class PlayerShip : MonoBehaviour
     bool LocalPlayerHasControl()
     {
         return LocalPlayer == this
-            && moorable.State == DockingState.InSpace;
+            && moorable.State == DockingState.InSpace
+            && !Ship.JumpTarget;
     }
 
     private Vector3 AutoaimSnapToPredictor(Vector3 mousePos, int slot)
@@ -297,6 +300,25 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
+    private IEnumerator LevelTransitionRoutine(WorldMapArea area)
+    {
+        var loading = ScreenManager.Instance.CreateLoadingScreen();
+
+        yield return SceneManager.LoadSceneAsync(area.name);
+
+        loading.Dismiss();
+    }
+
+    private void OnCompletedJump()
+    {
+        //jumping disables the collider
+        Ship.Collider.enabled = true;
+        Ship.RigidBody.isKinematic = false;
+
+        StopAllCoroutines();
+        StartCoroutine(LevelTransitionRoutine(Ship.JumpTarget));
+    }
+
     private void OnCrewMemberGainedXP(XPGain xpGain)
     {
         var msg = string.Format("{0} gained {1} XP", xpGain.CrewMember.name, xpGain.Amount);
@@ -308,6 +330,8 @@ public class PlayerShip : MonoBehaviour
 	{
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
+
+        DontDestroyOnLoad(gameObject);
 	}
 
     void OnDestroy()

@@ -178,6 +178,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 617281092}
+  - 114: {fileID: 617281093}
   m_Layer: 0
   m_Name: Empty Test Area
   m_TagString: Untagged
@@ -198,6 +199,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &617281093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 617281091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c76ce265f3a6634f902483b0d9a337c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1219830790
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +218,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1219830791}
+  - 114: {fileID: 1219830792}
   m_Layer: 0
   m_Name: Station Test Area
   m_TagString: Untagged
@@ -226,6 +239,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &1219830792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1219830790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c76ce265f3a6634f902483b0d9a337c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2077207619
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,6 +258,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 2077207620}
+  - 114: {fileID: 2077207621}
   m_Layer: 0
   m_Name: Asteroids Test Area
   m_TagString: Untagged
@@ -254,3 +279,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &2077207621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2077207619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c76ce265f3a6634f902483b0d9a337c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

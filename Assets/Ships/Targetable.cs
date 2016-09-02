@@ -11,6 +11,19 @@ public enum TargetRelationship
     Resource
 }
 
+public enum TargetSpace
+{
+    /// <summary>
+    /// stuff in real space, projected to brackets using main camera
+    /// </summary>
+    Local,
+
+    /// <summary>
+    /// stuff in distant space, projected to brackets using skybox camera
+    /// </summary>
+    Distant
+}
+
 public class Targetable : MonoBehaviour
 {
     [SerializeField]
@@ -18,9 +31,17 @@ public class Targetable : MonoBehaviour
 
     [SerializeField]
     private bool hideBracket;
-    
+
+    [SerializeField]
+    private TargetSpace space;
+
     private Ship ship;
     private ActionOnActivate actionOnActivate;
+
+    public TargetSpace TargetSpace
+    {
+        get { return space; }
+    }
 
     public bool BracketVisible
     {

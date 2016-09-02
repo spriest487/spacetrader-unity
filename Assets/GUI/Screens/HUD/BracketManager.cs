@@ -62,12 +62,19 @@ public class BracketManager : MonoBehaviour
     public float SelectedExpand { get { return selectedExpand; } }
 
     void LateUpdate()
-	{
+    {
         if (brackets == null)
         {
             brackets = new PooledList<Bracket, Targetable>(transform, bracket);
         }
 
+        UpdateShipBrackets();
+
+        CheckSpaceClicks();
+    }
+
+    private void UpdateShipBrackets()
+    {
         if (!Camera.main)
         {
             brackets.Clear();
@@ -77,46 +84,63 @@ public class BracketManager : MonoBehaviour
         var targetables = FindObjectsOfType<Targetable>()
             .Where(t => t.BracketVisible);
 
-        brackets.Refresh(targetables, (i, bracket, targetable) => bracket.Assign(this, targetable));
-        
-        if (!EventSystem.current.IsPointerOverGameObject())
-        { 
-            if (Input.GetButtonDown("turn"))
-            {
-                clickOffTargetTime = Time.time;
-            }
-            else if (Input.GetButtonUp("turn"))
-            {
-                var player = PlayerShip.LocalPlayer;
+        brackets.Refresh(targetables, (i, bracket, targetable) => 
+            bracket.Assign(this, targetable));
+    }
+    
 
-                if (player && Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+    private void CheckSpaceClicks()
+    {
+        /* GUI blocks clicking on empty space - including brackets, which are
+         * buttons */
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        if (Input.GetButtonDown("turn"))
+        {
+            clickOffTargetTime = Time.time;
+        }
+        else if (Input.GetButtonUp("turn"))
+        {
+            var player = PlayerShip.LocalPlayer;
+
+            if (player && Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
+            {
+                /* the select button was un-pressed, but no bracket was under the cursor
+                    (they block raycasts). do a world raycast to see if we hit any 3d objects*/
+                var mousePos = Input.mousePosition;
+                var mouseRay = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
+                RaycastHit mouseHit;
+                if (Physics.Raycast(mouseRay, out mouseHit))
                 {
-                    /* the select button was un-pressed, but no bracket was under the cursor
-                     (they block raycasts). do a world raycast to see if we hit any 3d objects*/
-                    var mousePos = Input.mousePosition;
-                    var mouseRay = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
-                    RaycastHit mouseHit;
-                    if (Physics.Raycast(mouseRay, out mouseHit))
+                    for (int bracket = 0; bracket < brackets.Count; ++bracket)
                     {
-                        for (int bracket = 0; bracket < brackets.Count; ++bracket)
+                        if (brackets[bracket].Target.transform == mouseHit.transform)
                         {
-                            if (brackets[bracket].Target.transform == mouseHit.transform)
-                            {
-                                brackets[bracket].SetPlayerTarget();
-                                break;
-                            }
+                            brackets[bracket].SetPlayerTarget();
+                            break;
                         }
                     }
-                    else
-                    {
-                        player.Ship.Target = null;
-                    }                    
+                }
+                else
+                {
+                    player.Ship.Target = null;
                 }
             }
         }
-	}
+    }
 
     void OnLevelWasLoaded()
+    {
+        if (brackets != null)
+        {
+            brackets.Clear();
+        }
+    }
+
+    void OnDisable()
     {
         if (brackets != null)
         {

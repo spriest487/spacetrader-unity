@@ -27,7 +27,7 @@ public class Bracket : MonoBehaviour
     //owner bracket manager
     [SerializeField]
     private BracketManager bracketManager;
-
+    
     private Canvas canvas;
 
     public Targetable Target { get { return target; } }
@@ -52,15 +52,12 @@ public class Bracket : MonoBehaviour
 
     void Start()
     {
+        Debug.Assert(target, "bracket must have a target");
+
         canvas = GetComponentInParent<Canvas>();
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
-
-        if (!target)
-        {
-            throw new UnityException("no target for bracket");
-        }
-
+        
         var hitpoints = target.GetComponent<Hitpoints>();
         foreach (var healthbar in GetComponentsInChildren<Healthbar>())
         {
@@ -72,6 +69,18 @@ public class Bracket : MonoBehaviour
             {
                 healthbar.gameObject.SetActive(false);
             }
+        }
+    }
+
+    private Camera CameraForTarget()
+    {
+        if (target.TargetSpace == TargetSpace.Distant)
+        {
+            return BackgroundCamera.Current.Camera;
+        }
+        else
+        {
+            return Camera.main;
         }
     }
 
@@ -95,7 +104,7 @@ public class Bracket : MonoBehaviour
 
         for (int i = 0; i < 8; ++i)
         {
-            var cornerScreenPos = Camera.main.WorldToScreenPoint(target.transform.position + corners[i]);
+            var cornerScreenPos = CameraForTarget().WorldToScreenPoint(target.transform.position + corners[i]);
             xs[i] = cornerScreenPos.x;
             ys[i] = cornerScreenPos.y;
         }
@@ -156,7 +165,7 @@ public class Bracket : MonoBehaviour
 
         Color reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
 
-        var pos = Camera.main.WorldToScreenPoint(target.transform.position);
+        var pos = CameraForTarget().WorldToScreenPoint(target.transform.position);
 
         var x = (int) Mathf.Clamp(pos.x, 0, Screen.width);
         var y = (int) Mathf.Clamp(pos.y, 0, Screen.height);

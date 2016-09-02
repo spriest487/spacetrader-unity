@@ -12,6 +12,7 @@ public class SpaceTraderConfig : MonoBehaviour
     public static MissionsConfiguration MissionsConfiguration { get { return Instance.missionsConfig; } }
     public static Market Market { get { return Instance.market; } }
     public static FleetManager FleetManager { get { return Instance? Instance.fleetManager : null; } }
+    public static WorldMap WorldMap { get { return Instance.worldMap; } }
 
     public static PlayerShip LocalPlayer
     {
@@ -49,7 +50,10 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private FleetManager fleetManager;
-    
+
+    [SerializeField]
+    private WorldMap worldMap;
+        
     private void OnEnable()
     {
         if (Instance)
@@ -69,6 +73,8 @@ public class SpaceTraderConfig : MonoBehaviour
         missionsConfig = Instantiate(missionsConfig);
         market = Instantiate(market);
         fleetManager = Instantiate(fleetManager);
+
+        Debug.Assert(worldMap);
     }
     
     private void OnDisable()
