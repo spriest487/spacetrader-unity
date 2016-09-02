@@ -217,7 +217,7 @@ Transform:
   m_GameObject: {fileID: 174472}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 0.51169384, y: 0.53924906, z: 0.0018104307}
-  m_LocalScale: {x: 7.482251, y: 2.0609324, z: 3.5045874}
+  m_LocalScale: {x: 741.577, y: 217.49226, z: 3.5045874}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_Children: []
   m_Father: {fileID: 480894}
@@ -231,7 +231,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 0.566, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 2
@@ -496,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f28fe06ee1fc5043965b0903d7516ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mesh: {fileID: 4300000, guid: 57b947eeb4bb43245a928a6790dbb9d1, type: 3}
+  mesh: {fileID: 4300000, guid: a18c6b6fabe5e9c488d0c40d7c64bdf8, type: 3}
   material: {fileID: 2100000, guid: 1f489f75e43d34a4882f46eecd058938, type: 2}
   materialTintProperty: _TintColor
   rate: 2
@@ -556,6 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e6bc06eedc1554083d6e836144641c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpTarget: {fileID: 0}
   target: {fileID: 0}
   explosionEffect: {fileID: 0}
   abilities: []
