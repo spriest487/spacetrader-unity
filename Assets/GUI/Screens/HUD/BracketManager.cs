@@ -13,8 +13,12 @@ public class BracketManager : MonoBehaviour
         public float DistanceToCam;
     }
 
+    [Header("Prefabs")]
+
     [SerializeField]
     private Bracket bracket;
+
+    [Header("Colors")]
 
     [SerializeField]
     private Color friendlyColor = Color.green;
@@ -28,6 +32,8 @@ public class BracketManager : MonoBehaviour
     //[SerializeField]
     //private Color unselectedTint = new Color(1, 1, 1, 0.5f);
 
+    [Header("Sprites")]
+
     [SerializeField]
     private Sprite corner;
     [SerializeField]
@@ -36,6 +42,8 @@ public class BracketManager : MonoBehaviour
     private Sprite edgeMarker;
     [SerializeField]
     private Sprite selectedEdgeMarker;
+
+    [Header("Dimensions")]
 
     [SerializeField]
     private int defaultWidth = 64;

@@ -40,6 +40,9 @@ public class FollowCamera : MonoBehaviour
 	private Vector3 offset;
 
     [SerializeField]
+    private Vector3 jumpCamOffset;
+
+    [SerializeField]
     private float thrustOffset;
 
     [SerializeField]
@@ -56,6 +59,12 @@ public class FollowCamera : MonoBehaviour
     private float lookPitch;
     private float lookYawTarget;
     private float lookYaw;
+
+    /// <summary>
+    /// if following a ship in a jump, where did the jump start (or at
+    /// least, where did we first see them jumping?)
+    /// </summary>
+    private Vector3? jumpOrigin;
 
     [SerializeField]
     private AnimationCurve lookSnapBackCurve;
@@ -150,6 +159,22 @@ public class FollowCamera : MonoBehaviour
 
         var look = (player.transform.position - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(look, station.transform.up);
+    }
+
+    void JumpCam(PlayerShip player)
+    {
+        if (!jumpOrigin.HasValue)
+        {
+            jumpOrigin = player.transform.position;
+        }
+
+        Camera.fieldOfView = CINEMATIC_FOV;
+
+        var offset = player.transform.rotation * jumpCamOffset;
+        transform.position = jumpOrigin.Value + offset;
+
+        var look = (player.transform.position - transform.position).normalized;
+        transform.rotation = Quaternion.LookRotation(look, player.transform.up);
     }
 
     void CutsceneCam(CutsceneCameraRig cutsceneCamRig)
@@ -396,8 +421,18 @@ public class FollowCamera : MonoBehaviour
                 }
                 else
                 {
-                    SetupCockpit(player, cockpitMode);
-                    FlightCam(player);
+                    if (player.Ship.JumpTarget)
+                    {
+                        SetupCockpit(player, false);
+                        JumpCam(player);
+                    }
+                    else
+                    {
+                        jumpOrigin = null;
+
+                        SetupCockpit(player, cockpitMode);
+                        FlightCam(player);
+                    }
                 }
             }
             else

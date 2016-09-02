@@ -61,6 +61,12 @@ public class Targetable : MonoBehaviour
         }
     }
 
+    public bool HideBracket
+    {
+        get { return hideBracket; }
+        set { hideBracket = value; }
+    }
+
     public ActionOnActivate ActionOnActivate { get { return actionOnActivate; } }
     
     public string Faction { get { return faction; } set { faction = value; } }

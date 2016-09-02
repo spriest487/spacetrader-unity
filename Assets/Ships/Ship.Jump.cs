@@ -10,7 +10,7 @@ public partial class Ship
 
     [SerializeField]
     private WorldMapArea jumpTarget;
-
+    
     public WorldMapArea JumpTarget { get { return jumpTarget; } }
 
     private Coroutine jumpRoutine;

@@ -16,13 +16,7 @@ public class WorldMap : MonoBehaviour
     private AnimationCurve jumpEffectCurve;
 
     private List<WorldMapArea> areas;
-    private WorldMapArea currentArea;
-
-    public IEnumerable<WorldMapArea> Areas
-    {
-        get { return areas.Where(a => a != currentArea); }
-    }
-
+    
     public AnimationCurve JumpEffectCurve
     {
         get { return jumpEffectCurve; }
@@ -43,8 +37,13 @@ public class WorldMap : MonoBehaviour
 
     private void CenterOnCurrentArea()
     {
-        currentArea = areas.Where(a => a.name == SceneManager.GetActiveScene().name)
+        var currentArea = areas.Where(a => a.name == SceneManager.GetActiveScene().name)
             .FirstOrDefault();
+
+        foreach (var area in areas)
+        {
+            area.GetComponent<Targetable>().HideBracket = area == currentArea;
+        }
 
         if (currentArea)
         {
