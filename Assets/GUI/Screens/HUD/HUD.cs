@@ -54,8 +54,8 @@ public class HUD : MonoBehaviour
         var player = PlayerShip.LocalPlayer;
 
         bool cinemaMode = ScreenManager.Instance.CurrentCutscenePage != null
-            || (player && (player.Moorable && player.Moorable.State == DockingState.AutoDocking)
-                || (player.Ship && player.Ship.JumpTarget));
+            || (player && ((player.Moorable && player.Moorable.State == DockingState.AutoDocking)
+                || (player.Ship && player.Ship.JumpTarget)));
         
         content.gameObject.SetActive(!cinemaMode);
         cinemaBars.gameObject.SetActive(cinemaMode);
