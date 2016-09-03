@@ -45,7 +45,7 @@ public class Moorable : MonoBehaviour
         }
     }
     
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if (State != DockingState.InSpace)
         {
@@ -55,14 +55,7 @@ public class Moorable : MonoBehaviour
         var mooringTrigger = collider.GetComponent<MooringTrigger>();
         if (mooringTrigger)
         {
-            if (localStation)
-            {
-                Debug.LogWarning("triggered multiple spacestation mooring points, ignoring " + collider);
-            }
-            else
-            {
-                localStation = mooringTrigger.SpaceStation;
-            }
+            localStation = mooringTrigger.SpaceStation;
         }
     }
 
