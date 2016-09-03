@@ -306,17 +306,6 @@ public class PlayerShip : MonoBehaviour
 
         yield return SceneManager.LoadSceneAsync(area.name);
 
-        //TODO: find a better way
-        foreach (var sceneShip in FindObjectsOfType<Ship>())
-        {
-            if (sceneShip != Ship)
-            {
-                Destroy(sceneShip.gameObject);
-            }
-        }
-
-        yield return null;
-
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
 
