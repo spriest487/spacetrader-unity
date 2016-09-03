@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 
 public abstract class Quest : ScriptableObject
 {
+    [Serializable]
+    public struct LocationID
+    {
+        public string Area;
+        public string Station;
+    }
+
     public abstract int XPReward { get; }
     public abstract int MoneyReward { get; }
     
@@ -24,15 +29,19 @@ public abstract class Quest : ScriptableObject
     }
 
     [SerializeField]
-    private SpaceStation station;
+    private LocationID location;
     
-    public SpaceStation Station { get { return station; } }
+    public LocationID Location { get { return location; } }
 
     public static Quest Create(Quest template, SpaceStation station)
     {
         var quest = Instantiate(template);
         quest.name = template.name;
-        quest.station = station;
+        quest.location = new LocationID
+        {
+            Area = SpaceTraderConfig.WorldMap.GetCurrentArea().name,
+            Station = station.name
+        };
 
         return quest;
     }

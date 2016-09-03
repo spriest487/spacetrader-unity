@@ -42,7 +42,15 @@ public class QuestBoard : ScriptableObject
 
     public IEnumerable<Quest> QuestsAtStation(SpaceStation station)
     {
-        return quests.Where(q => q.Quest.Station == station)
+        var area = SpaceTraderConfig.WorldMap.GetCurrentArea().name;
+
+        if (station == null)
+        {
+            return Enumerable.Empty<Quest>();
+        }
+
+        return quests.Where(q => q.Quest.Location.Area == area
+                && q.Quest.Location.Station == station.name)
             .Select(q => q.Quest);
     }
 

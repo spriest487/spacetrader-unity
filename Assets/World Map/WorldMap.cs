@@ -22,6 +22,18 @@ public class WorldMap : MonoBehaviour
         get { return jumpEffectCurve; }
     }
 
+    public WorldMapArea GetCurrentArea()
+    {
+        if (areas == null)
+        {
+            Start();
+        }
+
+        return areas
+            .Where(a => a.name == SceneManager.GetActiveScene().name)
+            .FirstOrDefault();
+    }
+
     private void Start()
     {
         areasRoot.gameObject.SetActive(true);
@@ -37,8 +49,7 @@ public class WorldMap : MonoBehaviour
 
     private void CenterOnCurrentArea()
     {
-        var currentArea = areas.Where(a => a.name == SceneManager.GetActiveScene().name)
-            .FirstOrDefault();
+        var currentArea = GetCurrentArea();
 
         foreach (var area in areas)
         {

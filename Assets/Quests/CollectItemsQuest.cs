@@ -61,7 +61,7 @@ public class CollectItemsQuest : Quest
     {
         get
         {
-            return string.Format("Bring {0} {1}s to {2}", quantity, itemTypeName, Station.name);
+            return string.Format("Bring {0} {1}s to {2} in {3}", quantity, itemTypeName, Location.Station, Location.Area);
         }
     }
 
