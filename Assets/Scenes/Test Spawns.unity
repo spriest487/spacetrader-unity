@@ -118,6 +118,7 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 11400000, guid: 9b870d3d0fcaad84f922176d2119ac5a, type: 2}
   modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  joinFleetOf: {fileID: 731188754}
 --- !u!4 &119262697
 Transform:
   m_ObjectHideFlags: 0
@@ -164,6 +165,7 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 11400000, guid: 840e182f4481f7f4fac750d63f902540, type: 2}
   modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  joinFleetOf: {fileID: 731188754}
 --- !u!4 &275766259
 Transform:
   m_ObjectHideFlags: 0
@@ -210,6 +212,7 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 11400000, guid: f361f9e26f88b8344a563289fa89cbc2, type: 2}
   modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  joinFleetOf: {fileID: 0}
 --- !u!4 &731188755
 Transform:
   m_ObjectHideFlags: 0

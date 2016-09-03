@@ -32,6 +32,7 @@ public class ShipSpawner : MonoBehaviour
 
     [Header("Other spawners")]
 
+    [SerializeField]
     private ShipSpawner joinFleetOf;
 
     private Ship spawned;
