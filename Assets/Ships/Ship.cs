@@ -285,7 +285,7 @@ public partial class Ship : MonoBehaviour
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
-
+        
         //ships are targetable by default 
         Targetable = GetComponent<Targetable>();
         if (!Targetable)
@@ -299,8 +299,7 @@ public partial class Ship : MonoBehaviour
 
 #if UNITY_EDITOR
         Debug.Assert(!abilities
-            .Select<Ability, string>(UnityEditor.AssetDatabase.GetAssetPath)
-            .Where(path => path != null)
+            .Where(a => UnityEditor.PrefabUtility.GetPrefabType(a) != UnityEditor.PrefabType.None)
             .Any(), 
             "on spawn, no ship should reference ability assets directly, they should be cloned!");
 #endif
