@@ -296,6 +296,14 @@ public partial class Ship : MonoBehaviour
         hitPoints = GetComponent<Hitpoints>();
         Collider = GetComponent<Collider>();
         Moorable = GetComponent<Moorable>();
+
+#if UNITY_EDITOR
+        Debug.Assert(!abilities
+            .Select<Ability, string>(UnityEditor.AssetDatabase.GetAssetPath)
+            .Where(path => path != null)
+            .Any(), 
+            "on spawn, no ship should reference ability assets directly, they should be cloned!");
+#endif
     }
 
     private void OnLevelWasLoaded()
