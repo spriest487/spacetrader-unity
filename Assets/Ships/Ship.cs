@@ -14,9 +14,7 @@ public partial class Ship : MonoBehaviour
     [SerializeField]
     private Targetable target;
     
-    [SerializeField]
-    private ScalableParticle explosionEffect;
-
+    [HideInInspector]
     [SerializeField]
     private List<Ability> abilities = new List<Ability>();
 
@@ -168,13 +166,7 @@ public partial class Ship : MonoBehaviour
         get { return abilities.AsReadOnly(); }
         set { abilities = new List<Ability>(value); }
     }
-
-    public ScalableParticle ExplosionEffect
-    {
-        get { return explosionEffect; }
-        set { explosionEffect = value; }
-    }
-
+    
     public IEnumerable<StatusEffect> StatusEffects
     {
         get { return activeStatusEffects.AsReadOnly(); }
@@ -255,9 +247,7 @@ public partial class Ship : MonoBehaviour
 
         var rb = ship.GetComponent<Rigidbody>();
         UpdateRigidBodyFromStats(rb, shipType.Stats);
-
-        ship.ExplosionEffect = shipType.ExplosionEffect;
-
+        
         var newAbilities = new List<Ability>();
         foreach (var ability in shipType.Abilities)
         {
@@ -727,9 +717,9 @@ public partial class Ship : MonoBehaviour
 
     public void Explode()
     {
-        if (explosionEffect)
+        if (shipType && shipType.ExplosionEffect)
         {
-            var explosion = (ScalableParticle)Instantiate(explosionEffect, transform.position, transform.rotation);
+            var explosion = (ScalableParticle)Instantiate(shipType.ExplosionEffect, transform.position, transform.rotation);
             explosion.ParticleScale = 0.5f;
         }
 
