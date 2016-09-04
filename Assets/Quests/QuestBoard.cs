@@ -76,6 +76,8 @@ public class QuestBoard : ScriptableObject
 
         var assignment = quests.Where(a => a.Quest == quest).First();
         assignment.Player = player;
+
+        quest.OnAccepted();
     }
 
     public void FinishQuest(Quest quest)
@@ -84,7 +86,7 @@ public class QuestBoard : ScriptableObject
 
         Debug.Assert(owner);
         Debug.Assert(quest.Done);
-        quest.OnFinish(quest);
+        quest.OnFinish();
 
         owner.AddMoney(quest.MoneyReward);
         owner.Ship.GrantCrewXP(quest.XPReward);
@@ -94,7 +96,7 @@ public class QuestBoard : ScriptableObject
 
     public void CancelQuest(Quest quest)
     {
-        quest.OnAbandon(quest);
+        quest.OnAbandon();
         DestroyQuest(quest);
     }
 
@@ -107,9 +109,9 @@ public class QuestBoard : ScriptableObject
 
     public void NotifyDeath(Ship ship, Ship killer)
     {
-        foreach (var quest in quests)
+        for (int questIt = 0; questIt < quests.Count; ++questIt)
         {
-            quest.Quest.NotifyDeath(ship, killer);
+            quests[questIt].Quest.NotifyDeath(ship, killer);
         }
     }
 }

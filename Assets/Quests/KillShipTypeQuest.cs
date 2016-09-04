@@ -65,12 +65,4 @@ public class KillShipTypeQuest : Quest
             return targetCount * GetShipType().XPReward / 2;
         }
     }
-
-    public override void OnFinish(Quest quest)
-    {
-    }
-
-    public override void OnAbandon(Quest quest)
-    {
-    }
 }

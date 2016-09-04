@@ -65,11 +65,11 @@ public class CollectItemsQuest : Quest
         }
     }
 
-    public override void OnFinish(Quest quest)
+    public override void OnFinish()
     {
         //remove the required items from the player
 
-        var owner = SpaceTraderConfig.QuestBoard.OwnerOf(quest);
+        var owner = SpaceTraderConfig.QuestBoard.OwnerOf(this);
         Debug.Assert(owner);
 
         var cargo = owner.Ship.Cargo;
@@ -86,9 +86,5 @@ public class CollectItemsQuest : Quest
         }
 
         Debug.Assert(removed == quantity);
-    }
-
-    public override void OnAbandon(Quest quest)
-    {
     }
 }

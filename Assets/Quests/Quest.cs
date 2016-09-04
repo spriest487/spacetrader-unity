@@ -12,9 +12,10 @@ public abstract class Quest : ScriptableObject
 
     public abstract int XPReward { get; }
     public abstract int MoneyReward { get; }
-    
-    public abstract void OnFinish(Quest quest);
-    public abstract void OnAbandon(Quest quest);
+
+    public virtual void OnAccepted() { }
+    public virtual void OnFinish() { }
+    public virtual void OnAbandon() { }
 
     public abstract bool Done { get; }
     public abstract string Description { get; }
