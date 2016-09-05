@@ -36,6 +36,8 @@ MonoBehaviour:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
       name: Red Five
+    quests:
+    - {fileID: 11400000, guid: 494834686f1635744a3a9496fb457ae2, type: 2}
   - name: Blue
     slots:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
@@ -53,3 +55,5 @@ MonoBehaviour:
     - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
       modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
       name: Blue Three
+    quests:
+    - {fileID: 11400000, guid: a5ff095de914ad24480dedd5ba17d6ef, type: 2}

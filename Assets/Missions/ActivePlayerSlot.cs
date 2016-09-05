@@ -8,24 +8,17 @@ public class ActivePlayerSlot
     private SlotStatus slotStatus;
 
     [SerializeField]
-    private string humanPlayer;
-
+    private Ship spawnedShip;
+    
     public SlotStatus Status
     {
         get { return slotStatus; }
-        set
-        {
-            slotStatus = value;
-            if (slotStatus != SlotStatus.Human)
-            {
-                humanPlayer = null;
-            }
-        }
+        set { slotStatus = value; }
     }
 
-    public string HumanPlayer
+    public Ship SpawnedShip
     {
-        get { return humanPlayer; }
-        set { humanPlayer = value; }
+        get { return spawnedShip; }
+        set { spawnedShip = value; }
     }
 }

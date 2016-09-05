@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class TeamSpawner : MonoBehaviour
 {
@@ -13,30 +14,19 @@ public class TeamSpawner : MonoBehaviour
 
         [SerializeField]
         private Transform[] spawnPoints;
-
-        [HideInInspector]
-        [SerializeField]
-        private Ship[] spawnedShips;
-
+        
         public string Name { get { return name; } }
         public Transform[] SpawnPoints { get { return spawnPoints; } }
-        public Ship[] SpawnedShips { get { return spawnedShips; } }
 
         public void SpawnAll(MissionDefinition.TeamDefinition teamDefinition, ActiveTeam activeTeam)
         {
-            if (spawnedShips != null && spawnedShips.Length != 0)
-            {
-                throw new UnityException("already spawned this team once");
-            }
-            
-            var spawned = new List<Ship>();
-
             /* loop around slots, spawning players at each slot in turn until there are
              * no more players 
              */
-            var slotsCount = teamDefinition.Slots.Length;
-
+            var slotsCount = teamDefinition.Slots.Count;
+                        
             var allSpawnPoints = new List<Transform>();
+
             foreach (Transform spawnRoot in spawnPoints)
             {
                 foreach (Transform spawnPoint in spawnRoot)
@@ -73,19 +63,28 @@ public class TeamSpawner : MonoBehaviour
                     switch(activeSlot.Status)
                     {
                         case SlotStatus.AI:
-                            ship.gameObject.AddComponent<AICaptain>();
-                            ship.gameObject.AddComponent<WingmanCaptain>();
+                            SetupAIPlayer(ship);
                             break;
                         case SlotStatus.Human:
-                            SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+                            SetupHumanPlayer(ship, teamDefinition);                            
                             break;
                     }
 
-                    spawned.Add(ship);
+                    activeSlot.SpawnedShip = ship;
                 }
             }
+        }
 
-            spawnedShips = spawned.ToArray();
+        private void SetupHumanPlayer(Ship ship, MissionDefinition.TeamDefinition teamDef)
+        {
+            var player = ship.gameObject.AddComponent<PlayerShip>();
+            SpaceTraderConfig.LocalPlayer = player;
+        }
+
+        private void SetupAIPlayer(Ship ship)
+        {
+            ship.gameObject.AddComponent<AICaptain>();
+            ship.gameObject.AddComponent<WingmanCaptain>();
         }
     }
 

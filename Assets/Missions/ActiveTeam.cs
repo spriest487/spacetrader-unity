@@ -7,7 +7,18 @@ public class ActiveTeam
     [SerializeField]
     private ActivePlayerSlot[] slots;
 
-    public ActivePlayerSlot[] Slots { get { return slots; } }
+    [SerializeField]
+    private MissionDefinition.TeamDefinition definition;
+
+    public ActivePlayerSlot[] Slots
+    {
+        get { return slots; }
+    }
+
+    public MissionDefinition.TeamDefinition Definition
+    {
+        get { return definition; }
+    }
 
     public ActiveTeam()
     {
@@ -15,9 +26,11 @@ public class ActiveTeam
 
     public ActiveTeam(MissionDefinition.TeamDefinition team)
     {
-        slots = new ActivePlayerSlot[team.Slots.Length];
+        definition = team;
+
+        slots = new ActivePlayerSlot[team.Slots.Count];
         
-        for (int slot = 0; slot < team.Slots.Length; ++slot)
+        for (int slot = 0; slot < team.Slots.Count; ++slot)
         {
             var newSlot = new ActivePlayerSlot();
             slots[slot] = newSlot;

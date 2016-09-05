@@ -23,7 +23,7 @@ public class MissionTeamSlotList : MonoBehaviour
             Destroy(listChild.gameObject);
         }
 
-        var teamCount = mission.Definition.Teams.Length;
+        var teamCount = mission.Definition.Teams.Count;
         for (int teamIndex = 0; teamIndex < teamCount; ++teamIndex)
         {
             var team = mission.Definition.Teams[teamIndex];
@@ -32,7 +32,7 @@ public class MissionTeamSlotList : MonoBehaviour
             dividerObj.transform.SetParent(slotList, false);
             dividerObj.SetTeam(teamIndex);
 
-            var slotCount = team.Slots.Length;
+            var slotCount = team.Slots.Count;
             for (int slotIndex = 0; slotIndex < slotCount; ++slotIndex)
             {
                 var slotObj = Instantiate(slotItemPrefab);

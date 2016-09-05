@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class MissionDefinition : ScriptableObject
 {
@@ -53,10 +54,14 @@ public class MissionDefinition : ScriptableObject
         private string name;
 
         [SerializeField]
-        private PlayerSlot[] slots;
+        private List<PlayerSlot> slots;
+
+        [SerializeField]
+        private List<Quest> quests;
 
         public string Name { get { return name; } }
-        public PlayerSlot[] Slots { get { return slots; } }
+        public IList<PlayerSlot> Slots { get { return slots; } }
+        public IList<Quest> Quests { get { return quests; } }
     }
 
     [SerializeField]
@@ -70,13 +75,13 @@ public class MissionDefinition : ScriptableObject
     private string description;
 
     [SerializeField]
-    private TeamDefinition[] teams;
+    private List<TeamDefinition> teams;
 
     public string SceneName { get { return sceneName; } }
     public string MissionName { get { return missionName; } }
     public string Description { get { return description; } }
 
-    public TeamDefinition[] Teams { get { return teams; } }
+    public IList<TeamDefinition> Teams { get { return teams; } }
     
     public void LoadMission()
     {

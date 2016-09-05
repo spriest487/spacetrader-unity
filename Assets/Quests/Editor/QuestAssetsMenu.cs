@@ -13,4 +13,10 @@ public class QuestAssetsMenu
     {
         ScriptableObjectUtility.CreateAsset<KillShipTypeQuest>();
     }
+
+    [MenuItem("Assets/Create/SpaceTrader/Quests/Kill Other Team (mission)")]
+    public static void KillMissionTeam()
+    {
+        ScriptableObjectUtility.CreateAsset<KillEnemyTeamQuest>();
+    }
 }
