@@ -4271,7 +4271,7 @@ MonoBehaviour:
     newGameScreen: {fileID: 22448842}
     rootScreen: {fileID: 22412178}
     missionsScreen: {fileID: 22412176}
-    loadScreen: {fileID: 0}
+    loadScreen: {fileID: 22494878}
   menuScene: Main Menu
   activeWhenPlayerExists:
   - {fileID: 22435992}

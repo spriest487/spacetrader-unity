@@ -12,7 +12,7 @@ GameObject:
   - 114: {fileID: 11446958}
   - 114: {fileID: 11458878}
   m_Layer: 0
-  m_Name: Objective Item
+  m_Name: HUD Quest List Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc640b5dc48178b4d860455e77a33621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objective: {fileID: 0}
+  quest: {fileID: 0}
   descriptionLabel: {fileID: 11446958}
 --- !u!222 &22263626
 CanvasRenderer:
