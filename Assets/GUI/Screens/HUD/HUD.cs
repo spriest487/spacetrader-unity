@@ -11,10 +11,7 @@ public class HUD : MonoBehaviour
 
     [SerializeField]
     private Transform cinemaBars;
-
-    [SerializeField]
-    private SpeechBubble speechBubble;
-
+    
     [Header("Player Info")]
     [SerializeField]
     private Transform[] playerShipInfo;
@@ -125,23 +122,11 @@ public class HUD : MonoBehaviour
 
     private void OnScreenActive()
     {
-        speechBubble.Dismiss();
-
         errorMessage.Reset();
 
         lootWindow.Dismiss();
 
         Update();
-    }
-
-    private void OnRadioSpeech(PlayerRadioMessage message)
-    {
-        var bracket = bracketManager.FindBracket(message.Source.gameObject);
-
-        if (bracket)
-        {
-            speechBubble.Show(message.Message, 3, bracket.transform);
-        }
     }
 
     private void OnPlayerError(string message)
