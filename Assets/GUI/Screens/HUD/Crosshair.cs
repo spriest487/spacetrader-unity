@@ -6,12 +6,12 @@ public class Crosshair : MonoBehaviour
 
 	private void DrawCrosshair(Vector3 worldPos, float alpha)
 	{
-        if (!Camera.main)
+        if (!FollowCamera.Current)
         {
             return;
         }
 
-        var screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        var screenPos = FollowCamera.Current.Camera.WorldToScreenPoint(worldPos);
 		
 		Rect xhairRect = new Rect();
 		xhairRect.width = crosshairTexture.width;

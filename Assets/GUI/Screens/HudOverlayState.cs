@@ -5,5 +5,6 @@ public enum ScreenID
     Equipment,
     MissionPrep,
     Recruitment,
-    Quests
+    Quests,
+    WorldMap,
 }

@@ -91,7 +91,7 @@ public class PlayerShip : MonoBehaviour
             var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
             if (predictedPos.HasValue)
             {
-                var screenPredicted = Camera.main.WorldToScreenPoint(predictedPos.Value);
+                var screenPredicted = FollowCamera.Current.Camera.WorldToScreenPoint(predictedPos.Value);
                 screenPredicted.z = mousePos.z;
 
                 var predictedToActualDifference = screenPredicted - mousePos;
@@ -188,7 +188,7 @@ public class PlayerShip : MonoBehaviour
             var pitch = Input.GetAxis("pitch");
             var yaw = Input.GetAxis("yaw");
 
-            var camera = Camera.main ? Camera.main.GetComponent<FollowCamera>() : null;
+            var camera = FollowCamera.Current;
             if (camera)
             {
                 UpdateModuleAimPoints(camera);
@@ -224,6 +224,11 @@ public class PlayerShip : MonoBehaviour
                         ship.ModuleLoadout.Activate(ship, mod);
                     }
                 }
+            }
+
+            if (Input.GetButtonDown("map"))
+            {
+                ScreenManager.Instance.ScreenID = ScreenID.WorldMap;
             }
 
             if (Input.GetButtonDown("activate"))

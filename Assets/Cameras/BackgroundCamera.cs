@@ -20,16 +20,18 @@ public class BackgroundCamera : MonoBehaviour
 
     void OnDisable()
     {
+        Debug.Assert(Current == this);
         Current = null;
     }
 
     void OnPreRender()
     {
-        var mainCam = Camera.main;
+        var mainCam = FollowCamera.Current;
 
+        Debug.Assert(mainCam, "main camera must exist");
         Debug.Assert(mainCam != Camera);
 
         transform.rotation = mainCam.transform.rotation;
-        Camera.fieldOfView = mainCam.fieldOfView;
+        Camera.fieldOfView = mainCam.Camera.fieldOfView;
     }
 }

@@ -78,17 +78,15 @@ public class BracketManager : MonoBehaviour
 
         UpdateShipBrackets();
 
-        CheckSpaceClicks();
+        var spaceCam = FollowCamera.Current;
+        if (spaceCam && spaceCam.isActiveAndEnabled)
+        {
+            CheckSpaceClicks(spaceCam);
+        }
     }
 
     private void UpdateShipBrackets()
     {
-        if (!Camera.main)
-        {
-            brackets.Clear();
-            return;
-        }
-
         var targetables = FindObjectsOfType<Targetable>()
             .Where(t => t.BracketVisible);
 
@@ -97,7 +95,7 @@ public class BracketManager : MonoBehaviour
     }
     
 
-    private void CheckSpaceClicks()
+    private void CheckSpaceClicks(FollowCamera spaceCam)
     {
         /* GUI blocks clicking on empty space - including brackets, which are
          * buttons */
@@ -119,7 +117,7 @@ public class BracketManager : MonoBehaviour
                 /* the select button was un-pressed, but no bracket was under the cursor
                     (they block raycasts). do a world raycast to see if we hit any 3d objects*/
                 var mousePos = Input.mousePosition;
-                var mouseRay = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
+                var mouseRay = spaceCam.Camera.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
                 RaycastHit mouseHit;
                 if (Physics.Raycast(mouseRay, out mouseHit))
                 {

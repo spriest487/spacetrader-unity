@@ -30,7 +30,7 @@ public class Predictor : MonoBehaviour
     void LateUpdate()
     {
         var player = PlayerShip.LocalPlayer;
-        var camera = Camera.main;
+        var camera = FollowCamera.Current.Camera;
 
         if (!player || !camera)
         {

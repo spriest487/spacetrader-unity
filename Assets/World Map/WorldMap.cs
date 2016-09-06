@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class WorldMap : MonoBehaviour
-{ 
+{
+    [SerializeField]
+    private Camera mapCamera;
+
     [SerializeField]
     private Transform areasRoot;
 
@@ -20,6 +23,11 @@ public class WorldMap : MonoBehaviour
     public AnimationCurve JumpEffectCurve
     {
         get { return jumpEffectCurve; }
+    }
+
+    public Camera Camera
+    {
+        get { return mapCamera; }
     }
 
     public WorldMapArea GetCurrentArea()
@@ -38,6 +46,8 @@ public class WorldMap : MonoBehaviour
     {
         areasRoot.gameObject.SetActive(true);
         areas = GetComponentsInChildren<WorldMapArea>().ToList();
+
+        Camera.enabled = false;
 
         CenterOnCurrentArea();
     }

@@ -80,11 +80,11 @@ public class Bracket : MonoBehaviour
         }
         else
         {
-            return Camera.main;
+            return FollowCamera.Current.Camera;
         }
     }
 
-    private void CalculateBoundingBoxSize(out int width, out int height)
+    private void CalculateBoundingBoxSize(out int width, out int height, Camera cam)
     {
         var extents = targetCollider.bounds.extents;
         var corners = new[]
@@ -104,7 +104,7 @@ public class Bracket : MonoBehaviour
 
         for (int i = 0; i < 8; ++i)
         {
-            var cornerScreenPos = CameraForTarget().WorldToScreenPoint(target.transform.position + corners[i]);
+            var cornerScreenPos = cam.WorldToScreenPoint(target.transform.position + corners[i]);
             xs[i] = cornerScreenPos.x;
             ys[i] = cornerScreenPos.y;
         }
@@ -163,9 +163,11 @@ public class Bracket : MonoBehaviour
             isTarget = false;
         }
 
-        Color reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
+        var reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
 
-        var pos = CameraForTarget().WorldToScreenPoint(target.transform.position);
+        var cam = CameraForTarget();
+
+        var pos = cam.WorldToScreenPoint(target.transform.position);
 
         var x = (int) Mathf.Clamp(pos.x, 0, Screen.width);
         var y = (int) Mathf.Clamp(pos.y, 0, Screen.height);
@@ -251,7 +253,7 @@ public class Bracket : MonoBehaviour
 
             if (targetCollider)
             {
-                CalculateBoundingBoxSize(out width, out height);
+                CalculateBoundingBoxSize(out width, out height, cam);
             }
 
             if (isTarget)

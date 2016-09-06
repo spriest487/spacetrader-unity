@@ -11,6 +11,8 @@ public class FollowCamera : MonoBehaviour
     const float NORMAL_FOV = 60;
     const float CINEMATIC_FOV = 25;
 
+    public static FollowCamera Current { get; private set; }
+
     public const float UI_DRAG_DELAY = 0.2f;
 
     public Camera Camera { get; private set; }
@@ -82,6 +84,18 @@ public class FollowCamera : MonoBehaviour
 
         invisibleLayer = LayerMask.NameToLayer("Invisible");
         defaultLayer = LayerMask.NameToLayer("Default");
+    }
+
+    void OnEnable()
+    {
+        Debug.Assert(!Current || Current == this);
+        Current = this;
+    }
+
+    void OnDisable()
+    {
+        Debug.Assert(Current == this);
+        Current = null;
     }
 
     void DockedCam(PlayerShip player)
@@ -355,24 +369,22 @@ public class FollowCamera : MonoBehaviour
 
     private void SetupCockpit(PlayerShip player, bool showCockpit)
     {
-        if (Camera.main != Camera)
-        {
-            return;
-        }
-
+        /*if we have an existing cockpit view, and the player's cockpit type 
+          has changed, destroy the old one */
         if (cockpitCam && (!player || player.Ship.ShipType != cockpitShipType))
         {
             Destroy(cockpitCam.gameObject);
         }
         
+        /* if we don't have a cockpit, create a new one of the right type */
         if (!cockpitCam && player && player.Ship.ShipType.HasCockpit)
         {
             cockpitCam = player.Ship.ShipType.CreateCockpit();
             cockpitCam.transform.SetParent(transform, false);
             cockpitShipType = player.Ship.ShipType;
         }
-
-        if (player && showCockpit && cockpitCam)
+        
+        if (player && showCockpit && cockpitCam && Camera.enabled)
         {
             cockpitCam.gameObject.SetActive(true);
             player.gameObject.SetLayerRecursive(invisibleLayer);
