@@ -19,25 +19,24 @@ public class AttackTask : AITask
     [SerializeField]
     private bool evasive;
 
-    private Targetable Target
-    {
-        get { return TaskFollower.Ship.Target; }
-    }
+    [SerializeField]
+    private Targetable attackTarget;
 
     public static AttackTask Create(Targetable ship)
     {
         AttackTask task = CreateInstance<AttackTask>();
+        task.attackTarget = ship;
         return task;
     }
 
     public override void Update()
     {
-        if (!Target)
+        if (!attackTarget)
         {
             return;
         }
         
-        canSeeTarget = TaskFollower.Ship.CanSee(Target.transform.position);
+        canSeeTarget = TaskFollower.Ship.CanSee(attackTarget.transform.position);
 
         bool navigatingToTarget = false;
         if (!canSeeTarget)
@@ -45,27 +44,27 @@ public class AttackTask : AITask
             /*there must be some obstacle in the way, 
             let's follow the nav points directly to them
             and see if that helps */
-            TaskFollower.AssignTask(NavigateTask.Create(Target.transform.position));
+            TaskFollower.AssignTask(NavigateTask.Create(attackTarget.transform.position));
             navigatingToTarget = true;
         }
 
         if (!navigatingToTarget)
         {
             //are we aiming in the same direction as the target
-            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, Target.transform.forward);
+            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, attackTarget.transform.forward);
             aimCloseEnough = dotToForward > ANGLE_MATCH;
 
             //is my ship behind the Target
-            var TargetToMe = (TaskFollower.transform.position - Target.transform.position).normalized;
-            var dotToMe = Vector3.Dot(Target.transform.forward, TargetToMe);
+            var TargetToMe = (TaskFollower.transform.position - attackTarget.transform.position).normalized;
+            var dotToMe = Vector3.Dot(attackTarget.transform.forward, TargetToMe);
             behind = dotToMe < 0;
 
-            Vector3 dest = Target.transform.position;
+            Vector3 dest = attackTarget.transform.position;
 
             if (evasive)
             {
                 //try to get behind them
-                var behindOffset = Target.transform.forward - (Target.transform.forward * FOLLOW_RANGE);
+                var behindOffset = attackTarget.transform.forward - (attackTarget.transform.forward * FOLLOW_RANGE);
                 dest += behindOffset;
             }
 
@@ -74,7 +73,7 @@ public class AttackTask : AITask
                 /* we're close to where we want to be, now aim at them */
                 if (!aimCloseEnough)
                 {
-                    TaskFollower.AssignTask(AimAtTask.Create(dest, Target.transform.position, 10));
+                    TaskFollower.AssignTask(AimAtTask.Create(dest, attackTarget.transform.position, 10));
                 }
             }
             else
@@ -95,8 +94,9 @@ public class AttackTask : AITask
     {
         get
         {
-            if (!Target)
+            if (!attackTarget)
             {
+                //it's probably died
                 return true;
             }
 

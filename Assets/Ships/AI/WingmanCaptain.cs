@@ -19,9 +19,6 @@ public class WingmanCaptain : MonoBehaviour
 
     private AITaskFollower taskFollower;
     private AITask orderTask;
-    
-    private float lastTargetCheck = 0;
-    const float TARGET_CHECK_INTERVAL = 1;
 
     struct PotentialTarget
     {
@@ -39,22 +36,9 @@ public class WingmanCaptain : MonoBehaviour
         get { return activeOrder; }
     }
 	
-	private Ship FindLeader()
-	{
-        var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
-        if (myFleet && myFleet.Leader != Ship)
-        {
-            return myFleet.Leader;
-        }
-        else
-        {
-            return null;
-        }
-	}
-
     private void SetOrder(WingmanOrder newOrder)
     {
-        if (activeOrder != newOrder)
+        if (activeOrder != newOrder && orderTask)
         {
             taskFollower.CancelTask(orderTask);
 
@@ -64,7 +48,9 @@ public class WingmanCaptain : MonoBehaviour
     
     private void OnRadioMessage(RadioMessage message)
     {
-        if (message.SourceShip == FindLeader())
+        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+
+        if (message.SourceShip == fleet.Leader && fleet.Leader != Ship)
         {
             SetOrder((WingmanOrder) message.MessageType);
 
@@ -108,19 +94,8 @@ public class WingmanCaptain : MonoBehaviour
         return threat;
     }
 
-    private void AcquireTarget()
+    private int AcquireTarget()
     {
-        var needsTarget = !Ship.Target
-                || Time.time > (lastTargetCheck + TARGET_CHECK_INTERVAL);
-        lastTargetCheck = Time.time;
-
-        if (!needsTarget)
-        {
-            return;
-        }
-
-        //look for a target
-
         //todo: use saved local ships list
         var targetables = FindObjectsOfType(typeof(Targetable)) as Targetable[];
         if (targetables != null && targetables.Length > 0)
@@ -143,22 +118,18 @@ public class WingmanCaptain : MonoBehaviour
 
             potentialTargets.RemoveAll(t => t.Threat < 0);
 
-            if (potentialTargets.Count == 0)
-            {
-                Ship.Target = null;
-            }
-            else
-            {
+            if (potentialTargets.Count > 0)
+            { 
                 //highest threat comes first
                 potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
 
                 Ship.Target = potentialTargets[0].Target;
+                return potentialTargets[0].Threat;
             }
         }
-        else
-        {
-            Ship.Target = null;
-        }
+
+        Ship.Target = null;
+        return 0;
     }
 
 	void Start()
@@ -170,24 +141,38 @@ public class WingmanCaptain : MonoBehaviour
 
 	void Update()
     {
-        var leader = FindLeader();
+        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
 
-        if (!leader)
-        {
+        //check for targets myself
+        AcquireTarget();
+
+        if (!fleet)
+        {   
             SetOrder(WingmanOrder.Wait);
         }
+        else if (fleet.Leader == Ship)
+        {
+            SetOrder(WingmanOrder.AttackLeaderTarget);
+        }
 
-        if (!orderTask && leader)
+        if (!orderTask)
         {
             switch (activeOrder)
             {
                 case WingmanOrder.FollowLeader:
-                    orderTask = FlyInFormationTask.Create(leader);
+                    orderTask = FlyInFormationTask.Create(fleet.Leader);
                     break;
                 case WingmanOrder.AttackLeaderTarget:
-                    if (leader.Target)
+                    if (fleet.Leader.Target)
                     {
-                        orderTask = AttackTask.Create(leader.Target);
+                        orderTask = AttackTask.Create(fleet.Leader.Target);
+                    }
+                    break;
+                case WingmanOrder.Wait:
+                    //while waiting, use individual target
+                    if (Ship.Target)
+                    {
+                        orderTask = AttackTask.Create(Ship.Target);
                     }
                     break;
             }
