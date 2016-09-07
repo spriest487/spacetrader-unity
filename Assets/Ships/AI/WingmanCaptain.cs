@@ -139,6 +139,23 @@ public class WingmanCaptain : MonoBehaviour
         activeOrder = WingmanOrder.FollowLeader;
     }
 
+    void OnTakeDamage(HitDamage damage)
+    {
+        var fm = SpaceTraderConfig.FleetManager;
+        if (damage.Owner != null
+            && fm.GetFleetOf(Ship) != fm.GetFleetOf(damage.Owner))
+        {
+            //get spooked and forget what we were doing if we're not attacking
+
+            if (activeOrder != WingmanOrder.AttackLeaderTarget
+                && orderTask)
+            {
+                taskFollower.CancelTask(orderTask);
+                orderTask = null;
+            }
+        }
+    }
+
 	void Update()
     {
         var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
@@ -160,7 +177,14 @@ public class WingmanCaptain : MonoBehaviour
             switch (activeOrder)
             {
                 case WingmanOrder.FollowLeader:
-                    orderTask = FlyInFormationTask.Create(fleet.Leader);
+                    if (Ship.Target)
+                    {
+                        orderTask = AttackTask.Create(Ship.Target);
+                    }
+                    else
+                    {
+                        orderTask = FlyInFormationTask.Create(fleet.Leader);
+                    }
                     break;
                 case WingmanOrder.AttackLeaderTarget:
                     if (fleet.Leader.Target)
