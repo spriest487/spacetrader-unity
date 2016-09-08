@@ -29,6 +29,20 @@ public class WorldMap : MonoBehaviour
     {
         get { return mapCamera; }
     }
+    
+    public IEnumerable<WorldMapArea> DistantAreas
+    {
+        get
+        {
+            if (areas == null)
+            {
+                Start();
+            }
+
+            return areas
+                .Where(a => a.name != SceneManager.GetActiveScene().name);
+        }
+    }
 
     public WorldMapArea GetCurrentArea()
     {
