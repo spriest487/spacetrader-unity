@@ -1110,22 +1110,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 147799756}
---- !u!1 &183319079 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 149948, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-  m_PrefabInternal: {fileID: 518317772}
---- !u!65 &183319080
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 183319079}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.16, y: 0.16, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &206877173
 Prefab:
   m_ObjectHideFlags: 0
@@ -1537,18 +1521,6 @@ Prefab:
     - target: {fileID: 415718, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
       propertyPath: m_RootOrder
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 463002, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -3.21
-      objectReference: {fileID: 0}
-    - target: {fileID: 463002, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -1.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 10256646, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: m_Text
-      value: Empty Scene
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
@@ -8742,6 +8714,22 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1690056658}
+--- !u!1 &1707278742 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 155668, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
+  m_PrefabInternal: {fileID: 618882327}
+--- !u!114 &1707278743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1707278742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76f7e2a7bed01854e80cc4271b5bbfe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnableTypes: []
 --- !u!224 &1717505484 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22429384, guid: 7bb29badc4c08a743b728f0ec9906bce,

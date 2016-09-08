@@ -13,8 +13,6 @@ public class HUD : MonoBehaviour
     private Transform cinemaBars;
     
     [Header("Player Info")]
-    [SerializeField]
-    private Transform[] playerShipInfo;
 
     [SerializeField]
     private Image playerPortrait;
@@ -56,14 +54,14 @@ public class HUD : MonoBehaviour
         
         content.gameObject.SetActive(!cinemaMode);
         cinemaBars.gameObject.SetActive(cinemaMode);
-        
-        if (!cinemaMode)
+
+        if (!player || !player.Ship)
+        {
+            content.gameObject.SetActive(false);
+        }
+        else if (!cinemaMode)
         {
             bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
-            foreach (var shipInfoItem in playerShipInfo)
-            {
-                shipInfoItem.gameObject.SetActive(playerInfoVisible);
-            }
 
             if (playerInfoVisible)
             {
