@@ -37,7 +37,12 @@ public class Bullet : MonoBehaviour {
         RaycastHit hit;
         bool dead;
 
-		if (Physics.Raycast(lastPos, frameDirection, out hit, frameDistance, raycastMask))
+		if (Physics.Raycast(lastPos, 
+            frameDirection, 
+            out hit, 
+            frameDistance, 
+            raycastMask, 
+            QueryTriggerInteraction.Ignore))
 		{
 			nextPos = hit.point;
 			var hitObj = hit.collider.gameObject;
