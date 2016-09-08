@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class ListUtility
 {
@@ -80,6 +81,8 @@ public static class ListUtility
 
     public static T Random<T>(this IList<T> list)
     {
+        Debug.Assert(list != null && list.Count > 0, "can't pick random element from empty or null list");
+
         var index = UnityEngine.Random.Range(0, list.Count);
 
         return list[index];
