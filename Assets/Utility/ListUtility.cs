@@ -77,4 +77,11 @@ public static class ListUtility
             yield break;
         }
     }
+
+    public static T Random<T>(this IList<T> list)
+    {
+        var index = UnityEngine.Random.Range(0, list.Count);
+
+        return list[index];
+    }
 }
