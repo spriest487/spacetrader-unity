@@ -42,7 +42,7 @@ public class TrafficSpawner : MonoBehaviour
             RandomSpawnTimer();
         }
     }
-
+   
     void SpawnTrafficShip()
     {
         Debug.Assert(spawnableTypes.Count > 0);
@@ -53,7 +53,7 @@ public class TrafficSpawner : MonoBehaviour
         var spawnRot = Quaternion.LookRotation((transform.position - spawnPos).normalized);
 
         var ship = shipType.CreateShip(spawnPos, spawnRot);
-        var trafficShip = ship.gameObject.AddComponent<TrafficShip>();
+        var trafficShip = TrafficShip.AddToShip(ship);
         trafficShip.SetDestinationStation(station);
         
         spawned.Add(ship);

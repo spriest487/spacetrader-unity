@@ -31,18 +31,9 @@ public class ActivateTask : AITask
         if (!target.TryActivate(TaskFollower.Ship))
         {
             //dumb as rocks default behaviour - fly directly at target
-            var targetShip = target.GetComponent<Ship>();
             var accuracy = TaskFollower.Ship.CloseDistance;
 
-            FlyToPointTask flyToTarget;
-            if (targetShip) 
-            {
-                flyToTarget = FlyToPointTask.Create(targetShip, accuracy);
-            }
-            else
-            {
-                flyToTarget = FlyToPointTask.Create(target.transform.position, accuracy);
-            }
+            var flyToTarget = NavigateTask.Create(target.transform.position);
 
             TaskFollower.AssignTask(flyToTarget);
         }

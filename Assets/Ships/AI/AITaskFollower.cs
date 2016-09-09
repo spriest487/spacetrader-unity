@@ -4,6 +4,16 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Ship))]
 public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 {
+    /* create and initialize an AITaskFollower (should do everything
+     Start() does so we can use it immediately) */
+    public static AITaskFollower AddToShip(Ship ship)
+    {
+        var ai = ship.gameObject.AddComponent<AITaskFollower>();
+        ai.ship = ship;
+
+        return ai;
+    }
+
     private LinkedList<AITask> tasks;
     
     [SerializeField]

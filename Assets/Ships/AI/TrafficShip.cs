@@ -4,7 +4,25 @@ using System.Linq;
 
 [RequireComponent(typeof(AITaskFollower))]
 public class TrafficShip : MonoBehaviour
-{    
+{
+    public static TrafficShip AddToShip(Ship ship)
+    {
+        var ai = ship.GetComponent<AITaskFollower>();
+        if (!ai)
+        {
+            ai = AITaskFollower.AddToShip(ship);
+        }
+
+        var trafficShip = ship.gameObject.AddComponent<TrafficShip>();
+        trafficShip.Start();
+
+        return trafficShip;
+    }
+
+    //our goal is to show up, visit the station, then leave
+    [SerializeField]
+    private bool hasVisitedStation;
+
     private AITaskFollower ai;
 
     private SpaceStation spaceStation;
@@ -12,31 +30,33 @@ public class TrafficShip : MonoBehaviour
     void Start()
     {
         ai = GetComponent<AITaskFollower>();
+        hasVisitedStation = false;
     }
     
     private void Update()
     {
         if (ai.Idle)
         {
-            //maybe a task for this instead
-            if (spaceStation && ai.Ship.IsCloseTo(spaceStation.transform.position))
+            if (spaceStation && !hasVisitedStation)
             {
-                spaceStation.Activate(ai.Ship);
+                SetDestinationStation(spaceStation);
             }
-
-            JumpOut();
+            else
+            {
+                JumpOut();
+            }
         }
     }
 
     public void SetDestinationStation(SpaceStation station)
     {
         spaceStation = station;
+        ai.AssignTask(ActivateTask.Create(spaceStation));
     }
 
     void OnTakeDamage(HitDamage damage)
     {
         ai.ClearTasks();
-        ai.AssignTask(ActivateTask.Create(spaceStation));
     }
     
     void JumpOut()
