@@ -18,28 +18,18 @@ public class Bracket : MonoBehaviour
     private Image edgeMarker;
     [SerializeField]
     private Healthbar healthbar;
-
-    [SerializeField]
-    private CanvasGroup canvasGroup;
-    [SerializeField]
-    private RectTransform rectTransform;
-
+        
     //owner bracket manager
-    [SerializeField]
     private BracketManager bracketManager;
     
-    private Canvas canvas;
-
     public Targetable Target { get { return target; } }
-
-    [SerializeField]
-    [HideInInspector]
-    private Collider targetCollider;
-
-    [SerializeField]
-    [HideInInspector]
+    
+    private Collider targetCollider;    
     private Hitpoints targetHitpoints;
-   
+
+    private CanvasGroup canvasGroup;
+    private RectTransform rectTransform;
+
     public void Assign(BracketManager manager, Targetable target)
     {
         bracketManager = manager;
@@ -48,27 +38,31 @@ public class Bracket : MonoBehaviour
 
         targetCollider = target.GetComponent<Collider>();
         targetHitpoints = target.GetComponent<Hitpoints>();
+
+        if (canvasGroup == null)
+        {
+            Start();
+        }
+
+        //immediately find position
+        LateUpdate();
     }
 
     void Start()
     {
         Debug.Assert(target, "bracket must have a target");
-
-        canvas = GetComponentInParent<Canvas>();
+        
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
         
         var hitpoints = target.GetComponent<Hitpoints>();
-        foreach (var healthbar in GetComponentsInChildren<Healthbar>())
+        if (hitpoints)
         {
-            if (hitpoints)
-            {
-                healthbar.ship = hitpoints;
-            }
-            else
-            {
-                healthbar.gameObject.SetActive(false);
-            }
+            healthbar.ship = hitpoints;
+        }
+        else
+        {
+            healthbar.gameObject.SetActive(false);
         }
     }
 
@@ -113,11 +107,9 @@ public class Bracket : MonoBehaviour
         var maxCorner = new Vector2(Mathf.Max(xs), Mathf.Max(ys));
 
         var diff = maxCorner - minCorner;
-        width = (int)(diff.x / canvas.scaleFactor);
-        height = (int)(diff.y / canvas.scaleFactor);
 
-        width = Mathf.Clamp(width, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 2);
-        height = Mathf.Clamp(height, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 2);
+        width = Mathf.Clamp((int) diff.x, bracketManager.DefaultWidth, bracketManager.DefaultWidth * 2);
+        height = Mathf.Clamp((int) diff.y, bracketManager.DefaultHeight, bracketManager.DefaultHeight * 2);
     }
 
     private void RotateEdgeMarkerToTarget(int x, int y)
