@@ -111,6 +111,12 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     
     void Update()
     {
+        //ai doesn't run while jumping
+        if (ship.JumpTarget)
+        {
+            return;
+        }
+
         while (true)
         {
             /* a task execution can add new tasks itself, but during an update we

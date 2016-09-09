@@ -7,7 +7,7 @@ public class TrafficSpawner : MonoBehaviour
 
     /* make this a number high enough to not matter normally, but low enough
      to stop things getting silly when debugging with short spawn timers */
-    const float MAX_SPAWNED_COUNT = 10;
+    const float MAX_SPAWNED_COUNT = 5;
 
     [SerializeField]
     private List<ShipType> spawnableTypes;
@@ -29,6 +29,7 @@ public class TrafficSpawner : MonoBehaviour
     {
         if (Time.time > nextSpawn)
         {
+            spawned.RemoveAll(s => !s);
             if (spawned.Count < MAX_SPAWNED_COUNT)
             {
                 SpawnTrafficShip();
@@ -54,8 +55,7 @@ public class TrafficSpawner : MonoBehaviour
         var ship = shipType.CreateShip(spawnPos, spawnRot);
         var trafficShip = ship.gameObject.AddComponent<TrafficShip>();
         trafficShip.SetDestinationStation(station);
-
-        spawned.RemoveAll(s => !s);
+        
         spawned.Add(ship);
     }
 

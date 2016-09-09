@@ -11,6 +11,14 @@ public class FlyToPointTask : AITask
         return task;
     }
 
+    public static FlyToPointTask Create(Ship dest, float accuracy)
+    {
+        var task = CreateInstance<FlyToPointTask>();
+        task.dest = dest.transform.position;
+        task.accuracy = dest.CloseDistance;
+        return task;
+    }
+
     [SerializeField]
     private Vector3 dest;
 

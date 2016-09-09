@@ -18,6 +18,12 @@ public class TrafficShip : MonoBehaviour
     {
         if (ai.Idle)
         {
+            //maybe a task for this instead
+            if (spaceStation && ai.Ship.IsCloseTo(spaceStation.transform.position))
+            {
+                spaceStation.Activate(ai.Ship);
+            }
+
             JumpOut();
         }
     }
@@ -30,13 +36,9 @@ public class TrafficShip : MonoBehaviour
     void OnTakeDamage(HitDamage damage)
     {
         ai.ClearTasks();
+        ai.AssignTask(ActivateTask.Create(spaceStation));
     }
     
-    void FlyToStation()
-    {
-        ai.AssignTask(FlyToPointTask.Create(spaceStation.transform.position, ai.Ship.CloseDistance));
-    }
-
     void JumpOut()
     {
         //pick a random world map point
@@ -45,6 +47,11 @@ public class TrafficShip : MonoBehaviour
         const float JUMP_OUT_CLEAR_DIST = 50;
         var targetPos = mapPoint.transform.localPosition * JUMP_OUT_CLEAR_DIST;
 
-        ai.AssignTask(FlyToPointTask.Create(targetPos, ai.Ship.CloseDistance));
+        ai.AssignTask(ActivateTask.Create(mapPoint));
+    }
+
+    void OnCompletedJump()
+    {
+        Destroy(gameObject);
     }
 }
