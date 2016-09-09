@@ -61,41 +61,36 @@ public class HUD : MonoBehaviour
         }
         else if (!cinemaMode)
         {
-            bool playerInfoVisible = PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship;
+            var playerTarget = player.Ship.Target;
 
-            if (playerInfoVisible)
+            if (playerTarget 
+                && playerTarget.ActionOnActivate
+                && playerTarget.ActionOnActivate.CanBeActivatedBy(player.Ship)
+                && !lootWindow.isActiveAndEnabled)
             {
-                var playerTarget = PlayerShip.LocalPlayer.Ship.Target;
-
-                if (playerTarget 
-                    && playerTarget.ActionOnActivate
-                    && playerTarget.ActionOnActivate.CanBeActivatedBy(player.Ship)
-                    && !lootWindow.isActiveAndEnabled)
-                {
-                    useTargetButton.gameObject.SetActive(true);
-                    useTargetText.text = playerTarget.ActionOnActivate.ActionName;
-                }
-                else
-                {
-                    useTargetButton.gameObject.SetActive(false);
-                }
-
-                //TODO: slow
-                var captain = PlayerShip.LocalPlayer.Ship.GetCaptain();
-                if (captain)
-                {
-                    playerName.text = captain.name;
-                    playerPortrait.sprite = captain.Portrait;
-                }
-                else
-                {
-                    playerName.text = "Player";
-                    playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
-                }
-
-                var money = Market.FormatCurrency(PlayerShip.LocalPlayer.Money);
-                playerMoney.text = money;
+                useTargetButton.gameObject.SetActive(true);
+                useTargetText.text = playerTarget.ActionOnActivate.ActionName;
             }
+            else
+            {
+                useTargetButton.gameObject.SetActive(false);
+            }
+
+            //TODO: slow
+            var captain = player.Ship.GetCaptain();
+            if (captain)
+            {
+                playerName.text = captain.name;
+                playerPortrait.sprite = captain.Portrait;
+            }
+            else
+            {
+                playerName.text = "Player";
+                playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+            }
+
+            var money = Market.FormatCurrency(player.Money);
+            playerMoney.text = money;
         }
     }
 
