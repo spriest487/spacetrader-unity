@@ -12,6 +12,9 @@ public enum DockingState
 [RequireComponent(typeof(Ship))]
 public class Moorable : MonoBehaviour
 {
+    //TODO
+    public const float DOCK_DISTANCE = 25;
+
     [SerializeField]
     private DockingState state;
 
@@ -91,9 +94,6 @@ public class Moorable : MonoBehaviour
         BeginAutoUndocking(station);
     }
 
-    //TODO
-    const float DOCK_DISTANCE = 25;
-
     private float GetDockProximity()
     {
         //TODO
@@ -106,7 +106,7 @@ public class Moorable : MonoBehaviour
         var pointIndex = UnityEngine.Random.Range(0, points.Count);
 
         var endPoint = points[pointIndex];
-        var startPoint = points[pointIndex] + (endPoint - spaceStation.transform.position).normalized * DOCK_DISTANCE; //TODO
+        var startPoint = points[pointIndex].position + (endPoint.position - spaceStation.transform.position).normalized * DOCK_DISTANCE; //TODO
 
         var proximity = GetDockProximity();
 
@@ -118,11 +118,11 @@ public class Moorable : MonoBehaviour
             yield return null; //Start() needs to run
         }
 
-        var goToEnd = FlyToPointTask.Create(endPoint, proximity);
+        var goToEnd = FlyToPointTask.Create(endPoint.position, proximity);
 
         shipAi.AssignTask(goToEnd);
 
-        if (!ship.CanSee(endPoint) && !goToEnd.Done)
+        if (!ship.CanSee(endPoint.position) && !goToEnd.Done)
         {
             var goToStart = FlyToPointTask.Create(startPoint, proximity);
             shipAi.AssignTask(goToStart);

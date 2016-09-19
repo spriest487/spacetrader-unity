@@ -461,6 +461,45 @@ public partial class Ship : MonoBehaviour
             Yaw = counterThrust.y;
             Roll = counterThrust.z;
         }
+
+        float safeTurnAngle = 30;
+
+        //slow down our forwards thrust to turn, if we're going too fast
+        var dotToTarget = Vector3.Dot(transform.forward, aimDir);
+        float degToTarget = Mathf.Rad2Deg * Mathf.Acos(dotToTarget);
+        float brakeToTurnFactor = 1 - (degToTarget / safeTurnAngle);
+
+        Thrust *= Mathf.Clamp01(brakeToTurnFactor);
+    }
+
+    public void PreciseManeuverTo(Vector3 moveToPos)
+    {
+        var adjustBetween = moveToPos - transform.position;
+        
+        var currentLocalSpeed = transform.InverseTransformDirection(RigidBody.velocity);
+        
+        var localBetween = transform.InverseTransformDirection(adjustBetween);
+
+        float adjustMax = Mathf.Max(
+            Mathf.Abs(localBetween.x),
+            Mathf.Abs(localBetween.y),
+            Mathf.Abs(localBetween.z));
+
+        var newThrust = localBetween / adjustMax;
+
+        //adjust less forcefully if we're close to the destination
+        var safeAdjustDist = CurrentStats.MaxSpeed * 2; //TODO calculate stopping distance?
+        float adjustPower = Mathf.Clamp01(localBetween.magnitude / safeAdjustDist);
+        newThrust *= adjustPower;
+
+        strafe = newThrust.x;
+        lift = newThrust.y;
+
+        //don't intefere with thrust if we're going faster anyway
+        if (Mathf.Abs(newThrust.z) > Mathf.Abs(thrust))
+        {
+            thrust = newThrust.z;
+        }
     }
 
     private void OnDestroy()

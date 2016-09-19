@@ -18,10 +18,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     
     [SerializeField]
     private AITask[] serializedTasks;
-
-    [SerializeField]
-    private AITask lastTask;
-
+    
     [SerializeField]
     private Ship ship;
 
@@ -30,14 +27,6 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
         get
         {
             return ship;
-        }
-    }
-
-    public AITask LastTask
-    {
-        get
-        {
-            return lastTask;
         }
     }
 
@@ -69,7 +58,10 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     
     public void AssignTask(AITask task)
     {
-        Debug.Assert(ship, "can't assign tasks without a ship (don't assign tasks on same frame as follower was instantiated)");
+        if (!ship)
+        {
+            Start();
+        }
 
         task.CheckRequiredConstraints();
         task.Status = AITask.TaskStatus.NEW;
@@ -159,8 +151,6 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
                 nextTask.End();
                 Destroy(nextTask);
                 tasks.Remove(nextTaskNode);
-
-                lastTask = nextTask;
             }
             else
             {

@@ -22,10 +22,14 @@ public class AttackTask : AITask
     [SerializeField]
     private Targetable attackTarget;
 
+    [SerializeField]
+    private Ship attackShip;
+
     public static AttackTask Create(Targetable ship)
     {
         AttackTask task = CreateInstance<AttackTask>();
         task.attackTarget = ship;
+        task.attackShip = ship.GetComponent<Ship>();
         return task;
     }
 
@@ -71,10 +75,9 @@ public class AttackTask : AITask
             if (TaskFollower.Ship.IsCloseTo(dest))
             {
                 /* we're close to where we want to be, now aim at them */
-                if (!aimCloseEnough)
-                {
-                    TaskFollower.AssignTask(AimAtTask.Create(dest, attackTarget.transform.position, 10));
-                }
+                var thrust = attackShip? Ship.EquivalentThrust(TaskFollower.Ship, attackShip) : 0;
+                TaskFollower.Ship.ResetControls(thrust: thrust);
+                TaskFollower.Ship.RotateToPoint(attackTarget.transform.position);
             }
             else
             {

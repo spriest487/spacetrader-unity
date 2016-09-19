@@ -53,16 +53,10 @@ public class SpaceStation : ActionOnActivate
     {
         get { return mooringTrigger; }
     }
-
-    public IEnumerable<Vector3> UndockPoints
+    
+    public IEnumerable<Transform> UndockPoints
     {
-        get
-        {
-            foreach (var point in undockPoints)
-            {
-                yield return point.position;
-            }
-        }
+        get { return undockPoints; }
     }
 
     public Vector3 DockingViewpoint

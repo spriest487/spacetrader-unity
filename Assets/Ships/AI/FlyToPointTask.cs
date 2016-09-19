@@ -36,13 +36,10 @@ public class FlyToPointTask : AITask
 
         while (!Done)
         {
-            var between = (dest - TaskFollower.transform.position).normalized;
-            var dotToTarget = Vector3.Dot(TaskFollower.transform.forward, between);
-
             /* slow down if we're not facing where we want to go (slower the
             further away from the correct heading we are) */
-            ship.Thrust = Mathf.Clamp01(dotToTarget);
-            ship.RotateToDirection(between);
+            ship.ResetControls(thrust: 1);
+            ship.RotateToPoint(dest);
 
             yield return checkInterval;            
         }

@@ -51,7 +51,15 @@ public class TrafficShip : MonoBehaviour
     public void SetDestinationStation(SpaceStation station)
     {
         spaceStation = station;
+
         ai.AssignTask(ActivateTask.Create(spaceStation));
+
+        //use the undock points to find our docking vector
+        var undock = ai.transform.Closest(spaceStation.UndockPoints);
+        if (undock)
+        {
+            ai.AssignTask(NavigateTask.Create(undock.transform.position + undock.transform.forward * Moorable.DOCK_DISTANCE));
+        }
     }
 
     void OnTakeDamage(HitDamage damage)
