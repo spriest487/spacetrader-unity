@@ -467,9 +467,11 @@ public partial class Ship : MonoBehaviour
         //slow down our forwards thrust to turn, if we're going too fast
         var dotToTarget = Vector3.Dot(transform.forward, aimDir);
         float degToTarget = Mathf.Rad2Deg * Mathf.Acos(dotToTarget);
-        float brakeToTurnFactor = 1 - (degToTarget / safeTurnAngle);
-
-        Thrust *= Mathf.Clamp01(brakeToTurnFactor);
+        float brakeToTurnFactor = Mathf.Clamp01(1 - (degToTarget / safeTurnAngle));
+        
+        Thrust *= brakeToTurnFactor;
+        Lift *= brakeToTurnFactor;
+        strafe *= brakeToTurnFactor;
     }
 
     public void PreciseManeuverTo(Vector3 moveToPos)
