@@ -38,7 +38,8 @@ public class FlyToPointTask : AITask
         {
             /* slow down if we're not facing where we want to go (slower the
             further away from the correct heading we are) */
-            ship.ResetControls(thrust: 1);
+            //ship.ResetControls(thrust: 1);
+            ship.PreciseManeuverTo(dest);
             ship.RotateToPoint(dest);
 
             yield return checkInterval;            
