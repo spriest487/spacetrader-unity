@@ -10,6 +10,12 @@ public class TrafficSpawner : MonoBehaviour
     const float MAX_SPAWNED_COUNT = 5;
 
     [SerializeField]
+    private float spawnRateMin = 2;
+
+    [SerializeField]
+    private float spawnRateMax = 10;
+
+    [SerializeField]
     private List<ShipType> spawnableTypes;
 
     private float nextSpawn;
@@ -61,6 +67,6 @@ public class TrafficSpawner : MonoBehaviour
 
     void RandomSpawnTimer()
     {
-        nextSpawn = Time.time + Random.Range(1, 2);
+        nextSpawn = Time.time + Random.Range(spawnRateMin, spawnRateMax);
     }
 }
