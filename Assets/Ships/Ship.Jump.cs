@@ -22,24 +22,32 @@ public partial class Ship
 
         yield return null;
 
-        //disable physics
-        RigidBody.isKinematic = true;
-        RigidBody.angularVelocity = Vector3.zero;
-        RigidBody.velocity = Vector3.zero;
-
-        ResetControls();
-
-        Collider.enabled = false;
-
+        //make sure this still exists..
         if (!jumpTarget)
         {
             yield break;
         }
 
+        ResetControls();
+
         //TODO: don't just instantly go to correct rot
         var jumpDir = jumpTarget.transform.position.normalized;
 
-        transform.rotation = Quaternion.LookRotation(jumpDir);
+        bool aimingAtTarget;
+        do
+        {
+            aimingAtTarget = RotateToDirection(jumpDir);
+            yield return null;
+        } while (!aimingAtTarget);
+        
+        //cheat - snap the last bit, if any
+        transform.rotation = Quaternion.LookRotation(jumpDir, transform.up);
+
+        //disable physics
+        RigidBody.isKinematic = true;
+        RigidBody.angularVelocity = Vector3.zero;
+        RigidBody.velocity = Vector3.zero;
+        Collider.enabled = false;
 
         var jumpOrigin = transform.position;
         var jumpEnd = transform.position + (jumpDir * JUMP_DIST);

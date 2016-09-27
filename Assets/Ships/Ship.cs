@@ -371,19 +371,19 @@ public partial class Ship : MonoBehaviour
         return true;
     }
 
-    public void RotateToPoint(Vector3 aimPoint, Vector3? targetUp = null, float aimAccuracy = 1)
+    public bool RotateToPoint(Vector3 aimPoint, Vector3? targetUp = null, float aimAccuracy = 1)
     {
         var between = aimPoint - transform.position;
 
         if (between.sqrMagnitude < Mathf.Epsilon)
         {
-            return;
+            return true;
         }
 
-        RotateToDirection(between.normalized, targetUp, aimAccuracy);
+        return RotateToDirection(between.normalized, targetUp, aimAccuracy);
     }
 
-    public void RotateToDirection(Vector3 aimDir, Vector3? targetUp = null, float aimAccuracy = 1)
+    public bool RotateToDirection(Vector3 aimDir, Vector3? targetUp = null, float aimAccuracy = 1)
     {
         var aimDirLocal = transform.InverseTransformDirection(aimDir);
 
@@ -480,6 +480,8 @@ public partial class Ship : MonoBehaviour
         Debug.Assert(!float.IsNaN(thrust));
         Debug.Assert(!float.IsNaN(strafe));
         Debug.Assert(!float.IsNaN(lift));
+
+        return facingDirectlyTowards;
     }
 
     public void PreciseManeuverTo(Vector3 moveToPos)
