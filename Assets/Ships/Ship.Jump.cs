@@ -17,12 +17,18 @@ public partial class Ship
 
     private IEnumerator JumpRoutine()
     {
+        Debug.Assert(Moorable.State == DockingState.InSpace);
         Debug.Assert(SpaceTraderConfig.WorldMap && SpaceTraderConfig.WorldMap.JumpEffectCurve != null);
 
         yield return null;
 
         //disable physics
         RigidBody.isKinematic = true;
+        RigidBody.angularVelocity = Vector3.zero;
+        RigidBody.velocity = Vector3.zero;
+
+        ResetControls();
+
         Collider.enabled = false;
 
         if (!jumpTarget)

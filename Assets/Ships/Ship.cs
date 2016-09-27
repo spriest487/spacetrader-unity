@@ -54,37 +54,31 @@ public partial class Ship : MonoBehaviour
     public float Thrust
     {
         get { return thrust; }
-        set { thrust = value; }
     }
 
     public float Strafe
     {
         get { return strafe; }
-        set { strafe = value; }
     }
 
     public float Lift
     {
         get { return lift; }
-        set { lift = value; }
     }
 
     public float Pitch
     {
         get { return pitch; }
-        set { pitch = value; }
     }
 
     public float Yaw
     {
         get { return yaw; }
-        set { yaw = value; }
     }
 
     public float Roll
     {
         get { return roll; }
-        set { roll = value; }
     }
 
     private ShipStats currentStats;
@@ -192,12 +186,19 @@ public partial class Ship : MonoBehaviour
 
     public void ResetControls(float pitch = 0, float yaw = 0, float roll = 0, float thrust = 0, float strafe = 0, float lift = 0)
     {
-        Pitch = pitch;
-        Yaw = yaw;
-        Roll = roll;
-        Thrust = thrust;
-        Strafe = strafe;
-        Lift = lift;
+        Debug.Assert(!float.IsNaN(pitch));
+        Debug.Assert(!float.IsNaN(yaw));
+        Debug.Assert(!float.IsNaN(roll));
+        Debug.Assert(!float.IsNaN(thrust));
+        Debug.Assert(!float.IsNaN(strafe));
+        Debug.Assert(!float.IsNaN(lift));
+
+        this.pitch = pitch;
+        this.yaw = yaw;
+        this.roll = roll;
+        this.thrust = thrust;
+        this.strafe = strafe;
+        this.lift = lift;
     }
     
     public CrewMember GetCaptain()
@@ -444,8 +445,8 @@ public partial class Ship : MonoBehaviour
                 angles[angleIt] = angle;
             }
 
-            Pitch = angles.x;
-            Yaw = angles.y;
+            pitch = angles.x;
+            yaw = angles.y;
         }
         else
         {
@@ -457,29 +458,36 @@ public partial class Ship : MonoBehaviour
                 counterThrust[a] = -(Mathf.Clamp01(angle / Mathf.Max(1, CurrentStats.MaxTurnSpeed)));
             }
 
-            Pitch = counterThrust.x;
-            Yaw = counterThrust.y;
-            Roll = counterThrust.z;
+            pitch = counterThrust.x;
+            yaw = counterThrust.y;
+            roll = counterThrust.z;
         }
 
         float safeTurnAngle = 30;
 
         //slow down our forwards thrust to turn, if we're going too fast
-        var dotToTarget = Vector3.Dot(transform.forward, aimDir);
+        var dotToTarget = Mathf.Clamp(Vector3.Dot(transform.forward, aimDir), -1.0f, 1.0f);
         float degToTarget = Mathf.Rad2Deg * Mathf.Acos(dotToTarget);
         float brakeToTurnFactor = Mathf.Clamp01(1 - (degToTarget / safeTurnAngle));
         
-        Thrust *= brakeToTurnFactor;
-        Lift *= brakeToTurnFactor;
+        thrust *= brakeToTurnFactor;
+        lift *= brakeToTurnFactor;
         strafe *= brakeToTurnFactor;
+
+        Debug.Assert(!float.IsNaN(pitch));
+        Debug.Assert(!float.IsNaN(yaw));
+        Debug.Assert(!float.IsNaN(roll));
+        Debug.Assert(!float.IsNaN(thrust));
+        Debug.Assert(!float.IsNaN(strafe));
+        Debug.Assert(!float.IsNaN(lift));
     }
 
     public void PreciseManeuverTo(Vector3 moveToPos)
     {
         var adjustBetween = moveToPos - transform.position;
-        
+
         var currentLocalSpeed = transform.InverseTransformDirection(RigidBody.velocity);
-        
+
         var localBetween = transform.InverseTransformDirection(adjustBetween);
 
         float adjustMax = Mathf.Max(
@@ -487,12 +495,26 @@ public partial class Ship : MonoBehaviour
             Mathf.Abs(localBetween.y),
             Mathf.Abs(localBetween.z));
 
-        var newThrust = localBetween / adjustMax;
+        Vector3 newThrust;
+        if (Mathf.Approximately(0, adjustMax))
+        {
+            newThrust = Vector3.zero;
+        }
+        else
+        {
+            newThrust = localBetween / adjustMax;
 
-        //adjust less forcefully if we're close to the destination
-        var safeAdjustDist = CurrentStats.MaxSpeed * 2; //TODO calculate stopping distance?
-        float adjustPower = Mathf.Clamp01(localBetween.magnitude / safeAdjustDist);
-        newThrust *= adjustPower;
+            //adjust less forcefully if we're close to the destination
+            var safeAdjustDist = CurrentStats.MaxSpeed * 2; //TODO calculate stopping distance?
+            
+
+            if (!Mathf.Approximately(0, safeAdjustDist))
+            {
+                float adjustPower = Mathf.Clamp01(localBetween.magnitude / safeAdjustDist);
+
+                newThrust *= adjustPower;
+            }
+        }
 
         strafe = newThrust.x;
         lift = newThrust.y;
@@ -502,8 +524,11 @@ public partial class Ship : MonoBehaviour
         {
             thrust = newThrust.z;
         }
-    }
 
+        Debug.Assert(!float.IsNaN(thrust));
+        Debug.Assert(!float.IsNaN(strafe));
+        Debug.Assert(!float.IsNaN(lift));
+    }
     private void OnDestroy()
     {
         foreach (var effect in activeStatusEffects)
@@ -596,8 +621,6 @@ public partial class Ship : MonoBehaviour
         activeStatusEffects.RemoveAll(e => e == null);
 	}
     
-    
-    
 	void FixedUpdate()
 	{
 		formationManager.Update();
@@ -606,14 +629,14 @@ public partial class Ship : MonoBehaviour
         if (RigidBody)
 		{
             UpdateRigidBodyFromStats(RigidBody, CurrentStats);
-
+            
             //all movement vals must be within -1..1
-            Thrust = Mathf.Clamp(Thrust, -1, 1);
-            Strafe = Mathf.Clamp(Strafe, -1, 1);
-            Lift = Mathf.Clamp(Lift, -1, 1);
-            Pitch = Mathf.Clamp(Pitch, -1, 1);
-            Yaw = Mathf.Clamp(Yaw, -1, 1);
-            Roll = Mathf.Clamp(Roll, -1, 1);
+            thrust = Mathf.Clamp(thrust, -1, 1);
+            strafe = Mathf.Clamp(strafe, -1, 1);
+            lift = Mathf.Clamp(lift, -1, 1);
+            pitch = Mathf.Clamp(pitch, -1, 1);
+            yaw = Mathf.Clamp(yaw, -1, 1);
+            roll = Mathf.Clamp(roll, -1, 1);
 
             var torqueMax = CurrentStats.MaxTurnSpeed * Mathf.Deg2Rad;
 
@@ -625,11 +648,11 @@ public partial class Ship : MonoBehaviour
                                     
             var force = forceInput * CurrentStats.Thrust;
             var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.Agility;
-
+            
             for (int i = 0; i <3; ++i)
             {
-                if (float.IsNaN(torque[i]))
-                    Debug.Log("test");
+                Debug.Assert(!float.IsNaN(torque[i]));
+                Debug.Assert(!float.IsNaN(force[i]));
             }
 
             /* apply new forces */
@@ -830,5 +853,10 @@ public partial class Ship : MonoBehaviour
         var captain = GetCaptain();
 
         return baseXp + Mathf.FloorToInt(baseXp * 0.5f * (captain? captain.Level : 0));
+    }
+
+    private void OnUnmoored()
+    {
+        ResetControls();
     }
 }

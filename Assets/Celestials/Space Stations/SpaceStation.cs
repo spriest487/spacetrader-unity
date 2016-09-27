@@ -3,6 +3,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class SpaceStation : ActionOnActivate
 {
@@ -10,10 +11,7 @@ public class SpaceStation : ActionOnActivate
 
     [SerializeField]
     private MooringTrigger mooringTrigger;
-
-    [SerializeField]
-    private List<Moorable> mooredShips;
-
+    
     [SerializeField]
     private List<Transform> undockPoints;
 
@@ -21,6 +19,12 @@ public class SpaceStation : ActionOnActivate
     private Transform dockingViewpoint;
 
     [Header("Inside")]
+
+    [SerializeField]
+    private List<Moorable> dockedShips;
+
+    [SerializeField]
+    private List<TrafficShip> dockedTraffic;
 
     [SerializeField]
     private List<CrewMember> availableCrew;
@@ -115,17 +119,23 @@ public class SpaceStation : ActionOnActivate
         docked.gameObject.SendMessage("OnMoored", this, SendMessageOptions.DontRequireReceiver);
 
         docked.gameObject.SetActive(false);
-        mooredShips.Add(docked);
+        dockedShips.Add(docked);
+        var traffic = docked.GetComponent<TrafficShip>();
+        if (traffic)
+        {
+            dockedTraffic.Add(traffic);
+        }
     }
 
     public void Unmoor(Moorable moorable)
     {
-        Debug.AssertFormat(mooredShips.Contains(moorable), 
+        Debug.AssertFormat(dockedShips.Contains(moorable), 
             "tried to unmoor {0} from {1} but it's not moored here",
                 moorable,
                 gameObject);
 
-        mooredShips.Remove(moorable);
+        dockedShips.Remove(moorable);
+        dockedTraffic.RemoveAll(t => t.Ship.Moorable == moorable);
 
         Transform undockPoint;
         if (undockPoints.Count == 0)
@@ -155,5 +165,13 @@ public class SpaceStation : ActionOnActivate
 
         moorable.gameObject.SetActive(true);
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
+    }
+
+    void Update()
+    {
+        for (int trafficIt = 0; trafficIt < dockedTraffic.Count; ++trafficIt)
+        {
+            dockedTraffic[trafficIt].DockedUpdate(this);
+        }
     }
 }

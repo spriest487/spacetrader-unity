@@ -205,15 +205,13 @@ public class PlayerShip : MonoBehaviour
                 }
             }
 
-            ship.Pitch = pitch;
-            ship.Yaw = yaw;
-
-            //roll is manual only
-            ship.Roll = -Input.GetAxis("roll");
-
-            ship.Thrust = Input.GetAxis("Vertical");
-            ship.Strafe = Input.GetAxis("Horizontal");
-            ship.Lift = Input.GetAxis("lift");
+            ship.ResetControls(
+                pitch: pitch, 
+                yaw: yaw, 
+                roll: -Input.GetAxis("roll"),
+                thrust: Input.GetAxis("Vertical"),
+                strafe: Input.GetAxis("Horizontal"),
+                lift:  Input.GetAxis("lift"));
 
             if (Input.GetButton("fire"))
             {

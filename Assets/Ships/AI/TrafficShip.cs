@@ -19,32 +19,51 @@ public class TrafficShip : MonoBehaviour
         return trafficShip;
     }
 
-    //our goal is to show up, visit the station, then leave
+    //our goal is to show up, visit the station, then leave - once this != 0 we're going home
     [SerializeField]
-    private bool hasVisitedStation;
+    private float dockedTime;
 
     private AITaskFollower ai;
 
     private SpaceStation spaceStation;
 
+    public Ship Ship { get { return ai.Ship; } }
+
     void Start()
     {
         ai = GetComponent<AITaskFollower>();
-        hasVisitedStation = false;
+        dockedTime = 0;
     }
     
     private void Update()
     {
         if (ai.Idle)
         {
-            if (spaceStation && !hasVisitedStation)
+            if (spaceStation && dockedTime == 0)
             {
                 SetDestinationStation(spaceStation);
             }
             else
             {
-                JumpOut();
+                //wait for dock/undock routines to finish before doing this
+                if (Ship.Moorable.State == DockingState.InSpace)
+                {
+                    JumpOut();
+                }
             }
+        }
+    }
+
+    public void DockedUpdate(SpaceStation dockedAtStation)
+    {
+        Debug.Assert(dockedAtStation && ai.Ship && ai.Ship.Moorable);
+
+        if (Time.time > dockedTime + 5)
+        {
+            dockedAtStation.Unmoor(ai.Ship.Moorable);
+
+            //just to make sure..
+            ai.ClearTasks();
         }
     }
 
@@ -81,5 +100,10 @@ public class TrafficShip : MonoBehaviour
     void OnCompletedJump()
     {
         Destroy(gameObject);
+    }
+
+    void OnMoored()
+    {
+        dockedTime = Time.time;
     }
 }
