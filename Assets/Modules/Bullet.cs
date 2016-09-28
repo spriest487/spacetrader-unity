@@ -16,8 +16,10 @@ public class Bullet : MonoBehaviour {
     public bool applyBaseVelocity;
 	
 	private Vector3 lastPos;
-	
-	void FixedUpdate()
+
+    private static readonly int RayMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
+    
+    void FixedUpdate()
 	{
         lastPos = transform.position;
 
@@ -30,18 +32,16 @@ public class Bullet : MonoBehaviour {
 
         var frameDistance = frameSpeed.magnitude;
         var frameDirection = frameSpeed / frameDistance;
-
-		int raycastMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
-        
+                
         Vector3 nextPos;
         RaycastHit hit;
         bool dead;
-
+        
 		if (Physics.Raycast(lastPos, 
             frameDirection, 
             out hit, 
-            frameDistance, 
-            raycastMask, 
+            frameDistance,
+            RayMask, 
             QueryTriggerInteraction.Ignore))
 		{
 			nextPos = hit.point;
@@ -69,7 +69,11 @@ public class Bullet : MonoBehaviour {
 
 	void OnTriggerEnter(Collider triggered)
 	{
-		Hit(triggered.gameObject, transform.position);
+        var triggeredMask = 1 << triggered.gameObject.layer;
+        if ((RayMask & triggeredMask) == triggeredMask)
+        {
+            Hit(triggered.gameObject, transform.position);
+        }
 	}
 
 	private bool Hit(GameObject hitObject, Vector3 hitPos)
