@@ -10,7 +10,15 @@ public class WorldMapScreen : MonoBehaviour
         FollowCamera.Current.Camera.enabled = false;
         BackgroundCamera.Current.Camera.enabled = false;
 
-        SpaceTraderConfig.WorldMap.Camera.enabled = true;
+        var mapCam = SpaceTraderConfig.WorldMap.Camera;
+        
+        mapCam.enabled = true;
+
+        var defaultCameraDist = new Vector3(0, 20, -40);
+        var currentArea = SpaceTraderConfig.WorldMap.GetCurrentArea();
+
+        mapCam.transform.position = currentArea.transform.position + defaultCameraDist;
+        mapCam.transform.rotation = Quaternion.LookRotation(-mapCam.transform.position.normalized, Vector3.up);
     }
 
     public void Hide()
