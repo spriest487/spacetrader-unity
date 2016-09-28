@@ -27,7 +27,7 @@ GameObject:
   - 4: {fileID: 431042}
   - 65: {fileID: 6579864}
   - 114: {fileID: 11484880}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Mooring Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -479,10 +479,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mooringTrigger: {fileID: 11484880}
-  mooredShips: []
   undockPoints:
   - {fileID: 489100}
   dockingViewpoint: {fileID: 453612}
+  dockedShips: []
+  dockedTraffic: []
   availableCrew: []
   shipsForSale: []
   itemsForSale: {fileID: 0}
@@ -605,6 +606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76f7e2a7bed01854e80cc4271b5bbfe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnRateMin: 2
+  spawnRateMax: 10
   spawnableTypes:
   - {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
 --- !u!1001 &100100000
