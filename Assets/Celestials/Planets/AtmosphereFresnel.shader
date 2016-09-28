@@ -1,91 +1,56 @@
-﻿Shader "Unlit/AtmosphereFresnel"
-{
-	Properties
-	{
-		_MainTex ("Texture", 2D) = "white" {}
-		_TintColor("TintColor", Color) = (1, 1, 1, 1)
-		_InnerPower("Inner Power", Float) = 1
-		_EdgePower("Soft Edge Power", Float) = 2
-		_InnerMultiplier("Inner Multiplier", Float) = 2
-		_EdgeMultiplier("Soft Edge Multiplier", Float) = 2
-	}
-	SubShader
-	{
-		Tags { "RenderType"="Transparent" "Queue"="Transparent" }
-		LOD 100
-		Blend SrcAlpha OneMinusSrcAlpha
-		ZWrite Off
-		ZTest Always
+﻿Shader "Unlit/AtmosphereFresnel"{
+    Properties{
+        _Diffuse("Diffuse Texture (RGB)", 2D) = "white"{}
+        _Wrapping("Light Wrapping", Range(0.0, 1.0)) = 0.5
+        _Color("Fresnel Color (RGBA)", Color) = (1.0, 1.0, 1.0, 1.0)
+        _Factor("Fresnel Factor", float) = 0.5
+        _FPow("Fresnel Power", float) = 2.0
+        _Soften("Soften Power", float) = 1.0
+    }
 
-		Pass
-		{
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			// make fog work
-			#pragma multi_compile_fog
-			
-			#include "UnityCG.cginc"
+    SubShader {
+        Tags{ "RenderType" = "Transparent" "Queue"="Transparent" }
 
-			struct appdata
-			{
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float2 uv : TEXCOORD0;
-			};
+        Blend SrcAlpha One
+        ZWrite Off
+        ZTest Always
+        
+        CGPROGRAM
+        #pragma surface surf AtmosphereFresnel approxview
 
-			struct v2f
-			{
-				float2 uv : TEXCOORD0;
-				UNITY_FOG_COORDS(1)
-				float4 vertex : POSITION;
-				float4 localNormal: TEXCOORD3;
-				float4 eye: TEXCOORD4;
-			};
+        struct Input {
+            half2 uv_Diffuse;
+            half3 viewDir;
+        };
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			float4 _TintColor;
-			float1 _InnerPower;
-			float1 _EdgePower;
-			float1 _InnerMultiplier;
-			float1 _EdgeMultiplier;
-			
-			v2f vert (appdata v)
-			{
-				v2f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				UNITY_TRANSFER_FOG(o, o.vertex);
+        sampler2D _Diffuse;
+        half4 _Color;
+        half _Factor;
+        half _FPow;
+        half _Soften;
+        fixed _Wrapping;
 
-				o.localNormal = mul(UNITY_MATRIX_MVP, float4(v.normal, 0));
-				o.eye = normalize(-o.vertex);
+        half4 LightingAtmosphereFresnel(SurfaceOutput s, half3 lightDir, half3 viewDir, half atten) {
+            half3 wrap = atten * 2.0 * dot(s.Normal, lightDir + (viewDir * _Wrapping));
+            half diff = dot(s.Normal, lightDir) * 0.5 + 0.5;
 
-				return o;
-			}
-						
-			fixed4 frag (v2f i) : SV_Target
-			{
-				fixed4 col = tex2D(_MainTex, i.uv) * _TintColor;
+            half4 c;
+            c.rgb = wrap * s.Albedo * _LightColor0.rgb * diff;
+            c.a = s.Alpha;
+            return c;
+        }
 
-				UNITY_APPLY_FOG(i.fogCoord, col);
+        void surf(Input IN, inout SurfaceOutput o) {
+            half fresnel = _Factor * pow(1.0 - dot(normalize(IN.viewDir), o.Normal), _FPow);
 
-				float dotToEye = dot(normalize(i.localNormal), normalize(i.eye));
+            half soften = pow(fresnel, _Soften);
 
-				float innerBase = clamp(1 - (dotToEye * _InnerMultiplier), 0, 1);
-				float inner = pow(innerBase, _InnerPower);
+            fresnel -= soften;
+        
+            o.Albedo = tex2D(_Diffuse, IN.uv_Diffuse).rgb * fresnel;
+            o.Emission = lerp(o.Albedo, _Color.rgb, _Color.a) * fresnel;
+        }
 
-				float softEdgeBase = clamp(1 - (dotToEye * _EdgeMultiplier), 0, 1);
-				float softEdge = pow(softEdgeBase, _EdgePower);
-
-				float power = clamp(inner - softEdge, 0, 1);
-								
-				return fixed4(col.rgb, power * col.a);
-				//return fixed4(power, power, power, 1);
-				//return fixed4(inner, inner, inner, 1);
-				//return fixed4(softEdge, softEdge, softEdge, 1);
-			}
-			ENDCG
-		}
-	}
+    ENDCG
+    }
 }
