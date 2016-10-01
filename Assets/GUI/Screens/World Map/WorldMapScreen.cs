@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class WorldMapScreen : MonoBehaviour
 {
+    static readonly LayerMask worldMapLayer = LayerMask.GetMask("World Map");
+
     void OnScreenActive()
     {
         /* disable the camera component, not the whole object - or the Current
@@ -19,6 +21,11 @@ public class WorldMapScreen : MonoBehaviour
 
         mapCam.transform.position = currentArea.transform.position + defaultCameraDist;
         mapCam.transform.rotation = Quaternion.LookRotation(-mapCam.transform.position.normalized, Vector3.up);
+
+        foreach (var marker in SpaceTraderConfig.WorldMap.Markers)
+        {
+            marker.RefreshLayout();
+        }
     }
 
     public void Hide()
@@ -36,6 +43,25 @@ public class WorldMapScreen : MonoBehaviour
         if (Input.GetButtonDown("map"))
         {
             Hide();
+        }
+
+        if (Input.GetMouseButtonDown(0) 
+            && SpaceTraderConfig.LocalPlayer
+            && SpaceTraderConfig.LocalPlayer.Ship)
+        {
+            var pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y);
+            var ray = SpaceTraderConfig.WorldMap.Camera.ScreenPointToRay(pos);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, worldMapLayer))
+            {
+                //the only things on this layer with colliders should be markers
+                var mapArea = hit.collider.GetComponent<WorldMapMarker>().Area;
+
+                SpaceTraderConfig.LocalPlayer.Ship.Target = mapArea.GetComponent<Targetable>();
+
+                Debug.Log("targetted area " + mapArea);
+            }
         }
     }
 }

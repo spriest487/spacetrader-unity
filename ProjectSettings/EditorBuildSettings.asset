@@ -10,8 +10,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Missions/5v5/5v5.unity
   - enabled: 1
-    path: Assets/Scenes/Empty.unity
+    path: Assets/Scenes/Deep Space.unity
   - enabled: 1
-    path: Assets/Scenes/Docked.unity
+    path: Assets/Scenes/Ombine Depot.unity
   - enabled: 1
     path: Assets/Scenes/Station1.unity

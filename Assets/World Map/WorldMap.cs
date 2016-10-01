@@ -14,11 +14,15 @@ public class WorldMap : MonoBehaviour
     [SerializeField]
     private Transform areasRoot;
 
+    [SerializeField]
+    private WorldMapMarker markerPrefab;
+
     //for want of a better place to put this
     [SerializeField]
     private AnimationCurve jumpEffectCurve;
 
     private List<WorldMapArea> areas;
+    private List<WorldMapMarker> markers;
     
     public AnimationCurve JumpEffectCurve
     {
@@ -56,11 +60,24 @@ public class WorldMap : MonoBehaviour
             .FirstOrDefault();
     }
 
+    public IEnumerable<WorldMapMarker> Markers
+    {
+        get { return markers; }
+    }
+
     private void Start()
     {
         areasRoot.gameObject.SetActive(true);
-        areas = GetComponentsInChildren<WorldMapArea>().ToList();
 
+        areas = GetComponentsInChildren<WorldMapArea>().ToList();
+        markers = GetComponentsInChildren<WorldMapMarker>().ToList();
+
+        //add default markers for those areas without preset ones
+        var areasWithoutMarkers = areas.Except(markers.Select(m => m.Area))
+            .ToList();
+        markers.AddRange(areasWithoutMarkers.Select(a => 
+            WorldMapMarker.Create(markerPrefab, a)));
+                
         Camera.enabled = false;
 
         CenterOnCurrentArea();
