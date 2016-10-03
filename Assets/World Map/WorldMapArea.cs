@@ -19,6 +19,6 @@ public partial class WorldMapArea : ActionOnActivate
 
     public override bool CanBeActivatedBy(Ship activator)
     {
-        return true;
+        return SpaceTraderConfig.WorldMap.GetCurrentArea() != this;
     }
 }
