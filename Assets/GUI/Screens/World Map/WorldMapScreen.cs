@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class WorldMapScreen : MonoBehaviour
 {
-    static readonly LayerMask worldMapLayer = LayerMask.GetMask("World Map");
-
     void OnScreenActive()
     {
         /* disable the camera component, not the whole object - or the Current
@@ -26,16 +24,21 @@ public class WorldMapScreen : MonoBehaviour
         {
             marker.RefreshLayout();
         }
+
+        ScreenManager.Instance.FullScreenFade(true);
     }
 
     public void Hide()
     {
-        FollowCamera.Current.Camera.enabled = true;
-        BackgroundCamera.Current.Camera.enabled = true;
+        ScreenManager.Instance.FullScreenFade(false, () =>
+        {
+            FollowCamera.Current.Camera.enabled = true;
+            BackgroundCamera.Current.Camera.enabled = true;
 
-        SpaceTraderConfig.WorldMap.Camera.enabled = false;
+            SpaceTraderConfig.WorldMap.Camera.enabled = false;
 
-        ScreenManager.Instance.ScreenID = ScreenID.None;
+            ScreenManager.Instance.ScreenID = ScreenID.None;
+        });
     }
 
     public void Update()
@@ -53,7 +56,7 @@ public class WorldMapScreen : MonoBehaviour
             var ray = SpaceTraderConfig.WorldMap.Camera.ScreenPointToRay(pos);
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, worldMapLayer))
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask.GetMask("World Map")))
             {
                 //the only things on this layer with colliders should be markers
                 var mapArea = hit.collider.GetComponent<WorldMapMarker>().Area;

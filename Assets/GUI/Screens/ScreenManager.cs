@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -75,6 +76,18 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private Cutscene cutscene;
+
+    [SerializeField]
+    private CanvasGroup fullscreenFadeOverlay;
+
+    private class FullscreenFadeEffect
+    {
+        public bool Reverse;
+        public Coroutine Coroutine;
+        public Action OnFinish;
+    }
+
+    private FullscreenFadeEffect currentFullscreenFade;
 
     public PlayerStatus State
     {
@@ -294,5 +307,79 @@ public class ScreenManager : MonoBehaviour
         instance.gameObject.SetActive(true);
 
         return instance;
+    }
+
+    private IEnumerator FullscreenFadeRoutine()
+    {
+        const float DURATION = 0.1f;
+        float start = Time.time;
+        float end = start + DURATION;
+        float now = start;
+
+        fullscreenFadeOverlay.gameObject.SetActive(true);
+
+        do
+        {
+            float t = Mathf.Clamp01((now - start) / DURATION);
+
+            if (currentFullscreenFade.Reverse)
+            {
+                t = 1 - t;
+            }
+
+            fullscreenFadeOverlay.alpha = t;
+            yield return null;
+        }
+        while ((now = Time.time) < end);
+
+        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.Reverse);
+
+        var onFinish = currentFullscreenFade.OnFinish;
+        currentFullscreenFade = null;
+
+        if (onFinish != null)
+        {
+            onFinish();
+        }
+    }
+
+    public void FullScreenFade(bool reverse, Action onFinish = null)
+    {
+        if (!fullscreenFadeOverlay)
+        {
+            var overlay = new GameObject("Fade Overlay");
+            var canvas = overlay.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var image = overlay.AddComponent<RawImage>();
+            image.color = Color.black;
+            image.texture = null;
+
+            fullscreenFadeOverlay = overlay.AddComponent<CanvasGroup>();
+        }
+
+        Debug.Assert(currentFullscreenFade == null);
+
+        currentFullscreenFade = new FullscreenFadeEffect()
+        {
+            Reverse = reverse,
+            OnFinish = onFinish
+        };
+        currentFullscreenFade.Coroutine = StartCoroutine(FullscreenFadeRoutine());
+    }
+
+    public void FadeScreenTransition(ScreenID screenId, PlayerStatus playerStatus = PlayerStatus.None)
+    {
+        FullScreenFade(false, () =>
+        {
+            this.screenId = screenId;
+
+            if (playerStatus != PlayerStatus.None)
+            {
+                this.playerStatus = playerStatus;
+            }
+
+            Apply();
+        });
     }
 }
