@@ -2,7 +2,8 @@
 using System.Collections;
 
 [RequireComponent(typeof(Collider))]
-public class Bullet : MonoBehaviour {
+public class Bullet : MonoBehaviour
+{
 	public Ship owner;
 	
 	public Transform hitEffect;
@@ -17,7 +18,12 @@ public class Bullet : MonoBehaviour {
 	
 	private Vector3 lastPos;
 
-    private static readonly int RayMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
+    private int rayMask;
+
+    void Awake()
+    {
+        rayMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
+    }
     
     void FixedUpdate()
 	{
@@ -41,7 +47,7 @@ public class Bullet : MonoBehaviour {
             frameDirection, 
             out hit, 
             frameDistance,
-            RayMask, 
+            rayMask, 
             QueryTriggerInteraction.Ignore))
 		{
 			nextPos = hit.point;
@@ -70,7 +76,7 @@ public class Bullet : MonoBehaviour {
 	void OnTriggerEnter(Collider triggered)
 	{
         var triggeredMask = 1 << triggered.gameObject.layer;
-        if ((RayMask & triggeredMask) == triggeredMask)
+        if ((rayMask & triggeredMask) == triggeredMask)
         {
             Hit(triggered.gameObject, transform.position);
         }
