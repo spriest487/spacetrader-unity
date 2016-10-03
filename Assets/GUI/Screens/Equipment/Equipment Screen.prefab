@@ -2451,10 +2451,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cargoHold: {fileID: 0}
   highlightedIndex: 0
-  sizeFormat: Cargo hold ({0}/{1})
   listItem: {fileID: 11410474, guid: bd62bddb6b1471d47b9be1015c5da6a2, type: 2}
   itemsHolder: {fileID: 22462588}
-  sizeLabel: {fileID: 0}
 --- !u!114 &11480494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2666,10 +2664,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cargoHold: {fileID: 0}
   highlightedIndex: 0
-  sizeFormat: Cargo hold ({0}/{1})
   listItem: {fileID: 11410474, guid: bd62bddb6b1471d47b9be1015c5da6a2, type: 2}
   itemsHolder: {fileID: 22475758}
-  sizeLabel: {fileID: 11453768}
 --- !u!114 &11489490
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -21,7 +21,7 @@ public class StationMenu : MonoBehaviour
             station.Unmoor(PlayerShip.LocalPlayer.Moorable);
         }
 
-        ScreenManager.Instance.ScreenID = ScreenID.None;
+        ScreenManager.Instance.FadeScreenTransition(ScreenID.None);
     }
     
     void OnScreenActive()

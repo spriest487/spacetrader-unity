@@ -226,7 +226,9 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("map"))
             {
-                ScreenManager.Instance.FadeScreenTransition(ScreenID.WorldMap);
+                ScreenManager.Instance.FadeScreenTransition(ScreenID.WorldMap, 
+                    ScreenTransition.FadeToBlack, 
+                    ScreenTransition.FadeFromBlack);
             }
 
             if (Input.GetButtonDown("activate"))

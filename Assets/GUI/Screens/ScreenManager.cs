@@ -42,8 +42,13 @@ public class ScreenManager : MonoBehaviour
         [HideInInspector]
         [SerializeField]
         private GameObject overlayInstance;
-        
+
+        [SerializeField]
+        [HideInInspector]
+        private CanvasGroup canvasGroup;
+
         public GameObject Root { get { return overlayInstance; } }
+        public CanvasGroup CanvasGroup { get { return canvasGroup; } }
 
         public ScreenID ScreenID { get { return screenId; } }
         public PlayerStatus PlayerStatus { get { return playerStatus; } }
@@ -53,6 +58,12 @@ public class ScreenManager : MonoBehaviour
             if (!overlayInstance)
             {
                 overlayInstance = Instantiate(root);
+
+                canvasGroup = overlayInstance.GetComponent<CanvasGroup>();
+                if (!canvasGroup)
+                {
+                    canvasGroup = overlayInstance.AddComponent<CanvasGroup>();
+                }
                 
                 DontDestroyOnLoad(overlayInstance.gameObject);
             }
@@ -82,7 +93,7 @@ public class ScreenManager : MonoBehaviour
 
     private class FullscreenFadeEffect
     {
-        public bool Reverse;
+        public ScreenTransition TransitionType;
         public Coroutine Coroutine;
         public Action OnFinish;
     }
@@ -308,31 +319,51 @@ public class ScreenManager : MonoBehaviour
 
         return instance;
     }
+    
+    private void SetFadeElementsAlpha(float t)
+    {
+        if (currentFullscreenFade.TransitionType.IsInvertDirection())
+        {
+            t = 1 - t;
+        }
+
+        //if overlay is active, that's what should be animated
+        if (fullscreenFadeOverlay.gameObject.activeInHierarchy)
+        {
+            fullscreenFadeOverlay.alpha = t;
+        }
+        else
+        {
+            foreach (var screen in screens)
+            {
+                screen.CanvasGroup.alpha = t;
+            }
+        }
+    }
 
     private IEnumerator FullscreenFadeRoutine()
     {
-        const float DURATION = 0.1f;
+        const float DURATION = 0.075f;
         float start = Time.time;
         float end = start + DURATION;
         float now = start;
-
-        fullscreenFadeOverlay.gameObject.SetActive(true);
+        
+        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.TransitionType.IsShowOverlay());
 
         do
         {
             float t = Mathf.Clamp01((now - start) / DURATION);
+            
+            SetFadeElementsAlpha(t);            
 
-            if (currentFullscreenFade.Reverse)
-            {
-                t = 1 - t;
-            }
-
-            fullscreenFadeOverlay.alpha = t;
             yield return null;
         }
         while ((now = Time.time) < end);
 
-        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.Reverse);
+        //make sure this finishes in the 100% state
+        SetFadeElementsAlpha(1);
+
+        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.TransitionType.IsShowOverlayAfter());
 
         var onFinish = currentFullscreenFade.OnFinish;
         currentFullscreenFade = null;
@@ -343,11 +374,14 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    public void FullScreenFade(bool reverse, Action onFinish = null)
+    public void FullScreenFade(ScreenTransition transitionType,
+        Action onFinish = null)
     {
         if (!fullscreenFadeOverlay)
         {
             var overlay = new GameObject("Fade Overlay");
+            overlay.transform.SetAsLastSibling();
+
             var canvas = overlay.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -362,15 +396,27 @@ public class ScreenManager : MonoBehaviour
 
         currentFullscreenFade = new FullscreenFadeEffect()
         {
-            Reverse = reverse,
+            TransitionType = transitionType,
             OnFinish = onFinish
         };
         currentFullscreenFade.Coroutine = StartCoroutine(FullscreenFadeRoutine());
     }
 
-    public void FadeScreenTransition(ScreenID screenId, PlayerStatus playerStatus = PlayerStatus.None)
+    public void FadeScreenTransition(ScreenID screenId,
+        ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha,
+        ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
+        Action onFinish = null)
     {
-        FullScreenFade(false, () =>
+        FadeScreenTransition(PlayerStatus.None, screenId, transitionIn, transitionOut, onFinish);
+    }
+
+    public void FadeScreenTransition(PlayerStatus playerStatus,
+        ScreenID screenId,        
+        ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha, 
+        ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
+        Action onFinish = null)
+    {
+        FullScreenFade(transitionIn, () =>
         {
             this.screenId = screenId;
 
@@ -380,6 +426,12 @@ public class ScreenManager : MonoBehaviour
             }
 
             Apply();
+            if (onFinish != null)
+            {
+                onFinish();
+            }
+
+            FullScreenFade(transitionOut);            
         });
     }
 }

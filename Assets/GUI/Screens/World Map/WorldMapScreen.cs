@@ -24,21 +24,20 @@ public class WorldMapScreen : MonoBehaviour
         {
             marker.RefreshLayout();
         }
-
-        ScreenManager.Instance.FullScreenFade(true);
     }
 
     public void Hide()
     {
-        ScreenManager.Instance.FullScreenFade(false, () =>
-        {
-            FollowCamera.Current.Camera.enabled = true;
-            BackgroundCamera.Current.Camera.enabled = true;
+        ScreenManager.Instance.FadeScreenTransition(ScreenID.None,
+            ScreenTransition.FadeToBlack,
+            ScreenTransition.FadeFromBlack,
+            () =>
+            {
+                FollowCamera.Current.Camera.enabled = true;
+                BackgroundCamera.Current.Camera.enabled = true;
 
-            SpaceTraderConfig.WorldMap.Camera.enabled = false;
-
-            ScreenManager.Instance.ScreenID = ScreenID.None;
-        });
+                SpaceTraderConfig.WorldMap.Camera.enabled = false;
+            });
     }
 
     public void Update()

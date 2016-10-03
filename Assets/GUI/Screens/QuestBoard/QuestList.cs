@@ -20,7 +20,7 @@ public class QuestList : MonoBehaviour
 
     public void Close()
     {
-        ScreenManager.Instance.ScreenID = ScreenID.None;
+        ScreenManager.Instance.FadeScreenTransition(ScreenID.None);
     }
 
     public void OnScreenActive()

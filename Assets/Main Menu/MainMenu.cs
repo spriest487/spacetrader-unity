@@ -135,7 +135,7 @@ public class MainMenu : MonoBehaviour
 
     public void BackToGame()
     {
-        ScreenManager.Instance.ScreenID = ScreenID.None;
+        ScreenManager.Instance.FadeScreenTransition(ScreenID.None);
     }
     
     public void Quit()
