@@ -34,13 +34,9 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private Button useTargetButton;
     private Text useTargetText;
-
-    private BracketManager bracketManager;
-    
+        
     private void Start()
     {
-        bracketManager = GetComponentInChildren<BracketManager>();
-
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
     }
 

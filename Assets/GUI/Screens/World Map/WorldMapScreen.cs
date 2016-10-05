@@ -28,7 +28,7 @@ public class WorldMapScreen : MonoBehaviour
 
     public void Hide()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.None,
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None,
             ScreenTransition.FadeToBlack,
             ScreenTransition.FadeFromBlack,
             () =>

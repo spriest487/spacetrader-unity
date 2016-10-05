@@ -487,9 +487,6 @@ public partial class Ship : MonoBehaviour
     public void PreciseManeuverTo(Vector3 moveToPos)
     {
         var adjustBetween = moveToPos - transform.position;
-
-        var currentLocalSpeed = transform.InverseTransformDirection(RigidBody.velocity);
-
         var localBetween = transform.InverseTransformDirection(adjustBetween);
 
         float adjustMax = Mathf.Max(
@@ -639,12 +636,7 @@ public partial class Ship : MonoBehaviour
             pitch = Mathf.Clamp(pitch, -1, 1);
             yaw = Mathf.Clamp(yaw, -1, 1);
             roll = Mathf.Clamp(roll, -1, 1);
-
-            var torqueMax = CurrentStats.MaxTurnSpeed * Mathf.Deg2Rad;
-
-            var localRotation = transform.InverseTransformDirection(RigidBody.angularVelocity);
-            var localVelocity = transform.InverseTransformDirection(RigidBody.velocity);
-
+            
             var torqueInput = new Vector3(Pitch, Yaw, Roll);
             var forceInput = new Vector3(Strafe, Lift, Thrust);
                                     

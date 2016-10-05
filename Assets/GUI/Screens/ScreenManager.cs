@@ -90,15 +90,12 @@ public class ScreenManager : MonoBehaviour
 
     [SerializeField]
     private CanvasGroup fullscreenFadeOverlay;
-
-    private class FullscreenFadeEffect
+    
+    private Coroutine currentFullscreenFade;
+    public bool FadeTransitionInProgress
     {
-        public ScreenTransition TransitionType;
-        public Coroutine Coroutine;
-        public Action OnFinish;
+        get { return currentFullscreenFade != null; }
     }
-
-    private FullscreenFadeEffect currentFullscreenFade;
 
     public PlayerStatus State
     {
@@ -320,52 +317,55 @@ public class ScreenManager : MonoBehaviour
         return instance;
     }
     
-    private void SetFadeElementsAlpha(float t)
+    private void SetFadeElementsAlpha(ScreenTransition transition, float t)
     {
-        if (currentFullscreenFade.TransitionType.IsInvertDirection())
+        if (transition.IsInvertDirection())
         {
             t = 1 - t;
         }
 
         //if overlay is active, that's what should be animated
+        float guiAlpha;
         if (fullscreenFadeOverlay.gameObject.activeInHierarchy)
         {
             fullscreenFadeOverlay.alpha = t;
+            guiAlpha = 1; 
         }
         else
         {
-            foreach (var screen in screens)
-            {
-                screen.CanvasGroup.alpha = t;
-            }
+            guiAlpha = t;
+        }
+
+        foreach (var screen in screens)
+        {
+            screen.CanvasGroup.alpha = guiAlpha;
         }
     }
 
-    private IEnumerator FullscreenFadeRoutine()
+    private IEnumerator FullscreenFadeRoutine(ScreenTransition transition, Action onFinish)
     {
         const float DURATION = 0.075f;
         float start = Time.time;
         float end = start + DURATION;
         float now = start;
         
-        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.TransitionType.IsShowOverlay());
+        fullscreenFadeOverlay.gameObject.SetActive(transition.IsShowOverlay());
 
         do
         {
             float t = Mathf.Clamp01((now - start) / DURATION);
             
-            SetFadeElementsAlpha(t);            
+            SetFadeElementsAlpha(transition, t);            
 
             yield return null;
         }
         while ((now = Time.time) < end);
 
         //make sure this finishes in the 100% state
-        SetFadeElementsAlpha(1);
+        SetFadeElementsAlpha(transition, 1);
 
-        fullscreenFadeOverlay.gameObject.SetActive(currentFullscreenFade.TransitionType.IsShowOverlayAfter());
-
-        var onFinish = currentFullscreenFade.OnFinish;
+        fullscreenFadeOverlay.gameObject.SetActive(transition.IsShowOverlayAfter());
+        
         currentFullscreenFade = null;
 
         if (onFinish != null)
@@ -392,30 +392,30 @@ public class ScreenManager : MonoBehaviour
             fullscreenFadeOverlay = overlay.AddComponent<CanvasGroup>();
         }
 
-        Debug.Assert(currentFullscreenFade == null);
+        Debug.Assert(currentFullscreenFade == null, "can't start a fade transition while one is already active");
 
-        currentFullscreenFade = new FullscreenFadeEffect()
-        {
-            TransitionType = transitionType,
-            OnFinish = onFinish
-        };
-        currentFullscreenFade.Coroutine = StartCoroutine(FullscreenFadeRoutine());
+        currentFullscreenFade = StartCoroutine(FullscreenFadeRoutine(transitionType, onFinish));
     }
 
-    public void FadeScreenTransition(ScreenID screenId,
+    public bool TryFadeScreenTransition(ScreenID screenId,
         ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha,
         ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
         Action onFinish = null)
     {
-        FadeScreenTransition(PlayerStatus.None, screenId, transitionIn, transitionOut, onFinish);
+        return TryFadeScreenTransition(PlayerStatus.None, screenId, transitionIn, transitionOut, onFinish);
     }
 
-    public void FadeScreenTransition(PlayerStatus playerStatus,
+    public bool TryFadeScreenTransition(PlayerStatus playerStatus,
         ScreenID screenId,        
         ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha, 
         ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
         Action onFinish = null)
     {
+        if (ScreenManager.Instance.FadeTransitionInProgress)
+        {
+            return false;
+        }
+
         FullScreenFade(transitionIn, () =>
         {
             this.screenId = screenId;
@@ -433,5 +433,7 @@ public class ScreenManager : MonoBehaviour
 
             FullScreenFade(transitionOut);            
         });
+
+        return true;
     }
 }

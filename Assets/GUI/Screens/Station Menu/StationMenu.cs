@@ -16,12 +16,13 @@ public class StationMenu : MonoBehaviour
     {
         var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
 
-        if (station)
-        {
-            station.Unmoor(PlayerShip.LocalPlayer.Moorable);
-        }
-
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.None);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None, 
+            ScreenTransition.FadeToBlack,
+            ScreenTransition.FadeFromBlack,
+            () =>
+            {
+                station.Unmoor(PlayerShip.LocalPlayer.Moorable);
+            });
     }
     
     void OnScreenActive()

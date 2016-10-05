@@ -56,8 +56,6 @@ public class LoadGameMenu : MonoBehaviour
 
         var paths = saves.Select(s => s.Path);
 
-        var fileCount = saves.Count;
-
         entries.Refresh(paths, (i, entry, path) =>
         {
             entry.group = fileList;

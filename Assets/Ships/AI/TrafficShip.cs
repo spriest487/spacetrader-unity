@@ -95,6 +95,7 @@ public class TrafficShip : MonoBehaviour
         var targetPos = mapPoint.transform.localPosition * JUMP_OUT_CLEAR_DIST;
 
         ai.AssignTask(ActivateTask.Create(mapPoint));
+        ai.AssignTask(NavigateTask.Create(targetPos));
     }
 
     void OnCompletedJump()

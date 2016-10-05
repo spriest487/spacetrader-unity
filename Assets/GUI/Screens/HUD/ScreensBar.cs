@@ -10,27 +10,27 @@ public class ScreensBar : MonoBehaviour
 
     public void ShowMainMenu()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.MainMenu);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.MainMenu);
     }
 
     public void ShowCrew()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.Recruitment);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.Recruitment);
     }
 
     public void ShowEquipment()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.Equipment);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.Equipment);
     }
 
     public void ShowMissionPrep()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.MissionPrep);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.MissionPrep);
     }
 
     public void ShowQuests()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.Quests);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.Quests);
     }
 
     public void OnScreenActive()

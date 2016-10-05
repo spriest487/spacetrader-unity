@@ -122,6 +122,6 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     
     public void Close()
     {
-        ScreenManager.Instance.FadeScreenTransition(ScreenID.None);
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None);
     }
 }

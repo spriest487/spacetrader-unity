@@ -52,6 +52,7 @@ public class PlayerShip : MonoBehaviour
         if (LocalPlayer == this)
         {
             ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Docked);
+            ScreenManager.Instance.FullScreenFade(ScreenTransition.FadeFromBlack);
         }
     }
 
@@ -226,8 +227,8 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("map"))
             {
-                ScreenManager.Instance.FadeScreenTransition(ScreenID.WorldMap, 
-                    ScreenTransition.FadeToBlack, 
+                ScreenManager.Instance.TryFadeScreenTransition(ScreenID.WorldMap,
+                    ScreenTransition.FadeToBlack,
                     ScreenTransition.FadeFromBlack);
             }
 
