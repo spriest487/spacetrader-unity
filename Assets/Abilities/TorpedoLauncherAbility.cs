@@ -14,7 +14,7 @@ public class TorpedoLauncherAbility : Ability
 #endif
 
     [SerializeField]
-    private Torpedo torpedoPrefab;
+    private ShipType torpedoType;
 
     [SerializeField]
     private float cooldownLength = 5;
@@ -26,24 +26,21 @@ public class TorpedoLauncherAbility : Ability
 
     public override void Use(Ship ship)
     {
-        if (Cooldown > 0 || !ship.Target)
+        if (Cooldown > 0 || !ship.Target || ship.Target.TargetSpace != TargetSpace.Local)
         {
             return;
         }
 
-        var torpedo = (Torpedo) Instantiate(torpedoPrefab, ship.transform.position, ship.transform.rotation);
-        torpedo.GetComponent<Ship>().Target = ship.Target;
-        torpedo.Owner = ship;
+        var torpedoShip = torpedoType.CreateShip(ship.transform.position, ship.transform.rotation);
+        var torpedo = Torpedo.CreateFromShip(torpedoShip, ship);
 
-        var torpedoRb = torpedo.GetComponent<Rigidbody>();
-        var ownerRb = ship.GetComponent<Rigidbody>();
+        var torpedoRb = torpedo.Ship.RigidBody;
+        var ownerRb = ship.RigidBody;
         if (torpedoRb && ownerRb)
         {
             torpedoRb.velocity = ownerRb.velocity;
             torpedoRb.angularVelocity = ownerRb.angularVelocity;
         }
-
-        torpedo.UpdateCollisions();
 
         Cooldown = cooldownLength;
     }

@@ -11,21 +11,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b9b35c56399ef4faa1890285f37814, type: 3}
   m_Name: Small Torpedo
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 488534, guid: 1012d213152c2ad4bb4cb52b7e1ae1eb, type: 2}
   cockpitPrefab: {fileID: 0}
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  targetable: 0
   stats:
-    agility: 0
-    thrust: 0
-    maxTurnSpeed: 0
-    maxSpeed: 0
+    agility: 360
+    thrust: 1000
+    maxTurnSpeed: 180
+    maxSpeed: 100
     passengerCapacity: 0
-    armor: 0
+    armor: 1
     shield: 0
-    mass: 10
+    mass: 2
     damageMultiplier: 0
   cargoSize: 0
   moduleSlots: 0
   moorable: 0
   abilities: []
-  explosionEffect: {fileID: 0}
   xpReward: 0

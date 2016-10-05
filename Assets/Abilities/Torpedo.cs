@@ -18,30 +18,25 @@ public class Torpedo : MonoBehaviour
     public Ship Owner
     {
         get { return owner; }
-        set { owner = value; }
+    }
+
+    public Ship Ship
+    {
+        get { return torpedoShip; }
     }
     
     private Ship torpedoShip;
 
-    void Start()
+    public static Torpedo CreateFromShip(Ship ship, Ship owner)
     {
-        torpedoShip = GetComponent<Ship>();
-    }
+        var torpedo = ship.gameObject.AddComponent<Torpedo>();
+        torpedo.torpedoShip = ship;
+        torpedo.owner = owner;
+        ship.Target = owner.Target;
 
-    public void UpdateCollisions()
-    {
-        if (!owner)
-        {
-            return;
-        }
+        Physics.IgnoreCollision(ship.GetComponent<Collider>(), owner.GetComponent<Collider>());
 
-        var myCollider = GetComponent<Collider>();
-        var ownerCollider = owner.GetComponent<Collider>();
-
-        if (myCollider && ownerCollider)
-        {
-            Physics.IgnoreCollision(myCollider, ownerCollider);
-        }
+        return torpedo;
     }
 
     void Explode()

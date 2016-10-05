@@ -280,6 +280,12 @@ public partial class Ship : MonoBehaviour
 
         ship.UpdateHardpoints();
 
+        if (shipType.Targetable)
+        {
+            Debug.Assert(!ship.GetComponent<Targetable>() && !ship.Targetable);
+            ship.Targetable = ship.gameObject.AddComponent<Targetable>();
+        }
+
         return ship;
     }
 
@@ -287,12 +293,7 @@ public partial class Ship : MonoBehaviour
     {
         RigidBody = GetComponent<Rigidbody>();
         
-        //ships are targetable by default 
         Targetable = GetComponent<Targetable>();
-        if (!Targetable)
-        {
-            Targetable = gameObject.AddComponent<Targetable>();
-        }
 
         hitPoints = GetComponent<Hitpoints>();
         Collider = GetComponent<Collider>();
@@ -657,12 +658,8 @@ public partial class Ship : MonoBehaviour
 
 	private void Update()
 	{
-        if (!ShipType)
-        {
-            Debug.LogError("missing shiptype for ship object " + gameObject.name);
-            gameObject.SetActive(false);
-        }
-
+        Debug.Assert(ShipType, "ship " + name + " must have a shiptype");
+        
         //force refresh of stats
         currentStats = null;
 

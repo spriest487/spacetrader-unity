@@ -1520,7 +1520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 0.66015625
+  m_ScaleFactor: 0.484375
   m_ReferenceResolution: {x: 800, y: 640}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 1
@@ -2524,7 +2524,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11466378}
   m_HandleRect: {fileID: 22458332}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3288,7 +3288,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 66.04733
+  m_PreferredHeight: 67.651474
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
 --- !u!114 &11456170
@@ -4067,12 +4067,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content: {fileID: 22468586}
   cinemaBars: {fileID: 22429344}
-  playerShipInfo:
-  - {fileID: 22467468}
-  - {fileID: 22405606}
-  - {fileID: 22449606}
-  - {fileID: 22406330}
-  - {fileID: 22481608}
   playerPortrait: {fileID: 11425360}
   playerName: {fileID: 11439636}
   playerMoney: {fileID: 11487604}
@@ -5414,7 +5408,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 1
+  m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0

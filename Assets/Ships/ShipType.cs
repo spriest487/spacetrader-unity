@@ -13,6 +13,8 @@ public class ShipType : ScriptableObject
     }
 #endif
 
+    [Header("Prefabs")]
+
     [SerializeField]
     private Transform prefab;
 
@@ -20,29 +22,35 @@ public class ShipType : ScriptableObject
     private Camera cockpitPrefab;
 
     [SerializeField]
-    private ShipStats stats;
+    private ScalableParticle explosionEffect;
+
+    [Header("Ship Details")]
+
+    [SerializeField]
+    private bool targetable = true;
+
+    [SerializeField]
+    private ShipStats stats = new ShipStats();
     
     [SerializeField]
-    private int cargoSize;
+    private int cargoSize = 1;
 
     [SerializeField]
     private int moduleSlots;
 
     [SerializeField]
-    private bool moorable;
+    private bool moorable = true;
 
     [SerializeField]
     private List<Ability> abilities;
     
-    [SerializeField]
-    private ScalableParticle explosionEffect;
-
     [SerializeField]
     private int xpReward;
 
     public ScalableParticle ExplosionEffect { get { return explosionEffect; } }
     public ShipStats Stats { get { return stats; } }
     public IEnumerable<Ability> Abilities { get { return abilities; } }
+    public bool Targetable { get { return targetable; } }
     public bool Moorable { get { return moorable; } }
     public int CargoSize { get { return cargoSize; } }
     public int ModuleSlots { get { return moduleSlots; } }
