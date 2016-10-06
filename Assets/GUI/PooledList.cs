@@ -26,6 +26,11 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         get { return currentItems == null ? null : currentItems[index]; }
     }
 
+    public IEnumerable<TItem> Items
+    {
+        get { return currentItems != null ? currentItems : Enumerable.Empty<TItem>(); }
+    }
+
     public IEnumerable<TData> Data
     {
         get { return currentData != null ? currentData : Enumerable.Empty<TData>(); }
@@ -49,12 +54,12 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         }
     }
     
-    public void Refresh(IEnumerable<TData> data, UpdateItemCallback onUpdateItem)
+    public bool Refresh(IEnumerable<TData> data, UpdateItemCallback onUpdateItem)
     {
         if (currentData != null && currentData.ElementsEquals(data))
         {
             //already up to date
-            return;
+            return false;
         }
 
         currentData = new List<TData>(data);
@@ -97,6 +102,8 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
             currentItems[itemIndex].gameObject.SetActive(false);
             ++itemIndex;
         }
+
+        return true;
     }
 
     public IEnumerator<TItem> GetEnumerator()

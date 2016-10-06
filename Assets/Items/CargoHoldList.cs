@@ -94,8 +94,13 @@ public class CargoHoldList : MonoBehaviour
         
         if (cargoHold)
         {
-            currentItems.Refresh(CargoHold.Items, (i, existingItem, cargoItem) =>
+            var newItems = currentItems.Refresh(CargoHold.Items, (i, existingItem, cargoItem) =>
                 existingItem.Assign(CargoHold, i));
+
+            if (newItems)
+            {
+                BroadcastMessage("OnCargoListNewItems", currentItems.Items, SendMessageOptions.DontRequireReceiver);
+            }
 
             highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.ItemCount - 1);
         }

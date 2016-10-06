@@ -87,7 +87,7 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
             var hits = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, hits);
 
-            if (hits.Count != 0)
+            foreach (var hit in hits)
             {
                 hits[0].gameObject.SendMessage("OnDropCargoItem", this, SendMessageOptions.DontRequireReceiver);
             }
