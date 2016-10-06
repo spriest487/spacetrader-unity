@@ -41,11 +41,13 @@ public class KillShipTypeQuest : Quest
 
     public override void NotifyDeath(Ship ship, Ship killer)
     {
-        if (Done)
+        //already finished, or not even accepted yet? don't care
+        if (Done || !Owner)
         {
             return;
         }
         
+        //did our owner score the kill? does it count as credit?
         if (killer == Owner.Ship && ship.ShipType == GetShipType())
         {
             ++killCount;
