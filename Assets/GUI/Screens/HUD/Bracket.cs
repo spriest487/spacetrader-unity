@@ -12,12 +12,25 @@ public class Bracket : MonoBehaviour
 
     [SerializeField]
     private Text nameplate;
-    [SerializeField]
-    private List<Image> childImages;
+
     [SerializeField]
     private Image edgeMarker;
+
+    [Header("Local Object Marker")]
+    
+    [SerializeField]
+    private List<Image> localObjectCorners;
+
     [SerializeField]
     private Healthbar healthbar;
+
+    [Header("Distant Area Marker")]
+
+    [SerializeField]
+    private Transform selectedAreaMarker;
+
+    [SerializeField]
+    private Transform areaMarker;
         
     //owner bracket manager
     private BracketManager bracketManager;
@@ -65,19 +78,7 @@ public class Bracket : MonoBehaviour
             healthbar.gameObject.SetActive(false);
         }
     }
-
-    private Camera CameraForTarget()
-    {
-        if (target.TargetSpace == TargetSpace.Distant)
-        {
-            return BackgroundCamera.Current.Camera;
-        }
-        else
-        {
-            return FollowCamera.Current.Camera;
-        }
-    }
-
+    
     private void CalculateBoundingBoxSize(out int width, out int height, Camera cam)
     {
         var extents = targetCollider.bounds.extents;
@@ -157,7 +158,7 @@ public class Bracket : MonoBehaviour
 
         var reactionColor = bracketManager.GetBracketColor(playerTargetable, target);
 
-        var cam = CameraForTarget();
+        var cam = target.TargetSpace.DefaultCamera();
 
         var pos = cam.WorldToScreenPoint(target.transform.position);
 
@@ -191,8 +192,10 @@ public class Bracket : MonoBehaviour
         {
             nameplate.gameObject.SetActive(false);
             healthbar.gameObject.SetActive(false);
-            childImages.ForEach(childImage => childImage.gameObject.SetActive(false));
+            localObjectCorners.ForEach(childImage => childImage.gameObject.SetActive(false));
             edgeMarker.gameObject.SetActive(true);
+            selectedAreaMarker.gameObject.SetActive(false);
+            areaMarker.gameObject.SetActive(false);
 
             if (isTarget)
             {
@@ -209,26 +212,17 @@ public class Bracket : MonoBehaviour
         }
         else
         {
-            Color cornerColor;
-            Sprite cornerSprite;
+            edgeMarker.gameObject.SetActive(false);
 
-            if (isTarget)
+            switch (target.TargetSpace)
             {
-                cornerSprite = bracketManager.SelectedCorner;
-                cornerColor = reactionColor;
+                case TargetSpace.Distant:
+                    DrawDistantBracket(isTarget, reactionColor, cam);
+                    break;
+                default:
+                    DrawLocalBracket(isTarget, reactionColor, cam);
+                    break;
             }
-            else
-            {
-                cornerSprite = bracketManager.Corner;
-                cornerColor = reactionColor * new Color(1, 1, 1, 0.5f);
-            }
-
-            childImages.ForEach(childImage =>
-            {
-                childImage.gameObject.SetActive(true);
-                childImage.color = cornerColor;
-                childImage.sprite = cornerSprite;
-            });
 
             nameplate.gameObject.SetActive(true);
 
@@ -237,24 +231,6 @@ public class Bracket : MonoBehaviour
 
             nameplate.text = target.name.ToUpper();
             nameplate.fontSize = isTarget ? 24 : 16;
-            
-            edgeMarker.gameObject.SetActive(false);
-
-            var width = bracketManager.DefaultWidth;
-            var height = bracketManager.DefaultHeight;
-
-            if (targetCollider)
-            {
-                CalculateBoundingBoxSize(out width, out height, cam);
-            }
-
-            if (isTarget)
-            {
-                width = (int)(width * bracketManager.SelectedExpand);
-                height = (int)(height * bracketManager.SelectedExpand);
-            }
-
-            rectTransform.sizeDelta = new Vector2(width, height);
 
             if (targetHitpoints && isTarget)
             {
@@ -272,6 +248,64 @@ public class Bracket : MonoBehaviour
 		canvasGroup.blocksRaycasts = true;
 		canvasGroup.alpha = 1;
 	}
+    
+    private void DrawDistantBracket(bool isTarget, Color reactionColor, Camera cam)
+    {
+        for (int i = 0; i < localObjectCorners.Count; ++i)
+        {
+            localObjectCorners[i].gameObject.SetActive(false);
+        }
+
+        areaMarker.gameObject.SetActive(true);
+        selectedAreaMarker.gameObject.SetActive(isTarget);
+        
+        var markerRect = (RectTransform)areaMarker.transform;
+        rectTransform.sizeDelta = markerRect.sizeDelta;
+    }
+
+    private void DrawLocalBracket(bool isTarget, Color reactionColor, Camera cam)
+    {
+        selectedAreaMarker.gameObject.SetActive(false);
+        areaMarker.gameObject.SetActive(false);
+
+        Color cornerColor;
+        Sprite cornerSprite;
+
+        if (isTarget)
+        {
+            cornerSprite = bracketManager.SelectedCorner;
+            cornerColor = reactionColor;
+        }
+        else
+        {
+            cornerSprite = bracketManager.Corner;
+            cornerColor = reactionColor * new Color(1, 1, 1, 0.5f);
+        }
+
+        for (int i = 0; i < localObjectCorners.Count; ++i)
+        {
+            var childImage = localObjectCorners[i];
+            childImage.gameObject.SetActive(true);
+            childImage.color = cornerColor;
+            childImage.sprite = cornerSprite;
+        };
+
+        var width = bracketManager.DefaultWidth;
+        var height = bracketManager.DefaultHeight;
+
+        if (targetCollider)
+        {
+            CalculateBoundingBoxSize(out width, out height, cam);
+        }
+
+        if (isTarget)
+        {
+            width = (int)(width * bracketManager.SelectedExpand);
+            height = (int)(height * bracketManager.SelectedExpand);
+        }
+
+        rectTransform.sizeDelta = new Vector2(width, height);
+    }
 
     public void SetPlayerTarget()
     {

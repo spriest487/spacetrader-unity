@@ -24,6 +24,20 @@ public enum TargetSpace
     Distant
 }
 
+public static class TargetSpaceUtility
+{
+    public static Camera DefaultCamera(this TargetSpace targetSpace)
+    {
+        switch (targetSpace)
+        {
+            case TargetSpace.Distant:
+                return BackgroundCamera.Current.Camera;
+            default:
+                return FollowCamera.Current.Camera;
+        }
+    }
+}
+
 public class Targetable : MonoBehaviour
 {
     [SerializeField]
