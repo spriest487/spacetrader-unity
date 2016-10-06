@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,49 +25,6 @@ public class ScreenManager : MonoBehaviour
         private set
         {
             instance = value;
-        }
-    }
-
-    [Serializable]
-    private class ScreenMapping
-    {
-        [SerializeField]
-        private ScreenID screenId;
-
-        [SerializeField]
-        private PlayerStatus playerStatus;
-        
-        [SerializeField]
-        private GameObject root;
-        
-        [HideInInspector]
-        [SerializeField]
-        private GameObject overlayInstance;
-
-        [SerializeField]
-        [HideInInspector]
-        private CanvasGroup canvasGroup;
-
-        public GameObject Root { get { return overlayInstance; } }
-        public CanvasGroup CanvasGroup { get { return canvasGroup; } }
-
-        public ScreenID ScreenID { get { return screenId; } }
-        public PlayerStatus PlayerStatus { get { return playerStatus; } }
-        
-        public void Init()
-        {
-            if (!overlayInstance)
-            {
-                overlayInstance = Instantiate(root);
-
-                canvasGroup = overlayInstance.GetComponent<CanvasGroup>();
-                if (!canvasGroup)
-                {
-                    canvasGroup = overlayInstance.AddComponent<CanvasGroup>();
-                }
-                
-                DontDestroyOnLoad(overlayInstance.gameObject);
-            }
         }
     }
     
@@ -285,6 +243,21 @@ public class ScreenManager : MonoBehaviour
         Apply();
     }
 
+    private ScreenMapping FindCurrentScreen()
+    {
+        Debug.Assert(screens.Where(s => s.Root.activeInHierarchy).Count() <= 1);
+
+        for (int s = 0; s < screens.Count; ++s)
+        {
+            if (screens[s].Root.activeInHierarchy)
+            {
+                return screens[s];
+            }
+        }
+
+        return null;
+    }
+    
     private void Update()
     {
         bool docked = false;
@@ -300,6 +273,41 @@ public class ScreenManager : MonoBehaviour
         }
 
         State = docked? PlayerStatus.Docked : PlayerStatus.Flight;
+
+        if (player)
+        {
+            /* the player can switch to any of these screens at any
+             time with these global keys */
+            foreach (var screen in screens)
+            {
+                if (!string.IsNullOrEmpty(screen.HotkeyButton)
+                    && Input.GetButtonDown(screen.HotkeyButton))
+                {
+                    var toScreen = ScreenID != screen.ScreenID ? screen.ScreenID : ScreenID.None;
+                    
+                    TryFadeScreenTransition(toScreen,
+                        screen.TransitionIn,
+                        screen.TransitionOut);
+                }
+            }
+
+            if (Input.GetButtonDown("Cancel"))
+            {
+                switch (ScreenID)
+                {
+                    case ScreenID.None:
+                        TryFadeScreenTransition(ScreenID.MainMenu);
+                        break;
+                    default:
+                        var currentScreen = FindCurrentScreen();
+
+                        TryFadeScreenTransition(ScreenID.None, 
+                            currentScreen.TransitionIn, 
+                            currentScreen.TransitionOut);
+                        break;
+                }
+            }
+        }
     }
 
     private void OnLevelWasLoaded(int level)
@@ -411,8 +419,9 @@ public class ScreenManager : MonoBehaviour
         ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
         Action onFinish = null)
     {
-        if (ScreenManager.Instance.FadeTransitionInProgress)
+        if (FadeTransitionInProgress)
         {
+            Debug.Log("prevented fade transition, another transition was already in progress");
             return false;
         }
 

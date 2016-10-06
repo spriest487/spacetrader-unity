@@ -225,13 +225,6 @@ public class PlayerShip : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown("map"))
-            {
-                ScreenManager.Instance.TryFadeScreenTransition(ScreenID.WorldMap,
-                    ScreenTransition.FadeToBlack,
-                    ScreenTransition.FadeFromBlack);
-            }
-
             if (Input.GetButtonDown("activate"))
             {
                 ActivateTarget();

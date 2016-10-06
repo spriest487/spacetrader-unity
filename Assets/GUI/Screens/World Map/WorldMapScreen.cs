@@ -42,11 +42,6 @@ public class WorldMapScreen : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetButtonDown("map"))
-        {
-            Hide();
-        }
-
         if (Input.GetMouseButtonDown(0) 
             && SpaceTraderConfig.LocalPlayer
             && SpaceTraderConfig.LocalPlayer.Ship)
