@@ -187,10 +187,17 @@ public class ScreenManager : MonoBehaviour
                 || screen.PlayerStatus == PlayerStatus.None;
 
             var screenActive = screenIdMatches && playerStatusMatches;
-            
-            screen.Root.gameObject.SetActive(screenActive);
 
-            screen.Root.BroadcastMessage(screenActive ? "OnScreenActive" : "OnScreenInactive", SendMessageOptions.DontRequireReceiver);
+            if (screenActive)
+            {
+                screen.Root.gameObject.SetActive(screenActive);
+                screen.Root.BroadcastMessage("OnScreenActive", SendMessageOptions.DontRequireReceiver);
+            }
+            else
+            {
+                screen.Root.BroadcastMessage("OnScreenInactive", SendMessageOptions.DontRequireReceiver);
+                screen.Root.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -288,6 +295,8 @@ public class ScreenManager : MonoBehaviour
                     TryFadeScreenTransition(toScreen,
                         screen.TransitionIn,
                         screen.TransitionOut);
+
+                    break;
                 }
             }
 

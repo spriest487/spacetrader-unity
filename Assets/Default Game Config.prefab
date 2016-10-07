@@ -868,8 +868,8 @@ MonoBehaviour:
     root: {fileID: 193736, guid: de3795e77e881fc4b821981cf3406f8e, type: 2}
     overlayInstance: {fileID: 0}
     canvasGroup: {fileID: 0}
-    transitionIn: 3
-    transitionOut: 2
+    transitionIn: 0
+    transitionOut: 1
     hotkeyButton: Map Screen
   loadingScreen: {fileID: 11493570, guid: 5168b642295bf244b8955068e17940fe, type: 2}
   menuState: 0

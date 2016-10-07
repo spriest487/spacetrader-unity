@@ -26,18 +26,19 @@ public class WorldMapScreen : MonoBehaviour
         }
     }
 
+    private void OnScreenInactive()
+    {
+        FollowCamera.Current.Camera.enabled = true;
+        BackgroundCamera.Current.Camera.enabled = true;
+
+        SpaceTraderConfig.WorldMap.Camera.enabled = false;
+    }
+
     public void Hide()
     {
         ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None,
             ScreenTransition.FadeToBlack,
-            ScreenTransition.FadeFromBlack,
-            () =>
-            {
-                FollowCamera.Current.Camera.enabled = true;
-                BackgroundCamera.Current.Camera.enabled = true;
-
-                SpaceTraderConfig.WorldMap.Camera.enabled = false;
-            });
+            ScreenTransition.FadeFromBlack);
     }
 
     public void Update()
