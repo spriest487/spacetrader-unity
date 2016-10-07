@@ -6043,58 +6043,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[1].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[1].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[2].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[2].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[3].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[3].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[4].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[4].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[5].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[5].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[6].transitionIn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11450970, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: screens.Array.data[6].transitionOut
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 176436, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 35d7935c45a3c234395bb07b483c8321, type: 2}
   m_IsPrefabParent: 0
