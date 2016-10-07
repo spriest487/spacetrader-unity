@@ -23,10 +23,10 @@ public class ScreenMapping
 
     [Header("Transition")]
     [SerializeField]
-    private ScreenTransition transitionIn = ScreenTransition.FadeInAlpha;
+    private ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha;
 
     [SerializeField]
-    private ScreenTransition transitionOut = ScreenTransition.FadeOutAlpha;
+    private ScreenTransition transitionOut = ScreenTransition.FadeInAlpha;
 
     [SerializeField]
     private string hotkeyButton;
@@ -46,6 +46,7 @@ public class ScreenMapping
         if (!overlayInstance)
         {
             overlayInstance = UnityEngine.Object.Instantiate(root);
+            overlayInstance.gameObject.SetActive(false);
 
             canvasGroup = overlayInstance.GetComponent<CanvasGroup>();
             if (!canvasGroup)
