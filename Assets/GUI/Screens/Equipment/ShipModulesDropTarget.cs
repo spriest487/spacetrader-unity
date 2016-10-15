@@ -42,8 +42,12 @@ public class ShipModulesDropTarget : MonoBehaviour
                 }
                 
                 loadout.Equip(targetSlot, droppedModuleType);
-                modules.HighlightedIndex = targetSlot;
-                equipmentScreen.OnSelectShipModule(module);
+
+                modules[targetSlot].OnClickModule();
+            }
+            else
+            {
+                equipmentScreen.ShowError("No free slots");
             }
         }
         else

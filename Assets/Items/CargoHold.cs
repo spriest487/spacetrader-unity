@@ -4,7 +4,7 @@ using System.Collections;
 
 public class CargoHold : ScriptableObject
 {
-    public const int BAD_INDEX = -1;
+    public const int BadIndex = -1;
 
     [SerializeField]
     private List<ItemType> items = new List<ItemType>();
@@ -74,7 +74,7 @@ public class CargoHold : ScriptableObject
                 }
             }
 
-            return BAD_INDEX;
+            return BadIndex;
         }
     }
 

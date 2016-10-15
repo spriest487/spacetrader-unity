@@ -3,7 +3,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(UnityEngine.UI.LayoutGroup))]
 public class ShipModulesController : MonoBehaviour
 {
     private PooledList<ShipModuleController, HardpointModule> modules;
@@ -12,23 +11,56 @@ public class ShipModulesController : MonoBehaviour
     private ShipModuleController moduleTemplate;
 
     [SerializeField]
-    private int highlightedIndex = -1;
+    private int highlightedIndex = CargoHold.BadIndex;
+
+    public ShipModuleController this[int index]
+    {
+        get
+        {
+            Debug.Assert(modules != null);
+            return modules[index];
+        }
+    }
 
     public int HighlightedIndex
     {
         get { return highlightedIndex; }
         set
         {
+            Debug.Assert(isActiveAndEnabled);
+            
+            if (modules == null)
+            {
+                Update();
+            }
+
+            if (!PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(value))
+            {
+                value = -1;
+            }
+
             highlightedIndex = value;
 
-            var modules = GetComponentsInChildren<ShipModuleController>();
-            for (int modIndex = 0; modIndex < modules.Length; ++modIndex)
+            for (int modIndex = 0; modIndex < modules.Count; ++modIndex)
             {
                 modules[modIndex].Highlighted = modIndex == value;
             }
         }
     }
-    
+
+    public ShipModuleController HighlightedModule
+    {
+        get
+        {
+            if (!PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(highlightedIndex))
+            {
+                return null;
+            }
+
+            return modules[highlightedIndex];
+        }
+    }
+        
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
@@ -43,10 +75,9 @@ public class ShipModulesController : MonoBehaviour
             modules.Clear();
             return;
         }
-
-        var slots = new List<HardpointModule>(player.Ship.ModuleLoadout);
-        
-        modules.Refresh(slots, (i, module, slot) => { module.Assign(player.Ship, i); });
+                
+        modules.Refresh(player.Ship.ModuleLoadout, (i, module, slot) => 
+            module.Assign(player.Ship, i, i == highlightedIndex));
     }
 
     public void Refresh()
@@ -56,19 +87,13 @@ public class ShipModulesController : MonoBehaviour
 
     private void OnSelectShipModule(ShipModuleController selected)
     {
-        var modules = GetComponentsInChildren<ShipModuleController>();
-        
-        for (int moduleIndex = 0; moduleIndex < modules.Length; ++moduleIndex)
+        for (int moduleIndex = 0; moduleIndex < modules.Count; ++moduleIndex)
         {
             var module = modules[moduleIndex];
             if (module == selected)
             {
-                highlightedIndex = moduleIndex;
-                module.Highlighted = true;
-            }
-            else
-            {
-                module.Highlighted = false;                
+                HighlightedIndex = moduleIndex;
+                break;
             }
         }
     }

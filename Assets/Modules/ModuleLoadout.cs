@@ -6,6 +6,8 @@ using System.Collections;
 [Serializable]
 public class ModuleLoadout : IEnumerable<HardpointModule>
 {
+    public const int BadIndex = -1;
+
     [SerializeField]
     private List<HardpointModule> hardpointModules;
 
@@ -110,7 +112,7 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
             }
         }
 
-        return -1;
+        return BadIndex;
     }
 
     public bool IsValidSlot(int slot)

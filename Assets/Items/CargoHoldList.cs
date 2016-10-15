@@ -1,8 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
+using System.Linq;
 
 public class CargoHoldList : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class CargoHoldList : MonoBehaviour
     private CargoHold cargoHold;
 
     [SerializeField]
-    private int highlightedIndex;
+    private int highlightedIndex = -1;
 
     //[SerializeField]
     //private string sizeFormat = "{0}/{1}";
@@ -25,6 +24,9 @@ public class CargoHoldList : MonoBehaviour
     [SerializeField]
     private Transform itemsHolder;
 
+    [SerializeField]
+    private bool hideEmptySlots;
+
     //[SerializeField]
     //private Text sizeLabel;
 
@@ -36,11 +38,22 @@ public class CargoHoldList : MonoBehaviour
         set { cargoHold = value; }
     }
 
+    public CargoHoldListItem this[int index]
+    {
+        get
+        {
+            Debug.Assert(currentItems != null);            
+            return currentItems[index];
+        }
+    }
+
     public int HighlightedIndex
     {
         get
         {
-            if (cargoHold.IsValidIndex(highlightedIndex))
+            Debug.Assert(isActiveAndEnabled);
+
+            if (!cargoHold.IsValidIndex(highlightedIndex))
             {
                 return -1;
             }
@@ -94,7 +107,13 @@ public class CargoHoldList : MonoBehaviour
         
         if (cargoHold)
         {
-            var newItems = currentItems.Refresh(CargoHold.Items, (i, existingItem, cargoItem) =>
+            var items = CargoHold.Items;
+            if (hideEmptySlots)
+            {
+                items = items.Where(i => !!i);
+            }
+
+            var newItems = currentItems.Refresh(items, (i, existingItem, cargoItem) =>
                 existingItem.Assign(CargoHold, i));
 
             if (newItems)
@@ -102,13 +121,13 @@ public class CargoHoldList : MonoBehaviour
                 BroadcastMessage("OnCargoListNewItems", currentItems.Items, SendMessageOptions.DontRequireReceiver);
             }
 
-            highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.ItemCount - 1);
+            highlightedIndex = System.Math.Min(highlightedIndex, CargoHold.Size - 1);
         }
         else
         {
             currentItems.Clear();
 
-            highlightedIndex = CargoHold.BAD_INDEX;
+            highlightedIndex = CargoHold.BadIndex;
         }
     }
 

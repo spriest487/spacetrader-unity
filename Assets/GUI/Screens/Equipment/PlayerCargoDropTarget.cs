@@ -40,7 +40,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
             else if (station && sourceCargo == station.ItemsForSale)
             {
                 SpaceTraderConfig.Market.BuyItemFromStation(player, item.ItemIndex);
-                playerCargoList.HighlightedIndex = CargoHold.BAD_INDEX;
+                playerCargoList.HighlightedIndex = CargoHold.BadIndex;
             }
         }
     }
@@ -52,7 +52,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
         var loadout = player.Ship.ModuleLoadout;
 
         int targetIndex = slot ? slot.ItemIndex : targetCargo.FirstFreeIndex;
-        if (targetIndex != CargoHold.BAD_INDEX)
+        if (targetIndex != CargoHold.BadIndex)
         {
             var targetItem = targetCargo[targetIndex];
             var targetModule = targetItem as ModuleItemType;
@@ -70,20 +70,31 @@ public class PlayerCargoDropTarget : MonoBehaviour
             }
 
             targetCargo[targetIndex] = swappedModule;
-            playerCargoList.HighlightedIndex = targetIndex;
+
+            //now highlight the swapped module in the player cargo
+            playerCargoList[targetIndex].OnClickCargoItem();
         }
     }
        
     private void OnCargoListNewItems(List<CargoHoldListItem> items)
     {
-        if (!slot)
+        //if this is applied to a single slot, ignore this
+        if (slot)
         {
-            items.ForEach(item =>
+            return;
+        }
+
+        for (int i = 0; i < items.Count; ++i)
+        {
+            var item = items[i];
+            var slotDropTarget = item.gameObject.GetComponent<PlayerCargoDropTarget>();
+            if (!slotDropTarget)
             {
-                var slotDropTarget = item.gameObject.AddComponent<PlayerCargoDropTarget>();
-                slotDropTarget.playerCargoList = playerCargoList;
-                slotDropTarget.slot = item;
-            });
+                slotDropTarget = item.gameObject.AddComponent<PlayerCargoDropTarget>();
+            }
+
+            slotDropTarget.playerCargoList = playerCargoList;
+            slotDropTarget.slot = item;
         }
     }
 }

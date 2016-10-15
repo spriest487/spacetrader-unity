@@ -20,19 +20,29 @@ public class TargetCargoDropTarget : MonoBehaviour
         if (sourceCargo == equipmentScreen.PlayerCargo)
         {
             SpaceTraderConfig.Market.SellItemToStation(player, item.ItemIndex);
+
+            //this slot should now be empty, doing this will "select" the empty slot
+            item.OnClickCargoItem();
         }
     }
 
     private void OnCargoListNewItems(List<CargoHoldListItem> items)
     {
-        if (!slot)
+        if (slot)
         {
-            items.ForEach(item =>
+            return;
+        }
+
+        for (int i = 0; i < items.Count; ++i)
+        {
+            var slotDropTarget = gameObject.GetComponent<TargetCargoDropTarget>();
+            if (!slotDropTarget)
             {
-                var slotDropTarget = gameObject.AddComponent<TargetCargoDropTarget>();
-                slotDropTarget.equipmentScreen = equipmentScreen;
-                slotDropTarget.slot = item;
-            });
+                slotDropTarget = gameObject.AddComponent<TargetCargoDropTarget>();
+            }
+
+            slotDropTarget.equipmentScreen = equipmentScreen;
+            slotDropTarget.slot = items[i];
         }
     }
 }

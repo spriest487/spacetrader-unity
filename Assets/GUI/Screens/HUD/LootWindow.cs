@@ -74,7 +74,7 @@ public class LootWindow : MonoBehaviour
 
     public void OnSelectCargoItem(CargoHoldListItem selected)
     {
-        cargoList.HighlightedIndex = CargoHold.BAD_INDEX;
+        cargoList.HighlightedIndex = CargoHold.BadIndex;
 
         SpaceTraderConfig.Instance.StartCoroutine(TakeItemRoutine(selected.ItemIndex));
     }

@@ -228,7 +228,7 @@ public partial class Ship : MonoBehaviour
             yield return passenger;
         }
     }
-
+    
     private void UpdateHardpoints()
     {
         hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());

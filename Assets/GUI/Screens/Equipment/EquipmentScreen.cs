@@ -15,6 +15,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     private CargoHoldList playerCargoList;
 
     [SerializeField]
+    private Transform targetCargoPanel;
     private CargoHoldList targetCargoList;
 
     [SerializeField]
@@ -41,9 +42,12 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
             return playerCargoList.CargoHold;
         }
     }
-    
+        
     private void OnScreenActive()
     {
+        targetCargoList = targetCargoPanel.GetComponentInChildren<CargoHoldList>();
+        Debug.Assert(!!targetCargoList);
+
         dragItem.gameObject.SetActive(false);
         var player = SpaceTraderConfig.LocalPlayer;
         playerCargoList.CargoHold = player ? player.Ship.Cargo : null;
@@ -54,26 +58,49 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
         if (player.Moorable.DockedAtStation)
         {
-            targetCargoList.gameObject.SetActive(true);
+            targetCargoPanel.gameObject.SetActive(true);
             targetCargoList.Refresh();
             targetCargoList.CargoHold = player.Moorable.DockedAtStation.ItemsForSale;
         }
         else
         {
-            targetCargoList.gameObject.SetActive(false);
+            targetCargoPanel.gameObject.SetActive(false);
         }
+
+        targetCargoList.HighlightedIndex = CargoHold.BadIndex;
+        playerCargoList.HighlightedIndex = CargoHold.BadIndex;
+        shipModules.HighlightedIndex = ModuleLoadout.BadIndex;
+    }
+
+    private void Update()
+    {
+        var infoType = playerCargoList.HighlightedItem;
+
+        if (!infoType && targetCargoList.isActiveAndEnabled)
+        {
+            infoType = targetCargoList.HighlightedItem;
+        }
+
+        if (!infoType)
+        {
+            var module = shipModules.HighlightedModule;
+            if (module)
+            {
+                infoType = module.Module.ModuleType;
+            }
+        }
+
+        infoPanel.ItemType = infoType;
     }
 
     public void OnSelectShipModule(ShipModuleController moduleController)
     {
-        infoPanel.ItemType = moduleController.Module.ModuleType;
         playerCargoList.HighlightedIndex = -1;
         targetCargoList.HighlightedIndex = -1;
     }
 
     public void OnSelectCargoItem(CargoHoldListItem selection)
     {
-        infoPanel.ItemType = selection.ItemType;
         shipModules.HighlightedIndex = -1;
 
         if (selection.CargoHold == playerCargoList.CargoHold)

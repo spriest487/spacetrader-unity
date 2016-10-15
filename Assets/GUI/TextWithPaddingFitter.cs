@@ -22,7 +22,7 @@ public class TextWithPaddingFitter : MonoBehaviour
 
     private void Update()
     {
-        var height = text.preferredHeight + padding;
+        var height = Mathf.CeilToInt(text.preferredHeight) + padding;
 
         layout.preferredHeight = height;
     }

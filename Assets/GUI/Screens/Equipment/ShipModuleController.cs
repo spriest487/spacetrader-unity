@@ -9,9 +9,6 @@ using System.Collections.Generic;
 public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField]
-    private Text caption;
-
-    [SerializeField]
     private Image icon;
 
     [SerializeField]
@@ -46,7 +43,7 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
 
     public void OnClickModule()
     {
-        SendMessageUpwards("OnSelectShipModule", this, SendMessageOptions.DontRequireReceiver);
+        SendMessageUpwards("OnSelectShipModule", this);
     }
 
     public void OnDrag(PointerEventData pointerData)
@@ -58,7 +55,7 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
         if (!ship.ModuleLoadout.IsFreeSlot(moduleSlot))
         {
             Debug.Log("dragged from hardpoint slot " + moduleSlot);
-            SendMessageUpwards("OnDragHardpointModule", this, SendMessageOptions.DontRequireReceiver);
+            SendMessageUpwards("OnDragHardpointModule", this);
         }
     }
 
@@ -76,7 +73,7 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
         }
     }
 
-    public void Assign(Ship ship, int moduleIndex)
+    public void Assign(Ship ship, int moduleIndex, bool highlighted)
     {
         this.ship = ship;
         this.moduleSlot = moduleIndex;
@@ -85,17 +82,14 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
         var itemType = module.ModuleType;
         if (itemType)
         {
-            caption.text = itemType.name;
-            caption.gameObject.SetActive(true);
             icon.sprite = itemType.Icon;
             icon.gameObject.SetActive(true);
         }
         else
         {
-            caption.gameObject.SetActive(false);
             icon.gameObject.SetActive(false);
         }
 
-        Highlighted = false;
+        Highlighted = highlighted;
     }
 }
