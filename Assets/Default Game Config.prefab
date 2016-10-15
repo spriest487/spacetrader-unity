@@ -857,7 +857,7 @@ MonoBehaviour:
     hotkeyButton: 
   - screenId: 5
     playerStatus: 0
-    root: {fileID: 163950, guid: 7bb29badc4c08a743b728f0ec9906bce, type: 2}
+    root: {fileID: 1000013233645904, guid: 7bb29badc4c08a743b728f0ec9906bce, type: 2}
     overlayInstance: {fileID: 0}
     canvasGroup: {fileID: 0}
     transitionIn: 2
