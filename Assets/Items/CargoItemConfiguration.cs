@@ -3,6 +3,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Items/Item Configuration")]
 public class CargoItemConfiguration : ScriptableObject
 {
     [SerializeField]

@@ -1,18 +1,10 @@
 ﻿#pragma warning disable 0649
 
-using System;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Abilities/Torpedo Launcher")]
 public class TorpedoLauncherAbility : Ability
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Abilities/Torpedo Launcher")]
-    public static void CreateAbilityDefinition()
-    {
-        ScriptableObjectUtility.CreateAsset<TorpedoLauncherAbility>();
-    }
-#endif
-
     [SerializeField]
     private ShipType torpedoType;
 

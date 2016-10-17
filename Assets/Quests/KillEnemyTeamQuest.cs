@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Linq;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Quests/Kill Enemey Team Quest")]
 public class KillEnemyTeamQuest : Quest
 {
     [SerializeField]

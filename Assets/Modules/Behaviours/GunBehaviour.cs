@@ -1,23 +1,15 @@
 ﻿#pragma warning disable 0649
 
-using System;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Modules/Gun Behaviour")]
 public class GunBehaviour : ModuleBehaviour
 {
     private const string DESCRIPTION_FORMAT =
 @"<color=#ffffffaa>Damage: </color> {0}-{1}
 <color=#ffffffaa>Range:</color> {2:0.0}m
 <color=#ffffffaa>Projectile speed:</color> {3:0.0}m/s";
-
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Gun Behavior")]
-    public static void CreateGunBehavior()
-    {
-        ScriptableObjectUtility.CreateAsset<GunBehaviour>();
-    }
-#endif
-
+    
     [SerializeField]
 	private Bullet bulletType;
 

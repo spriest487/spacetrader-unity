@@ -3,6 +3,7 @@
 using System;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Quests/Generic Kill Quest")]
 public class KillShipTypeQuest : Quest
 {
     [Header("Config")]

@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Quests/Generic Fetch Quest")]
 public class CollectItemsQuest : Quest
 {
     [SerializeField]

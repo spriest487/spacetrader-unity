@@ -3,6 +3,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Missions Config")]
 public class MissionsConfiguration : ScriptableObject
 {
     [SerializeField]

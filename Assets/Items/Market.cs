@@ -7,20 +7,13 @@ using System.Collections;
 using System.Linq;
 using MarketRequests;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Market")]
 public class Market : ScriptableObject {
     public static string FormatCurrency(int amount)
     {
         return "*" + amount.ToString("N0");
     }
-
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Market")]
-    public static void CreateNewMarket()
-    {
-        ScriptableObjectUtility.CreateAsset<Market>();
-    }
-#endif
-
+    
     [SerializeField]
     private int baseHirePrice;
 

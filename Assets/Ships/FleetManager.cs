@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Fleet Manager")]
 public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
 {
     private class LeaderComparer : IEqualityComparer<Fleet>

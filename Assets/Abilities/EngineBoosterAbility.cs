@@ -1,16 +1,10 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Abilities/Engine Booster")]
 public class EngineBoosterAbility : Ability
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Abilities/Engine Booster")]
-    public static void CreateAbilityDefinition()
-    {
-        ScriptableObjectUtility.CreateAsset<EngineBoosterAbility>();
-    }
-#endif
-
     [SerializeField, HideInInspector]
     private StatusEffect activeEffect;
 

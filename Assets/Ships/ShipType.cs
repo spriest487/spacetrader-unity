@@ -3,16 +3,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Ship Type")]
 public class ShipType : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Ship Type")]
-    public static void Create()
-    {
-        ScriptableObjectUtility.CreateAsset<ShipType>();
-    }
-#endif
-
     [Header("Prefabs")]
 
     [SerializeField]

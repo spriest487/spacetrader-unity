@@ -3,16 +3,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Modules/Module Preset")]
 public class ModulePreset : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Modules/Module Preset")]
-    public static void CreateModulePreset()
-    {
-        ScriptableObjectUtility.CreateAsset<ModulePreset>();
-    }
-#endif
-
     [SerializeField]
     private List<ModuleItemType> slots;
 

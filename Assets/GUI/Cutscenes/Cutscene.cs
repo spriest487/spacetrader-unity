@@ -11,16 +11,9 @@ public class CutscenePage
     public string Speaker;
 }
 
+[CreateAssetMenu(menuName = "SpaceTrader/Cutscene")]
 public class Cutscene : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Cutscene")]
-    public static void CreateNewCutscene()
-    {
-        ScriptableObjectUtility.CreateAsset<Cutscene>();
-    }
-#endif
-
     [SerializeField]
     private List<CutscenePage> pages;
 

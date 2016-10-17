@@ -2,16 +2,9 @@
 
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Items/Equippable Item Type")]
 public class ModuleItemType : ItemType
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Items/Equippable module item type")]
-    public static void Create()
-    {
-        ScriptableObjectUtility.CreateAsset<ModuleItemType>();
-    }
-#endif
-
     [SerializeField]
     private ModuleBehaviour behaviour;
     

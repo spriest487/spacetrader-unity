@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Quests/Quest Board")]
 public class QuestBoard : ScriptableObject
 {
     [Serializable]

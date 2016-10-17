@@ -4,16 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Missions/Mission Definition")]
 public class MissionDefinition : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Missions/Mission definition")]
-    public static void CreateMissionDefiniton()
-    {
-        ScriptableObjectUtility.CreateAsset<MissionDefinition>();
-    }
-#endif
-
     [System.Serializable]
     public class PlayerSlot
     {

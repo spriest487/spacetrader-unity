@@ -1,7 +1,5 @@
 ﻿#pragma warning disable 0649
 
-using System.Collections.Generic;
-using System;
 using UnityEngine;
 
 public enum CrewAssignment
@@ -11,16 +9,9 @@ public enum CrewAssignment
     Captain,
 }
 
+[CreateAssetMenu(menuName = "SpaceTrader/Crew/Crew Member")]
 public class CrewMember : ScriptableObject
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Crew/Crew member")]
-    public static void CreateFromMenu()
-    {
-        ScriptableObjectUtility.CreateAsset<CrewMember>();
-    }
-#endif
-
     [SerializeField]
     private Sprite portrait;
 

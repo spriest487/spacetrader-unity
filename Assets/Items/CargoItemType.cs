@@ -2,16 +2,9 @@
 
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SpaceTrader/Items/Cargo Item Type")]
 public class CargoItemType : ItemType
 {
-#if UNITY_EDITOR
-    [UnityEditor.MenuItem("Assets/Create/SpaceTrader/Items/Cargo item type")]
-    public static void Create()
-    {
-        ScriptableObjectUtility.CreateAsset<CargoItemType>();
-    }
-#endif
-
     [SerializeField]
     private string displayName;
 
