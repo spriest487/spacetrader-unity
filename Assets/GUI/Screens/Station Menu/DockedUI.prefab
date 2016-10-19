@@ -985,7 +985,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 0.9375
+  m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 640}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 1
@@ -1021,6 +1021,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headerFormat: '{0}'
+  undockButton: {fileID: 22474432}
   headerText: {fileID: 11474440}
 --- !u!114 &11474436
 MonoBehaviour:

@@ -129,7 +129,7 @@ public class MainMenu : MonoBehaviour
         if (PlayerShip.LocalPlayer)
         {
             ScreenManager.Instance.ScreenID = ScreenID.None;
-            ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", "Game saved");
+            ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "OnPlayerNotification", "Game saved");
         }
     }
 

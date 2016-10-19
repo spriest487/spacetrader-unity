@@ -51,7 +51,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Docked);
+            ScreenManager.Instance.ScreenID = ScreenID.ScreensList;
             ScreenManager.Instance.FullScreenFade(ScreenTransition.FadeFromBlack);
         }
     }
@@ -60,7 +60,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.SetStates(ScreenID.None, PlayerStatus.Flight);
+            ScreenManager.Instance.ScreenID = ScreenID.None;
         }
     }
 
@@ -148,8 +148,7 @@ public class PlayerShip : MonoBehaviour
     void Update()
     {
         if (LocalPlayerHasControl() 
-            && ScreenManager.Instance.ScreenID == ScreenID.None 
-            && ScreenManager.Instance.State == PlayerStatus.Flight)
+            && ScreenManager.Instance.ScreenID == ScreenID.None)
         {
             ProcessLocalInput();
         }
@@ -232,7 +231,7 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("radio"))
             {
-                ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "ShowRadioMenu", null);
+                ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "ShowRadioMenu", null);
             }
         }
     }
@@ -248,16 +247,14 @@ public class PlayerShip : MonoBehaviour
 
                     if (target)
                     {
-                        ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
-                            ScreenID.None,
+                        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
                             "OnPlayerNotification",
                             "You> Hello, " + target.name);
                     }
                 }    
                 else
                 {
-                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
-                        ScreenID.None,
+                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
                         "OnPlayerNotification",
                         message.SourceShip.name + "> Hello!");
                 }
@@ -268,12 +265,11 @@ public class PlayerShip : MonoBehaviour
                 {
                     string msg = "OK, Boss.";
 
-                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight,
-                        ScreenID.None,
+                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
                         "OnPlayerNotification",
                         message.SourceShip.name + "> " + msg);
 
-                    ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None,
+                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
                         "OnRadioSpeech",
                         new PlayerRadioMessage()
                         {

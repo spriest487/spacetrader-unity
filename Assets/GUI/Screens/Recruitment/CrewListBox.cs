@@ -47,6 +47,8 @@ public class CrewListBox : MonoBehaviour
     {
         IEnumerable<CrewMember> crew;
 
+        Ship playerShip = PlayerShip.LocalPlayer ? PlayerShip.LocalPlayer.Ship : null;
+
         if (targetCrew == TargetCrew.Station)
         {
             var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
@@ -62,16 +64,14 @@ public class CrewListBox : MonoBehaviour
         }
         else
         {
-            Ship ship;
-            if (PlayerShip.LocalPlayer && (ship = PlayerShip.LocalPlayer.Ship))
-            {
+            if (playerShip) {
                 switch (forAssignment)
                 {
                     case CrewAssignment.Captain:
-                        crew = ship.GetCaptain().AsOptionalObject();
+                        crew = playerShip.GetCaptain().AsOptionalObject();
                         break;
                     default:
-                        crew = ship.GetPassengers();
+                        crew = playerShip.GetPassengers();
                         break;
                 }
             }
@@ -89,7 +89,8 @@ public class CrewListBox : MonoBehaviour
         if (crew != null && crew.Any())
         {
             CrewListItem.BuySellMode buySellMode;
-            if (ScreenManager.Instance.State == PlayerStatus.Docked)
+
+            if (playerShip.Moorable.DockedAtStation)
             {
                 if (targetCrew == TargetCrew.Player)
                 {

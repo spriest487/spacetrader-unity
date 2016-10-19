@@ -8,9 +8,6 @@ public class ScreenMapping
     private ScreenID screenId;
 
     [SerializeField]
-    private PlayerStatus playerStatus;
-
-    [SerializeField]
     private GameObject root;
 
     [HideInInspector]
@@ -35,8 +32,7 @@ public class ScreenMapping
     public CanvasGroup CanvasGroup { get { return canvasGroup; } }
 
     public ScreenID ScreenID { get { return screenId; } }
-    public PlayerStatus PlayerStatus { get { return playerStatus; } }
-
+    
     public ScreenTransition TransitionIn { get { return transitionIn; } }
     public ScreenTransition TransitionOut { get { return transitionOut; } }
     public string HotkeyButton { get { return hotkeyButton; } }

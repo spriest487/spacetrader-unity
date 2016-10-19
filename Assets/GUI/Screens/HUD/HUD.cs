@@ -96,6 +96,12 @@ public class HUD : MonoBehaviour
         PlayerShip.LocalPlayer.ActivateTarget();
     }
 
+    //gui screens menu button event
+    public void ShowScreensList()
+    {
+        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.ScreensList);
+    }
+
     //activated a loot can, pop up the loot display window
     private void OnPlayerActivatedLoot(LootContainer loot)
     {

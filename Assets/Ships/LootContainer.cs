@@ -20,7 +20,7 @@ public class LootContainer : ActionOnActivate
     {
         Debug.Assert(SpaceTraderConfig.LocalPlayer.Ship == activator);
 
-        ScreenManager.Instance.BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerActivatedLoot", this);
+        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "OnPlayerActivatedLoot", this);
     }
 
     public override bool CanBeActivatedBy(Ship activator)

@@ -27,10 +27,7 @@ public class ScreenManager : MonoBehaviour
             instance = value;
         }
     }
-    
-    [SerializeField]
-    private PlayerStatus playerStatus;
-    
+        
     [SerializeField]
     private ScreenID screenId;
 
@@ -54,23 +51,7 @@ public class ScreenManager : MonoBehaviour
     {
         get { return currentFullscreenFade != null; }
     }
-
-    public PlayerStatus State
-    {
-        get
-        {
-            return playerStatus;
-        }
-        private set
-        {
-            if (playerStatus != value)
-            {
-                playerStatus = value;
-                Apply();
-            }
-        }
-    }
-
+    
     public ScreenID ScreenID
     {
         get
@@ -157,14 +138,13 @@ public class ScreenManager : MonoBehaviour
         Instance = null;
     }
 
-    public void BroadcastScreenMessage(PlayerStatus playerStatus,
-        ScreenID overlayState,
+    public void BroadcastScreenMessage(ScreenID overlayState,
         string message, 
         object value)
     {
         foreach (var screen in screens)
         {
-            if (screen.PlayerStatus == playerStatus && screen.ScreenID == overlayState)
+            if (screen.ScreenID == overlayState)
             {
                 screen.Root.BroadcastMessage(message, value, SendMessageOptions.DontRequireReceiver);
             }
@@ -173,7 +153,7 @@ public class ScreenManager : MonoBehaviour
 
     public void BroadcastPlayerNotification(string message)
     {
-        BroadcastScreenMessage(PlayerStatus.Flight, ScreenID.None, "OnPlayerNotification", message);
+        BroadcastScreenMessage(ScreenID.None, "OnPlayerNotification", message);
     }
     
     private void Apply()
@@ -181,16 +161,10 @@ public class ScreenManager : MonoBehaviour
         foreach (var screen in screens)
         {
             screen.Init();
-
-            var screenIdMatches = ScreenID == screen.ScreenID;
-            var playerStatusMatches = State == screen.PlayerStatus
-                || screen.PlayerStatus == PlayerStatus.None;
-
-            var screenActive = screenIdMatches && playerStatusMatches;
-
-            if (screenActive)
+            
+            if (ScreenID == screen.ScreenID)
             {
-                screen.Root.gameObject.SetActive(screenActive);
+                screen.Root.gameObject.SetActive(true);
                 screen.Root.BroadcastMessage("OnScreenActive", SendMessageOptions.DontRequireReceiver);
             }
             else
@@ -212,13 +186,6 @@ public class ScreenManager : MonoBehaviour
             ScreenID = state;
         }
 
-        Apply();
-    }
-
-    public void SetStates(ScreenID hudOverlay, PlayerStatus state)
-    {
-        this.screenId = hudOverlay;
-        this.playerStatus = state;
         Apply();
     }
 
@@ -245,8 +212,6 @@ public class ScreenManager : MonoBehaviour
     private void Start()
     {
         screenId = DefaultHudOverlay;
-        playerStatus = PlayerStatus.Flight;
-
         Apply();
     }
 
@@ -267,19 +232,7 @@ public class ScreenManager : MonoBehaviour
     
     private void Update()
     {
-        bool docked = false;
-
-        var player = PlayerShip.LocalPlayer;
-        if (player)
-        {
-            var moorable = player.Moorable;
-            if (moorable && moorable.State == DockingState.Docked)
-            {
-                docked = true;
-            }
-        }
-
-        State = docked? PlayerStatus.Docked : PlayerStatus.Flight;
+        var player = SpaceTraderConfig.LocalPlayer;
 
         if (player)
         {
@@ -310,7 +263,11 @@ public class ScreenManager : MonoBehaviour
                     default:
                         var currentScreen = FindCurrentScreen();
 
-                        TryFadeScreenTransition(ScreenID.None, 
+                        bool isDocked = player.Ship && player.Ship.Moorable.DockedAtStation;
+
+                        var nextScreen = isDocked ? ScreenID.ScreensList : ScreenID.None;
+
+                        TryFadeScreenTransition(nextScreen, 
                             currentScreen.TransitionIn, 
                             currentScreen.TransitionOut);
                         break;
@@ -414,16 +371,7 @@ public class ScreenManager : MonoBehaviour
         currentFullscreenFade = StartCoroutine(FullscreenFadeRoutine(transitionType, onFinish));
     }
 
-    public bool TryFadeScreenTransition(ScreenID screenId,
-        ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha,
-        ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
-        Action onFinish = null)
-    {
-        return TryFadeScreenTransition(PlayerStatus.None, screenId, transitionIn, transitionOut, onFinish);
-    }
-
-    public bool TryFadeScreenTransition(PlayerStatus playerStatus,
-        ScreenID screenId,        
+    public bool TryFadeScreenTransition(ScreenID screenId,        
         ScreenTransition transitionIn = ScreenTransition.FadeOutAlpha, 
         ScreenTransition transitionOut = ScreenTransition.FadeInAlpha,
         Action onFinish = null)
@@ -437,12 +385,7 @@ public class ScreenManager : MonoBehaviour
         FullScreenFade(transitionIn, () =>
         {
             this.screenId = screenId;
-
-            if (playerStatus != PlayerStatus.None)
-            {
-                this.playerStatus = playerStatus;
-            }
-
+            
             Apply();
             if (onFinish != null)
             {
