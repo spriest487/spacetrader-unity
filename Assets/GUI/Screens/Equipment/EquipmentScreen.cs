@@ -75,10 +75,12 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     private void Update()
     {
         var infoType = playerCargoList.HighlightedItem;
+        bool infoOwnedByPlayer = true;
 
         if (!infoType && targetCargoList.isActiveAndEnabled)
         {
             infoType = targetCargoList.HighlightedItem;
+            infoOwnedByPlayer = false;
         }
 
         if (!infoType)
@@ -87,10 +89,11 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
             if (module)
             {
                 infoType = module.Module.ModuleType;
+                infoOwnedByPlayer = true;
             }
         }
 
-        infoPanel.ItemType = infoType;
+        infoPanel.SetItem(infoType, infoOwnedByPlayer);
     }
 
     public void OnSelectShipModule(ShipModuleController moduleController)

@@ -35,12 +35,12 @@ public class ShopScreen : MonoBehaviour
         {
             sellButton.interactable = true;
 
-            infoPanel.ItemType = cargoItems.HighlightedItem;
+            infoPanel.SetItem(cargoItems.HighlightedItem, true);
         }
         else if (forSaleItems.HighlightedIndex >= 0)
         {
             var buyingType = forSaleItems.HighlightedItem;
-            infoPanel.ItemType = buyingType;
+            infoPanel.SetItem(buyingType, false);
 
             if (forSaleItems.HighlightedIndex >= 0
                 && cargoItems.CargoHold.FreeCapacity > 0)
@@ -55,7 +55,7 @@ public class ShopScreen : MonoBehaviour
         }
         else
         {
-            infoPanel.ItemType = null;
+            infoPanel.SetItem(null, false);
         }
     }
     

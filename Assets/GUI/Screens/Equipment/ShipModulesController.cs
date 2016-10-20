@@ -52,7 +52,7 @@ public class ShipModulesController : MonoBehaviour
     {
         get
         {
-            if (!PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(highlightedIndex))
+            if (modules == null || !PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(highlightedIndex))
             {
                 return null;
             }

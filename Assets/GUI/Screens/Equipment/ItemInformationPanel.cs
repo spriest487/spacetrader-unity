@@ -9,6 +9,9 @@ public class ItemInformationPanel : MonoBehaviour
     private ItemType itemType;
 
     [SerializeField]
+    private bool itemOwnedByPlayer;
+
+    [SerializeField]
     private Text nameLabel;
 
     [SerializeField]
@@ -21,19 +24,12 @@ public class ItemInformationPanel : MonoBehaviour
     private Sprite emptyIcon;
 
     private ScrollRect scrollRect;
-
-    public ItemType ItemType
+    
+    public void SetItem(ItemType type, bool ownedByPlayer)
     {
-        get
-        {
-            return itemType;
-        }
-        set
-        {
-            itemType = value;
-
-            scrollRect.normalizedPosition = new Vector2(0, 1);
-        }
+        itemType = type;
+        itemOwnedByPlayer = ownedByPlayer;
+        Refresh();
     }
 
     private void Start()
@@ -41,7 +37,7 @@ public class ItemInformationPanel : MonoBehaviour
         scrollRect = GetComponent<ScrollRect>();
     }
 
-    private void Update()
+    private void Refresh()
     {
         if (itemType)
         {
@@ -49,15 +45,21 @@ public class ItemInformationPanel : MonoBehaviour
             icon.sprite = itemType.Icon;
             icon.gameObject.SetActive(true);
 
+            var description = "<size=32><color=#ffffffaa>Price:</color>"
+                + Market.FormatCurrency(itemType.BaseValue)
+                + "</size>\n";
+
             var moduleType = itemType as ModuleItemType;
             if (moduleType != null)
             {
-                descriptionLabel.text = moduleType.GetStatsString(PlayerShip.LocalPlayer.Ship) + "\n" + itemType.Description;
+                description += moduleType.GetStatsString(PlayerShip.LocalPlayer.Ship) + "\n" + itemType.Description;
             }
             else
             {
-                descriptionLabel.text = itemType.Description;
+                description += itemType.Description;
             }
+
+            descriptionLabel.text = description;
         }
         else
         {
@@ -66,5 +68,10 @@ public class ItemInformationPanel : MonoBehaviour
             icon.gameObject.SetActive(false);
             descriptionLabel.text = null;
         }
+    }
+
+    private void OnScreenActive()
+    {
+        Refresh();
     }
 }
