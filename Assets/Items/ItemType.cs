@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public enum Rarity
 {
@@ -21,6 +23,11 @@ public abstract class ItemType : ScriptableObject
    
     public abstract string DisplayName { get; }
     public abstract string Description { get; }
+
+    public virtual IEnumerable<KeyValuePair<string, string>> GetDisplayedStats(Ship owner)
+    {
+        return Enumerable.Empty<KeyValuePair<string, string>>();
+    }
 
     public Rarity Rarity
     {

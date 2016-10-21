@@ -1,15 +1,11 @@
 ﻿#pragma warning disable 0649
 
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Modules/Gun Behaviour")]
 public class GunBehaviour : ModuleBehaviour
-{
-    private const string DESCRIPTION_FORMAT =
-@"<color=#ffffffaa>Damage: </color> {0}-{1}
-<color=#ffffffaa>Range:</color> {2:0.0}m
-<color=#ffffffaa>Projectile speed:</color> {3:0.0}m/s";
-    
+{    
     [SerializeField]
 	private Bullet bulletType;
 
@@ -29,9 +25,7 @@ public class GunBehaviour : ModuleBehaviour
     {
         get
         {
-            float velocity = bulletType.velocity;
-            float range = velocity * bulletType.lifetime;
-            return string.Format(DESCRIPTION_FORMAT, minDamage, maxDamage, range, velocity);
+            return "A projectile weapon that fires a bullet.";
         }
     }
 
@@ -129,5 +123,15 @@ public class GunBehaviour : ModuleBehaviour
         targetPos += speedDiff;
 
         return targetPos;
-    } 
+    }
+
+    public override IEnumerable<KeyValuePair<string, string>> GetDisplayedStats(Ship owner)
+    {
+        float velocity = bulletType.velocity;
+        float range = velocity * bulletType.lifetime;
+
+        yield return new KeyValuePair<string, string>("Damage", minDamage +"-" +maxDamage);
+        yield return new KeyValuePair<string, string>("Range", range.ToString("0.00") +"m");
+        yield return new KeyValuePair<string, string>("Projectile Speed", velocity.ToString("0.00") + "m/s");
+    }
 }

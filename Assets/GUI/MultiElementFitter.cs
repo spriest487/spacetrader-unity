@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(LayoutElement))]
+[RequireComponent(typeof(RectTransform))]
 public class MultiElementFitter : MonoBehaviour
 {
     [SerializeField]
@@ -16,8 +16,14 @@ public class MultiElementFitter : MonoBehaviour
 
     [SerializeField]
     private int extraPadding = 0;
-
+    
     private LayoutElement layout;
+
+    public IEnumerable<RectTransform> Elements
+    {
+        get { return targets; }
+        set { targets = new List<RectTransform>(value); }
+    }
 
     private void Start()
     {
@@ -43,14 +49,24 @@ public class MultiElementFitter : MonoBehaviour
 
         int size = extraPadding + Mathf.CeilToInt(total);
 
-        switch (fitMode)
+        if (layout)
         {
-            case ContentSizeFitter.FitMode.MinSize:
-                layout.minHeight = size;
-                break;
-            case ContentSizeFitter.FitMode.PreferredSize:
-                layout.preferredHeight = size;
-                break;
+            switch (fitMode)
+            {
+                case ContentSizeFitter.FitMode.MinSize:
+                    layout.minHeight = size;
+                    break;
+                case ContentSizeFitter.FitMode.PreferredSize:
+                    layout.preferredHeight = size;
+                    break;
+            }
+        }
+        else
+        {
+            var xform = (RectTransform)transform;
+            var sizeDelta = xform.sizeDelta;
+            sizeDelta.y = size;
+            xform.sizeDelta = sizeDelta;
         }
     }
 }

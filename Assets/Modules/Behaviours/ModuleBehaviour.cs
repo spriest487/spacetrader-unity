@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public abstract class ModuleBehaviour : ScriptableObject
 {
@@ -30,5 +31,10 @@ public abstract class ModuleBehaviour : ScriptableObject
     public virtual Vector3? PredictTarget(Ship activator, int slot, Targetable target)
     {
         return null;
+    }
+
+    public virtual IEnumerable<KeyValuePair<string, string>> GetDisplayedStats(Ship owner)
+    {
+        yield break;
     }
 }

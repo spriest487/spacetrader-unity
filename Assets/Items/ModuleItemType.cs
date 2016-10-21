@@ -1,5 +1,6 @@
 ﻿#pragma warning disable 0649
 
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Items/Equippable Item Type")]
@@ -39,20 +40,13 @@ public class ModuleItemType : ItemType
         }
     }
 
-    public string GetStatsString(Ship owner)
+    public override IEnumerable<KeyValuePair<string, string>> GetDisplayedStats(Ship owner)
     {
-        string result;
+        yield return new KeyValuePair<string, string>("DPS", behaviour.CalculateDps(owner).ToString("0.0"));
 
-        var dps = behaviour.CalculateDps(owner);
-        if (dps > 0)
+        foreach (var stat in behaviour.GetDisplayedStats(owner))
         {
-            result = string.Format("<size=32><color=#ffffffaa>DPS:</color> {0:0.0}</size>\n", dps);
+            yield return stat;
         }
-        else
-        {
-            result = "";
-        }
-
-        return result;
     }
 }
