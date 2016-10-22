@@ -4,20 +4,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(GUIScreen))]
 public class MainMenu : MonoBehaviour
-{
-    [System.Serializable]
-    public class Screens
-    {
-        public Transform newGameScreen;
-        public Transform rootScreen;
-        public Transform missionsScreen;
-        public Transform loadScreen;
-    }
-
-    [SerializeField]
-    private Screens screens = new Screens();
-            
+{           
     [SerializeField]
     private string menuScene;
 
@@ -26,75 +15,27 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField]
     private Transform[] activeWhenNoPlayerExists;
+
+    private GUIController guiController;
+
+    private void Start()
+    {
+        guiController = GetComponentInParent<GUIController>();
+    }
     
-    public void GoToRoot()
-    {
-        GoToScreen(null);
-    }
-
-    public void OnScreenActive()
-    {
-        GoToRoot();
-    }
-
-    public void GoToScreen(string screenId)
-    {
-        var allScreens = new Transform[] {
-            screens.newGameScreen,
-            screens.rootScreen,
-            screens.missionsScreen,
-            screens.loadScreen
-        };
-        
-        Transform showScreen;
-
-        switch (screenId)
-        {
-            case "newgame":
-                {
-                    showScreen = screens.newGameScreen;
-                    break;
-                }
-            case "missions":
-                {
-                    showScreen = screens.missionsScreen;
-                    break;
-                }
-            case "load":
-                {
-                    showScreen = screens.loadScreen;
-                    break;
-                }
-            default:
-                {
-                    showScreen = screens.rootScreen;
-                    break;
-                }
-        }
-
-        foreach (var screen in allScreens)
-        {
-            var screenActive = screen == showScreen;
-           
-            if (!screenActive)
-            {
-                screen.SendMessage("OnMenuScreenDeactivate", SendMessageOptions.DontRequireReceiver);
-            }
-
-            screen.gameObject.SetActive(screenActive);
-        }
-
-        showScreen.SendMessage("OnMenuScreenActivate", SendMessageOptions.DontRequireReceiver);
-    }
-
     public void NewGame()
     {
-        GoToScreen("newgame");
+        guiController.SwitchTo(ScreenID.NewGame);
     }
 
     public void EndGame()
     {
         SpaceTraderConfig.Instance.StartCoroutine(EndGameRoutine());
+    }
+
+    public void LoadGame()
+    {
+        guiController.SwitchTo(ScreenID.LoadGame);
     }
 
     private IEnumerator EndGameRoutine()
@@ -117,7 +58,8 @@ public class MainMenu : MonoBehaviour
 
         yield return SceneManager.LoadSceneAsync(menuScene);
         yield return new WaitForEndOfFrame();
-        GoToRoot();
+
+        guiController.SwitchTo(ScreenID.MainMenu);
 
         loading.Dismiss();
     }
@@ -156,10 +98,5 @@ public class MainMenu : MonoBehaviour
         {
             obj.gameObject.SetActive(!ingame);
         }
-    }
-
-    void Start()
-    {
-        GoToRoot();
     }
 }

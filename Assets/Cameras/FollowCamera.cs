@@ -357,7 +357,7 @@ public class FollowCamera : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
-            if (Input.GetButtonDown("turn") && ScreenManager.Instance.ScreenID == ScreenID.None)
+            if (Input.GetButtonDown("turn") && GUIController.Current.ActiveScreen == ScreenID.None)
             {
                 if (waitToDragOnGui == null)
                 {
@@ -405,12 +405,12 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        var cutsceneCamRig = ScreenManager.Instance.CurrentCutsceneCameraRig;
-        if (cutsceneCamRig)
-        {
-            CutsceneCam(cutsceneCamRig);
-        }
-        else
+        //var cutsceneCamRig = ScreenManager.Instance.CurrentCutsceneCameraRig;
+        //if (cutsceneCamRig)
+        //{
+        //    CutsceneCam(cutsceneCamRig);
+        //}
+        //else
         {
             var player = PlayerShip.LocalPlayer;
 

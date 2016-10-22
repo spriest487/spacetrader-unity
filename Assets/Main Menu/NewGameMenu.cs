@@ -42,10 +42,12 @@ public class NewGameMenu : MonoBehaviour
     [SerializeField]
     private Text mechSkillLabel;
 
-    public void OnMenuScreenActivate()
+    public void OnEnable()
     {
         portrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
         SelectCareer(0);
+
+        nameInput.text = "";
     }
 
     public void CyclePortrait(int diff)

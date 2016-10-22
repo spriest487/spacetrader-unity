@@ -8,4 +8,6 @@ public enum ScreenID
     Recruitment,
     Quests,
     WorldMap,
+    NewGame,
+    LoadGame
 }

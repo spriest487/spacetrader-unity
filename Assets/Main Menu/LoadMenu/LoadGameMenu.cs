@@ -36,7 +36,7 @@ public class LoadGameMenu : MonoBehaviour
 
     private SaveFileEntry selectedEntry;
     
-    private void OnMenuScreenActivate()
+    private void OnEnable()
     {
         Debug.Assert(fileList);
         Debug.Assert(entryPrefab);
