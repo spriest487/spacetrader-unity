@@ -20,7 +20,7 @@ public class GUIController : MonoBehaviour
     {
         var screen = screens.Where(s => s.ID == screenId)
             .FirstOrDefault();
-        Debug.Assert(!!screen);
+        Debug.AssertFormat(!!screen, "screen {0} must exist", screenId);
 
         return screen;
     }
@@ -29,7 +29,7 @@ public class GUIController : MonoBehaviour
     {
         var activeScreen = screens.Where(s => s.isActiveAndEnabled)
             .FirstOrDefault();
-        Debug.Assert(!!activeScreen);
+        Debug.Assert(!!activeScreen, "there must be an active screen");
 
         return activeScreen;
     }
