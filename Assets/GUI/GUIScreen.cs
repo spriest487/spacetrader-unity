@@ -14,7 +14,7 @@ public class GUIScreen : MonoBehaviour
 
     public ScreenID ID { get { return id; } }
     
-    void OnEnable()
+    private void OnEnable()
     {
         animator = GetComponent<Animator>();
         animator.SetBool(ActiveParam, true);

@@ -29,12 +29,7 @@ public class QuestList : MonoBehaviour
 
     private PooledList<QuestListItem, Quest> questList;
     private PooledList<QuestListItem, Quest> acceptedQuestList;
-
-    public void Close()
-    {
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None);
-    }
-
+    
     public void OnScreenActive()
     {
         Refresh();

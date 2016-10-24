@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpaceTraderConfig : MonoBehaviour
 {
@@ -64,7 +65,7 @@ public class SpaceTraderConfig : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this.gameObject);
 
         //clone configs on startup so we don't modify the global assets
         questBoard = QuestBoard.Create(questBoard);
@@ -75,30 +76,22 @@ public class SpaceTraderConfig : MonoBehaviour
         fleetManager = Instantiate(fleetManager);
 
         Debug.Assert(worldMap);
-    }
-    
-    private void OnDisable()
-    {
-        Instance = null;
+
+        SceneManager.activeSceneChanged += FindDefaultPlayer;
     }
 
-    private void OnDestroy()
+    private void FindDefaultPlayer(Scene s1, Scene s2)
     {
-        Destroy(questBoard);
-        Destroy(crewConfig);
-        Destroy(cargoConfig);
-        Destroy(missionsConfig);
-        Destroy(market);
-        Destroy(fleetManager);
-    }
-
-    private void OnLevelWasLoaded()
-    {
-        /*bit of a hack, try to find the player (this won't actually
-            get used since we will usually have a mission config) */
         if (!MissionManager.Instance)
         {
             localPlayer = FindObjectOfType<PlayerShip>();
         }
+    }
+
+    private void OnDisable()
+    {
+        Instance = null;
+
+        SceneManager.activeSceneChanged -= FindDefaultPlayer;
     }
 }

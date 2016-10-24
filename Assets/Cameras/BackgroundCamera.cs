@@ -10,6 +10,8 @@ public class BackgroundCamera : MonoBehaviour
     void Start()
     {
         Camera = GetComponent<Camera>();
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     void OnEnable()

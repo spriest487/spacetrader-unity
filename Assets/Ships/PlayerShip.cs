@@ -51,8 +51,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.ScreenID = ScreenID.ScreensList;
-            ScreenManager.Instance.FullScreenFade(ScreenTransition.FadeFromBlack);
+            GUIController.Current.SwitchTo(ScreenID.ScreensList);
         }
     }
 
@@ -60,7 +59,7 @@ public class PlayerShip : MonoBehaviour
     {
         if (LocalPlayer == this)
         {
-            ScreenManager.Instance.ScreenID = ScreenID.None;
+            GUIController.Current.SwitchTo(ScreenID.HUD);
         }
     }
 
@@ -148,7 +147,7 @@ public class PlayerShip : MonoBehaviour
     void Update()
     {
         if (LocalPlayerHasControl() 
-            && ScreenManager.Instance.ScreenID == ScreenID.None)
+            && GUIController.Current.ActiveScreen == ScreenID.None)
         {
             ProcessLocalInput();
         }
@@ -156,11 +155,11 @@ public class PlayerShip : MonoBehaviour
 
     private void ProcessLocalInput()
     {
-        if (ScreenManager.Instance.CurrentCutscenePage != null)
+        if (GUIController.Current.CutsceneOveray.CurrentCutscenePage != null)
         {
             if (Input.GetButtonDown("fire") || Input.GetButtonDown("activate"))
             {
-                ScreenManager.Instance.AdvanceCutscene();
+                GUIController.Current.CutsceneOveray.AdvanceCutscene();
             }
         }
         else if (LocalPlayerHasControl())
@@ -231,7 +230,7 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButtonDown("radio"))
             {
-                ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "ShowRadioMenu", null);
+                GUIController.Current.BroadcastMessage("ShowRadioMenu", SendMessageOptions.DontRequireReceiver);
             }
         }
     }
@@ -247,16 +246,16 @@ public class PlayerShip : MonoBehaviour
 
                     if (target)
                     {
-                        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
-                            "OnPlayerNotification",
-                            "You> Hello, " + target.name);
+                        GUIController.Current.BroadcastMessage("OnPlayerNotification",
+                            "You> Hello, " + target.name,
+                            SendMessageOptions.DontRequireReceiver);
                     }
                 }    
                 else
                 {
-                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
-                        "OnPlayerNotification",
-                        message.SourceShip.name + "> Hello!");
+                    GUIController.Current.BroadcastMessage("OnPlayerNotification",
+                        message.SourceShip.name + "> Hello!",
+                        SendMessageOptions.DontRequireReceiver);
                 }
                 break;
 
@@ -265,17 +264,17 @@ public class PlayerShip : MonoBehaviour
                 {
                     string msg = "OK, Boss.";
 
-                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
-                        "OnPlayerNotification",
-                        message.SourceShip.name + "> " + msg);
+                    GUIController.Current.BroadcastMessage("OnPlayerNotification",
+                        message.SourceShip.name + "> " + msg,
+                        SendMessageOptions.DontRequireReceiver);
 
-                    ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
-                        "OnRadioSpeech",
+                    GUIController.Current.BroadcastMessage("OnRadioSpeech",
                         new PlayerRadioMessage()
                         {
                             Message = msg,
                             Source = message.SourceShip
-                        });
+                        },
+                        SendMessageOptions.DontRequireReceiver);
                 }
 
                 break;
@@ -297,14 +296,14 @@ public class PlayerShip : MonoBehaviour
 
     private IEnumerator LevelTransitionRoutine(WorldMapArea area)
     {
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
+        yield return GUIController.Current.SwitchTo(ScreenID.None);
 
         yield return SceneManager.LoadSceneAsync(area.name);
 
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
-
-        loading.Dismiss();
+        
+        yield return GUIController.Current.SwitchTo(ScreenID.None);
     }
 
     private void OnCompletedJump()
@@ -321,7 +320,7 @@ public class PlayerShip : MonoBehaviour
     {
         var msg = string.Format("{0} gained {1} XP", xpGain.CrewMember.name, xpGain.Amount);
 
-        ScreenManager.Instance.BroadcastPlayerNotification(msg);
+        GUIController.Current.BroadcastMessage("OnPlayerNotification", msg, SendMessageOptions.DontRequireReceiver);
     }
 
 	void Start()

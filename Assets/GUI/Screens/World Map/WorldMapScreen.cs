@@ -33,14 +33,7 @@ public class WorldMapScreen : MonoBehaviour
 
         SpaceTraderConfig.WorldMap.Camera.enabled = false;
     }
-
-    public void Hide()
-    {
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None,
-            ScreenTransition.FadeToBlack,
-            ScreenTransition.FadeFromBlack);
-    }
-
+    
     public void Update()
     {
         if (Input.GetMouseButtonDown(0) 

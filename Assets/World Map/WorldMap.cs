@@ -67,6 +67,8 @@ public class WorldMap : MonoBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
+
         areasRoot.gameObject.SetActive(true);
 
         areas = GetComponentsInChildren<WorldMapArea>().ToList();

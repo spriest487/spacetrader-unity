@@ -53,9 +53,9 @@ public class Hitpoints : MonoBehaviour
     {
         if (PlayerShip.LocalPlayer)
         {
-            ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None,
-                "OnDamageNotification",
-                new DamageNotification(amount, this));
+            GUIController.Current.BroadcastMessage("OnDamageNotification",
+                new DamageNotification(amount, this),
+                SendMessageOptions.DontRequireReceiver);
         }
 
         if (amount == 0)

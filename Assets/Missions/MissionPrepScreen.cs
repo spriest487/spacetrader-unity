@@ -24,7 +24,7 @@ public class MissionPrepScreen : MonoBehaviour
             MissionManager.Instance.BeginMission();
         }
 
-        ScreenManager.Instance.ScreenID = ScreenID.None;
+        GUIController.Current.SwitchTo(ScreenID.None);
     }
     
     void OnScreenActive()

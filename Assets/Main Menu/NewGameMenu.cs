@@ -42,7 +42,14 @@ public class NewGameMenu : MonoBehaviour
     [SerializeField]
     private Text mechSkillLabel;
 
-    public void OnEnable()
+    private GUIController guiController;
+
+    private void Start()
+    {
+        guiController = GetComponentInParent<GUIController>();
+    }
+
+    private void OnEnable()
     {
         portrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
         SelectCareer(0);
@@ -101,20 +108,20 @@ public class NewGameMenu : MonoBehaviour
 
     private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
-        
+        guiController.SwitchTo(ScreenID.LoadInProgress);
+
         yield return SceneManager.LoadSceneAsync(newGameScene);
         yield return new WaitForEndOfFrame();
-        
-        var ship = SpaceTraderConfig.LocalPlayer.Ship;
-        if (ship)
+
+        var player = SpaceTraderConfig.LocalPlayer;
+        if (player)
         {
             Debug.LogWarning("loaded a new game scene which already had a player!");
-            Destroy(ship.gameObject);
+            Destroy(player.gameObject);
         }
 
-        ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
-        var player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+        var ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
+        player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
         player.AddMoney(1000);
 
         var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);
@@ -123,6 +130,6 @@ public class NewGameMenu : MonoBehaviour
         pc.MechanicalSkill = selectedCareer.MechanicalSkill;
         pc.WeaponsSkill = selectedCareer.WeaponsSkill;
 
-        loading.Dismiss();
+        yield return guiController.SwitchTo(ScreenID.None);
     }
 }

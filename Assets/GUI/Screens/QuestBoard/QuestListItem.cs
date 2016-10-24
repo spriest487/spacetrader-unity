@@ -55,20 +55,20 @@ public class QuestListItem : MonoBehaviour
     {
         SpaceTraderConfig.QuestBoard.AcceptQuest(SpaceTraderConfig.LocalPlayer, quest);
 
-        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.Quests, "OnQuestsUpdated", this);
+        GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }
 
     public void AbandonQuest()
     {
         SpaceTraderConfig.QuestBoard.CancelQuest(quest);
 
-        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.Quests, "OnQuestsUpdated", this);
+        GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }
 
     public void FinishQuest()
     {
         SpaceTraderConfig.QuestBoard.FinishQuest(quest);
 
-        ScreenManager.Instance.BroadcastScreenMessage(ScreenID.Quests, "OnQuestsUpdated", this);
+        GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }
 }

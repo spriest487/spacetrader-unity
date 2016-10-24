@@ -17,10 +17,12 @@ public class MainMenu : MonoBehaviour
     private Transform[] activeWhenNoPlayerExists;
 
     private GUIController guiController;
+    private GUIScreen guiScreen;
 
     private void Start()
     {
         guiController = GetComponentInParent<GUIController>();
+        guiScreen = GetComponent<GUIScreen>();
     }
     
     public void NewGame()
@@ -49,7 +51,7 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
+        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
 
         if (PlayerShip.LocalPlayer)
         {
@@ -59,25 +61,28 @@ public class MainMenu : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(menuScene);
         yield return new WaitForEndOfFrame();
 
-        guiController.SwitchTo(ScreenID.MainMenu);
-
-        loading.Dismiss();
+        yield return guiController.SwitchTo(ScreenID.MainMenu);
     }
 
-    public void SaveGame()
+    private IEnumerator SaveGameRoutine()
     {
         SavedGames.SavesFolder.SaveGame();
 
         if (PlayerShip.LocalPlayer)
         {
-            ScreenManager.Instance.ScreenID = ScreenID.None;
-            ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "OnPlayerNotification", "Game saved");
+            yield return guiController.SwitchTo(ScreenID.None);
+            GUIController.Current.BroadcastMessage("OnPlayerNotification", "Game saved", SendMessageOptions.DontRequireReceiver);
         }
+    }
+
+    public void SaveGame()
+    {
+        StartCoroutine(SaveGameRoutine());
     }
 
     public void BackToGame()
     {
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None);
+        guiScreen.Dismiss();
     }
     
     public void Quit()

@@ -9,5 +9,7 @@ public enum ScreenID
     Quests,
     WorldMap,
     NewGame,
-    LoadGame
+    LoadGame,
+    LoadInProgress,
+    HUD
 }

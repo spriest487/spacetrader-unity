@@ -63,7 +63,7 @@ public class LootWindow : MonoBehaviour
 
         if (request.Error != null)
         {
-            ScreenManager.Instance.BroadcastScreenMessage(ScreenID.None, "OnPlayerError", request.Error);
+            GUIController.Current.BroadcastMessage("OnPlayerError", request.Error);
         }
     }
 

@@ -44,7 +44,7 @@ public class HUD : MonoBehaviour
     {
         var player = PlayerShip.LocalPlayer;
 
-        bool cinemaMode = ScreenManager.Instance.CurrentCutscenePage != null
+        bool cinemaMode = GUIController.Current.CutsceneOveray.CurrentCutscenePage != null
             || (player && ((player.Moorable && player.Moorable.State == DockingState.AutoDocking)
                 || (player.Ship && player.Ship.JumpTarget)));
         
@@ -99,7 +99,7 @@ public class HUD : MonoBehaviour
     //gui screens menu button event
     public void ShowScreensList()
     {
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.ScreensList);
+        GUIController.Current.SwitchTo(ScreenID.ScreensList);
     }
 
     //activated a loot can, pop up the loot display window

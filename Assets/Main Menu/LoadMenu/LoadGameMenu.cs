@@ -32,9 +32,16 @@ public class LoadGameMenu : MonoBehaviour
     [SerializeField]
     private Button deleteButton;
 
+    private GUIController guiController;
+
     private PooledList<SaveFileEntry, string> entries;
 
     private SaveFileEntry selectedEntry;
+
+    private void Start()
+    {
+        guiController = GetComponentInParent<GUIController>();
+    }
     
     private void OnEnable()
     {
@@ -83,17 +90,17 @@ public class LoadGameMenu : MonoBehaviour
     private IEnumerator LoadGameRoutine(string path)
     {
         yield return null;
-        var loading = ScreenManager.Instance.CreateLoadingScreen();
+        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
 
         var loadSave = SavesFolder.LoadGame(path);
         yield return loadSave;
-
-        loading.Dismiss();
 
         if (loadSave.Error != null)
         {
             Debug.LogException(loadSave.Error);
         }
+
+        yield return guiController.SwitchTo(ScreenID.None);
     }
 
     public void Delete()

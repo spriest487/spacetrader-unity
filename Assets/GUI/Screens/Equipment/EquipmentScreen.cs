@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 
+[RequireComponent(typeof(GUIScreen))]
 public class EquipmentScreen : MonoBehaviour, IDropHandler
 {
     [SerializeField]
@@ -43,7 +44,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         }
     }
         
-    private void OnScreenActive()
+    private void OnEnable()
     {
         targetCargoList = targetCargoPanel.GetComponentInChildren<CargoHoldList>();
         Debug.Assert(!!targetCargoList);
@@ -148,10 +149,5 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     public void ShowError(string message)
     {
         errorMessage.ShowError(message);
-    }
-    
-    public void Close()
-    {
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None);
     }
 }

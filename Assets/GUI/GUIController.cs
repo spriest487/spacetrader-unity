@@ -5,15 +5,34 @@ using System;
 
 public class GUIController : MonoBehaviour
 {
+    private class TransitionStatus : CustomYieldInstruction
+    {
+        public GUIController controller;
+        public override bool keepWaiting { get { return controller.nextScreen.HasValue; } }
+    }
+
     public static GUIController Current { get; private set; }
 
-    private List<GUIScreen> screens;
-    
-    private GUIScreen nextScreen;
+    private List<GUIScreen> screens;    
+    private ScreenID? nextScreen;
+
+    private TransitionStatus transitionStatus;
+
+    private CutsceneOverlay cutsceneOverlay;
 
     public ScreenID ActiveScreen
     {
         get { return FindActiveScreen().ID; }
+    }
+
+    public CutsceneOverlay CutsceneOveray
+    {
+        get { return cutsceneOverlay; }
+    }
+
+    public void Awake()
+    {
+        transitionStatus = new TransitionStatus { controller = this };
     }
 
     private GUIScreen FindScreen(ScreenID screenId)
@@ -49,6 +68,11 @@ public class GUIController : MonoBehaviour
     private void Start()
     {
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
+
+        cutsceneOverlay = GetComponentInChildren<CutsceneOverlay>();
+        Debug.Assert(cutsceneOverlay);
+
+        DontDestroyOnLoad(this.gameObject);
     }
     
     private void Update()
@@ -56,9 +80,9 @@ public class GUIController : MonoBehaviour
         if (!screens.Any(s => s.isActiveAndEnabled))
         {
             GUIScreen transitionTo;
-            if (nextScreen)
+            if (nextScreen.HasValue)
             {
-                transitionTo = nextScreen;
+                transitionTo = FindScreen(nextScreen.Value);
                 nextScreen = null;
             }
             else
@@ -70,17 +94,20 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    public void SwitchTo(ScreenID screen)
+    public CustomYieldInstruction SwitchTo(ScreenID screen)
     {
-        if (nextScreen)
+        if (nextScreen.HasValue)
         {
             Debug.Log("ignoring duplicate call to SwitchTo for " + screen);
-            return;
+        }
+        else
+        {
+            nextScreen = screen;
+        
+            var activeScreen = FindActiveScreen();        
+            activeScreen.Dismiss();
         }
 
-        nextScreen = FindScreen(screen);
-
-        var activeScreen = FindActiveScreen();        
-        activeScreen.Dismiss();
+        return transitionStatus;
     }
 }

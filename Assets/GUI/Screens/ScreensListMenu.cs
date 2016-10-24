@@ -14,18 +14,18 @@ public class ScreensListMenu : MonoBehaviour
 
     [SerializeField]
     private Text headerText;
+    
+    private IEnumerator UndockRoutine()
+    {
+        yield return GUIController.Current.SwitchTo(ScreenID.HUD);
+
+        var station = SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation;
+        station.Unmoor(PlayerShip.LocalPlayer.Moorable);
+    }
             
     public void Undock()
     {
-        var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
-
-        ScreenManager.Instance.TryFadeScreenTransition(ScreenID.None, 
-            ScreenTransition.FadeToBlack,
-            ScreenTransition.FadeFromBlack,
-            () =>
-            {
-                station.Unmoor(PlayerShip.LocalPlayer.Moorable);
-            });
+        StartCoroutine(UndockRoutine());
     }
     
     void OnScreenActive()
