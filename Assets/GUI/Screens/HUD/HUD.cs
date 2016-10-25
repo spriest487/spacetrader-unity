@@ -40,8 +40,6 @@ public class HUD : MonoBehaviour
     private void Start()
     {
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
-
-        radioMenu = GetComponentInChildren<RadioMenu>();
     }
 
     private void Update()
@@ -121,6 +119,8 @@ public class HUD : MonoBehaviour
 
     private void OnEnable()
     {
+        radioMenu = GetComponentInChildren<RadioMenu>(true);
+
         errorMessage.Reset();
 
         lootWindow.Dismiss();
