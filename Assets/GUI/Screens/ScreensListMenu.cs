@@ -14,23 +14,41 @@ public class ScreensListMenu : MonoBehaviour
 
     [SerializeField]
     private Text headerText;
-    
-    private IEnumerator UndockRoutine()
-    {
-        yield return GUIController.Current.SwitchTo(ScreenID.HUD);
-
-        var station = SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation;
-        station.Unmoor(PlayerShip.LocalPlayer.Moorable);
-    }
-            
+        
     public void Undock()
     {
-        StartCoroutine(UndockRoutine());
+        SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation.UndockPlayer();
     }
-    
-    void OnScreenActive()
+
+    public void ShowMainMenu()
     {
-        var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
+        GUIController.Current.SwitchTo(ScreenID.MainMenu);
+    }
+
+    public void ShowEquipment()
+    {
+        GUIController.Current.SwitchTo(ScreenID.Equipment);
+    }
+
+    public void ShowMission()
+    {
+        GUIController.Current.SwitchTo(ScreenID.MissionPrep);
+    }
+
+    public void ShowRecruitment()
+    {
+        GUIController.Current.SwitchTo(ScreenID.Recruitment);
+    }
+
+    public void ShowQuests()
+    {
+        GUIController.Current.SwitchTo(ScreenID.Quests);
+    }
+
+    void OnEnable()
+    {
+        var player = PlayerShip.LocalPlayer;
+        var station = player? player.Ship.Moorable.DockedAtStation : null;
 
         if (station)
         {

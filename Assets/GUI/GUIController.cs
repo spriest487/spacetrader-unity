@@ -5,18 +5,23 @@ using System;
 
 public class GUIController : MonoBehaviour
 {
-    private class TransitionStatus : CustomYieldInstruction
+    [Serializable]
+    private class GUIControllerTransition : GUITransition
     {
-        public GUIController controller;
-        public override bool keepWaiting { get { return controller.nextScreen.HasValue; } }
+        public GUITransitionProgress progress = GUITransitionProgress.Waiting;
+        public ScreenID toScreen;
+
+        public override GUITransitionProgress Progress
+        {
+            get { return progress; }
+        }
     }
 
     public static GUIController Current { get; private set; }
 
-    private List<GUIScreen> screens;    
-    private ScreenID? nextScreen;
+    private List<GUIScreen> screens;
 
-    private TransitionStatus transitionStatus;
+    private GUIControllerTransition activeTransition;
 
     private CutsceneOverlay cutsceneOverlay;
 
@@ -25,16 +30,16 @@ public class GUIController : MonoBehaviour
         get { return FindActiveScreen().ID; }
     }
 
-    public CutsceneOverlay CutsceneOveray
+    public GUITransition ActiveTransition
+    {
+        get { return activeTransition; }
+    }
+
+    public CutsceneOverlay CutsceneOverlay
     {
         get { return cutsceneOverlay; }
     }
-
-    public void Awake()
-    {
-        transitionStatus = new TransitionStatus { controller = this };
-    }
-
+    
     private GUIScreen FindScreen(ScreenID screenId)
     {
         var screen = screens.Where(s => s.ID == screenId)
@@ -51,6 +56,28 @@ public class GUIController : MonoBehaviour
         Debug.Assert(!!activeScreen, "there must be an active screen");
 
         return activeScreen;
+    }
+
+    private ScreenID DefaultScreen()
+    {
+        var player = SpaceTraderConfig.LocalPlayer;
+        if (player)
+        {
+            var docked = player.Ship && player.Ship.Moorable.DockedAtStation;
+
+            if (docked)
+            {
+                return ScreenID.ScreensList;
+            }
+            else
+            {
+                return ScreenID.HUD;
+            }
+        }
+        else
+        {
+            return ScreenID.MainMenu;
+        }
     }
 
     private void OnEnable()
@@ -72,42 +99,64 @@ public class GUIController : MonoBehaviour
         cutsceneOverlay = GetComponentInChildren<CutsceneOverlay>();
         Debug.Assert(cutsceneOverlay);
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
     }
     
     private void Update()
     {
         if (!screens.Any(s => s.isActiveAndEnabled))
         {
-            GUIScreen transitionTo;
-            if (nextScreen.HasValue)
+            if (activeTransition == null)
             {
-                transitionTo = FindScreen(nextScreen.Value);
-                nextScreen = null;
-            }
-            else
-            {
-                transitionTo = FindScreen(ScreenID.MainMenu);
+                activeTransition = new GUIControllerTransition();
             }
 
-            transitionTo.gameObject.SetActive(true);            
+            if (activeTransition.toScreen == ScreenID.None)
+            {
+                activeTransition.toScreen = DefaultScreen();
+            }
+
+            activeTransition.progress = GUITransitionProgress.InProgress;
+
+            var screen = FindScreen(activeTransition.toScreen);
+            screen.gameObject.SetActive(true);
         }
     }
 
-    public CustomYieldInstruction SwitchTo(ScreenID screen)
+    public GUITransition SwitchTo(ScreenID screen)
     {
-        if (nextScreen.HasValue)
-        {
-            Debug.Log("ignoring duplicate call to SwitchTo for " + screen);
-        }
-        else
-        {
-            nextScreen = screen;
-        
-            var activeScreen = FindActiveScreen();        
-            activeScreen.Dismiss();
-        }
+        Debug.AssertFormat(activeTransition == null, 
+            "there should not already be a transition in progress (already switching to {0})",
+            (activeTransition != null)? activeTransition.toScreen : ScreenID.None);
 
-        return transitionStatus;
+        activeTransition = new GUIControllerTransition
+        {
+            progress = GUITransitionProgress.Waiting,
+            toScreen = screen
+        };
+        
+        var activeScreen = FindActiveScreen();        
+        activeScreen.Dismiss();
+
+        return activeTransition;
+    }
+
+    private void OnScreenTransitionedOut(GUIScreen screen)
+    {
+        screen.gameObject.SetActive(false);
+
+        Debug.Assert(!screens.Any(s => s.isActiveAndEnabled));
+    }
+
+    private void OnScreenTransitionedIn(GUIScreen screen)
+    {
+        if (activeTransition != null)
+        {
+            Debug.Assert(activeTransition.toScreen == screen.ID,
+                "must not receive a transitioned-in message while another transition is active");
+
+            activeTransition.progress = GUITransitionProgress.Done;
+            activeTransition = null;
+        }
     }
 }

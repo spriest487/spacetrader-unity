@@ -65,7 +65,7 @@ public class CutsceneInspector : UnityEditor.Editor
 
         if (GUILayout.Button("Play now"))
         {
-            GUIController.Current.CutsceneOveray.PlayCutscene(target as Cutscene);
+            GUIController.Current.CutsceneOverlay.PlayCutscene(target as Cutscene);
         }
     }
 }

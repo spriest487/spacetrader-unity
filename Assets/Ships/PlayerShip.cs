@@ -146,8 +146,7 @@ public class PlayerShip : MonoBehaviour
 
     void Update()
     {
-        if (LocalPlayerHasControl() 
-            && GUIController.Current.ActiveScreen == ScreenID.None)
+        if (LocalPlayerHasControl())
         {
             ProcessLocalInput();
         }
@@ -155,11 +154,11 @@ public class PlayerShip : MonoBehaviour
 
     private void ProcessLocalInput()
     {
-        if (GUIController.Current.CutsceneOveray.CurrentCutscenePage != null)
+        if (GUIController.Current.CutsceneOverlay.CurrentCutscenePage != null)
         {
             if (Input.GetButtonDown("fire") || Input.GetButtonDown("activate"))
             {
-                GUIController.Current.CutsceneOveray.AdvanceCutscene();
+                GUIController.Current.CutsceneOverlay.AdvanceCutscene();
             }
         }
         else if (LocalPlayerHasControl())
@@ -296,7 +295,7 @@ public class PlayerShip : MonoBehaviour
 
     private IEnumerator LevelTransitionRoutine(WorldMapArea area)
     {
-        yield return GUIController.Current.SwitchTo(ScreenID.None);
+        yield return GUIController.Current.SwitchTo(ScreenID.LoadInProgress);
 
         yield return SceneManager.LoadSceneAsync(area.name);
 

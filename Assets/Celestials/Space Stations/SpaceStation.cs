@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Collections;
 
 public class SpaceStation : ActionOnActivate
 {
@@ -165,6 +166,23 @@ public class SpaceStation : ActionOnActivate
 
         moorable.gameObject.SetActive(true);
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
+    }
+
+    private IEnumerator UndockPlayerRoutine()
+    {
+        var player = SpaceTraderConfig.LocalPlayer;
+        Debug.Assert(dockedShips.Contains(player.Ship.Moorable));
+
+        yield return GUIController.Current.SwitchTo(ScreenID.HUD);
+
+        Unmoor(player.Ship.Moorable);
+    }
+
+    public void UndockPlayer()
+    {
+        /*have to run this as a routine on the station since both the player
+         and the undock gui disable themselves during this process! */
+        StartCoroutine(UndockPlayerRoutine());
     }
 
     void Update()

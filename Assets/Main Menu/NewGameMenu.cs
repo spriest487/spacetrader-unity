@@ -108,20 +108,13 @@ public class NewGameMenu : MonoBehaviour
 
     private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
-        guiController.SwitchTo(ScreenID.LoadInProgress);
+        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
 
-        yield return SceneManager.LoadSceneAsync(newGameScene);
-        yield return new WaitForEndOfFrame();
-
-        var player = SpaceTraderConfig.LocalPlayer;
-        if (player)
-        {
-            Debug.LogWarning("loaded a new game scene which already had a player!");
-            Destroy(player.gameObject);
-        }
-
+        var loadScene = SceneManager.LoadSceneAsync(newGameScene);
+        yield return loadScene;
+        
         var ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
-        player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+        var player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
         player.AddMoney(1000);
 
         var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);

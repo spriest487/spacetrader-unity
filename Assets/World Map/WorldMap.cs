@@ -2,7 +2,6 @@
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -67,7 +66,7 @@ public class WorldMap : MonoBehaviour
 
     private void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         areasRoot.gameObject.SetActive(true);
 
@@ -82,14 +81,9 @@ public class WorldMap : MonoBehaviour
                 
         Camera.enabled = false;
 
-        CenterOnCurrentArea();
+        SceneManager.activeSceneChanged += (s1, s2) => CenterOnCurrentArea();
     }
-
-    private void OnLevelWasLoaded()
-    {
-        CenterOnCurrentArea();
-    }
-
+    
     private void CenterOnCurrentArea()
     {
         var currentArea = GetCurrentArea();

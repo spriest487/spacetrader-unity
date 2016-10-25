@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class CutsceneOverlay : MonoBehaviour
@@ -14,27 +16,43 @@ public class CutsceneOverlay : MonoBehaviour
 
     public CutscenePage CurrentCutscenePage
     {
-        get { return cutscene.CurrentPage; }
+        get { return cutscene != null ? cutscene.CurrentPage : null; }
     }
 
     private Cutscene cutscene;
 
+    public void OnEnable()
+    {
+        Refresh();
+    }
+    
     public void PlayCutscene(Cutscene cutscene)
     {
         Debug.Assert(!this.cutscene);
         this.cutscene = Instantiate(cutscene);
+
+        Refresh();
     }
 
     private void Refresh()
     {
-        content.gameObject.SetActive(true);
+        if (CurrentCutscenePage != null)
+        {
+            content.gameObject.SetActive(true);
 
-        dialogText.text = CurrentCutscenePage.Text;
-        speakerText.text = CurrentCutscenePage.Speaker.ToUpper();
+            dialogText.text = CurrentCutscenePage.Text;
+            speakerText.text = CurrentCutscenePage.Speaker.ToUpper();
+        }
+        else
+        {
+            content.gameObject.SetActive(false);
+        }
     }
 
     public void AdvanceCutscene()
     {
         cutscene.Next();
+
+        Refresh();
     }
 }

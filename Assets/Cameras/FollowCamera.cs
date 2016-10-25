@@ -359,7 +359,7 @@ public class FollowCamera : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
-            if (Input.GetButtonDown("turn") && GUIController.Current.ActiveScreen == ScreenID.None)
+            if (Input.GetButtonDown("turn") && GUIController.Current.ActiveScreen == ScreenID.HUD)
             {
                 if (waitToDragOnGui == null)
                 {

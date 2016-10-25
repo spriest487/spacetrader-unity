@@ -307,12 +307,6 @@ public partial class Ship : MonoBehaviour
 #endif
     }
 
-    private void OnLevelWasLoaded()
-    {
-        Target = null;
-        formationManager = new FormationManager();
-    }
-
     private static void UpdateRigidBodyFromStats(Rigidbody rigidbody, ShipStats stats)
     {
         rigidbody.mass = stats.Mass;

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class GUIScreen : MonoBehaviour
 {
-    private static int ActiveParam = Animator.StringToHash("Active");
+    private static int ActiveParamName = Animator.StringToHash("Active");
 
     [SerializeField]
     private ScreenID id;
@@ -13,24 +13,38 @@ public class GUIScreen : MonoBehaviour
     private Animator animator;
 
     public ScreenID ID { get { return id; } }
+
+    private bool ActiveParam
+    {
+        get { return animator.GetBool(ActiveParamName); }
+        set { animator.SetBool(ActiveParamName, value); }
+    }
     
     private void OnEnable()
     {
         animator = GetComponent<Animator>();
-        animator.SetBool(ActiveParam, true);
+        animator.Rebind();
+        ActiveParam = true;
     }
 
     public void Dismiss()
     {
-        animator.SetBool(ActiveParam, false);
+        ActiveParam = false;
     }
 
     private void OnTransitionedOut()
     {
-        bool screenActive = animator.GetBool(ActiveParam);
-        if (!screenActive)
+        if (!ActiveParam)
         {
-            gameObject.SetActive(false);
+            SendMessageUpwards("OnScreenTransitionedOut", this);
+        }
+    }
+
+    private void OnTransitionedIn()
+    {
+        if (ActiveParam)
+        {
+            SendMessageUpwards("OnScreenTransitionedIn", this);
         }
     }
 }

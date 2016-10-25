@@ -138,22 +138,6 @@ public class BracketManager : MonoBehaviour
         }
     }
 
-    void OnLevelWasLoaded()
-    {
-        if (brackets != null)
-        {
-            brackets.Clear();
-        }
-    }
-
-    void OnDisable()
-    {
-        if (brackets != null)
-        {
-            brackets.Clear();
-        }
-    }
-
     public Bracket FindBracket(GameObject obj)
     {   
         foreach (var bracket in brackets)
