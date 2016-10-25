@@ -36,28 +36,41 @@ public class HUD : MonoBehaviour
     private Text useTargetText;
 
     private RadioMenu radioMenu;
-        
-    private void Start()
+
+    private Animator animator;
+
+    private static readonly int CutsceneParamName = Animator.StringToHash("Cutscene");
+
+    private bool CutsceneParam
     {
+        get { return animator.GetBool(CutsceneParamName); }
+        set { animator.SetBool(CutsceneParamName, value); }
+    }
+
+    private void OnEnable()
+    {
+        animator = GetComponent<Animator>();
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
+
+        radioMenu = GetComponentInChildren<RadioMenu>(true);
+
+        errorMessage.Reset();
+
+        lootWindow.Dismiss();
+        radioMenu.Dismiss();
     }
 
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
 
-        bool cinemaMode = GUIController.Current.CutsceneOverlay.CurrentCutscenePage != null
-            || (player && ((player.Moorable && player.Moorable.State == DockingState.AutoDocking)
-                || (player.Ship && player.Ship.JumpTarget)));
+        cinemaBars.gameObject.SetActive(CutsceneParam);
         
-        content.gameObject.SetActive(!cinemaMode);
-        cinemaBars.gameObject.SetActive(cinemaMode);
-
         if (!player || !player.Ship)
         {
             content.gameObject.SetActive(false);
         }
-        else if (!cinemaMode)
+        else
         {
             var playerTarget = player.Ship.Target;
 
@@ -115,18 +128,6 @@ public class HUD : MonoBehaviour
         {
             lootWindow.ShowLoot(loot);
         }
-    }
-
-    private void OnEnable()
-    {
-        radioMenu = GetComponentInChildren<RadioMenu>(true);
-
-        errorMessage.Reset();
-
-        lootWindow.Dismiss();
-        radioMenu.Dismiss();
-
-        Update();
     }
 
     private void OnPlayerError(string message)

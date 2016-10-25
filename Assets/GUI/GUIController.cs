@@ -84,22 +84,19 @@ public class GUIController : MonoBehaviour
     {
         Debug.Assert(!Current || Current == this);
         Current = this;
-    }
 
-    private void OnDisable()
-    {
-        Debug.Assert(Current == this);
-        Current = null;
-    }
-
-    private void Start()
-    {
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
 
         cutsceneOverlay = GetComponentInChildren<CutsceneOverlay>();
         Debug.Assert(cutsceneOverlay);
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        Debug.Assert(Current == this);
+        Current = null;
     }
     
     private void Update()
