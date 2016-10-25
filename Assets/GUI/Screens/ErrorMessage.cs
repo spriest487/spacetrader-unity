@@ -27,7 +27,7 @@ public class ErrorMessage : MonoBehaviour
         group.alpha = 0;
     }
 
-    void OnScreenActive()
+    void OnEnable()
     {
         Reset();
     }

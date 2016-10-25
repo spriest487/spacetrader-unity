@@ -14,7 +14,7 @@ public class MissionTeamSlotList : MonoBehaviour
     [SerializeField]
     private MissionTeamDividerItem teamDividerPrefab;
     
-    public void OnScreenActive()
+    public void OnEnable()
     {
         var mission = MissionManager.Instance.Mission;
 

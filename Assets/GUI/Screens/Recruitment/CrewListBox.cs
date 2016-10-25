@@ -34,7 +34,7 @@ public class CrewListBox : MonoBehaviour
     
     private PooledList<CrewListItem, CrewMember> crewItems;
 
-    private void OnScreenActive()
+    private void OnEnable()
     {
         if (crewItems != null)
         {

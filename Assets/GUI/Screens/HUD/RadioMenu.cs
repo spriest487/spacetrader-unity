@@ -54,7 +54,7 @@ public class RadioMenu : MonoBehaviour
         StartCoroutine(AnimateShowRadioMenu());
     }
 
-    public void Cancel()
+    public void Dismiss()
     {
         content.gameObject.SetActive(false);
     }
@@ -65,7 +65,7 @@ public class RadioMenu : MonoBehaviour
         var source = PlayerShip.LocalPlayer.Ship;
 
         source.SendRadioMessage(message, target);
-        Cancel();
+        Dismiss();
     }
 
     public void SendGlobalBroadcast(string messageName)
@@ -92,13 +92,8 @@ public class RadioMenu : MonoBehaviour
         }
         else
         {
-            Cancel();
+            Dismiss();
         }
-    }
-
-    public void OnScreenActive()
-    {
-        Cancel();
     }
 }
 

@@ -48,13 +48,7 @@ public class MinimumSizeCanvasScaler : MonoBehaviour
 
         canvasScaler.scaleFactor = scale;
     }
-
-    private void OnScreenActive()
-    {
-        Start();
-        Update();
-    }
-
+    
 #if UNITY_EDITOR
     private void OnGUI()
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WorldMapScreen : MonoBehaviour
 {
-    void OnScreenActive()
+    void OnEnable()
     {
         /* disable the camera component, not the whole object - or the Current
          reference will be unset */

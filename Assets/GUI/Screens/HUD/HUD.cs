@@ -34,10 +34,14 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private Button useTargetButton;
     private Text useTargetText;
+
+    private RadioMenu radioMenu;
         
     private void Start()
     {
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
+
+        radioMenu = GetComponentInChildren<RadioMenu>();
     }
 
     private void Update()
@@ -115,11 +119,12 @@ public class HUD : MonoBehaviour
         }
     }
 
-    private void OnScreenActive()
+    private void OnEnable()
     {
         errorMessage.Reset();
 
         lootWindow.Dismiss();
+        radioMenu.Dismiss();
 
         Update();
     }

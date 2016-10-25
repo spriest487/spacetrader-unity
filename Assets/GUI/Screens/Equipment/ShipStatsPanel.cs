@@ -14,7 +14,7 @@ public class ShipStatsPanel : MonoBehaviour
     
     private PooledList<ShipStatsEntry, KeyValuePair<string, string>> items;
     
-    private void OnScreenActive()
+    private void OnEnable()
     {
         Refresh();
     }

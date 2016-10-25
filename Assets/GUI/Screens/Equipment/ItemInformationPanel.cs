@@ -106,7 +106,7 @@ public class ItemInformationPanel : MonoBehaviour
         statsRoot.Elements = statsLines.Select(l => (RectTransform) l.transform);
     }
 
-    private void OnScreenActive()
+    private void OnEnable()
     {
         Refresh();
     }

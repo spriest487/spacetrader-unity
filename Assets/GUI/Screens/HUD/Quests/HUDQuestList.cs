@@ -16,7 +16,7 @@ public class HUDQuestList : MonoBehaviour
 
     private PooledList<HUDQuestListItem, Quest> questItems;
 
-    void OnScreenActive()
+    void OnEnable()
     {
         if (questItems != null)
         {
