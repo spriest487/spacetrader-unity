@@ -10,6 +10,5 @@ public enum ScreenID
     WorldMap,
     NewGame,
     LoadGame,
-    LoadInProgress,
     HUD
 }

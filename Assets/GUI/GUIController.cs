@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 
 public class GUIController : MonoBehaviour
 {
-    [Serializable]
-    private class GUIControllerTransition : GUITransition
+    public class GUIControllerTransition : GUITransition
     {
         public GUITransitionProgress progress = GUITransitionProgress.Waiting;
         public ScreenID toScreen;
@@ -17,29 +17,39 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    public class LoadingGUITransition : GUITransition
+    {
+        public GUITransitionProgress progress = GUITransitionProgress.Waiting;
+
+        public override GUITransitionProgress Progress
+        {
+            get { return progress; }
+        }
+    }
+
     public static GUIController Current { get; private set; }
 
     private List<GUIScreen> screens;
-
+    
     private GUIControllerTransition activeTransition;
+    private LoadingGUITransition loadingTransition;
 
+    [SerializeField]
     private CutsceneOverlay cutsceneOverlay;
+
+    [SerializeField]
+    private LoadingOverlay loadingOverlay;
 
     public ScreenID ActiveScreen
     {
         get { return FindActiveScreen().ID; }
     }
 
-    public GUITransition ActiveTransition
-    {
-        get { return activeTransition; }
-    }
-
     public CutsceneOverlay CutsceneOverlay
     {
         get { return cutsceneOverlay; }
     }
-    
+        
     private GUIScreen FindScreen(ScreenID screenId)
     {
         var screen = screens.Where(s => s.ID == screenId)
@@ -82,14 +92,12 @@ public class GUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Assert(!Current || Current == this);
-        Current = this;
-
-        screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
-
-        cutsceneOverlay = GetComponentInChildren<CutsceneOverlay>();
         Debug.Assert(cutsceneOverlay);
+        Debug.Assert(!Current || Current == this);
 
+        Current = this;
+        screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
+        
         DontDestroyOnLoad(gameObject);
     }
 
@@ -155,5 +163,33 @@ public class GUIController : MonoBehaviour
             activeTransition.progress = GUITransitionProgress.Done;
             activeTransition = null;
         }
+    }
+
+    public GUITransition ShowLoadingOverlay()
+    {
+        loadingOverlay.gameObject.SetActive(true);
+        loadingTransition = new LoadingGUITransition
+        {
+            progress = GUITransitionProgress.InProgress
+        };
+
+        return loadingTransition;
+    }
+
+    public void DismissLoadingOverlay()
+    {
+        loadingOverlay.Dismiss();
+    }
+
+    private void OnLoadingTransitionedIn()
+    {
+        Debug.Assert(loadingTransition != null);
+        loadingTransition.progress = GUITransitionProgress.Done;
+        loadingTransition = null;
+    }
+
+    private void OnLoadingTransitionedOut()
+    {
+        loadingOverlay.gameObject.SetActive(false);
     }
 }

@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using System.Linq;
 
@@ -68,6 +68,21 @@ public class BracketManager : MonoBehaviour
     public int DefaultWidth { get { return defaultWidth; } }
     public int DefaultHeight { get { return defaultHeight; } }
     public float SelectedExpand { get { return selectedExpand; } }
+
+    private void ClearOnSceneChange(Scene s1, Scene s2)
+    {
+        brackets.Clear();
+    }
+
+    void OnEnable()
+    {
+        SceneManager.activeSceneChanged += ClearOnSceneChange;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= ClearOnSceneChange;
+    }
 
     void LateUpdate()
     {

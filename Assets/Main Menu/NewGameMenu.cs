@@ -108,7 +108,7 @@ public class NewGameMenu : MonoBehaviour
 
     private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
-        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
+        yield return guiController.ShowLoadingOverlay();
 
         var loadScene = SceneManager.LoadSceneAsync(newGameScene);
         yield return loadScene;
@@ -123,6 +123,7 @@ public class NewGameMenu : MonoBehaviour
         pc.MechanicalSkill = selectedCareer.MechanicalSkill;
         pc.WeaponsSkill = selectedCareer.WeaponsSkill;
 
-        yield return guiController.SwitchTo(ScreenID.None);
+        guiController.DismissLoadingOverlay();
+        guiController.SwitchTo(ScreenID.None);
     }
 }

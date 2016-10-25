@@ -295,14 +295,15 @@ public class PlayerShip : MonoBehaviour
 
     private IEnumerator LevelTransitionRoutine(WorldMapArea area)
     {
-        yield return GUIController.Current.SwitchTo(ScreenID.LoadInProgress);
+        yield return GUIController.Current.ShowLoadingOverlay();
 
         yield return SceneManager.LoadSceneAsync(area.name);
 
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
-        
-        yield return GUIController.Current.SwitchTo(ScreenID.None);
+
+        GUIController.Current.DismissLoadingOverlay();
+        GUIController.Current.SwitchTo(ScreenID.None);
     }
 
     private void OnCompletedJump()

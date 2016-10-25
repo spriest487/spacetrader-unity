@@ -46,7 +46,7 @@ public class HUD : MonoBehaviour
         get { return animator.GetBool(CutsceneParamName); }
         set { animator.SetBool(CutsceneParamName, value); }
     }
-
+    
     private void OnEnable()
     {
         animator = GetComponent<Animator>();
@@ -63,15 +63,18 @@ public class HUD : MonoBehaviour
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
-
-        cinemaBars.gameObject.SetActive(CutsceneParam);
-        
+                
         if (!player || !player.Ship)
         {
             content.gameObject.SetActive(false);
+            CutsceneParam = false;
         }
         else
         {
+            CutsceneParam = player.Ship.Moorable.AutoDockingStation
+                || player.Ship.JumpTarget
+                || GUIController.Current.CutsceneOverlay.HasCutscene;
+
             var playerTarget = player.Ship.Target;
 
             if (playerTarget 

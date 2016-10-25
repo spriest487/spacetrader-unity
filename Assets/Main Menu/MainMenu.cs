@@ -51,7 +51,7 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
+        yield return guiController.ShowLoadingOverlay();
 
         if (PlayerShip.LocalPlayer)
         {
@@ -61,7 +61,8 @@ public class MainMenu : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(menuScene);
         yield return new WaitForEndOfFrame();
 
-        yield return guiController.SwitchTo(ScreenID.MainMenu);
+        guiController.DismissLoadingOverlay();
+        guiController.SwitchTo(ScreenID.None);
     }
 
     private IEnumerator SaveGameRoutine()

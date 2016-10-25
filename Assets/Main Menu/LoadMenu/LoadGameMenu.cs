@@ -90,7 +90,7 @@ public class LoadGameMenu : MonoBehaviour
     private IEnumerator LoadGameRoutine(string path)
     {
         yield return null;
-        yield return guiController.SwitchTo(ScreenID.LoadInProgress);
+        yield return guiController.ShowLoadingOverlay();
 
         var loadSave = SavesFolder.LoadGame(path);
         yield return loadSave;
@@ -100,7 +100,8 @@ public class LoadGameMenu : MonoBehaviour
             Debug.LogException(loadSave.Error);
         }
 
-        yield return guiController.SwitchTo(ScreenID.None);
+        guiController.DismissLoadingOverlay();
+        guiController.SwitchTo(ScreenID.None);
     }
 
     public void Delete()

@@ -19,6 +19,11 @@ public class CutsceneOverlay : MonoBehaviour
         get { return cutscene != null ? cutscene.CurrentPage : null; }
     }
 
+    public bool HasCutscene
+    {
+        get { return cutscene != null; }
+    }
+
     private Cutscene cutscene;
 
     public void OnEnable()
