@@ -2,8 +2,9 @@
 using UnityEngine.UI;
 using UnityEngine;
 using System.Linq;
+using System;
 
-public class ButtonPreset
+public static class GUIPresets
 {
     private static void ConfigureButton(Button button)
     {
@@ -53,8 +54,8 @@ public class ButtonPreset
         }
     }
 
-    [MenuItem("SpaceTrader/Apply button preset")]
-    public static void ConfigureSelection()
+    private static void ForSelected<T>(Action<T> action)
+        where T : UnityEngine.Object
     {
         var selection = Selection.activeGameObject;
         if (!selection)
@@ -62,11 +63,39 @@ public class ButtonPreset
             return;
         }
 
-        foreach (var button in Selection.gameObjects
-            .Select(o => o.GetComponent<Button>())
-            .Where(button => button))
+        foreach (var obj in Selection.gameObjects
+            .Select(o => o.GetComponent<T>())
+            .Where(obj => obj))
         {
-            ConfigureButton(button);
+            action(obj);
         }
+    }
+
+    [MenuItem("SpaceTrader/Apply Button Preset")]
+    public static void ConfigureSelectedButtons()
+    {
+        ForSelected<Button>(ConfigureButton);
+    }
+
+    private static void ConfigurePanel(Image panel)
+    {
+        if (!panel)
+        {
+            return;
+        }
+
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/GUI/Element Square Mask.psd");
+
+        panel.sprite = sprite;
+
+        var cols = new Vector3(60, 60, 60) / 255;
+        var a = 220.0f / 255;
+        panel.color = new Color(cols.x, cols.y, cols.z, a);
+    }
+
+    [MenuItem("SpaceTrader/Apply Panel Preset")]
+    public static void ConfigureSelectedPanels()
+    {
+        ForSelected<Image>(ConfigurePanel);
     }
 }
