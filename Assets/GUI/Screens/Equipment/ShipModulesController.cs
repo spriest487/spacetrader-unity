@@ -26,9 +26,7 @@ public class ShipModulesController : MonoBehaviour
     {
         get { return highlightedIndex; }
         set
-        {
-            Debug.Assert(isActiveAndEnabled);
-            
+        {            
             if (modules == null)
             {
                 Update();

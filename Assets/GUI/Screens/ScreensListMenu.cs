@@ -7,13 +7,7 @@ using System.Collections;
 public class ScreensListMenu : MonoBehaviour
 {
     [SerializeField]
-    private string headerFormat = "{0}";
-
-    [SerializeField]
     private Transform undockButton;
-
-    [SerializeField]
-    private Text headerText;
         
     public void Undock()
     {
@@ -52,7 +46,7 @@ public class ScreensListMenu : MonoBehaviour
 
         if (station)
         {
-            headerText.text = string.Format(headerFormat, station.name.ToUpper());
+            //headerText.text = string.Format(headerFormat, station.name.ToUpper());
         }
 
         undockButton.gameObject.SetActive(!!station);

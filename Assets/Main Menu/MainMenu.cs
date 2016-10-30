@@ -80,11 +80,6 @@ public class MainMenu : MonoBehaviour
     {
         StartCoroutine(SaveGameRoutine());
     }
-
-    public void BackToGame()
-    {
-        guiScreen.Dismiss();
-    }
     
     public void Quit()
     {

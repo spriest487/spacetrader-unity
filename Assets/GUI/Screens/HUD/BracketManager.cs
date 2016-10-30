@@ -71,7 +71,10 @@ public class BracketManager : MonoBehaviour
 
     private void ClearOnSceneChange(Scene s1, Scene s2)
     {
-        brackets.Clear();
+        if (brackets != null)
+        {
+            brackets.Clear();
+        }
     }
 
     void OnEnable()

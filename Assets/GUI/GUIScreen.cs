@@ -2,49 +2,49 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(GUIElement))]
 public class GUIScreen : MonoBehaviour
 {
-    private static int ActiveParamName = Animator.StringToHash("Active");
-
     [SerializeField]
     private ScreenID id;
 
-    private Animator animator;
+    [SerializeField]
+    private bool showStatusBar;
+
+    [SerializeField]
+    private bool showHeader;
+    
+    public GUIElement Element { get; private set; }
 
     public ScreenID ID { get { return id; } }
 
-    private bool ActiveParam
-    {
-        get { return animator.GetBool(ActiveParamName); }
-        set { animator.SetBool(ActiveParamName, value); }
-    }
-    
+    public bool ShowStatusBar { get { return showStatusBar; } }
+    public bool ShowHeader { get { return showHeader; } }
+        
     private void OnEnable()
     {
-        animator = GetComponent<Animator>();
-        animator.Rebind();
-        ActiveParam = true;
+        Element = GetComponent<GUIElement>();
+
+        var controller = GetComponentInParent<GUIController>();
+        controller.HeaderText = name.ToUpper();
+
+        Element.OnTransitionedIn += TransitionedInHandler;
+        Element.OnTransitionedOut += TransitionedOutHandler;
     }
 
-    public void Dismiss()
+    private void OnDisable()
     {
-        ActiveParam = false;
+        Element.OnTransitionedIn -= TransitionedInHandler;
+        Element.OnTransitionedOut -= TransitionedOutHandler;
     }
 
-    private void OnTransitionedOut()
+    private void TransitionedInHandler()
     {
-        if (!ActiveParam)
-        {
-            SendMessageUpwards("OnScreenTransitionedOut", this);
-        }
+        SendMessageUpwards("OnScreenTransitionedIn", this);
     }
 
-    private void OnTransitionedIn()
+    private void TransitionedOutHandler()
     {
-        if (ActiveParam)
-        {
-            SendMessageUpwards("OnScreenTransitionedIn", this);
-        }
+        SendMessageUpwards("OnScreenTransitionedOut", this);
     }
 }

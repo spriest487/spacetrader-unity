@@ -87,6 +87,7 @@ public static class GUIPresets
         var sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/GUI/Element Square Mask.psd");
 
         panel.sprite = sprite;
+        panel.type = Image.Type.Sliced;
 
         var cols = new Vector3(60, 60, 60) / 255;
         var a = 220.0f / 255;

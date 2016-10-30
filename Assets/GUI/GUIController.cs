@@ -1,8 +1,8 @@
 ﻿#pragma warning disable 0649
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 public class GUIController : MonoBehaviour
 {
@@ -27,6 +27,9 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    private static readonly int StatusBarParamName = Animator.StringToHash("StatusBar");
+    private static readonly int HeaderBarParamName = Animator.StringToHash("HeaderBar");
+
     public static GUIController Current { get; private set; }
 
     private List<GUIScreen> screens;
@@ -38,11 +41,31 @@ public class GUIController : MonoBehaviour
     private CutsceneOverlay cutsceneOverlay;
 
     [SerializeField]
-    private LoadingOverlay loadingOverlay;
+    private GUIElement loadingOverlay;
+
+    [SerializeField]
+    private GUIElement header;
+
+    [SerializeField]
+    private Text headerLabel;
+
+    [SerializeField]
+    private GUIElement statusBar;
 
     public ScreenID ActiveScreen
     {
-        get { return FindActiveScreen().ID; }
+        get
+        {
+            var activeScreen = FindActiveScreen();
+            Debug.Assert(!!activeScreen, "there must be an active screen");
+            return activeScreen.ID;
+        }
+    }
+
+    public string HeaderText
+    {
+        get { return headerLabel.text; }
+        set { headerLabel.text = value; }
     }
 
     public CutsceneOverlay CutsceneOverlay
@@ -61,9 +84,7 @@ public class GUIController : MonoBehaviour
 
     private GUIScreen FindActiveScreen()
     {
-        var activeScreen = screens.Where(s => s.isActiveAndEnabled)
-            .FirstOrDefault();
-        Debug.Assert(!!activeScreen, "there must be an active screen");
+        var activeScreen = screens.FirstOrDefault(s => s.gameObject.activeInHierarchy);
 
         return activeScreen;
     }
@@ -91,12 +112,23 @@ public class GUIController : MonoBehaviour
     }
 
     private void OnEnable()
-    {
+    {        
         Debug.Assert(cutsceneOverlay);
         Debug.Assert(!Current || Current == this);
 
         Current = this;
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
+
+        //re-show the current screen
+        var currentlyActive = FindActiveScreen();
+        if (currentlyActive)
+        {
+            currentlyActive.gameObject.SetActive(false);
+            SwitchTo(currentlyActive.ID);
+        }
+
+        loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
+        loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
         
         DontDestroyOnLoad(gameObject);
     }
@@ -105,6 +137,9 @@ public class GUIController : MonoBehaviour
     {
         Debug.Assert(Current == this);
         Current = null;
+
+        loadingOverlay.OnTransitionedIn -= OnLoadingTransitionedIn;
+        loadingOverlay.OnTransitionedOut -= OnLoadingTransitionedOut;
     }
     
     private void Update()
@@ -140,10 +175,23 @@ public class GUIController : MonoBehaviour
             toScreen = screen
         };
         
-        var activeScreen = FindActiveScreen();        
-        activeScreen.Dismiss();
-
+        var nextScreen = FindScreen(screen != ScreenID.None? screen : DefaultScreen());
+        
+        header.SetActive(nextScreen.ShowHeader);
+        statusBar.SetActive(nextScreen.ShowStatusBar);
+        
+        var activeScreen = FindActiveScreen();
+        if (activeScreen)
+        {
+            activeScreen.Element.Dismiss();
+        }
+        
         return activeTransition;
+    }
+
+    public void DismissActive()
+    {
+        SwitchTo(ScreenID.None);
     }
 
     private void OnScreenTransitionedOut(GUIScreen screen)

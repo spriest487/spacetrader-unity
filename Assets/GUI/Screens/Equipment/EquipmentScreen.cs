@@ -24,10 +24,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
     [SerializeField]
     private DragItem dragItem;
-
-    [SerializeField]
-    private ErrorMessage errorMessage;
-
+    
     public CargoHold TargetCargo
     {
         get
@@ -55,7 +52,6 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
         playerCargoList.Refresh();
         shipModules.Refresh();
-        errorMessage.Reset();
 
         if (player.Moorable.DockedAtStation)
         {
@@ -148,6 +144,6 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
 
     public void ShowError(string message)
     {
-        errorMessage.ShowError(message);
+        Debug.LogError("TODO proper error reporting for: " +message);
     }
 }

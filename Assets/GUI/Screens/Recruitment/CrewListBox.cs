@@ -45,26 +45,22 @@ public class CrewListBox : MonoBehaviour
     
     private void Update()
     {
-        IEnumerable<CrewMember> crew;
+        IEnumerable<CrewMember> crew = null;
 
         Ship playerShip = PlayerShip.LocalPlayer ? PlayerShip.LocalPlayer.Ship : null;
 
-        if (targetCrew == TargetCrew.Station)
+        if (playerShip)
         {
-            var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
-
-            if (station)
+            if (targetCrew == TargetCrew.Station)
             {
-                crew = station.AvailableCrew;
+                var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
+                if (station)
+                {
+                    crew = station.AvailableCrew;
+                }
             }
             else
             {
-                crew = null;
-            }
-        }
-        else
-        {
-            if (playerShip) {
                 switch (forAssignment)
                 {
                     case CrewAssignment.Captain:
@@ -74,10 +70,6 @@ public class CrewListBox : MonoBehaviour
                         crew = playerShip.GetPassengers();
                         break;
                 }
-            }
-            else
-            {
-                crew = null;
             }
         }
 

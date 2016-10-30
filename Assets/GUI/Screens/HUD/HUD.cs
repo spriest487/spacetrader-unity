@@ -27,10 +27,7 @@ public class HUD : MonoBehaviour
     
     [SerializeField]
     private LootWindow lootWindow;
-
-    [SerializeField]
-    private ErrorMessage errorMessage;
-
+    
     [SerializeField]
     private Button useTargetButton;
     private Text useTargetText;
@@ -53,9 +50,7 @@ public class HUD : MonoBehaviour
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
-
-        errorMessage.Reset();
-
+        
         lootWindow.Dismiss();
         radioMenu.Dismiss();
     }
@@ -135,6 +130,7 @@ public class HUD : MonoBehaviour
 
     private void OnPlayerError(string message)
     {
-        errorMessage.ShowError(message);
+        Debug.LogError("TODO proper error logging for: " + message);
+        //errorMessage.ShowError(message);
     }
 }
