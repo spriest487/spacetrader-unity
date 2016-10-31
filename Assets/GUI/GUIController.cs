@@ -161,6 +161,17 @@ public class GUIController : MonoBehaviour
             var screen = FindScreen(activeTransition.toScreen);
             screen.gameObject.SetActive(true);
         }
+
+        var activeScreen = FindActiveScreen();
+        if (activeScreen.ShowHeader)
+        {
+            var headerText = activeScreen.HeaderText;
+            if (string.IsNullOrEmpty(headerText))
+            {
+                headerText = activeScreen.name;
+            }
+            headerLabel.text = headerText;
+        }
     }
 
     public GUITransition SwitchTo(ScreenID screen)

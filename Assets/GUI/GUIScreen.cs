@@ -13,6 +13,9 @@ public class GUIScreen : MonoBehaviour
 
     [SerializeField]
     private bool showHeader;
+
+    [SerializeField]
+    private string headerText;
     
     public GUIElement Element { get; private set; }
 
@@ -20,6 +23,12 @@ public class GUIScreen : MonoBehaviour
 
     public bool ShowStatusBar { get { return showStatusBar; } }
     public bool ShowHeader { get { return showHeader; } }
+
+    public string HeaderText
+    {
+        get { return headerText; }
+        set { headerText = value; }
+    }
         
     private void OnEnable()
     {

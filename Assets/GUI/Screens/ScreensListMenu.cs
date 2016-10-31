@@ -8,7 +8,10 @@ public class ScreensListMenu : MonoBehaviour
 {
     [SerializeField]
     private Transform undockButton;
-        
+
+    [SerializeField]
+    private GUIScreen guiScreen;
+
     public void Undock()
     {
         SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation.UndockPlayer();
@@ -41,12 +44,19 @@ public class ScreensListMenu : MonoBehaviour
 
     void OnEnable()
     {
+        guiScreen = GetComponent<GUIScreen>();
+
         var player = PlayerShip.LocalPlayer;
         var station = player? player.Ship.Moorable.DockedAtStation : null;
 
         if (station)
         {
+            guiScreen.HeaderText = station.name.ToUpper();
             //headerText.text = string.Format(headerFormat, station.name.ToUpper());
+        }
+        else
+        {
+            guiScreen.HeaderText = " ";
         }
 
         undockButton.gameObject.SetActive(!!station);
