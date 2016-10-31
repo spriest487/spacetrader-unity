@@ -21,8 +21,17 @@ public class GUIScreen : MonoBehaviour
 
     public ScreenID ID { get { return id; } }
 
-    public bool ShowStatusBar { get { return showStatusBar; } }
-    public bool ShowHeader { get { return showHeader; } }
+    public bool ShowStatusBar
+    {
+        get { return showStatusBar; }
+        set { showStatusBar = value; }
+    }
+
+    public bool ShowHeader
+    {
+        get { return showHeader; }
+        set { showHeader = value; }
+    }
 
     public string HeaderText
     {
@@ -33,10 +42,7 @@ public class GUIScreen : MonoBehaviour
     private void OnEnable()
     {
         Element = GetComponent<GUIElement>();
-
-        var controller = GetComponentInParent<GUIController>();
-        controller.HeaderText = name.ToUpper();
-
+        
         Element.OnTransitionedIn += TransitionedInHandler;
         Element.OnTransitionedOut += TransitionedOutHandler;
     }

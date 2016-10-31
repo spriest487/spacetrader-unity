@@ -18,11 +18,15 @@ public class MainMenu : MonoBehaviour
 
     private GUIController guiController;
     private GUIScreen guiScreen;
-
-    private void Start()
+    
+    private void OnEnable()
     {
         guiController = GetComponentInParent<GUIController>();
         guiScreen = GetComponent<GUIScreen>();
+
+        var inGame = !!SpaceTraderConfig.LocalPlayer;
+
+        guiScreen.ShowHeader = inGame;
     }
     
     public void NewGame()

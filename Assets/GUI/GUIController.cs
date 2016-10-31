@@ -62,12 +62,6 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    public string HeaderText
-    {
-        get { return headerLabel.text; }
-        set { headerLabel.text = value; }
-    }
-
     public CutsceneOverlay CutsceneOverlay
     {
         get { return cutsceneOverlay; }
@@ -162,8 +156,13 @@ public class GUIController : MonoBehaviour
             screen.gameObject.SetActive(true);
         }
 
+        /* update header if the current screen has a header, and
+         we're either not in a transition, or currently transitioning
+         into this screen*/
         var activeScreen = FindActiveScreen();
-        if (activeScreen.ShowHeader)
+        if (activeScreen.ShowHeader
+            && (activeTransition == null
+                || activeTransition.toScreen == activeScreen.ID))
         {
             var headerText = activeScreen.HeaderText;
             if (string.IsNullOrEmpty(headerText))
@@ -187,10 +186,16 @@ public class GUIController : MonoBehaviour
         };
         
         var nextScreen = FindScreen(screen != ScreenID.None? screen : DefaultScreen());
-        
-        header.SetActive(nextScreen.ShowHeader);
-        statusBar.SetActive(nextScreen.ShowStatusBar);
-        
+
+        if (!nextScreen.ShowHeader)
+        {
+            header.SetActive(false);
+        }
+        if (!nextScreen.ShowStatusBar)
+        {
+            statusBar.SetActive(false);
+        }
+
         var activeScreen = FindActiveScreen();
         if (activeScreen)
         {
@@ -221,6 +226,15 @@ public class GUIController : MonoBehaviour
 
             activeTransition.progress = GUITransitionProgress.Done;
             activeTransition = null;
+
+            if (screen.ShowHeader)
+            {
+                header.SetActive(true);
+            }
+            if (screen.ShowStatusBar)
+            {
+                statusBar.SetActive(true);
+            }
         }
     }
 
