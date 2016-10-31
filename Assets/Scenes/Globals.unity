@@ -10482,7 +10482,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 365174248}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.75883573
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12555,7 +12555,7 @@ MonoBehaviour:
   id: 1
   showStatusBar: 0
   showHeader: 0
-  headerText: 
+  headerText: ' '
 --- !u!114 &1010918875
 MonoBehaviour:
   m_ObjectHideFlags: 0

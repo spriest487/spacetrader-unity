@@ -154,6 +154,9 @@ public class GUIController : MonoBehaviour
 
             var screen = FindScreen(activeTransition.toScreen);
             screen.gameObject.SetActive(true);
+            
+            header.SetActive(screen.ShowHeader);
+            statusBar.SetActive(screen.ShowStatusBar);
         }
 
         /* update header if the current screen has a header, and
@@ -226,15 +229,6 @@ public class GUIController : MonoBehaviour
 
             activeTransition.progress = GUITransitionProgress.Done;
             activeTransition = null;
-
-            if (screen.ShowHeader)
-            {
-                header.SetActive(true);
-            }
-            if (screen.ShowStatusBar)
-            {
-                statusBar.SetActive(true);
-            }
         }
     }
 
