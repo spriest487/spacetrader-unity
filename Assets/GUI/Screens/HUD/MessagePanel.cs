@@ -3,13 +3,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MessagePanel : MonoBehaviour
 {
-    const int MAX_MESSAGES = 20;
-
-    [SerializeField]
-    private List<MessagePanelItem> messages;
+    private PooledList<MessagePanelItem, IPlayerNotification> notifications;
 
     [SerializeField]
     private Transform messageContent;
@@ -17,22 +15,26 @@ public class MessagePanel : MonoBehaviour
     [SerializeField]
     private MessagePanelItem messagePrefab;
 
-    private void OnPlayerNotification(string message)
-    {
-        var newItem = MessagePanelItem.CreateFromPrefab(messagePrefab, message);
-        newItem.transform.SetParent(messageContent, false);
-        newItem.transform.SetAsLastSibling();
-        messages.Add(newItem);
-    }
+    [SerializeField]
+    private int notificationCount;
 
+    [SerializeField]
+    private float maxAge = 2;
+
+    [SerializeField]
+    private NotificationCategory notificationCategory;
+    
     private void Update()
     {
-        if (messages.Count > MAX_MESSAGES)
+        if (notifications == null)
         {
-            var removedCount = messages.Count - MAX_MESSAGES;
-
-            messages.GetRange(MAX_MESSAGES, removedCount).ForEach(message => Destroy(message.gameObject));
-            messages.RemoveRange(MAX_MESSAGES, removedCount);
+            notifications = new PooledList<MessagePanelItem, IPlayerNotification>(messageContent, messagePrefab);
         }
+
+        var items = PlayerNotifications.GetNotifications(notificationCount, notificationCategory)
+            .Where(n => n.Created > Time.time - maxAge);
+
+        notifications.Refresh(items, (i, item, data) => 
+            item.Assign(data.Text));
     }
 }

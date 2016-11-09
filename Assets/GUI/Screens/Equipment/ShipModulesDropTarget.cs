@@ -47,12 +47,12 @@ public class ShipModulesDropTarget : MonoBehaviour
             }
             else
             {
-                equipmentScreen.ShowError("No free slots");
+                PlayerNotifications.Error("No free slots");
             }
         }
         else
         {
-            equipmentScreen.ShowError("Can only equip Modules");
+            PlayerNotifications.Error("Can only equip Modules");
         }
     }
 

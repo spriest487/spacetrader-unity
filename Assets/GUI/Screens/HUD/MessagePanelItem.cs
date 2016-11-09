@@ -8,14 +8,8 @@ public class MessagePanelItem : MonoBehaviour
     [SerializeField]
     private Text messageText;
 
-    //[SerializeField]
-    //private float created;
-
-    public static MessagePanelItem CreateFromPrefab(MessagePanelItem prefab, string message)
+    public void Assign(string message)
     {
-        var item = Instantiate(prefab);
-        item.messageText.text = message;
-        //item.created = Time.time;
-        return item;
+        messageText.text = message;
     }
 }

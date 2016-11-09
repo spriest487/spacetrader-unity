@@ -239,23 +239,8 @@ public class PlayerShip : MonoBehaviour
         switch (message.MessageType)
         {
             case RadioMessageType.Greeting:
-                if (message.SourceShip == Ship)
-                {
-                    var target = Ship.Target;
-
-                    if (target)
-                    {
-                        GUIController.Current.BroadcastMessage("OnPlayerNotification",
-                            "You> Hello, " + target.name,
-                            SendMessageOptions.DontRequireReceiver);
-                    }
-                }    
-                else
-                {
-                    GUIController.Current.BroadcastMessage("OnPlayerNotification",
-                        message.SourceShip.name + "> Hello!",
-                        SendMessageOptions.DontRequireReceiver);
-                }
+                var recipient = (Ship.Target && Ship.Target == message.SourceShip.Targetable) ?
+                    Ship.Target.name : name;
                 break;
 
             case RadioMessageType.AcknowledgeOrder:

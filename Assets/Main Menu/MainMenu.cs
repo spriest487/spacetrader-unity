@@ -76,7 +76,8 @@ public class MainMenu : MonoBehaviour
         if (PlayerShip.LocalPlayer)
         {
             yield return guiController.SwitchTo(ScreenID.None);
-            GUIController.Current.BroadcastMessage("OnPlayerNotification", "Game saved", SendMessageOptions.DontRequireReceiver);
+
+            PlayerNotifications.GameMessage("Game Saved");
         }
     }
 

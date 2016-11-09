@@ -60,12 +60,12 @@ public class SpaceTraderConfig : MonoBehaviour
         if (Instance)
         {
             //if already loaded in a previous scene, the old one takes precedence
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
 
         Instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         //clone configs on startup so we don't modify the global assets
         questBoard = QuestBoard.Create(questBoard);
@@ -78,6 +78,7 @@ public class SpaceTraderConfig : MonoBehaviour
         Debug.Assert(worldMap);
 
         SceneManager.activeSceneChanged += FindDefaultPlayer;
+        SceneManager.activeSceneChanged += ClearNotifications;
     }
 
     private void FindDefaultPlayer(Scene s1, Scene s2)
@@ -88,10 +89,16 @@ public class SpaceTraderConfig : MonoBehaviour
         }
     }
 
+    private void ClearNotifications(Scene s1, Scene s2)
+    {
+        PlayerNotifications.Clear();
+    }
+
     private void OnDisable()
     {
         Instance = null;
 
         SceneManager.activeSceneChanged -= FindDefaultPlayer;
+        SceneManager.activeSceneChanged -= ClearNotifications;
     }
 }

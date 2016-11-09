@@ -141,9 +141,4 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
     {
         dragItem.gameObject.SetActive(false);
     }
-
-    public void ShowError(string message)
-    {
-        Debug.LogError("TODO proper error reporting for: " +message);
-    }
 }

@@ -8,10 +8,7 @@ public class HUD : MonoBehaviour
 {
     [SerializeField]
     private Transform content;
-
-    [SerializeField]
-    private Transform cinemaBars;
-    
+        
     [Header("Player Info")]
 
     [SerializeField]
