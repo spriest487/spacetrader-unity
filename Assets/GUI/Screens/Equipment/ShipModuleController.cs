@@ -8,15 +8,22 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Button))]
 public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
+    [Header("UI Elements")]
+
     [SerializeField]
     private Image icon;
 
     [SerializeField]
-    private Ship ship;
-
-    [SerializeField]
     private Transform highlight;
 
+    [SerializeField]
+    private Image rarityGlow;
+    
+    [HideInInspector]
+    [SerializeField]
+    private Ship ship;
+    
+    [HideInInspector]
     [SerializeField]
     private int moduleSlot;
 
@@ -84,12 +91,15 @@ public class ShipModuleController : MonoBehaviour, IDragHandler, IBeginDragHandl
         {
             icon.sprite = itemType.Icon;
             icon.gameObject.SetActive(true);
+            rarityGlow.gameObject.SetActive(true);
+            rarityGlow.color = itemType.Rarity.Color();
         }
         else
         {
             icon.gameObject.SetActive(false);
+            rarityGlow.gameObject.SetActive(false);
         }
-
+        
         Highlighted = highlighted;
     }
 }

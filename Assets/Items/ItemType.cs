@@ -53,3 +53,11 @@ public abstract class ItemType : ScriptableObject
         }
     }
 }
+
+public static class ItemTypeUtility
+{
+    public static Color Color(this Rarity rarity)
+    {
+        return SpaceTraderConfig.CargoItemConfiguration.RarityColor(rarity);
+    }
+}

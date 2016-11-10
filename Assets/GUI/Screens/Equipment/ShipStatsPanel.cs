@@ -26,6 +26,17 @@ public class ShipStatsPanel : MonoBehaviour
 
     private void Refresh()
     {
+        if (items == null)
+        {
+            items = new PooledList<ShipStatsEntry, KeyValuePair<string, string>>(content, statsEntryPrefab);
+        }
+
+        if (!PlayerShip.LocalPlayer)
+        {
+            items.Clear();
+            return;
+        }
+
         var ship = PlayerShip.LocalPlayer.Ship;
         var stats = ship.CurrentStats;
         var hp = ship.GetComponent<Hitpoints>();

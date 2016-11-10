@@ -18,19 +18,10 @@ public class GUIElement : MonoBehaviour
         get { return Animator.GetBool(ActiveParamName); }
         set { Animator.SetBool(ActiveParamName, value); }
     }
-
-    private void SampleCurrentFrame(float normTime)
+    
+    private void OnEnable()
     {
-        var stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
-        Animator.Play(stateInfo.shortNameHash, 0, normTime);
-        Animator.Update(0);
-    }
-
-    protected virtual void OnEnable()
-    {
-        Animator = GetComponent<Animator>();
-        //SampleCurrentFrame(0);
-        
+        Animator = GetComponent<Animator>();         
         ActiveParam = true;
     }
     

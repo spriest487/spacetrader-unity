@@ -126,7 +126,7 @@ public class CargoHoldListItem : MonoBehaviour, IDragHandler, IBeginDragHandler,
             }
 
             rarityHighlight.gameObject.SetActive(true);
-            rarityHighlight.color = SpaceTraderConfig.CargoItemConfiguration.RarityColor(itemType.Rarity);
+            rarityHighlight.color = itemType.Rarity.Color();
         }
     }
 }

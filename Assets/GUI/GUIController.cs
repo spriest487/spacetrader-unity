@@ -78,7 +78,7 @@ public class GUIController : MonoBehaviour
 
     private GUIScreen FindActiveScreen()
     {
-        var activeScreen = screens.FirstOrDefault(s => s.gameObject.activeInHierarchy);
+        var activeScreen = screens.FirstOrDefault(s => s.gameObject.activeSelf);
 
         return activeScreen;
     }
@@ -111,6 +111,7 @@ public class GUIController : MonoBehaviour
         Debug.Assert(!Current || Current == this);
 
         Current = this;
+        
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
 
         //re-show the current screen
@@ -120,7 +121,7 @@ public class GUIController : MonoBehaviour
             currentlyActive.gameObject.SetActive(false);
             SwitchTo(currentlyActive.ID);
         }
-
+        
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
         

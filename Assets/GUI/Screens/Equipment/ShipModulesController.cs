@@ -32,7 +32,7 @@ public class ShipModulesController : MonoBehaviour
                 Update();
             }
 
-            if (!PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(value))
+            if (!PlayerShip.LocalPlayer || !PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(value))
             {
                 value = -1;
             }
