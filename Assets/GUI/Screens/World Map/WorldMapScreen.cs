@@ -1,22 +1,24 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
+using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(GUIElement))]
 public class WorldMapScreen : MonoBehaviour
 {
-    void OnEnable()
+    GUIElement guiElement;
+
+    void Awake()
     {
-        /* disable the camera component, not the whole object - or the Current
-         reference will be unset */
-        FollowCamera.Current.Camera.enabled = false;
-        BackgroundCamera.Current.Camera.enabled = false;
+        guiElement = GetComponent<GUIElement>();
+    }
 
-        var mapCam = SpaceTraderConfig.WorldMap.Camera;
-        
-        mapCam.enabled = true;
-
+    void OnEnable()
+    {        
         var defaultCameraDist = new Vector3(0, 20, -40);
         var currentArea = SpaceTraderConfig.WorldMap.GetCurrentArea();
 
+        var mapCam = SpaceTraderConfig.WorldMap.Camera;
         mapCam.transform.position = currentArea.transform.position + defaultCameraDist;
         mapCam.transform.rotation = Quaternion.LookRotation(-mapCam.transform.position.normalized, Vector3.up);
 
@@ -26,14 +28,11 @@ public class WorldMapScreen : MonoBehaviour
         }
     }
 
-    private void OnScreenInactive()
+    void BlackedOut()
     {
-        FollowCamera.Current.Camera.enabled = true;
-        BackgroundCamera.Current.Camera.enabled = true;
-
-        SpaceTraderConfig.WorldMap.Camera.enabled = false;
+        SpaceTraderConfig.WorldMap.Visible = guiElement.Activated;
     }
-    
+
     public void Update()
     {
         if (Input.GetMouseButtonDown(0) 

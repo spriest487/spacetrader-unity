@@ -10,7 +10,14 @@ public class ScreensListMenu : MonoBehaviour
     private Transform undockButton;
 
     [SerializeField]
+    private Transform missionButton;
+    
     private GUIScreen guiScreen;
+
+    private void Awake()
+    {
+        guiScreen = GetComponent<GUIScreen>();
+    }
 
     public void Undock()
     {
@@ -44,8 +51,6 @@ public class ScreensListMenu : MonoBehaviour
 
     void OnEnable()
     {
-        guiScreen = GetComponent<GUIScreen>();
-
         var player = PlayerShip.LocalPlayer;
         var station = player? player.Ship.Moorable.DockedAtStation : null;
 
@@ -60,5 +65,8 @@ public class ScreensListMenu : MonoBehaviour
         }
 
         undockButton.gameObject.SetActive(!!station);
+
+        var mission = MissionManager.Instance? MissionManager.Instance.Mission : null;
+        missionButton.gameObject.SetActive(mission != null);
     }
 }

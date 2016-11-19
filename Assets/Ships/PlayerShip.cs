@@ -185,7 +185,7 @@ public class PlayerShip : MonoBehaviour
 
             var pitch = Input.GetAxis("pitch");
             var yaw = Input.GetAxis("yaw");
-
+            
             var camera = FollowCamera.Current;
             if (camera)
             {

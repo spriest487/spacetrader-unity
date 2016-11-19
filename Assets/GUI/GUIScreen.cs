@@ -16,10 +16,15 @@ public class GUIScreen : MonoBehaviour
 
     [SerializeField]
     private string headerText;
+
+    [SerializeField]
+    private string shortcutButton;
     
     public GUIElement Element { get; private set; }
 
     public ScreenID ID { get { return id; } }
+
+    public string ShortcutButton { get { return shortcutButton; } }
 
     public bool ShowStatusBar
     {

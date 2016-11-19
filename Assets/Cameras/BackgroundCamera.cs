@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class BackgroundCamera : MonoBehaviour
@@ -7,33 +9,45 @@ public class BackgroundCamera : MonoBehaviour
 
     public Camera Camera { get; private set; }
 
-    void Start()
+    [SerializeField]
+    private FollowCamera matchCamera;
+
+    void Awake()
     {
         Camera = GetComponent<Camera>();
+        DontDestroyOnLoad(gameObject);
+    }
 
-        DontDestroyOnLoad(this.gameObject);
+    void OnWorldMapVisibilityChanged(bool visible)
+    {
+        Camera.enabled = !visible;
     }
 
     void OnEnable()
     {
         Debug.Assert(!Current || Current == this);
         Current = this;
+        
+        SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
     }
 
     void OnDisable()
     {
         Debug.Assert(Current == this);
         Current = null;
+
+        if (SpaceTraderConfig.Instance && SpaceTraderConfig.WorldMap)
+        {
+            SpaceTraderConfig.WorldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
+        }
     }
 
     void OnPreRender()
     {
-        var mainCam = FollowCamera.Current;
+        Debug.Assert(matchCamera, "main camera must exist");
+        Debug.Assert(matchCamera != Camera);
 
-        Debug.Assert(mainCam, "main camera must exist");
-        Debug.Assert(mainCam != Camera);
-
-        transform.rotation = mainCam.transform.rotation;
-        Camera.fieldOfView = mainCam.Camera.fieldOfView;
+        transform.rotation = matchCamera.transform.rotation;
+        Camera.fieldOfView = matchCamera.Camera.fieldOfView;
     }
 }

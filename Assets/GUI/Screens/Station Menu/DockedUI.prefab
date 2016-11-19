@@ -209,7 +209,6 @@ GameObject:
   - 114: {fileID: 11474430}
   - 114: {fileID: 11474432}
   - 114: {fileID: 11474434}
-  - 114: {fileID: 11490716}
   - 114: {fileID: 11420006}
   m_Layer: 10
   m_Name: DockedUI
@@ -517,7 +516,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11490716}
+      - m_Target: {fileID: 0}
         m_MethodName: ShowMissionPrep
         m_Mode: 1
         m_Arguments:
@@ -617,7 +616,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11490716}
+      - m_Target: {fileID: 0}
         m_MethodName: ShowMainMenu
         m_Mode: 1
         m_Arguments:
@@ -820,7 +819,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11490716}
+      - m_Target: {fileID: 0}
         m_MethodName: ShowCrew
         m_Mode: 1
         m_Arguments:
@@ -1020,9 +1019,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b1059fb854dd2d4fa179b63bfc126c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headerFormat: '{0}'
   undockButton: {fileID: 22474432}
-  headerText: {fileID: 11474440}
+  missionButton: {fileID: 0}
+  guiScreen: {fileID: 0}
 --- !u!114 &11474436
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1240,7 +1239,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11490716}
+      - m_Target: {fileID: 0}
         m_MethodName: ShowEquipment
         m_Mode: 1
         m_Arguments:
@@ -1310,7 +1309,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11490716}
+      - m_Target: {fileID: 0}
         m_MethodName: ShowQuests
         m_Mode: 1
         m_Arguments:
@@ -1341,18 +1340,6 @@ MonoBehaviour:
   m_PreferredHeight: 20
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
---- !u!114 &11490716
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76316bf6e44f2594a8fa93d4e0e840ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  missionButton: {fileID: 11418974}
 --- !u!114 &11491630
 MonoBehaviour:
   m_ObjectHideFlags: 1

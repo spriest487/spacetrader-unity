@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class WorldMap : MonoBehaviour
 {
@@ -22,7 +23,9 @@ public class WorldMap : MonoBehaviour
 
     private List<WorldMapArea> areas;
     private List<WorldMapMarker> markers;
-    
+
+    public event Action<bool> OnVisibilityChanged;
+        
     public AnimationCurve JumpEffectCurve
     {
         get { return jumpEffectCurve; }
@@ -32,14 +35,35 @@ public class WorldMap : MonoBehaviour
     {
         get { return mapCamera; }
     }
-    
+
+    public bool Visible
+    {
+        get { return mapCamera.enabled; }
+        set
+        {
+            mapCamera.enabled = value;
+
+            var currentSkybox = BackgroundCamera.Current.GetComponent<Skybox>();
+            if (currentSkybox)
+            {
+                mapCamera.clearFlags = CameraClearFlags.Skybox;
+                mapCamera.GetComponent<Skybox>().material = currentSkybox.material;
+            }
+            else
+            {
+                mapCamera.clearFlags = CameraClearFlags.SolidColor;
+            }
+            OnVisibilityChanged(value);
+        }
+    }
+
     public IEnumerable<WorldMapArea> DistantAreas
     {
         get
         {
             if (areas == null)
             {
-                Start();
+                Awake();
             }
 
             return areas
@@ -51,20 +75,21 @@ public class WorldMap : MonoBehaviour
     {
         if (areas == null)
         {
-            Start();
+            Awake();
         }
 
         return areas
             .Where(a => a.name == SceneManager.GetActiveScene().name)
-            .FirstOrDefault();
+            .DefaultIfEmpty(areas[0])
+            .First();
     }
 
     public IEnumerable<WorldMapMarker> Markers
     {
         get { return markers; }
     }
-
-    private void Start()
+    
+    private void Awake()
     {
         DontDestroyOnLoad(gameObject);
 

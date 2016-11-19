@@ -6,7 +6,7 @@ using System.Linq;
 
 public class GUIController : MonoBehaviour
 {
-    public class GUIControllerTransition : GUITransition
+    private class GUIControllerTransition : GUITransition
     {
         public GUITransitionProgress progress = GUITransitionProgress.Waiting;
         public ScreenID toScreen;
@@ -17,7 +17,7 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    public class LoadingGUITransition : GUITransition
+    private class LoadingGUITransition : GUITransition
     {
         public GUITransitionProgress progress = GUITransitionProgress.Waiting;
 
@@ -37,6 +37,8 @@ public class GUIController : MonoBehaviour
     private GUIControllerTransition activeTransition;
     private LoadingGUITransition loadingTransition;
 
+    [Header("UI Elements")]
+
     [SerializeField]
     private CutsceneOverlay cutsceneOverlay;
 
@@ -51,6 +53,11 @@ public class GUIController : MonoBehaviour
 
     [SerializeField]
     private GUIElement statusBar;
+
+    public bool HasTransition
+    {
+        get { return activeTransition != null; }
+    }
 
     public ScreenID ActiveScreen
     {
@@ -113,15 +120,7 @@ public class GUIController : MonoBehaviour
         Current = this;
         
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
-
-        //re-show the current screen
-        var currentlyActive = FindActiveScreen();
-        if (currentlyActive)
-        {
-            currentlyActive.gameObject.SetActive(false);
-            SwitchTo(currentlyActive.ID);
-        }
-        
+                                
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
         
@@ -136,9 +135,49 @@ public class GUIController : MonoBehaviour
         loadingOverlay.OnTransitionedIn -= OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut -= OnLoadingTransitionedOut;
     }
-    
+
+    private bool ProcessScreenButton(string button, ScreenID screen)
+    {
+        if (screen == ScreenID.None || string.IsNullOrEmpty(button) || HasTransition)
+        {
+            return false;
+        }
+
+        if (Input.GetButtonDown(button))
+        {
+            if (ActiveScreen == screen)
+            {
+                DismissActive();
+            }
+            else
+            {
+                SwitchTo(screen);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     private void Update()
     {
+        var defaultScreen = DefaultScreen();
+
+        if (Input.GetButtonDown("Cancel") && ActiveScreen != defaultScreen)
+        {
+            DismissActive();
+        }
+        else
+        {
+            foreach (var screen in screens)
+            {
+                if (ProcessScreenButton(screen.ShortcutButton, screen.ID))
+                {
+                    break;
+                }
+            }
+        }
+
         if (!screens.Any(s => s.isActiveAndEnabled))
         {
             if (activeTransition == null)
@@ -148,7 +187,7 @@ public class GUIController : MonoBehaviour
 
             if (activeTransition.toScreen == ScreenID.None)
             {
-                activeTransition.toScreen = DefaultScreen();
+                activeTransition.toScreen = defaultScreen;
             }
 
             activeTransition.progress = GUITransitionProgress.InProgress;
@@ -156,8 +195,8 @@ public class GUIController : MonoBehaviour
             var screen = FindScreen(activeTransition.toScreen);
             screen.gameObject.SetActive(true);
             
-            header.SetActive(screen.ShowHeader);
-            statusBar.SetActive(screen.ShowStatusBar);
+            header.Activate(screen.ShowHeader);
+            statusBar.Activate(screen.ShowStatusBar);
         }
 
         /* update header if the current screen has a header, and
@@ -193,11 +232,11 @@ public class GUIController : MonoBehaviour
 
         if (!nextScreen.ShowHeader)
         {
-            header.SetActive(false);
+            header.Activate(false);
         }
         if (!nextScreen.ShowStatusBar)
         {
-            statusBar.SetActive(false);
+            statusBar.Activate(false);
         }
 
         var activeScreen = FindActiveScreen();
@@ -211,6 +250,11 @@ public class GUIController : MonoBehaviour
 
     public void DismissActive()
     {
+        if (activeTransition != null && activeTransition.toScreen == ScreenID.None)
+        {
+            return;
+        }
+
         SwitchTo(ScreenID.None);
     }
 

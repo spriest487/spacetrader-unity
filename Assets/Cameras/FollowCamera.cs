@@ -75,12 +75,12 @@ public class FollowCamera : MonoBehaviour
 
     private int invisibleLayer;
     private int defaultLayer;
-    
-	void Start()
+        
+	void Awake()
 	{
         Camera = GetComponent<Camera>();
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
 		currentSpeedOffset = Vector3.zero;
 
@@ -88,16 +88,28 @@ public class FollowCamera : MonoBehaviour
         defaultLayer = LayerMask.NameToLayer("Default");
     }
 
+    void OnWorldMapVisibilityChanged(bool visible)
+    {
+        Camera.enabled = !visible;
+    }
+
     void OnEnable()
     {
         Debug.Assert(!Current || Current == this);
         Current = this;
+
+        SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
     }
 
     void OnDisable()
     {
         Debug.Assert(Current == this);
         Current = null;
+
+        if (SpaceTraderConfig.Instance && SpaceTraderConfig.WorldMap)
+        {
+            SpaceTraderConfig.WorldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
+        }
     }
 
     void DockedCam(PlayerShip player)
@@ -330,7 +342,7 @@ public class FollowCamera : MonoBehaviour
     }
 
     private void Update()
-    {
+    {        
         if (Input.GetButton("look") && dragInput.HasValue)
         {            
             float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
