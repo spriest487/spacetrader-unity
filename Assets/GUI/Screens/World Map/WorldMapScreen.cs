@@ -6,8 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(GUIElement))]
 public class WorldMapScreen : MonoBehaviour
 {
-    GUIElement guiElement;
-
+    new GUIElement guiElement;
+    
     void Awake()
     {
         guiElement = GetComponent<GUIElement>();

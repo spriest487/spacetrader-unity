@@ -86,7 +86,7 @@ public class QuestBoard : ScriptableObject
         var owner = OwnerOf(quest);
 
         Debug.Assert(owner);
-        Debug.Assert(quest.Done);
+        Debug.Assert(quest.Status == QuestStatus.Completed, "Only call FinishQuest on quests that are definitely finished");
         quest.OnFinish();
 
         owner.AddMoney(quest.MoneyReward);

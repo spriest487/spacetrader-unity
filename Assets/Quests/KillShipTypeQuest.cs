@@ -27,11 +27,18 @@ public class KillShipTypeQuest : Quest
         }
     }
 
-    public override bool Done
+    public override QuestStatus Status
     {
         get
         {
-            return killCount >= targetCount;
+            if (killCount >= targetCount)
+            {
+                return QuestStatus.Completed;
+            }
+            else
+            {
+                return base.Status;
+            }
         }
     }
 
@@ -43,7 +50,7 @@ public class KillShipTypeQuest : Quest
     public override void NotifyDeath(Ship ship, Ship killer)
     {
         //already finished, or not even accepted yet? don't care
-        if (Done || !Owner)
+        if (killCount >= targetCount || !Owner)
         {
             return;
         }

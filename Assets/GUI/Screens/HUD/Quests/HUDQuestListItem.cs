@@ -25,9 +25,20 @@ public class HUDQuestListItem : MonoBehaviour
         }
 
         descriptionLabel.text = quest.Description;
-        if (quest.Done)
+
+        switch (quest.Status)
         {
-            descriptionLabel.text += "- COMPLETE";
+            case QuestStatus.Completed:
+                descriptionLabel.text += "- COMPLETE";
+                descriptionLabel.color = Color.green;
+                break;
+            case QuestStatus.Failed:
+                descriptionLabel.text += "- FAILED";
+                descriptionLabel.color = Color.red;
+                break;
+            default:
+                descriptionLabel.color = Color.white;
+                break;
         }
     }
 

@@ -24,11 +24,18 @@ public class KillEnemyTeamQuest : Quest
         }
     }
 
-    public override bool Done
-    {
+    public override QuestStatus Status
+    { 
         get
         {
-            return !GetTeam().Slots.Any(s => s.SpawnedShip);
+            if (!GetTeam().Slots.Any(s => s.SpawnedShip))
+            {
+                return QuestStatus.Completed;
+            }
+            else
+            {
+                return base.Status;
+            }
         }
     }
 

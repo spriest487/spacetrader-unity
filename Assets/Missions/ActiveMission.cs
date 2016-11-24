@@ -3,8 +3,7 @@
 using UnityEngine;
 using System;
 
-[Serializable]
-public class ActiveMission
+public class ActiveMission : ScriptableObject
 {
     public const string MISSION_TAG = "MissionObjective";
 
@@ -18,15 +17,18 @@ public class ActiveMission
     
     public ActiveTeam[] Teams { get { return teams; } }
     
-    public void Init()
+    public static ActiveMission Create(MissionDefinition definition)
     {
-        teams = new ActiveTeam[Definition.Teams.Count];
+        var result = CreateInstance<ActiveMission>();
+
+        result.missionDefinition = definition;
+        result.teams = new ActiveTeam[definition.Teams.Count];
 
         bool firstSlot = true;
 
-        for (int team = 0; team < teams.Length; ++team)
+        for (int team = 0; team < result.teams.Length; ++team)
         {
-            var newTeam = new ActiveTeam(Definition.Teams[team]);
+            var newTeam = new ActiveTeam(definition.Teams[team]);
             
             foreach (var slot in newTeam.Slots)
             {
@@ -34,7 +36,9 @@ public class ActiveMission
                 firstSlot = false;
             }
 
-            teams[team] = newTeam;
+            result.teams[team] = newTeam;
         }
+
+        return result;
     }
 }

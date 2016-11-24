@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using System;
 
 public class MissionManager : MonoBehaviour
 {
@@ -30,11 +29,6 @@ public class MissionManager : MonoBehaviour
     private void Awake()
     {
         phase = MissionPhase.Prep;
-
-        if (mission.Definition != null)
-        {
-            mission.Init();
-        }
     }
     
     public void BeginMission()

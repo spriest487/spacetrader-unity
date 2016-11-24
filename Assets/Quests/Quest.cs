@@ -1,6 +1,14 @@
 ﻿using UnityEngine;
 using System;
 
+public enum QuestStatus
+{
+    NotAccepted,
+    InProgress,
+    Completed,
+    Failed,
+}
+
 public abstract class Quest : ScriptableObject
 {
     [Serializable]
@@ -17,7 +25,20 @@ public abstract class Quest : ScriptableObject
     public virtual void OnFinish() { }
     public virtual void OnAbandon() { }
 
-    public abstract bool Done { get; }
+    public virtual QuestStatus Status
+    {
+        get
+        {
+            if (SpaceTraderConfig.QuestBoard.OwnerOf(this))
+            {
+                return QuestStatus.InProgress;
+            }
+            else
+            {
+                return QuestStatus.NotAccepted;
+            }
+        }
+    }
     public abstract string Description { get; }
 
     public PlayerShip Owner

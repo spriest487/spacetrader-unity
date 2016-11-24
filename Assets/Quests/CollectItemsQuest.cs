@@ -42,19 +42,26 @@ public class CollectItemsQuest : Quest
         return SpaceTraderConfig.CargoItemConfiguration.FindType(itemTypeName);
     }
 
-    public override bool Done
+    public override QuestStatus Status
     {
         get
         {
             var owner = SpaceTraderConfig.QuestBoard.OwnerOf(this);
             if (!owner)
             {
-                return false;
+                return QuestStatus.NotAccepted;
             }
 
             var cargo = owner.Ship.Cargo;
 
-            return cargo.ContainsItems(GetItemType(), quantity);
+            if (cargo.ContainsItems(GetItemType(), quantity))
+            {
+                return QuestStatus.Completed;
+            }
+            else
+            {
+                return QuestStatus.InProgress;
+            }
         }
     }
 

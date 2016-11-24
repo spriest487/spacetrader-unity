@@ -120,6 +120,13 @@ public class GUIController : MonoBehaviour
         Current = this;
         
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
+
+        var activeScreen = FindActiveScreen();
+        if (activeScreen) 
+        {
+            header.Activate(activeScreen.ShowHeader);
+            statusBar.Activate(activeScreen.ShowStatusBar);
+        }
                                 
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
@@ -203,14 +210,14 @@ public class GUIController : MonoBehaviour
          we're either not in a transition, or currently transitioning
          into this screen*/
         var activeScreen = FindActiveScreen();
-        if (activeScreen.ShowHeader
+        if (header.Activated
             && (activeTransition == null
                 || activeTransition.toScreen == activeScreen.ID))
         {
             var headerText = activeScreen.HeaderText;
             if (string.IsNullOrEmpty(headerText))
             {
-                headerText = activeScreen.name;
+                headerText = activeScreen.name.ToUpper();
             }
             headerLabel.text = headerText;
         }
