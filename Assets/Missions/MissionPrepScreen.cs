@@ -9,14 +9,15 @@ public class MissionPrepScreen : MonoBehaviour
     private Text missionDescriptionText;
 
     [SerializeField]
-    private Text missionTitleText;
-    
-    //[SerializeField]
-    //private Button readyButton;
-
-    [SerializeField]
     private Text readyText;
     
+    private GUIScreen guiScreen;
+    
+    private void Awake()
+    {
+        guiScreen = GetComponent<GUIScreen>();
+    }
+
     public void Ready()
     {
         if (MissionManager.Instance.Phase == MissionPhase.Prep)
@@ -26,19 +27,32 @@ public class MissionPrepScreen : MonoBehaviour
 
         GUIController.Current.SwitchTo(ScreenID.None);
     }
-    
-    void OnEnable()
-    {
-        var mission = MissionManager.Instance.Mission;
 
-        if (mission != null)
+    private void CancelMissionOnExit()
+    {
+        if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {
-            missionDescriptionText.text = mission.Definition.Description;
-            missionTitleText.text = mission.Definition.MissionName.ToUpper();
+            MissionManager.Instance.CancelMission();
         }
     }
     
-    void Update()
+    private void OnEnable()
+    {
+        GetComponent<GUIElement>().OnTransitionedOut += CancelMissionOnExit;
+
+        var mission = MissionManager.Instance.Mission;
+        Debug.Assert(mission, "must have an active mission to use the mission prep screen");
+        
+        missionDescriptionText.text = mission.Definition.Description;
+        guiScreen.HeaderText = mission.Definition.MissionName.ToUpper();
+    }
+
+    private void OnDisable()
+    {
+        GetComponent<GUIElement>().OnTransitionedOut -= CancelMissionOnExit;
+    }
+
+    private void Update()
     {
         if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {

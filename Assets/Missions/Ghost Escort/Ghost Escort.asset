@@ -25,8 +25,8 @@ MonoBehaviour:
   teams:
   - name: Red Team
     slots:
-    - shipType: {fileID: 0}
-      modulePreset: {fileID: 0}
+    - shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+      modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
       name: Salvager
     quests:
     - {fileID: 11400000, guid: aa162950b56c66b41aac304500db82aa, type: 2}

@@ -10,5 +10,6 @@ public enum ScreenID
     WorldMap,
     NewGame,
     LoadGame,
-    HUD
+    HUD,
+    MissionSelect
 }

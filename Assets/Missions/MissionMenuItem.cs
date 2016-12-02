@@ -14,33 +14,22 @@ public class MissionMenuItem : MonoBehaviour
     [SerializeField]
     private Button button;    
 
-    public MissionDefinition MissionDefinition { get { return missionDefinition; } set { missionDefinition = value; } }
+    public MissionDefinition MissionDefinition { get { return missionDefinition; } }
 
     public Button Button { get { return button; } }
     
-    void Start()
+    public static MissionMenuItem Create(MissionMenuItem prefab, MissionDefinition missionDef)
     {
-        if (!missionDefinition || !button)
-        {
-            throw new UnityException("no definition for mission item");
-        }
+        var item = Instantiate(prefab);
 
-        if (missionNameText)
-        {
-            missionNameText.text = missionDefinition.MissionName;
-        }
+        item.missionDefinition = missionDef;
+        item.missionNameText.text = missionDef.name;
 
-        var menu = GetComponentInParent<MissionsMenu>();
-        if (!menu)
-        {
-            throw new UnityException("mission menuitem not a child of a mission menu");
-        }
+        return item;
+    }
 
-        if (button)
-        {
-            button.onClick.AddListener(() => {
-                menu.SelectMission(MissionDefinition);
-            });
-        }
+    public void SelectMission()
+    {
+        GetComponentInParent<MissionsMenu>().SelectMission(missionDefinition);
     }
 }

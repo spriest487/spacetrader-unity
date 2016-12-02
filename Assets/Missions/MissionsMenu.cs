@@ -57,25 +57,27 @@ public class MissionsMenu : MonoBehaviour
 
     void Start()
     {
-        if (!missionsLayout
-            || !missionElementPrefab
-            || !selectedMissionDescription
-            || !selectedMissionTitle)
-        {
-            throw new UnityException("invalid configuration for missions menu");
-        }
-
         foreach (var mission in SpaceTraderConfig.MissionsConfiguration.Missions)
         {
-            var missionItem = Instantiate(missionElementPrefab);
+            var missionItem = MissionMenuItem.Create(missionElementPrefab, mission);
             missionItem.transform.SetParent(missionsLayout, false);
-            missionItem.MissionDefinition = mission;
         }
+    }
+
+    private IEnumerator PlayOfflineRoutine()
+    {
+        var gui = GetComponentInParent<GUIController>();
+        yield return gui.ShowLoadingOverlay();
+
+        yield return SceneManager.LoadSceneAsync(selectedMission.SceneName);
+        
+        gui.DismissLoadingOverlay();
+        yield return gui.SwitchTo(ScreenID.MissionPrep);
     }
 
     public void PlayOffline()
     {
-        SceneManager.LoadScene(selectedMission.SceneName);
+        StartCoroutine(PlayOfflineRoutine());
     }
 }
 

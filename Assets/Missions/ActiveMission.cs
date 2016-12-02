@@ -23,6 +23,7 @@ public class ActiveMission : ScriptableObject
 
         result.missionDefinition = definition;
         result.teams = new ActiveTeam[definition.Teams.Count];
+        result.name = definition.name;
 
         bool firstSlot = true;
 

@@ -6,7 +6,10 @@ using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(GUIScreen))]
 public class MainMenu : MonoBehaviour
-{           
+{
+    [SerializeField]
+    private Transform headerImage;
+
     [SerializeField]
     private string menuScene;
 
@@ -27,6 +30,7 @@ public class MainMenu : MonoBehaviour
         var inGame = !!SpaceTraderConfig.LocalPlayer;
 
         guiScreen.ShowHeader = inGame;
+        headerImage.gameObject.SetActive(!inGame);
     }
     
     public void NewGame()
@@ -44,17 +48,13 @@ public class MainMenu : MonoBehaviour
         guiController.SwitchTo(ScreenID.LoadGame);
     }
 
+    public void MissionSelect()
+    {
+        guiController.SwitchTo(ScreenID.MissionSelect);
+    }
+
     private IEnumerator EndGameRoutine()
     {
-        var worldLifecycleListeners = GameObject.FindGameObjectsWithTag("WorldListener");
-        if (worldLifecycleListeners != null)
-        {
-            foreach (var worldListener in worldLifecycleListeners)
-            {
-                worldListener.SendMessage("OnWorldEnd");
-            }
-        }
-
         yield return guiController.ShowLoadingOverlay();
 
         if (PlayerShip.LocalPlayer)

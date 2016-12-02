@@ -106,6 +106,10 @@ public class GUIController : MonoBehaviour
                 return ScreenID.HUD;
             }
         }
+        else if (MissionManager.Instance.Mission)
+        {
+            return ScreenID.MissionPrep;
+        }
         else
         {
             return ScreenID.MainMenu;
@@ -127,7 +131,7 @@ public class GUIController : MonoBehaviour
             header.Activate(activeScreen.ShowHeader);
             statusBar.Activate(activeScreen.ShowStatusBar);
         }
-                                
+        
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
         

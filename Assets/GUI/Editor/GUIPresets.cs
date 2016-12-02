@@ -12,7 +12,7 @@ public static class GUIPresets
         {
             return;
         }
-
+        
         var font = AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Coffee.ttf");
 
         var label = button.GetComponentInChildren<Text>();

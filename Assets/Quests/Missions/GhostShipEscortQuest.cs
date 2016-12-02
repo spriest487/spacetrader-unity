@@ -7,8 +7,7 @@ public class GhostShipEscortQuest : Quest
 {
     bool failed;
 
-    private Ship ghostShip;
-    private Transform goal;
+    private GhostShipAI ghostShip;
 
     public override string Description
     {
@@ -26,7 +25,7 @@ public class GhostShipEscortQuest : Quest
             {
                 return QuestStatus.Failed;
             }
-            else if (ghostShip && ghostShip.IsCloseTo(goal.transform.position))
+            else if (ghostShip && ghostShip.Ship.IsCloseTo(ghostShip.Goal.position))
             {
                 return QuestStatus.Completed;
             }
@@ -39,13 +38,8 @@ public class GhostShipEscortQuest : Quest
 
     public override void OnAccepted()
     {
-        var shipObj = GameObject.Find("Ghost Ship");
-        ghostShip = shipObj ? shipObj.GetComponent<Ship>() : null;
-        Debug.Assert(ghostShip, "must be a ship named Ghost Ship in the scene");
-
-        var goalObj = GameObject.Find("Ghost Ship Goal");
-        Debug.Assert(goal, "must be an object named Ghost Ship Goal in the scene");
-        goal = goalObj.transform;
+        var ship = FindObjectOfType<GhostShipAI>();
+        Debug.Assert(ship && ship.Goal, "must be a Ghost Ship AI in the scene with a valid goal");
     }
 
     public override void NotifyDeath(Ship ship, Ship killer)
