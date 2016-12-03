@@ -15,7 +15,6 @@ public class BackgroundCamera : MonoBehaviour
     void Awake()
     {
         Camera = GetComponent<Camera>();
-        DontDestroyOnLoad(gameObject);
     }
 
     void OnWorldMapVisibilityChanged(bool visible)

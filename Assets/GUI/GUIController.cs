@@ -134,8 +134,6 @@ public class GUIController : MonoBehaviour
         
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
-        
-        DontDestroyOnLoad(gameObject);
     }
 
     private void OnDisable()

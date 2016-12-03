@@ -20,11 +20,11 @@ public class SpaceTraderConfig : MonoBehaviour
         get { return Instance.localPlayer; }
         set
         {
-            /* making a player the local player makes them persist through
-            level changes too */
+            /* making a player the local player makes them global */
             if (value)
             {
-                DontDestroyOnLoad(value);
+                var globals = SceneManager.GetSceneByBuildIndex(0);
+                SceneManager.MoveGameObjectToScene(value.gameObject, globals);
             }
 
             Instance.localPlayer = value;
@@ -54,18 +54,10 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private WorldMap worldMap;
-        
-    private void OnEnable()
-    {
-        if (Instance)
-        {
-            //if already loaded in a previous scene, the old one takes precedence
-            Destroy(gameObject);
-            return;
-        }
 
+    private void Awake()
+    {
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         //clone configs on startup so we don't modify the global assets
         questBoard = QuestBoard.Create(questBoard);
@@ -77,28 +69,21 @@ public class SpaceTraderConfig : MonoBehaviour
 
         Debug.Assert(worldMap);
 
-        SceneManager.activeSceneChanged += FindDefaultPlayer;
-        SceneManager.activeSceneChanged += ClearNotifications;
-    }
+        SceneManager.activeSceneChanged += (oldScene, newScene) =>
+        { 
+            PlayerNotifications.Clear();
+        };
 
-    private void FindDefaultPlayer(Scene s1, Scene s2)
-    {
-        if (!MissionManager.Instance)
+        FindObjectOfType<MissionManager>().OnMissionChanged += mission =>
         {
-            localPlayer = FindObjectOfType<PlayerShip>();
-        }
-    }
-
-    private void ClearNotifications(Scene s1, Scene s2)
-    {
-        PlayerNotifications.Clear();
-    }
-
-    private void OnDisable()
-    {
-        Instance = null;
-
-        SceneManager.activeSceneChanged -= FindDefaultPlayer;
-        SceneManager.activeSceneChanged -= ClearNotifications;
+            if (mission)
+            {
+                LocalPlayer = null;
+            }
+            else
+            {
+                LocalPlayer = FindObjectOfType<PlayerShip>();
+            }
+        };
     }
 }

@@ -80,8 +80,6 @@ public class FollowCamera : MonoBehaviour
 	{
         Camera = GetComponent<Camera>();
 
-        DontDestroyOnLoad(gameObject);
-
 		currentSpeedOffset = Vector3.zero;
 
         invisibleLayer = LayerMask.NameToLayer("Invisible");

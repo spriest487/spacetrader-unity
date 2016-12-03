@@ -91,8 +91,6 @@ public class WorldMap : MonoBehaviour
     
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-
         areasRoot.gameObject.SetActive(true);
 
         areas = GetComponentsInChildren<WorldMapArea>().ToList();

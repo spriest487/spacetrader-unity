@@ -62,6 +62,15 @@ public class MainMenu : MonoBehaviour
             Destroy(PlayerShip.LocalPlayer.gameObject);
         }
 
+        if (MissionManager.Instance.Mission)
+        {
+            MissionManager.Instance.CancelMission();
+        }
+        else
+        {
+            var worldScene = SpaceTraderConfig.WorldMap.GetCurrentArea();
+        }
+
         yield return SceneManager.LoadSceneAsync(menuScene);
         yield return new WaitForEndOfFrame();
 

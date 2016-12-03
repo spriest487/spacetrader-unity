@@ -312,8 +312,6 @@ public class PlayerShip : MonoBehaviour
 	{
 		ship = GetComponent<Ship>();
         moorable = GetComponent<Moorable>();
-
-        DontDestroyOnLoad(gameObject);
 	}
 
     void OnDestroy()

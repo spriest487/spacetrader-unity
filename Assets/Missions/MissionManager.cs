@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,13 +18,23 @@ public class MissionManager : MonoBehaviour
 
     private Scene? missionScene;
     
-    public ActiveMission Mission { get { return mission; } }
+    public ActiveMission Mission
+    {
+        get { return mission; }
+        private set
+        {
+            mission = value;
+            OnMissionChanged.Invoke(value);
+        }
+    }
+
     public MissionPhase Phase { get { return phase; } }
+
+    public event Action<ActiveMission> OnMissionChanged;
                 
     private void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += SceneChanged;
 
         phase = MissionPhase.Prep;
@@ -41,15 +52,17 @@ public class MissionManager : MonoBehaviour
 
         /* if loading into a new scene with no player, and it's a mission scene,
          start that mission */
-        foreach (var missionDef in SpaceTraderConfig.MissionsConfiguration.Missions)
+        var missionForScene = SpaceTraderConfig.MissionsConfiguration.MissionForScene(newScene);
+        if (missionForScene)
         {
-            if (missionDef.SceneName == newScene.name)
-            {
-                Debug.Assert(!missionScene.HasValue, "can't load two missions scenes at once");
+            Debug.Assert(!missionScene.HasValue, "can't load two missions scenes at once");
 
-                mission = ActiveMission.Create(missionDef);
-                missionScene = newScene;
-            }
+            missionScene = newScene;
+            Mission = ActiveMission.Create(missionForScene);
+        }
+        else if (mission)
+        {
+            CancelMission();
         }
     }
 
@@ -103,14 +116,14 @@ public class MissionManager : MonoBehaviour
         Debug.Assert(missionScene.HasValue, "must have a mission scene loaded");
         Debug.Assert(SceneManager.GetActiveScene().buildIndex == missionScene.Value.buildIndex, "active scene must be the mission scene");
 
-        mission = null;
+        Mission = null;
         var globalsScene = SceneManager.GetSceneByName("Globals");
         Debug.Assert(globalsScene.isLoaded, "globals scene must be loaded");
 
         SceneManager.SetActiveScene(globalsScene);
         yield return null;
 
-        yield return SceneManager.UnloadScene(missionScene.Value);
+        yield return SceneManager.UnloadSceneAsync(missionScene.Value);
     }
 
     public Coroutine CancelMission()
