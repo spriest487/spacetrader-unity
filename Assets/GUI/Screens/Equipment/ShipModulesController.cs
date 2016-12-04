@@ -1,14 +1,16 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using System.Collections.Generic;
 
 public class ShipModulesController : MonoBehaviour
 {
     private PooledList<ShipModuleController, HardpointModule> modules;
-    
+
     [SerializeField]
     private ShipModuleController moduleTemplate;
+
+    [SerializeField]
+    private Transform modulesRoot;
 
     [SerializeField]
     private int highlightedIndex = CargoHold.BadIndex;
@@ -26,7 +28,7 @@ public class ShipModulesController : MonoBehaviour
     {
         get { return highlightedIndex; }
         set
-        {            
+        {
             if (modules == null)
             {
                 Update();
@@ -58,14 +60,14 @@ public class ShipModulesController : MonoBehaviour
             return modules[highlightedIndex];
         }
     }
-        
+
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
 
         if (modules == null)
         {
-            modules = new PooledList<ShipModuleController, HardpointModule>(transform, moduleTemplate);
+            modules = new PooledList<ShipModuleController, HardpointModule>(modulesRoot, moduleTemplate);
         }
 
         if (!player)
@@ -73,8 +75,8 @@ public class ShipModulesController : MonoBehaviour
             modules.Clear();
             return;
         }
-                
-        modules.Refresh(player.Ship.ModuleLoadout, (i, module, slot) => 
+
+        modules.Refresh(player.Ship.ModuleLoadout, (i, module, slot) =>
             module.Assign(player.Ship, i, i == highlightedIndex));
     }
 

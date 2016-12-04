@@ -24,6 +24,12 @@ public class LoadGameMenu : MonoBehaviour
     private Image selectedPortrait;
 
     [SerializeField]
+    private Text selectedMoney;
+
+    [SerializeField]
+    private Text selectedLocation;
+
+    [SerializeField]
     private SaveFileEntry entryPrefab;
 
     [SerializeField]
@@ -38,16 +44,13 @@ public class LoadGameMenu : MonoBehaviour
 
     private SaveFileEntry selectedEntry;
 
-    private void Start()
+    private void Awake()
     {
         guiController = GetComponentInParent<GUIController>();
     }
-    
+
     private void OnEnable()
     {
-        Debug.Assert(fileList);
-        Debug.Assert(entryPrefab);
-        
         Refresh();
     }
 
@@ -76,7 +79,7 @@ public class LoadGameMenu : MonoBehaviour
             entry.isOn = entry == selectedEntry;
         }
     }
-    
+
     public void Load()
     {
         if (selectedEntry == null)
@@ -101,7 +104,7 @@ public class LoadGameMenu : MonoBehaviour
         }
 
         guiController.DismissLoadingOverlay();
-        guiController.SwitchTo(ScreenID.None);
+        yield return guiController.SwitchTo(ScreenID.None);
     }
 
     public void Delete()
@@ -119,13 +122,18 @@ public class LoadGameMenu : MonoBehaviour
     {
         selectedEntry = entry;
 
-        if (entry != null)
+        if (entry)
         {
-            selectedPortrait.sprite = entry.SaveEntry.Header.GetPortraitSprite();
+            var header = entry.SaveEntry.Header;
+
+            selectedPortrait.sprite = header.GetPortraitSprite();
             if (!selectedPortrait.sprite)
             {
                 selectedPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
             }
+
+            selectedLocation.text = header.Location;
+            selectedMoney.text = Market.FormatCurrency(header.Money);
         }
 
         bool hasEntry = entry;

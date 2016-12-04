@@ -19,19 +19,24 @@ public class NewGameMenu : MonoBehaviour
     private Image portrait;
 
     [SerializeField]
+    private List<CareerOptionButton> careers;
+
+    [SerializeField]
     private InputField nameInput;
+
+    [Header("Selected Career")]
 
     [SerializeField]
     private Text careerDescription;
 
     [SerializeField]
     private Text shipDescription;
-    
-    [SerializeField]
-    private CareerOptionButton selectedCareer;
 
     [SerializeField]
-    private List<CareerOptionButton> careers;
+    private Text equipmentDescription;
+
+    [SerializeField]
+    private CareerOptionButton selectedCareer;
 
     [SerializeField]
     private Text pilotSkillLabel;
@@ -93,6 +98,15 @@ public class NewGameMenu : MonoBehaviour
         careerDescription.text = selectedCareer.Description;
         shipDescription.text = selectedCareer.ShipType.name;
 
+        var cargo = selectedCareer.Loadout.CargoItems.ToList();
+
+        equipmentDescription.text = string.Join("\n", selectedCareer.Loadout
+            .FrontModules
+            .Select(m => m.name)
+            .Concat(selectedCareer.Loadout.CargoItems
+                .Select(i => i.name))
+            .ToArray());
+
         careers.ForEach(c => c.SetHighlight(c == selectedCareer));
 
         pilotSkillLabel.text = selectedCareer.PilotSkill.ToString();
@@ -110,9 +124,11 @@ public class NewGameMenu : MonoBehaviour
     {
         yield return guiController.ShowLoadingOverlay();
 
-        var loadScene = SceneManager.LoadSceneAsync(newGameScene);
-        yield return loadScene;
-        
+        var world = SpaceTraderConfig.WorldMap;
+        var area = world.GetArea(newGameScene);
+
+        yield return SpaceTraderConfig.WorldMap.LoadArea(area);
+
         var ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
         var player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
         player.AddMoney(1000);

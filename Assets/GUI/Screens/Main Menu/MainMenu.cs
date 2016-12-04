@@ -11,9 +11,6 @@ public class MainMenu : MonoBehaviour
     private Transform headerImage;
 
     [SerializeField]
-    private string menuScene;
-
-    [SerializeField]
     private Transform[] activeWhenPlayerExists;
 
     [SerializeField]
@@ -21,7 +18,7 @@ public class MainMenu : MonoBehaviour
 
     private GUIController guiController;
     private GUIScreen guiScreen;
-    
+
     private void OnEnable()
     {
         guiController = GetComponentInParent<GUIController>();
@@ -32,7 +29,7 @@ public class MainMenu : MonoBehaviour
         guiScreen.ShowHeader = inGame;
         headerImage.gameObject.SetActive(!inGame);
     }
-    
+
     public void NewGame()
     {
         guiController.SwitchTo(ScreenID.NewGame);
@@ -64,15 +61,12 @@ public class MainMenu : MonoBehaviour
 
         if (MissionManager.Instance.Mission)
         {
-            MissionManager.Instance.CancelMission();
+            yield return MissionManager.Instance.CancelMission();
         }
         else
         {
-            var worldScene = SpaceTraderConfig.WorldMap.GetCurrentArea();
+            yield return SpaceTraderConfig.WorldMap.LoadArea(null);
         }
-
-        yield return SceneManager.LoadSceneAsync(menuScene);
-        yield return new WaitForEndOfFrame();
 
         guiController.DismissLoadingOverlay();
         guiController.SwitchTo(ScreenID.None);
@@ -94,7 +88,7 @@ public class MainMenu : MonoBehaviour
     {
         StartCoroutine(SaveGameRoutine());
     }
-    
+
     public void Quit()
     {
         Application.Quit();

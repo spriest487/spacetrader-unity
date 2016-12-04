@@ -3,20 +3,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SavedGames;
+using System.Globalization;
 
 public class SaveFileEntry : Toggle {
 
     [SerializeField]
     private Text entryText;
-    
+
     private LoadGameMenu loadGameMenu;
-        
+
     public SavesFolder.Entry SaveEntry { get; private set; }
 
     protected override void Start()
     {
-        Debug.Assert(entryText);        
-        
+        Debug.Assert(entryText);
+
         base.Start();
     }
 
@@ -35,12 +36,14 @@ public class SaveFileEntry : Toggle {
         }
         else
         {
-            entryText.text = string.Format("{0} - {1}", save.Header.CharacterName, save.Header.TimeStamp);
+            var time = save.Header.TimeStamp.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
+
+            entryText.text = string.Format("{0} - {1}", save.Header.CharacterName, time);
         }
     }
 
     public void SelectInMenu()
     {
         loadGameMenu.SelectEntry(this);
-    }    
+    }
 }

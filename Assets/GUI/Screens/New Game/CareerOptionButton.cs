@@ -10,7 +10,10 @@ public class CareerOptionButton : MonoBehaviour
 {
     [SerializeField]
     private ShipType shipType;
-    
+
+    [SerializeField]
+    private ModulePreset loadout;
+
     [SerializeField]
     private string description;
 
@@ -26,6 +29,8 @@ public class CareerOptionButton : MonoBehaviour
     private int mechSkill;
 
     public ShipType ShipType { get { return shipType; } }
+    public ModulePreset Loadout { get { return loadout; } }
+
     public string Description { get { return description; } }
     public int PilotSkill { get { return pilotSkill; } }
     public int WeaponsSkill { get { return weaponsSkill; } }
