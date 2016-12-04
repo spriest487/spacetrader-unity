@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.VR;
 
 public class GUIController : MonoBehaviour
 {
@@ -26,9 +27,6 @@ public class GUIController : MonoBehaviour
             get { return progress; }
         }
     }
-
-    private static readonly int StatusBarParamName = Animator.StringToHash("StatusBar");
-    private static readonly int HeaderBarParamName = Animator.StringToHash("HeaderBar");
 
     public static GUIController Current { get; private set; }
 
@@ -56,6 +54,9 @@ public class GUIController : MonoBehaviour
 
     [SerializeField]
     private GUIElement statusBar;
+
+    [SerializeField]
+    private FollowCamera vrCamera;
 
     public bool HasTransition
     {
@@ -121,6 +122,8 @@ public class GUIController : MonoBehaviour
 
     private void OnEnable()
     {
+        SetupVRMode();
+
         Debug.Assert(cutsceneOverlay);
         Debug.Assert(!Current || Current == this);
 
@@ -171,8 +174,41 @@ public class GUIController : MonoBehaviour
         return false;
     }
 
+    private void SetupVRMode()
+    {
+        const float VR_TARGET_W = 1280f;
+        const float VR_TARGET_H = 1024f;
+        const float VR_SIZE_W = .30f;
+        const float VR_SIZE_H = VR_SIZE_W * (VR_TARGET_H / VR_TARGET_W);
+
+        var canvas = GetComponent<Canvas>();
+
+        if (!VRSettings.enabled)
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.transform.SetParent(null, false);
+        }
+        else
+        {
+            canvas.renderMode = RenderMode.WorldSpace;
+
+            var canvasXform = canvas.GetComponent<RectTransform>();
+            canvasXform.SetParent(vrCamera.WorldSpaceGUIAnchor);
+
+            canvasXform.sizeDelta = new Vector2(VR_TARGET_W, VR_TARGET_H);
+            canvasXform.localScale = new Vector3(VR_SIZE_W / VR_TARGET_W, VR_SIZE_H / VR_TARGET_H, 1);
+            canvasXform.localPosition = Vector3.zero;
+        }
+    }
+
     private void Update()
     {
+        var canvas = GetComponent<Canvas>();
+        if (canvas.worldCamera != vrCamera.Camera)
+        {
+            canvas.worldCamera = vrCamera.Camera;
+        }
+
         var defaultScreen = DefaultScreen();
 
         if (Input.GetButtonDown("Cancel") && ActiveScreen != defaultScreen)

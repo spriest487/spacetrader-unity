@@ -239,8 +239,8 @@ public class PlayerShip : MonoBehaviour
         switch (message.MessageType)
         {
             case RadioMessageType.Greeting:
-                var recipient = (Ship.Target && Ship.Target == message.SourceShip.Targetable) ?
-                    Ship.Target.name : name;
+                // var recipient = (Ship.Target && Ship.Target == message.SourceShip.Targetable) ?
+                //     Ship.Target.name : name;
                 break;
 
             case RadioMessageType.AcknowledgeOrder:

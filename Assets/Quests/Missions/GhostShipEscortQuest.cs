@@ -38,8 +38,8 @@ public class GhostShipEscortQuest : Quest
 
     public override void OnAccepted()
     {
-        var ship = FindObjectOfType<GhostShipAI>();
-        Debug.Assert(ship && ship.Goal, "must be a Ghost Ship AI in the scene with a valid goal");
+        ghostShip = FindObjectOfType<GhostShipAI>();
+        Debug.Assert(ghostShip && ghostShip.Goal, "must be a Ghost Ship AI in the scene with a valid goal");
     }
 
     public override void NotifyDeath(Ship ship, Ship killer)

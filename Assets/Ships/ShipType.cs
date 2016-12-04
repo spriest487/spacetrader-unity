@@ -12,7 +12,7 @@ public class ShipType : ScriptableObject
     private Transform prefab;
 
     [SerializeField]
-    private Transform cockpitPrefab;
+    private CockpitView cockpitPrefab;
 
     [SerializeField]
     private ScalableParticle explosionEffect;
@@ -60,8 +60,8 @@ public class ShipType : ScriptableObject
         return ship;
     }
 
-    public Transform CreateCockpit()
+    public CockpitView CreateCockpit(FollowCamera playerCam)
     {
-        return Instantiate(cockpitPrefab, Vector3.zero, Quaternion.identity).transform;
+        return CockpitView.Create(cockpitPrefab, playerCam);
     }
 }

@@ -42,7 +42,7 @@ public class CargoHoldList : MonoBehaviour
     {
         get
         {
-            Debug.Assert(currentItems != null);            
+            Debug.Assert(currentItems != null);
             return currentItems[index];
         }
     }
@@ -91,7 +91,7 @@ public class CargoHoldList : MonoBehaviour
             }
         }
     }
-    
+
     private void Update()
     {
         Refresh();
@@ -104,7 +104,7 @@ public class CargoHoldList : MonoBehaviour
         {
             currentItems = new PooledList<CargoHoldListItem, ItemType>(itemsHolder, listItem);
         }
-        
+
         if (cargoHold)
         {
             var items = CargoHold.Items;

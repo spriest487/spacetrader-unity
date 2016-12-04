@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class ShipModulesDropTarget : MonoBehaviour
 {
-    private EquipmentScreen equipmentScreen;
     private ShipModulesController modules;
 
     [SerializeField]
     private ShipModuleController module;
 
-    private void Start()
+    private void Awake()
     {
-        equipmentScreen = GetComponentInParent<EquipmentScreen>();
         modules = GetComponentInParent<ShipModulesController>();
     }
-    
+
     private void OnDropCargoItem(CargoHoldListItem droppedItem)
     {
         var player = PlayerShip.LocalPlayer;
@@ -32,7 +30,7 @@ public class ShipModulesDropTarget : MonoBehaviour
                 {
                     //swap to cargo
                     var currentItem = loadout.GetSlot(targetSlot).ModuleType;
-                    
+
                     droppedItem.CargoHold[droppedItem.ItemIndex] = currentItem;
                     loadout.RemoveAt(targetSlot);
                 }
@@ -40,7 +38,7 @@ public class ShipModulesDropTarget : MonoBehaviour
                 {
                     droppedItem.CargoHold[droppedItem.ItemIndex] = null;
                 }
-                
+
                 loadout.Equip(targetSlot, droppedModuleType);
 
                 modules[targetSlot].OnClickModule();

@@ -11,6 +11,9 @@ public class BackgroundCamera : MonoBehaviour
     [SerializeField]
     private FollowCamera matchCamera;
 
+    [SerializeField]
+    private Transform hmdOffset;
+
     void Awake()
     {
         Camera = GetComponentInChildren<Camera>();
@@ -23,20 +26,21 @@ public class BackgroundCamera : MonoBehaviour
 
     void OnEnable()
     {
-        Camera.onPreRender += MatchOnPreRender;
-
         Debug.Assert(!Current || Current == this);
         Current = this;
 
         SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
+        matchCamera.OnHMDReset += OnHMDReset;
+        Camera.onPreRender += MatchOnPreRender;
     }
 
     void OnDisable()
     {
-        Camera.onPreRender -= MatchOnPreRender;
-
         Debug.Assert(Current == this);
         Current = null;
+
+        matchCamera.OnHMDReset -= OnHMDReset;
+        Camera.onPreRender -= MatchOnPreRender;
 
         if (SpaceTraderConfig.Instance && SpaceTraderConfig.WorldMap)
         {
@@ -44,9 +48,17 @@ public class BackgroundCamera : MonoBehaviour
         }
     }
 
+    private void OnHMDReset(Vector3 position, Quaternion rotation)
+    {
+        hmdOffset.localRotation = rotation;
+    }
+
     void MatchOnPreRender(Camera renderingCam)
     {
-        transform.rotation = matchCamera.transform.rotation;
-        Camera.fieldOfView = matchCamera.Camera.fieldOfView;
+        if (renderingCam == Camera)
+        {
+            transform.rotation = matchCamera.transform.rotation;
+            Camera.fieldOfView = matchCamera.Camera.fieldOfView;
+        }
     }
 }

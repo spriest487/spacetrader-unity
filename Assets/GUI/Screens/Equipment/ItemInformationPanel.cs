@@ -32,18 +32,11 @@ public class ItemInformationPanel : MonoBehaviour
 
     private PooledList<ShipStatsEntry, KeyValuePair<string, string>> statsLines;
 
-    private ScrollRect scrollRect;
-    
     public void SetItem(ItemType type, bool ownedByPlayer)
     {
         itemType = type;
         itemOwnedByPlayer = ownedByPlayer;
         Refresh();
-    }
-
-    private void Start()
-    {
-        scrollRect = GetComponent<ScrollRect>();
     }
 
     private void Refresh()
@@ -58,11 +51,11 @@ public class ItemInformationPanel : MonoBehaviour
             nameLabel.text = itemType.DisplayName;
             icon.sprite = itemType.Icon;
             icon.gameObject.SetActive(true);
-        
+
             descriptionLabel.text = itemType.Description;
 
             var stats = new List<KeyValuePair<string, string>>();
-            
+
             var player = SpaceTraderConfig.LocalPlayer;
             var station = player.Ship.Moorable.DockedAtStation;
             var market = SpaceTraderConfig.Market;
@@ -78,7 +71,7 @@ public class ItemInformationPanel : MonoBehaviour
                 if (itemOwnedByPlayer)
                 {
                     price = market.GetSellingItemPrice(itemType, station);
-                    priceType= "Sells For"; 
+                    priceType= "Sells For";
                 }
                 else
                 {
@@ -102,7 +95,7 @@ public class ItemInformationPanel : MonoBehaviour
 
             statsLines.Clear();
         }
-        
+
         statsRoot.Elements = statsLines.Select(l => (RectTransform) l.transform);
     }
 

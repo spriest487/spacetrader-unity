@@ -98,8 +98,6 @@ public class NewGameMenu : MonoBehaviour
         careerDescription.text = selectedCareer.Description;
         shipDescription.text = selectedCareer.ShipType.name;
 
-        var cargo = selectedCareer.Loadout.CargoItems.ToList();
-
         equipmentDescription.text = string.Join("\n", selectedCareer.Loadout
             .FrontModules
             .Select(m => m.name)

@@ -2,8 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.VR;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class FollowCamera : MonoBehaviour
 {
@@ -27,7 +29,7 @@ public class FollowCamera : MonoBehaviour
     [Header("Cockpit")]
 
     [SerializeField]
-    private Transform cockpitCam;
+    private CockpitView cockpitCam;
 
     [SerializeField]
     private bool cockpitMode;
@@ -74,6 +76,20 @@ public class FollowCamera : MonoBehaviour
 
     private int invisibleLayer;
     private int defaultLayer;
+
+    [Header("VR")]
+    [SerializeField]
+    private Transform guiAnchor;
+
+    [SerializeField]
+    private Transform hmdPositionOffset;
+
+    [SerializeField]
+    private Transform hmdRotationOffset;
+
+    public Transform WorldSpaceGUIAnchor { get { return guiAnchor; } }
+
+    public event Action<Vector3, Quaternion> OnHMDReset;
 
 	void Awake()
 	{
@@ -338,8 +354,25 @@ public class FollowCamera : MonoBehaviour
         dragInput = null;
     }
 
+    private void ResetHMD()
+    {
+        var position = -Camera.transform.localPosition;
+        var rotation = Quaternion.Inverse(Camera.transform.localRotation);
+
+        hmdPositionOffset.localPosition = position;
+        hmdRotationOffset.localRotation = rotation;
+
+        OnHMDReset.Invoke(position, rotation);
+    }
+
     private void Update()
     {
+        if (VRSettings.enabled && Input.GetButtonDown("Reset Orientation"))
+        {
+            ResetHMD();
+            PlayerNotifications.GameMessage("Reset HMD orientation");
+        }
+
         if (Input.GetButton("look") && dragInput.HasValue)
         {
             float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
@@ -390,7 +423,7 @@ public class FollowCamera : MonoBehaviour
         /* if we don't have a cockpit, create a new one of the right type */
         if (!cockpitCam && player && player.Ship.ShipType.HasCockpit)
         {
-            cockpitCam = player.Ship.ShipType.CreateCockpit();
+            cockpitCam = player.Ship.ShipType.CreateCockpit(this);
             cockpitCam.transform.SetParent(transform, false);
             cockpitShipType = player.Ship.ShipType;
         }
