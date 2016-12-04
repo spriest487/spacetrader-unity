@@ -5,9 +5,6 @@ using System.Collections;
 public class SpaceDust : MonoBehaviour
 {
     [SerializeField]
-    private int count = 100;
-
-    [SerializeField]
     private int radius = 10;
 
     [SerializeField]
@@ -15,7 +12,7 @@ public class SpaceDust : MonoBehaviour
 
     [SerializeField]
     private float size = 0.05f;
-	
+
 	private ParticleSystem.Particle[] particles;
 
     private new ParticleSystem particleSystem;
@@ -24,12 +21,12 @@ public class SpaceDust : MonoBehaviour
     {
         particleSystem = GetComponent<ParticleSystem>();
     }
-	
+
 	private ParticleSystem.Particle NewPoint(Vector3 center)
 	{
 		var result = new ParticleSystem.Particle();
 		result.position = Random.insideUnitSphere * radius;
-	
+
 		var colorVal = 0.8f + 0.2f * Random.value;
 		result.startColor = new Color(colorVal, colorVal, colorVal);
 		result.startSize = size;
@@ -43,6 +40,8 @@ public class SpaceDust : MonoBehaviour
 	{
 		Vector3 center = transform.position;
 
+        var count = particleSystem.main.maxParticles;
+
 		if (particles == null)
 		{
 			particles = new ParticleSystem.Particle[count];
@@ -50,7 +49,7 @@ public class SpaceDust : MonoBehaviour
 			{
 				particles[index] = NewPoint(center);
 			}
-		}		
+		}
 
 		var maxSqrDist = Mathf.Pow(radius, 2);
 
@@ -78,7 +77,6 @@ public class SpaceDust : MonoBehaviour
 				fadeAmt);
 		}
 
-        particleSystem.maxParticles = particles.Length;
         particleSystem.SetParticles(particles, particles.Length);
 	}
 }

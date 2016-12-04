@@ -16,9 +16,14 @@ namespace SavedGames
         public string CharacterName { get; private set; }
         public int CharacterPortrait { get; private set; }
 
+        public string Location {get; private set; }
+        public int Money { get; private set; }
+
         public bool IsCompatible { get { return Version == CURRENT_VERSION; } }
-        
-        public SaveHeader(CharacterInfo playerCharacter)
+
+        public SaveHeader(CharacterInfo playerCharacter,
+            int playerMoney,
+            string playerLocation)
         {
             Version = CURRENT_VERSION;
             TimeStamp = DateTime.UtcNow;
@@ -27,11 +32,15 @@ namespace SavedGames
             {
                 CharacterName = playerCharacter.Name;
                 CharacterPortrait = playerCharacter.PortraitIndex;
+                Money = playerMoney;
+                Location = playerLocation;
             }
             else
             {
                 CharacterName = "Unnamed";
                 CharacterPortrait = -1;
+                Money = 0;
+                Location = null;
             }
         }
 
@@ -77,6 +86,27 @@ namespace SavedGames
                 throw new IOException("missing header field mandatory for this version");
             }
             CharacterPortrait = characterPortrait;
+
+            string location;
+            if (fields.TryGetValue("Location", out location))
+            {
+                Location = location;
+            }
+            else
+            {
+                Location = "?";
+            }
+
+            string money;
+            int moneyAmount;
+            if (fields.TryGetValue("Money", out money) && int.TryParse(money, out moneyAmount))
+            {
+                Money = moneyAmount;
+            }
+            else
+            {
+                Money = 0;
+            }
         }
 
         public Dictionary<string, string> ToDictionary()
@@ -86,10 +116,12 @@ namespace SavedGames
                 { "TimeStamp", TimeStamp.ToBinary().ToString() },
                 { "Version", Version.ToString() },
                 { "CharacterName", CharacterName },
-                { "CharacterPortrait", CharacterPortrait.ToString() }
+                { "CharacterPortrait", CharacterPortrait.ToString() },
+                { "Money", Money.ToString() },
+                { "Location", Location }
             };
         }
-        
+
         public Sprite GetPortraitSprite()
         {
             var portraits = SpaceTraderConfig.CrewConfiguration.Portraits;

@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System;
 
@@ -25,7 +26,7 @@ public class WorldMap : MonoBehaviour
     private List<WorldMapMarker> markers;
 
     public event Action<bool> OnVisibilityChanged;
-        
+
     public AnimationCurve JumpEffectCurve
     {
         get { return jumpEffectCurve; }
@@ -84,11 +85,25 @@ public class WorldMap : MonoBehaviour
             .First();
     }
 
+    public WorldMapArea GetArea(string areaName)
+    {
+        return areas.Where(a => a.name == areaName).FirstOrDefault();
+    }
+
+    public bool IsWorldSceneActive
+    {
+        get
+        {
+            var currentScene = SceneManager.GetActiveScene();
+            return areas.Any(a => a.name == currentScene.name);
+        }
+    }
+
     public IEnumerable<WorldMapMarker> Markers
     {
         get { return markers; }
     }
-    
+
     private void Awake()
     {
         areasRoot.gameObject.SetActive(true);
@@ -99,14 +114,14 @@ public class WorldMap : MonoBehaviour
         //add default markers for those areas without preset ones
         var areasWithoutMarkers = areas.Except(markers.Select(m => m.Area))
             .ToList();
-        markers.AddRange(areasWithoutMarkers.Select(a => 
+        markers.AddRange(areasWithoutMarkers.Select(a =>
             WorldMapMarker.Create(markerPrefab, a)));
-                
+
         Camera.enabled = false;
 
         SceneManager.activeSceneChanged += (s1, s2) => CenterOnCurrentArea();
     }
-    
+
     private void CenterOnCurrentArea()
     {
         var currentArea = GetCurrentArea();
@@ -123,6 +138,33 @@ public class WorldMap : MonoBehaviour
         else
         {
             areasRoot.transform.position = Vector3.zero;
+        }
+    }
+
+    public Coroutine LoadArea(WorldMapArea area)
+    {
+        return StartCoroutine(LoadAreaRoutine(area));
+    }
+
+    private IEnumerator LoadAreaRoutine(WorldMapArea area)
+    {
+        Debug.Assert(!MissionManager.Instance.Mission, "can't switch world scenes while in a mission");
+
+        if (IsWorldSceneActive)
+        {
+            var currentArea = GetCurrentArea();
+
+            SceneManager.SetActiveScene(SpaceTraderConfig.GlobalScene);
+            yield return null;
+
+            yield return SceneManager.UnloadSceneAsync(currentArea.name);
+        }
+
+        if (area)
+        {
+            yield return SceneManager.LoadSceneAsync(area.name, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(area.name));
+            yield return null;
         }
     }
 }

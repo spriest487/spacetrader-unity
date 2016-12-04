@@ -11,7 +11,7 @@ public class ScreensListMenu : MonoBehaviour
 
     [SerializeField]
     private Transform missionButton;
-    
+
     private GUIScreen guiScreen;
 
     private void Awake()
@@ -47,6 +47,11 @@ public class ScreensListMenu : MonoBehaviour
     public void ShowQuests()
     {
         GUIController.Current.SwitchTo(ScreenID.Quests);
+    }
+
+    public void ShowMap()
+    {
+        GUIController.Current.SwitchTo(ScreenID.WorldMap);
     }
 
     void OnEnable()

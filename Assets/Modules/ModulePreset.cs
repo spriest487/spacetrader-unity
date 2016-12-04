@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Modules/Module Preset")]
 public class ModulePreset : ScriptableObject
@@ -12,14 +13,14 @@ public class ModulePreset : ScriptableObject
     [SerializeField]
     private List<CargoItemType> cargoItems;
 
-    public IEnumerable<ModuleItemType> FrontModules { get { return slots; } }
-    public IEnumerable<CargoItemType> CargoItems { get { return cargoItems; } }
+    public IEnumerable<ModuleItemType> FrontModules { get { return slots.Where(s => s); } }
+    public IEnumerable<CargoItemType> CargoItems { get { return cargoItems.Where(i => i); } }
 
     public void Apply(Ship ship)
     {
         var moduleLoadout = ship.ModuleLoadout;
         moduleLoadout.SlotCount = slots.Count;
-        
+
         for (int slot = 0; slot < slots.Count; ++slot)
         {
             var moduleType = slots[slot];

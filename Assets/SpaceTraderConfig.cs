@@ -15,6 +15,8 @@ public class SpaceTraderConfig : MonoBehaviour
     public static FleetManager FleetManager { get { return Instance? Instance.fleetManager : null; } }
     public static WorldMap WorldMap { get { return Instance.worldMap; } }
 
+    public static Scene GlobalScene { get { return SceneManager.GetSceneByBuildIndex(0); } }
+
     public static PlayerShip LocalPlayer
     {
         get { return Instance.localPlayer; }
@@ -23,8 +25,7 @@ public class SpaceTraderConfig : MonoBehaviour
             /* making a player the local player makes them global */
             if (value)
             {
-                var globals = SceneManager.GetSceneByBuildIndex(0);
-                SceneManager.MoveGameObjectToScene(value.gameObject, globals);
+                SceneManager.MoveGameObjectToScene(value.gameObject, GlobalScene);
             }
 
             Instance.localPlayer = value;
@@ -33,7 +34,7 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private QuestBoard questBoard;
-    
+
     [SerializeField]
     private CrewConfiguration crewConfig;
 
@@ -55,10 +56,13 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private WorldMap worldMap;
 
-    private void Awake()
+    private void OnEnable()
     {
         Instance = this;
+    }
 
+    private void Awake()
+    {
         //clone configs on startup so we don't modify the global assets
         questBoard = QuestBoard.Create(questBoard);
         crewConfig = CrewConfiguration.Create(crewConfig);
@@ -70,7 +74,7 @@ public class SpaceTraderConfig : MonoBehaviour
         Debug.Assert(worldMap);
 
         SceneManager.activeSceneChanged += (oldScene, newScene) =>
-        { 
+        {
             PlayerNotifications.Clear();
         };
 

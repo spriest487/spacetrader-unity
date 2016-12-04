@@ -13,19 +13,26 @@ public class ScalableParticle : MonoBehaviour
         public ParticleChild(ParticleSystem ps)
         {
             this.ps = ps;
-            initialStartSize = ps.startSize;
-            initialStartSpeed = ps.startSpeed;
+            initialStartSize = ps.main.startSize.constant;
+            initialStartSpeed = ps.main.startSpeed.constant;
         }
 
         public void ApplyScale(float scale)
         {
-            ps.startSize = initialStartSize * scale;
-            ps.startSpeed = initialStartSpeed * scale;
+            var main = ps.main;
+            var startSize = main.startSize;
+            startSize.constant = initialStartSize * scale;
+
+            var startSpeed = main.startSpeed;
+            startSpeed.constant = initialStartSpeed * scale;
+
+            main.startSize = startSize;
+            main.startSpeed = startSpeed;
         }
     }
 
     private ParticleChild[] ps;
-    
+
     [SerializeField]
     private float particleScale = 1;
 

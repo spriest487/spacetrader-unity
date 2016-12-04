@@ -36,17 +36,17 @@ public class PlayerShip : MonoBehaviour
     {
         get { return Ship? Ship.Moorable : null; }
     }
-    
+
     public int Money
     {
         get { return money; }
     }
-    
+
     public void AddMoney(int amount)
     {
         money += amount;
     }
-    
+
     void OnMoored()
     {
         if (LocalPlayer == this)
@@ -124,7 +124,7 @@ public class PlayerShip : MonoBehaviour
             var aimOrigin = hardpoint.transform.position;
 
             var aimPoint = cam.GetWorldAimPoint(aimOrigin);
-            
+
             if (aimPoint.HasValue)
             {
                 module.Aim = AutoaimSnapToPredictor(aimPoint.Value, moduleIndex);
@@ -185,7 +185,7 @@ public class PlayerShip : MonoBehaviour
 
             var pitch = Input.GetAxis("pitch");
             var yaw = Input.GetAxis("yaw");
-            
+
             var camera = FollowCamera.Current;
             if (camera)
             {
@@ -204,8 +204,8 @@ public class PlayerShip : MonoBehaviour
             }
 
             ship.ResetControls(
-                pitch: pitch, 
-                yaw: yaw, 
+                pitch: pitch,
+                yaw: yaw,
                 roll: -Input.GetAxis("roll"),
                 thrust: Input.GetAxis("Vertical"),
                 strafe: Input.GetAxis("Horizontal"),
@@ -282,13 +282,13 @@ public class PlayerShip : MonoBehaviour
     {
         yield return GUIController.Current.ShowLoadingOverlay();
 
-        yield return SceneManager.LoadSceneAsync(area.name);
+        yield return SpaceTraderConfig.WorldMap.LoadArea(area);
 
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
 
         GUIController.Current.DismissLoadingOverlay();
-        GUIController.Current.SwitchTo(ScreenID.None);
+        yield return GUIController.Current.SwitchTo(ScreenID.None);
     }
 
     private void OnCompletedJump()

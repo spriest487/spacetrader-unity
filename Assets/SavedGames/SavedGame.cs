@@ -14,18 +14,18 @@ namespace SavedGames
         private int level;
 
         private List<CharacterInfo> characters;
-        
+
         private List<ShipInfo> ships;
         private List<FleetInfo> fleets;
 
         private ShipInfo playerShip;
-        
+
         private int playerMoney;
-        
+
         public static SavedGame CaptureFromCurrentState()
         {
             var result = new SavedGame();
-            
+
             result.level = SceneManager.GetActiveScene().buildIndex;
 
             var charactersByInstanceId = new Dictionary<int, CharacterInfo>();
@@ -37,7 +37,7 @@ namespace SavedGames
             }
 
             result.characters = charactersByInstanceId.Values.ToList();
-            
+
             var sceneShips = UnityEngine.Object.FindObjectsOfType<Ship>();
 
             var shipsByInstanceId = new Dictionary<int, ShipInfo>();
@@ -61,28 +61,40 @@ namespace SavedGames
 
             result.fleets = allFleets.Select<Fleet, FleetInfo>(f => new FleetInfo(f, shipsByInstanceId)).ToList();
             result.ships = shipsByInstanceId.Values.ToList();
-            
+
             var player = PlayerShip.LocalPlayer;
             if (player)
             {
                 result.playerMoney = player.Money;
                 result.playerShip = shipsByInstanceId[player.Ship.GetInstanceID()];
             }
-            
+
             return result;
         }
 
         public SaveHeader CreateHeader()
         {
             var pc = playerShip.Captain;
-            return new SaveHeader(pc);
+            return new SaveHeader(pc,
+                playerMoney,
+                SceneManager.GetSceneByBuildIndex(level).name);
         }
 
         private class RestoreOperation : LoadValueOperation<bool>
         {
             IEnumerator Restore(SavedGame save)
             {
-                yield return SceneManager.LoadSceneAsync(save.level);
+                if (MissionManager.Instance.Mission)
+                {
+                    yield return MissionManager.Instance.CancelMission();
+                }
+                else if (SpaceTraderConfig.WorldMap.IsWorldSceneActive)
+                {
+                    yield return SpaceTraderConfig.WorldMap.LoadArea(null);
+                }
+
+                yield return SceneManager.LoadSceneAsync(save.level, LoadSceneMode.Additive);
+                SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(save.level));
 
                 //TODO: to prevent dupes, simply delete all pre-existing ships!
                 var oldShips = UnityEngine.Object.FindObjectsOfType<Ship>();
