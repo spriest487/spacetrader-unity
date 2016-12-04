@@ -47,7 +47,7 @@ public class QuestListItem : MonoBehaviour
         var myQuest = SpaceTraderConfig.LocalPlayer == SpaceTraderConfig.QuestBoard.OwnerOf(quest);
 
         completeButton.gameObject.SetActive(docked && myQuest && quest.Status == QuestStatus.Completed);
-        acceptButton.gameObject.SetActive(docked && !myQuest && quest.Status != QuestStatus.NotAccepted);
+        acceptButton.gameObject.SetActive(docked && !myQuest && quest.Status == QuestStatus.NotAccepted);
         abandonButton.gameObject.SetActive(myQuest);
     }
 

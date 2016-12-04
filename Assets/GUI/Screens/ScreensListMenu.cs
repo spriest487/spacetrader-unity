@@ -70,6 +70,7 @@ public class ScreensListMenu : MonoBehaviour
         }
 
         undockButton.gameObject.SetActive(!!station);
+        GetComponent<GUIScreen>().IsBackEnabled = !station;
 
         var mission = MissionManager.Instance? MissionManager.Instance.Mission : null;
         missionButton.gameObject.SetActive(mission != null);

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; }
-    
+
     [SerializeField]
     private ActiveMission mission;
 
@@ -17,7 +17,7 @@ public class MissionManager : MonoBehaviour
     private MissionPhase phase;
 
     private Scene? missionScene;
-    
+
     public ActiveMission Mission
     {
         get { return mission; }
@@ -31,10 +31,14 @@ public class MissionManager : MonoBehaviour
     public MissionPhase Phase { get { return phase; } }
 
     public event Action<ActiveMission> OnMissionChanged;
-                
-    private void Awake()
+
+    private void OnEnable()
     {
         Instance = this;
+    }
+
+    private void Awake()
+    {
         SceneManager.activeSceneChanged += SceneChanged;
 
         phase = MissionPhase.Prep;
@@ -73,11 +77,11 @@ public class MissionManager : MonoBehaviour
             missionScene = null;
         }
     }
-    
+
     public void BeginMission()
     {
         phase = MissionPhase.Active;
-        
+
         foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
         {
             listener.SendMessage("OnBeginMission", SendMessageOptions.DontRequireReceiver);
@@ -109,7 +113,7 @@ public class MissionManager : MonoBehaviour
             }
         }
     }
-    
+
     private IEnumerator CancelMissionRoutine()
     {
         Debug.Assert(phase == MissionPhase.Prep, "can't cancel mission setup if it's already started");

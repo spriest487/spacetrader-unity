@@ -1,26 +1,42 @@
 ﻿#pragma warning disable 0649
 
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class QuestList : MonoBehaviour
 {
-    [Header("Available Quests")]
+    [Serializable]
+    public struct QuestGroup
+    {
+        public Transform ItemsRoot;
+        public Transform EmptyMessage;
+        public Text Header;
+
+        public void Refresh(PooledList<QuestListItem, Quest> itemsList)
+        {
+            EmptyMessage.gameObject.SetActive(itemsList.Count == 0);
+
+            //status of quests can change independent of which quests are displayed
+            foreach (var item in itemsList)
+            {
+                item.UpdateStatus();
+            }
+        }
+
+        public void SetActive(bool active)
+        {
+            ItemsRoot.gameObject.SetActive(active);
+            Header.gameObject.SetActive(active);
+        }
+    }
 
     [SerializeField]
-    private Transform itemsRoot;
+    private QuestGroup availableQuests;
 
     [SerializeField]
-    private Text availableHeader;
-
-    [Header("Accepted Quests")]
-
-    [SerializeField]
-    private Text acceptedHeader;
-
-    [SerializeField]
-    private Transform acceptedRoot;
+    private QuestGroup acceptedQuests;
 
     [Header("Prefabs")]
 
@@ -29,8 +45,8 @@ public class QuestList : MonoBehaviour
 
     private PooledList<QuestListItem, Quest> questList;
     private PooledList<QuestListItem, Quest> acceptedQuestList;
-    
-    public void OnScreenActive()
+
+    public void OnEnable()
     {
         Refresh();
     }
@@ -39,60 +55,45 @@ public class QuestList : MonoBehaviour
     {
         if (questList == null)
         {
-            questList = new PooledList<QuestListItem, Quest>(itemsRoot, itemPrefab);
+            questList = new PooledList<QuestListItem, Quest>(availableQuests.ItemsRoot, itemPrefab);
         }
 
         if (acceptedQuestList == null)
         {
-            acceptedQuestList = new PooledList<QuestListItem, Quest>(acceptedRoot, itemPrefab);
+            acceptedQuestList = new PooledList<QuestListItem, Quest>(acceptedQuests.ItemsRoot, itemPrefab);
         }
 
-        var station = SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation;
-        var myQuests = SpaceTraderConfig.QuestBoard.QuestsForPlayer(PlayerShip.LocalPlayer);
-        var availableQuests = SpaceTraderConfig.QuestBoard.QuestsAtStation(station)
-            .Except(myQuests);
+        var player = SpaceTraderConfig.LocalPlayer;
 
-        if (station)
+        if (player)
         {
-            availableHeader.gameObject.SetActive(true);
+            var station = player.Moorable.DockedAtStation;
+            var myQuests = SpaceTraderConfig.QuestBoard.QuestsForPlayer(player);
+            var questsNotAccepted = SpaceTraderConfig.QuestBoard.QuestsAtStation(station)
+                .Except(myQuests);
 
-            questList.Refresh(availableQuests, (index, listItem, quest) => 
-                listItem.Assign(quest));
-
-            if (questList.Count == 0)
+            availableQuests.SetActive(station);
+            if (station)
             {
-                availableHeader.text = "No jobs available at " + station.name;
-                itemsRoot.gameObject.SetActive(false);
+                questList.Refresh(questsNotAccepted, (index, listItem, quest) =>
+                    listItem.Assign(quest));
             }
             else
             {
-                availableHeader.text = "Jobs available at " + station.name;
-                itemsRoot.gameObject.SetActive(true);
+                questList.Clear();
             }
+
+            acceptedQuestList.Refresh(myQuests, (index, listItem, quest) =>
+                listItem.Assign(quest));
         }
         else
         {
             questList.Clear();
-            availableHeader.gameObject.SetActive(false);
-            itemsRoot.gameObject.SetActive(false);
+            acceptedQuestList.Clear();
         }
 
-        acceptedQuestList.Refresh(myQuests, (index, listItem, quest) =>
-            listItem.Assign(quest));
-        bool haveAcceptedQuests = acceptedQuestList.Count > 0;
-
-        acceptedHeader.gameObject.SetActive(haveAcceptedQuests);
-        acceptedRoot.gameObject.SetActive(haveAcceptedQuests);
-
-        //status of quests can change independent of which quests are displayed
-        foreach (var item in questList)
-        {
-            item.UpdateStatus();
-        }
-        foreach (var item in acceptedQuestList)
-        {
-            item.UpdateStatus();
-        }
+        availableQuests.Refresh(questList);
+        acceptedQuests.Refresh(acceptedQuestList);
     }
 
     private void OnQuestsUpdated()

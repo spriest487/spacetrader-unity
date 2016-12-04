@@ -12,14 +12,17 @@ public class GUIScreen : MonoBehaviour
     private bool showStatusBar;
 
     [SerializeField]
-    private bool showHeader;
+    private bool showHeader = true;
 
     [SerializeField]
     private string headerText;
 
     [SerializeField]
     private string shortcutButton;
-    
+
+    [SerializeField]
+    private bool isBackEnabled = true;
+
     public GUIElement Element { get; private set; }
 
     public ScreenID ID { get { return id; } }
@@ -43,11 +46,17 @@ public class GUIScreen : MonoBehaviour
         get { return headerText; }
         set { headerText = value; }
     }
-        
+
+    public bool IsBackEnabled
+    {
+        get { return isBackEnabled; }
+        set { isBackEnabled = value; }
+    }
+
     private void OnEnable()
     {
         Element = GetComponent<GUIElement>();
-        
+
         Element.OnTransitionedIn += TransitionedInHandler;
         Element.OnTransitionedOut += TransitionedOutHandler;
     }

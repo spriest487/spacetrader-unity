@@ -33,7 +33,7 @@ public class GUIController : MonoBehaviour
     public static GUIController Current { get; private set; }
 
     private List<GUIScreen> screens;
-    
+
     private GUIControllerTransition activeTransition;
     private LoadingGUITransition loadingTransition;
 
@@ -50,6 +50,9 @@ public class GUIController : MonoBehaviour
 
     [SerializeField]
     private Text headerLabel;
+
+    [SerializeField]
+    private Transform backButton;
 
     [SerializeField]
     private GUIElement statusBar;
@@ -73,7 +76,7 @@ public class GUIController : MonoBehaviour
     {
         get { return cutsceneOverlay; }
     }
-        
+
     private GUIScreen FindScreen(ScreenID screenId)
     {
         var screen = screens.Where(s => s.ID == screenId)
@@ -117,21 +120,21 @@ public class GUIController : MonoBehaviour
     }
 
     private void OnEnable()
-    {        
+    {
         Debug.Assert(cutsceneOverlay);
         Debug.Assert(!Current || Current == this);
 
         Current = this;
-        
+
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
 
         var activeScreen = FindActiveScreen();
-        if (activeScreen) 
+        if (activeScreen)
         {
             header.Activate(activeScreen.ShowHeader);
             statusBar.Activate(activeScreen.ShowStatusBar);
         }
-        
+
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
     }
@@ -203,7 +206,7 @@ public class GUIController : MonoBehaviour
 
             var screen = FindScreen(activeTransition.toScreen);
             screen.gameObject.SetActive(true);
-            
+
             header.Activate(screen.ShowHeader);
             statusBar.Activate(screen.ShowStatusBar);
         }
@@ -222,12 +225,13 @@ public class GUIController : MonoBehaviour
                 headerText = activeScreen.name.ToUpper();
             }
             headerLabel.text = headerText;
+            backButton.gameObject.SetActive(activeScreen.IsBackEnabled);
         }
     }
 
     public GUITransition SwitchTo(ScreenID screen)
     {
-        Debug.AssertFormat(activeTransition == null, 
+        Debug.AssertFormat(activeTransition == null,
             "there should not already be a transition in progress (already switching to {0})",
             (activeTransition != null)? activeTransition.toScreen : ScreenID.None);
 
@@ -236,7 +240,7 @@ public class GUIController : MonoBehaviour
             progress = GUITransitionProgress.Waiting,
             toScreen = screen
         };
-        
+
         var nextScreen = FindScreen(screen != ScreenID.None? screen : DefaultScreen());
 
         if (!nextScreen.ShowHeader)
@@ -253,7 +257,7 @@ public class GUIController : MonoBehaviour
         {
             activeScreen.Element.Dismiss();
         }
-        
+
         return activeTransition;
     }
 
