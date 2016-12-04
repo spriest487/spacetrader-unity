@@ -12,7 +12,7 @@ public class ShipType : ScriptableObject
     private Transform prefab;
 
     [SerializeField]
-    private Camera cockpitPrefab;
+    private Transform cockpitPrefab;
 
     [SerializeField]
     private ScalableParticle explosionEffect;
@@ -24,7 +24,7 @@ public class ShipType : ScriptableObject
 
     [SerializeField]
     private ShipStats stats = new ShipStats();
-    
+
     [SerializeField]
     private int cargoSize = 1;
 
@@ -36,7 +36,7 @@ public class ShipType : ScriptableObject
 
     [SerializeField]
     private List<Ability> abilities;
-    
+
     [SerializeField]
     private int xpReward;
 
@@ -56,12 +56,12 @@ public class ShipType : ScriptableObject
         obj.name = this.name;
 
         var ship = Ship.Create(obj.gameObject, this);
-        
+
         return ship;
     }
 
-    public Camera CreateCockpit()
+    public Transform CreateCockpit()
     {
-        return (Camera) Instantiate(cockpitPrefab, Vector3.zero, Quaternion.identity);
+        return Instantiate(cockpitPrefab, Vector3.zero, Quaternion.identity).transform;
     }
 }

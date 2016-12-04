@@ -2,7 +2,6 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(Camera))]
 public class BackgroundCamera : MonoBehaviour
 {
     public static BackgroundCamera Current { get; private set; }
@@ -14,7 +13,7 @@ public class BackgroundCamera : MonoBehaviour
 
     void Awake()
     {
-        Camera = GetComponent<Camera>();
+        Camera = GetComponentInChildren<Camera>();
     }
 
     void OnWorldMapVisibilityChanged(bool visible)
@@ -24,14 +23,18 @@ public class BackgroundCamera : MonoBehaviour
 
     void OnEnable()
     {
+        Camera.onPreRender += MatchOnPreRender;
+
         Debug.Assert(!Current || Current == this);
         Current = this;
-        
+
         SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
     }
 
     void OnDisable()
     {
+        Camera.onPreRender -= MatchOnPreRender;
+
         Debug.Assert(Current == this);
         Current = null;
 
@@ -41,11 +44,8 @@ public class BackgroundCamera : MonoBehaviour
         }
     }
 
-    void OnPreRender()
+    void MatchOnPreRender(Camera renderingCam)
     {
-        Debug.Assert(matchCamera, "main camera must exist");
-        Debug.Assert(matchCamera != Camera);
-
         transform.rotation = matchCamera.transform.rotation;
         Camera.fieldOfView = matchCamera.Camera.fieldOfView;
     }

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 public class FollowCamera : MonoBehaviour
 {
@@ -28,7 +27,7 @@ public class FollowCamera : MonoBehaviour
     [Header("Cockpit")]
 
     [SerializeField]
-    private Camera cockpitCam;
+    private Transform cockpitCam;
 
     [SerializeField]
     private bool cockpitMode;
@@ -36,7 +35,7 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     [HideInInspector]
     private ShipType cockpitShipType;
-    
+
     [Header("Positioning")]
     [SerializeField]
 	private Vector3 offset;
@@ -49,12 +48,12 @@ public class FollowCamera : MonoBehaviour
 
     [SerializeField]
     private float rotationOffset;
-    
+
     [SerializeField]
     private AnimationCurve dragInputCurve;
 
 	private Vector3 currentSpeedOffset;
-            
+
     private Vector2? dragInput;
 
     private float lookPitchTarget;
@@ -75,10 +74,10 @@ public class FollowCamera : MonoBehaviour
 
     private int invisibleLayer;
     private int defaultLayer;
-        
+
 	void Awake()
 	{
-        Camera = GetComponent<Camera>();
+        Camera = GetComponentInChildren<Camera>();
 
 		currentSpeedOffset = Vector3.zero;
 
@@ -117,7 +116,7 @@ public class FollowCamera : MonoBehaviour
         transform.position = player.Moorable.DockedAtStation.transform.position;
         transform.position -= new Vector3(0, 0, 100);
     }
-    
+
     Quaternion GetAngularVelocityOffset(PlayerShip player)
     {
         var rb = player.GetComponent<Rigidbody>();
@@ -125,7 +124,7 @@ public class FollowCamera : MonoBehaviour
         {
             return Quaternion.identity;
         }
-        
+
         float rotationOffsetAmt = rotationOffset * Mathf.Rad2Deg;
         return Quaternion.Euler(rb.angularVelocity.x * rotationOffsetAmt,
             rb.angularVelocity.y * rotationOffsetAmt,
@@ -212,7 +211,7 @@ public class FollowCamera : MonoBehaviour
         var lookDirection = (cutsceneCamRig.Focus - cutsceneCamRig.View).normalized;
         transform.rotation = Quaternion.LookRotation(lookDirection);
     }
-    
+
     private Vector2? FindTouchPos()
     {
         //mouse input takes priority!
@@ -245,7 +244,7 @@ public class FollowCamera : MonoBehaviour
         var screenPos = Camera.WorldToScreenPoint(worldAim.Value);
         return new Vector2(screenPos.x, screenPos.y);
     }
-    
+
     public Vector3? GetWorldAimPoint(Vector3 origin)
     {
         var cursorPos = GetAimCursorPos();
@@ -255,7 +254,7 @@ public class FollowCamera : MonoBehaviour
         }
 
         const float AIM_DEPTH = 1000;
-        
+
         var mousePos = new Vector3(cursorPos.Value.x, cursorPos.Value.y, AIM_DEPTH);
         var mouseRay = Camera.ScreenPointToRay(mousePos);
 
@@ -269,7 +268,7 @@ public class FollowCamera : MonoBehaviour
             return mouseRay.origin + (mouseRay.direction * AIM_DEPTH);
         }
     }
-    
+
     private Vector2? GetAimCursorPos()
     {
         //decide whether to use touch or mouse
@@ -293,7 +292,7 @@ public class FollowCamera : MonoBehaviour
     {
         var touchPos = FindTouchPos();
         var playerShip = PlayerShip.LocalPlayer;
-        
+
         if (!touchPos.HasValue || !playerShip)
         {
             dragInput = Vector2.zero;
@@ -313,7 +312,7 @@ public class FollowCamera : MonoBehaviour
 
         dragInput = new Vector2(dragX, dragY);
     }
-    
+
     private IEnumerator WaitToDragOnGui()
     {
         var pointerData = new PointerEventData(EventSystem.current);
@@ -340,9 +339,9 @@ public class FollowCamera : MonoBehaviour
     }
 
     private void Update()
-    {        
+    {
         if (Input.GetButton("look") && dragInput.HasValue)
-        {            
+        {
             float yawInput = Mathf.Clamp(dragInput.Value.x, -1, 1);
             float pitchInput = Mathf.Clamp(dragInput.Value.y, -1, 1);
 
@@ -381,13 +380,13 @@ public class FollowCamera : MonoBehaviour
 
     private void SetupCockpit(PlayerShip player, bool showCockpit)
     {
-        /*if we have an existing cockpit view, and the player's cockpit type 
+        /*if we have an existing cockpit view, and the player's cockpit type
           has changed, destroy the old one */
         if (cockpitCam && (!player || player.Ship.ShipType != cockpitShipType))
         {
             Destroy(cockpitCam.gameObject);
         }
-        
+
         /* if we don't have a cockpit, create a new one of the right type */
         if (!cockpitCam && player && player.Ship.ShipType.HasCockpit)
         {
@@ -395,7 +394,7 @@ public class FollowCamera : MonoBehaviour
             cockpitCam.transform.SetParent(transform, false);
             cockpitShipType = player.Ship.ShipType;
         }
-        
+
         if (player && showCockpit && cockpitCam && Camera.enabled)
         {
             cockpitCam.gameObject.SetActive(true);
@@ -405,7 +404,7 @@ public class FollowCamera : MonoBehaviour
         {
             if (cockpitCam)
             {
-                cockpitCam.gameObject.SetActive(false);                
+                cockpitCam.gameObject.SetActive(false);
             }
 
             if (player)
@@ -464,7 +463,7 @@ public class FollowCamera : MonoBehaviour
                 transform.position = Vector3.zero;
                 transform.rotation = Quaternion.identity;
             }
-        }        
+        }
 	}
 
 	void FixedUpdate()
@@ -474,10 +473,10 @@ public class FollowCamera : MonoBehaviour
 		{
 			return;
 		}
-        
+
 		var playerRb = player.GetComponent<Rigidbody>();
 		var ship = player.GetComponent<Ship>();
-		
+
 		if (playerRb && ship)
 		{
 			var speed = -playerRb.velocity / Mathf.Max(1, ship.CurrentStats.MaxSpeed);
