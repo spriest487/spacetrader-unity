@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.VR;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -22,6 +23,9 @@ public class FollowCamera : MonoBehaviour
     {
         get { return dragInput; }
     }
+
+    [SerializeField]
+    private WorldMap worldMap;
 
     [SerializeField]
     private bool ignoreTranslation;
@@ -111,17 +115,25 @@ public class FollowCamera : MonoBehaviour
         Debug.Assert(!Current || Current == this);
         Current = this;
 
-        SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
+        worldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
+        SceneManager.activeSceneChanged += OnSceneChanged;
     }
-
+    
     void OnDisable()
     {
         Debug.Assert(Current == this);
         Current = null;
+       
+        worldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
 
-        if (SpaceTraderConfig.Instance && SpaceTraderConfig.WorldMap)
+    void OnSceneChanged(Scene s1, Scene s2)
+    {
+        //reset cockpit
+        if (cockpitCam)
         {
-            SpaceTraderConfig.WorldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
+            Destroy(cockpitCam.gameObject);
         }
     }
 

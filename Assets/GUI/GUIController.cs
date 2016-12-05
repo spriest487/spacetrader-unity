@@ -291,7 +291,15 @@ public class GUIController : MonoBehaviour
         var activeScreen = FindActiveScreen();
         if (activeScreen)
         {
-            activeScreen.Element.Dismiss();
+            if (activeScreen.ID == nextScreen.ID)
+            {
+                activeTransition.progress = GUITransitionProgress.Done;
+                activeTransition = null;
+            }
+            else
+            {
+                activeScreen.Element.Dismiss();
+            }
         }
 
         return activeTransition;
