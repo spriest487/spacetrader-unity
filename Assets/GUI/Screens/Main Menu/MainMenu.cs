@@ -45,6 +45,11 @@ public class MainMenu : MonoBehaviour
         guiController.SwitchTo(ScreenID.LoadGame);
     }
 
+    public void Settings()
+    {
+        guiController.SwitchTo(ScreenID.Settings);
+    }
+
     public void MissionSelect()
     {
         guiController.SwitchTo(ScreenID.MissionSelect);

@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
+using UnityEngine.VR;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class HUD : MonoBehaviour
 {
     [SerializeField]
     private Transform content;
-        
+
     [Header("Player Info")]
 
     [SerializeField]
@@ -21,10 +22,10 @@ public class HUD : MonoBehaviour
     private Text playerMoney;
 
     [Header("Overlays")]
-    
+
     [SerializeField]
     private LootWindow lootWindow;
-    
+
     [SerializeField]
     private Button useTargetButton;
     private Text useTargetText;
@@ -40,14 +41,14 @@ public class HUD : MonoBehaviour
         get { return animator.GetBool(CutsceneParamName); }
         set { animator.SetBool(CutsceneParamName, value); }
     }
-    
+
     private void OnEnable()
     {
         animator = GetComponent<Animator>();
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
-        
+
         lootWindow.Dismiss();
         radioMenu.Dismiss();
     }
@@ -55,7 +56,7 @@ public class HUD : MonoBehaviour
     private void Update()
     {
         var player = PlayerShip.LocalPlayer;
-                
+
         if (!player || !player.Ship)
         {
             content.gameObject.SetActive(false);
@@ -63,13 +64,20 @@ public class HUD : MonoBehaviour
         }
         else
         {
-            CutsceneParam = player.Ship.Moorable.AutoDockingStation
-                || player.Ship.JumpTarget
-                || GUIController.Current.CutsceneOverlay.HasCutscene;
+            if (VRSettings.enabled)
+            {
+                CutsceneParam = false;
+            }
+            else
+            {
+                CutsceneParam = player.Ship.Moorable.AutoDockingStation
+                    || player.Ship.JumpTarget
+                    || GUIController.Current.CutsceneOverlay.HasCutscene;
+            }
 
             var playerTarget = player.Ship.Target;
 
-            if (playerTarget 
+            if (playerTarget
                 && playerTarget.ActionOnActivate
                 && playerTarget.ActionOnActivate.CanBeActivatedBy(player.Ship)
                 && !lootWindow.isActiveAndEnabled)

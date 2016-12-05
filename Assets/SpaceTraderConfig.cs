@@ -2,6 +2,8 @@
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.VR;
+using System;
 
 public class SpaceTraderConfig : MonoBehaviour
 {
@@ -89,5 +91,19 @@ public class SpaceTraderConfig : MonoBehaviour
                 LocalPlayer = FindObjectOfType<PlayerShip>();
             }
         };
+
+        //apply initial settings
+        ReloadPrefs();
+    }
+
+    public static void SavePrefs()
+    {
+        PlayerPrefs.SetInt("VR Enabled", VRSettings.enabled? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public static void ReloadPrefs()
+    {
+        VRSettings.enabled = PlayerPrefs.GetInt("VR Enabled", 0) == 1;
     }
 }

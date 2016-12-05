@@ -367,10 +367,18 @@ public class FollowCamera : MonoBehaviour
 
     private void Update()
     {
-        if (VRSettings.enabled && Input.GetButtonDown("Reset Orientation"))
+        if (VRSettings.enabled)
         {
-            ResetHMD();
-            PlayerNotifications.GameMessage("Reset HMD orientation");
+            if (Input.GetButtonDown("Reset Orientation"))
+            {
+                ResetHMD();
+                PlayerNotifications.GameMessage("Reset HMD orientation");
+            }
+        }
+        else
+        {
+            hmdPositionOffset.localPosition = Vector3.zero;
+            hmdRotationOffset.localRotation = Quaternion.identity;
         }
 
         if (Input.GetButton("look") && dragInput.HasValue)
@@ -449,53 +457,45 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        //var cutsceneCamRig = ScreenManager.Instance.CurrentCutsceneCameraRig;
-        //if (cutsceneCamRig)
-        //{
-        //    CutsceneCam(cutsceneCamRig);
-        //}
-        //else
+        var player = PlayerShip.LocalPlayer;
+
+        if (player && player.Ship)
         {
-            var player = PlayerShip.LocalPlayer;
-
-            if (player && player.Ship)
+            var moorable = player.Moorable;
+            if (moorable && moorable.State != DockingState.InSpace)
             {
-                var moorable = player.Moorable;
-                if (moorable && moorable.State != DockingState.InSpace)
-                {
-                    SetupCockpit(player, false);
+                SetupCockpit(player, false);
 
-                    switch (moorable.State)
-                    {
-                        case DockingState.AutoDocking:
-                            AutoDockingCam(player, moorable.AutoDockingStation);
-                            break;
-                        case DockingState.Docked:
-                            DockedCam(player);
-                            break;
-                    }
-                }
-                else
+                switch (moorable.State)
                 {
-                    if (player.Ship.JumpTarget)
-                    {
-                        SetupCockpit(player, false);
-                        JumpCam(player);
-                    }
-                    else
-                    {
-                        jumpOrigin = null;
-
-                        SetupCockpit(player, cockpitMode);
-                        FlightCam(player);
-                    }
+                    case DockingState.AutoDocking:
+                        AutoDockingCam(player, moorable.AutoDockingStation);
+                        break;
+                    case DockingState.Docked:
+                        DockedCam(player);
+                        break;
                 }
             }
             else
             {
-                transform.position = Vector3.zero;
-                transform.rotation = Quaternion.identity;
+                if (player.Ship.JumpTarget)
+                {
+                    SetupCockpit(player, false);
+                    JumpCam(player);
+                }
+                else
+                {
+                    jumpOrigin = null;
+
+                    SetupCockpit(player, cockpitMode);
+                    FlightCam(player);
+                }
             }
+        }
+        else
+        {
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
         }
 	}
 
