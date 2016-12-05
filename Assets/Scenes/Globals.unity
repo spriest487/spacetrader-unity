@@ -3758,7 +3758,7 @@ Prefab:
     - target: {fileID: 224322357312258422, guid: 3fa5609b3fcb2654089aa78f532f5045,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -168.74693
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224322357312258422, guid: 3fa5609b3fcb2654089aa78f532f5045,
         type: 2}
@@ -3768,7 +3768,7 @@ Prefab:
     - target: {fileID: 224322357312258422, guid: 3fa5609b3fcb2654089aa78f532f5045,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 197.49387
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224322357312258422, guid: 3fa5609b3fcb2654089aa78f532f5045,
         type: 2}
@@ -4401,7 +4401,7 @@ Prefab:
     - target: {fileID: 224487737283462294, guid: f1fa8c68d4162f44f9bc05c8252e9bc5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -40
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224487737283462294, guid: f1fa8c68d4162f44f9bc05c8252e9bc5,
         type: 2}
@@ -4411,7 +4411,7 @@ Prefab:
     - target: {fileID: 224487737283462294, guid: f1fa8c68d4162f44f9bc05c8252e9bc5,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224487737283462294, guid: f1fa8c68d4162f44f9bc05c8252e9bc5,
         type: 2}
@@ -25366,7 +25366,7 @@ Prefab:
     - target: {fileID: 224447420758736234, guid: 9ee9f7553fc7c6f4d94ac16601d8ad62,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -36
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224447420758736234, guid: 9ee9f7553fc7c6f4d94ac16601d8ad62,
         type: 2}
@@ -25376,7 +25376,7 @@ Prefab:
     - target: {fileID: 224447420758736234, guid: 9ee9f7553fc7c6f4d94ac16601d8ad62,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 72
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224447420758736234, guid: 9ee9f7553fc7c6f4d94ac16601d8ad62,
         type: 2}
