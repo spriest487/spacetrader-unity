@@ -68,14 +68,18 @@ public class MissionDefinition : ScriptableObject
     private string description;
 
     [SerializeField]
+    private Sprite image;
+
+    [SerializeField]
     private List<TeamDefinition> teams;
 
     public string SceneName { get { return sceneName; } }
     public string MissionName { get { return missionName; } }
     public string Description { get { return description; } }
+    public Sprite Image { get { return image; } }
 
     public IList<TeamDefinition> Teams { get { return teams; } }
-    
+
     public void LoadMission()
     {
         SceneManager.LoadScene(SceneName);

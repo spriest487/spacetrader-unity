@@ -12,19 +12,18 @@ public class GUIElement : MonoBehaviour
 
     public event Action OnTransitionedIn;
     public event Action OnTransitionedOut;
-    
+
     public bool Activated
     {
-        get { return Animator.GetBool(ActiveParamName); }
-        set { Animator.SetBool(ActiveParamName, value); }
+        get { return GetComponent<Animator>().GetBool(ActiveParamName); }
+        set { GetComponent<Animator>().SetBool(ActiveParamName, value); }
     }
-    
+
     private void OnEnable()
     {
-        Animator = GetComponent<Animator>();         
         Activated = true;
     }
-    
+
     private void TransitionedOut()
     {
         if (!Activated)
@@ -40,7 +39,7 @@ public class GUIElement : MonoBehaviour
             OnTransitionedIn.Invoke();
         }
     }
-    
+
     public void Activate(bool active)
     {
         Activated = active;

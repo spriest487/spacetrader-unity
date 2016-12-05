@@ -21,7 +21,7 @@ public class MissionsMenu : MonoBehaviour
 
     [SerializeField]
     private Button[] missionActionButtons;
-        
+
     private MissionDefinition selectedMission;
 
     public void SelectMission(MissionDefinition mission)
@@ -45,23 +45,25 @@ public class MissionsMenu : MonoBehaviour
         }
     }
 
-    void OnMenuScreenActivate()
+    void OnEnable()
     {
-        SelectMission(null);
-    }
+        foreach (var button in GetComponentsInChildren<MissionMenuItem>())
+        {
+            Destroy(button.gameObject);
+        }
 
-    void OnMenuScreenDeactivate()
-    {
-        SelectMission(null);
-    }
-
-    void Start()
-    {
         foreach (var mission in SpaceTraderConfig.MissionsConfiguration.Missions)
         {
             var missionItem = MissionMenuItem.Create(missionElementPrefab, mission);
             missionItem.transform.SetParent(missionsLayout, false);
         }
+
+        SelectMission(null);
+    }
+
+    void OnDisable()
+    {
+        SelectMission(null);
     }
 
     private IEnumerator PlayOfflineRoutine()
@@ -70,7 +72,7 @@ public class MissionsMenu : MonoBehaviour
         yield return gui.ShowLoadingOverlay();
 
         yield return SceneManager.LoadSceneAsync(selectedMission.SceneName);
-        
+
         gui.DismissLoadingOverlay();
         yield return gui.SwitchTo(ScreenID.MissionPrep);
     }

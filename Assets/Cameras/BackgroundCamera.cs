@@ -9,6 +9,9 @@ public class BackgroundCamera : MonoBehaviour
     public Camera Camera { get; private set; }
 
     [SerializeField]
+    private WorldMap worldMap;
+
+    [SerializeField]
     private FollowCamera matchCamera;
 
     [SerializeField]
@@ -26,26 +29,18 @@ public class BackgroundCamera : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Assert(!Current || Current == this);
         Current = this;
 
-        SpaceTraderConfig.WorldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
+        worldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
         matchCamera.OnHMDReset += OnHMDReset;
         Camera.onPreRender += MatchOnPreRender;
     }
 
     void OnDisable()
     {
-        Debug.Assert(Current == this);
-        Current = null;
-
         matchCamera.OnHMDReset -= OnHMDReset;
         Camera.onPreRender -= MatchOnPreRender;
-
-        if (SpaceTraderConfig.Instance && SpaceTraderConfig.WorldMap)
-        {
-            SpaceTraderConfig.WorldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
-        }
+        worldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
     }
 
     private void OnHMDReset(Vector3 position, Quaternion rotation)

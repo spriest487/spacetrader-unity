@@ -5,25 +5,33 @@ using UnityEngine.UI;
 
 public class MissionMenuItem : MonoBehaviour
 {
-    [SerializeField]
-    private MissionDefinition missionDefinition;
+    [Header("UI")]
 
     [SerializeField]
     private Text missionNameText;
 
     [SerializeField]
-    private Button button;    
+    private Image missionImage;
+
+    [SerializeField]
+    private Button button;
+
+    [Header("Runtime")]
+
+    [SerializeField]
+    private MissionDefinition missionDefinition;
 
     public MissionDefinition MissionDefinition { get { return missionDefinition; } }
 
     public Button Button { get { return button; } }
-    
+
     public static MissionMenuItem Create(MissionMenuItem prefab, MissionDefinition missionDef)
     {
         var item = Instantiate(prefab);
 
         item.missionDefinition = missionDef;
-        item.missionNameText.text = missionDef.name;
+        item.missionNameText.text = missionDef.name.ToUpper();
+        item.missionImage.sprite = missionDef.Image;
 
         return item;
     }

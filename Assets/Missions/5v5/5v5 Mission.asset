@@ -18,6 +18,7 @@ MonoBehaviour:
 
     With up to 4 allied ships, take on a squadron of enemies. Destroy all enemies
     to win the mission.'
+  image: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
   teams:
   - name: Red
     slots:
