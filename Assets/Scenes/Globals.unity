@@ -9683,6 +9683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8640a93869bae0445b9d7b799e9d6d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapCamera: {fileID: 1636593592}
 --- !u!1001 &817324955
 Prefab:
   m_ObjectHideFlags: 0

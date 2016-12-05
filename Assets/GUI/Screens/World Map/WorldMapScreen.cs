@@ -1,26 +1,29 @@
 ﻿#pragma warning disable 0649
 
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(GUIElement))]
 public class WorldMapScreen : MonoBehaviour
 {
     new GUIElement guiElement;
-    
+
+    [SerializeField]
+    Camera mapCamera;
+
+    Vector3 camOffset;
+
     void Awake()
     {
         guiElement = GetComponent<GUIElement>();
     }
 
     void OnEnable()
-    {        
-        var defaultCameraDist = new Vector3(0, 20, -40);
+    {
         var currentArea = SpaceTraderConfig.WorldMap.GetCurrentArea();
+        camOffset = currentArea.transform.position + new Vector3(0, 20, -40);
 
-        var mapCam = SpaceTraderConfig.WorldMap.Camera;
-        mapCam.transform.position = currentArea.transform.position + defaultCameraDist;
-        mapCam.transform.rotation = Quaternion.LookRotation(-mapCam.transform.position.normalized, Vector3.up);
+        mapCamera.transform.position = camOffset;
+        mapCamera.transform.rotation = Quaternion.LookRotation(-camOffset.normalized, Vector3.up);
 
         foreach (var marker in SpaceTraderConfig.WorldMap.Markers)
         {
@@ -35,7 +38,7 @@ public class WorldMapScreen : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0) 
+        if (Input.GetMouseButtonDown(0)
             && SpaceTraderConfig.LocalPlayer
             && SpaceTraderConfig.LocalPlayer.Ship)
         {
@@ -53,5 +56,16 @@ public class WorldMapScreen : MonoBehaviour
                 Debug.Log("targetted area " + mapArea);
             }
         }
+
+        float eastWest = Input.GetAxis("yaw");
+        float northSouth = Input.GetAxis("pitch");
+
+        const float PAN_SPEED = 50;
+
+        camOffset += PAN_SPEED * Time.deltaTime * new Vector3(eastWest, 0, northSouth);
+        var lerped = Vector3.Lerp(mapCamera.transform.position, camOffset, 2 * Time.deltaTime);
+
+        var camXform = mapCamera.transform;
+        camXform.position = lerped;
     }
 }
