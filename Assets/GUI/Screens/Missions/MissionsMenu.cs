@@ -66,12 +66,12 @@ public class MissionsMenu : MonoBehaviour
         SelectMission(null);
     }
 
-    private IEnumerator PlayOfflineRoutine()
+    private IEnumerator PlayOfflineRoutine(MissionDefinition missionDef)
     {
         var gui = GetComponentInParent<GUIController>();
         yield return gui.ShowLoadingOverlay();
 
-        yield return SceneManager.LoadSceneAsync(selectedMission.SceneName);
+        yield return MissionManager.Instance.PrepMission(missionDef);
 
         gui.DismissLoadingOverlay();
         yield return gui.SwitchTo(ScreenID.MissionPrep);
@@ -79,7 +79,10 @@ public class MissionsMenu : MonoBehaviour
 
     public void PlayOffline()
     {
-        StartCoroutine(PlayOfflineRoutine());
+        if (selectedMission)
+        {
+            StartCoroutine(PlayOfflineRoutine(selectedMission));
+        }
     }
 }
 

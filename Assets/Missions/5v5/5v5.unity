@@ -390,7 +390,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674e63b3ee25bc44fafbdcfc39911bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teams: []
+  teams:
+  - name: Red
+    spawnPoints:
+    - {fileID: 1112253159}
+    - {fileID: 1152187467}
+    - {fileID: 351301658}
+    - {fileID: 155227496}
+    - {fileID: 1427643012}
+  - name: Blue
+    spawnPoints:
+    - {fileID: 2003229153}
+    - {fileID: 1201573100}
+    - {fileID: 1987438252}
+    - {fileID: 583766642}
+    - {fileID: 7284314}
 --- !u!1 &1528009907
 GameObject:
   m_ObjectHideFlags: 0

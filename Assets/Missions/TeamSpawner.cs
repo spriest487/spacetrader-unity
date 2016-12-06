@@ -105,21 +105,39 @@ public class TeamSpawner : MonoBehaviour
         return null;
     }
 
-    void OnBeginMission()
+    private void OnEnable()
+    {
+        MissionManager.Instance.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (MissionManager.Instance)
+        {
+            MissionManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+        }
+    }
+
+    void OnPhaseChanged(MissionPhase phase)
     {
         var mission = MissionManager.Instance.Mission;
-        
-        for (int team = 0; team < mission.Teams.Length; ++team)
+
+        switch (phase)
         {
-            var teamDefinition = mission.Definition.Teams[team];
-            var activeTeam = mission.Teams[team];
+            case MissionPhase.Active:
+                for (int team = 0; team < mission.Teams.Length; ++team)
+                {
+                    var teamDefinition = mission.Definition.Teams[team];
+                    var activeTeam = mission.Teams[team];
 
-            var spawnedTeam = FindTeam(teamDefinition.Name);
+                    var spawnedTeam = FindTeam(teamDefinition.Name);
 
-            if (spawnedTeam != null)
-            {
-                spawnedTeam.SpawnAll(teamDefinition, activeTeam);
-            }
+                    if (spawnedTeam != null)
+                    {
+                        spawnedTeam.SpawnAll(teamDefinition, activeTeam);
+                    }
+                }
+                break;
         }
     }
 }

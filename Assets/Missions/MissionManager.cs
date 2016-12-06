@@ -28,9 +28,19 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    public MissionPhase Phase { get { return phase; } }
+    public MissionPhase Phase
+    {
+        get { return phase; }
+        private set
+        {
+            phase = value;
+            OnPhaseChanged.Invoke(value);
+        }
+    }
 
     public event Action<ActiveMission> OnMissionChanged;
+
+    public event Action<MissionPhase> OnPhaseChanged;
 
     private void OnEnable()
     {
@@ -80,12 +90,7 @@ public class MissionManager : MonoBehaviour
 
     public void BeginMission()
     {
-        phase = MissionPhase.Active;
-
-        foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
-        {
-            listener.SendMessage("OnBeginMission", SendMessageOptions.DontRequireReceiver);
-        }
+        Phase = MissionPhase.Active;
 
         //assign quests
         for (int teamIt = 0; teamIt < mission.Teams.Length; ++teamIt)
@@ -97,7 +102,7 @@ public class MissionManager : MonoBehaviour
             {
                 var slot = activeTeam.Slots[slotIt];
 
-                if (slot.Status != SlotStatus.Human)
+                if (slot.Status != SlotStatus.Human || !slot.SpawnedShip)
                 {
                     continue;
                 }
@@ -120,6 +125,7 @@ public class MissionManager : MonoBehaviour
         Debug.Assert(missionScene.HasValue, "must have a mission scene loaded");
         Debug.Assert(SceneManager.GetActiveScene().buildIndex == missionScene.Value.buildIndex, "active scene must be the mission scene");
 
+        Destroy(mission);
         Mission = null;
         var globalsScene = SceneManager.GetSceneByName("Globals");
         Debug.Assert(globalsScene.isLoaded, "globals scene must be loaded");
@@ -137,11 +143,27 @@ public class MissionManager : MonoBehaviour
 
     public void EndMission()
     {
-        phase = MissionPhase.Finished;
+        Phase = MissionPhase.Finished;
+        
+        Destroy(mission);
+        Mission = null;
+    }
 
-        foreach (var listener in GameObject.FindGameObjectsWithTag("MissionListener"))
-        {
-            listener.SendMessage("OnEndMission", SendMessageOptions.DontRequireReceiver);
-        }
+    private IEnumerator PrepMissionRoutine(MissionDefinition missionDef)
+    {
+        Debug.Assert(!SpaceTraderConfig.WorldMap.IsWorldSceneActive);
+        Debug.Assert(!Mission);
+
+        yield return SceneManager.LoadSceneAsync(missionDef.SceneName, LoadSceneMode.Additive);
+        var scene = SceneManager.GetSceneByName(missionDef.SceneName);
+        SceneManager.SetActiveScene(scene);
+
+        Phase = MissionPhase.Prep;
+        Mission = ActiveMission.Create(missionDef);
+    }
+
+    public Coroutine PrepMission(MissionDefinition missionDef)
+    {
+        return StartCoroutine(PrepMissionRoutine(missionDef));
     }
 }
