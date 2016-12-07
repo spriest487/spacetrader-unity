@@ -13,5 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missions:
   - {fileID: 11400000, guid: 9f97b8f8439bd054ea64e1f9cce9b56a, type: 2}
-  - {fileID: 11400000, guid: ea6584153281baf40ae2cf2480f8fdee, type: 2}
   - {fileID: 11400000, guid: 6d379d342f2c0314db75e7901c1f118a, type: 2}
