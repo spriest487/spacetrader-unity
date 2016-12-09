@@ -5,7 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Modules/Gun Behaviour")]
 public class GunBehaviour : ModuleBehaviour
-{    
+{
     [SerializeField]
 	private Bullet bulletType;
 
@@ -17,10 +17,10 @@ public class GunBehaviour : ModuleBehaviour
 
     [SerializeField]
     private int maxDamage;
-    
+
     [SerializeField]
     private float fireRate = 0.2f;
-    
+
     public override string Description
     {
         get
@@ -33,16 +33,19 @@ public class GunBehaviour : ModuleBehaviour
     {
         var meanDamage = (minDamage + maxDamage) / 2f;
 
-        meanDamage = owner.ApplyDamageModifier(Mathf.FloorToInt(meanDamage));
+        if (owner)
+        {
+            meanDamage = owner.ApplyDamageModifier(Mathf.FloorToInt(meanDamage));
+        }
 
         return meanDamage / fireRate;
     }
-    
+
     public override void Equip(HardpointModule slot)
     {
         Cooldown = 0;
     }
-    
+
     public override void Activate(Ship activator, int slot)
 	{
         if (Cooldown > 0)
@@ -78,9 +81,9 @@ public class GunBehaviour : ModuleBehaviour
             }
 
             Cooldown = fireRate;
-        }        
+        }
 	}
-    
+
     public override Vector3? PredictTarget(Ship activator, int slot, Targetable target)
     {
         Vector3 speedDiff;
