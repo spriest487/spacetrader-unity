@@ -18019,7 +18019,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 0.42708334
+  m_ScaleFactor: 0.9375
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -20891,7 +20891,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageContent: {fileID: 1274315916}
-  messagePrefab: {fileID: 0}
+  messagePrefab: {fileID: 114000010173894528, guid: 4ec7e0ba1d252f54abf9e0ac0239f799,
+    type: 2}
   notificationCount: 1
   maxAge: 2
   notificationCategory: 2

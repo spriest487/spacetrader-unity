@@ -38,6 +38,9 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
 
     public PooledList(Transform root, TItem itemPrefab)
     {
+        Debug.Assert(root, "transform root of PooledList must exist");
+        Debug.Assert(itemPrefab, "item prefab of PooledList must exist");
+
         currentItems = new List<TItem>(root.GetComponentsInChildren<TItem>());
         currentData = null;
         this.root = root;
@@ -53,7 +56,7 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
             currentData.Clear();
         }
     }
-    
+
     public bool Refresh(IEnumerable<TData> data, UpdateItemCallback onUpdateItem)
     {
         if (currentData != null && currentData.ElementsEquals(data))
@@ -63,7 +66,7 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         }
 
         currentData = new List<TData>(data);
-        
+
         int existingItemsCount = currentItems.Count;
         int newCount = currentData.Count;
 
