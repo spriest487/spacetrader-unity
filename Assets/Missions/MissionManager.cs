@@ -24,7 +24,11 @@ public class MissionManager : MonoBehaviour
         private set
         {
             mission = value;
-            OnMissionChanged.Invoke(value);
+
+            if (OnMissionChanged != null)
+            {
+                OnMissionChanged.Invoke(value);
+            }
         }
     }
 
@@ -34,7 +38,11 @@ public class MissionManager : MonoBehaviour
         private set
         {
             phase = value;
-            OnPhaseChanged.Invoke(value);
+
+            if (OnPhaseChanged != null)
+            {
+                OnPhaseChanged.Invoke(value);
+            }
         }
     }
 
@@ -144,7 +152,7 @@ public class MissionManager : MonoBehaviour
     public void EndMission()
     {
         Phase = MissionPhase.Finished;
-        
+
         Destroy(mission);
         Mission = null;
     }

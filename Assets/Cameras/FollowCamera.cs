@@ -118,12 +118,12 @@ public class FollowCamera : MonoBehaviour
         worldMap.OnVisibilityChanged += OnWorldMapVisibilityChanged;
         SceneManager.activeSceneChanged += OnSceneChanged;
     }
-    
+
     void OnDisable()
     {
         Debug.Assert(Current == this);
         Current = null;
-       
+
         worldMap.OnVisibilityChanged -= OnWorldMapVisibilityChanged;
         SceneManager.activeSceneChanged -= OnSceneChanged;
     }
@@ -374,7 +374,10 @@ public class FollowCamera : MonoBehaviour
         hmdPositionOffset.localPosition = position;
         hmdRotationOffset.localRotation = rotation;
 
-        OnHMDReset.Invoke(position, rotation);
+        if (OnHMDReset != null)
+        {
+            OnHMDReset.Invoke(position, rotation);
+        }
     }
 
     private void Update()

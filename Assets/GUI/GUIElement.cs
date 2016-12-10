@@ -26,7 +26,7 @@ public class GUIElement : MonoBehaviour
 
     private void TransitionedOut()
     {
-        if (!Activated)
+        if (!Activated && OnTransitionedOut != null)
         {
             OnTransitionedOut.Invoke();
         }
@@ -34,7 +34,7 @@ public class GUIElement : MonoBehaviour
 
     private void TransitionedIn()
     {
-        if (Activated)
+        if (Activated && OnTransitionedIn != null)
         {
             OnTransitionedIn.Invoke();
         }
