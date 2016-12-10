@@ -393,18 +393,10 @@ MonoBehaviour:
   teams:
   - name: Red
     spawnPoints:
-    - {fileID: 1112253159}
-    - {fileID: 1152187467}
-    - {fileID: 351301658}
-    - {fileID: 155227496}
-    - {fileID: 1427643012}
+    - {fileID: 1528009908}
   - name: Blue
     spawnPoints:
-    - {fileID: 2003229153}
-    - {fileID: 1201573100}
-    - {fileID: 1987438252}
-    - {fileID: 583766642}
-    - {fileID: 7284314}
+    - {fileID: 1023957085}
 --- !u!1 &1528009907
 GameObject:
   m_ObjectHideFlags: 0
