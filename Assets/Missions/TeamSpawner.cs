@@ -14,17 +14,17 @@ public class TeamSpawner : MonoBehaviour
 
         [SerializeField]
         private Transform[] spawnPoints;
-        
+
         public string Name { get { return name; } }
         public Transform[] SpawnPoints { get { return spawnPoints; } }
 
         public void SpawnAll(MissionDefinition.TeamDefinition teamDefinition, ActiveTeam activeTeam)
         {
             /* loop around slots, spawning players at each slot in turn until there are
-             * no more players 
+             * no more players
              */
             var slotsCount = teamDefinition.Slots.Count;
-                        
+
             var allSpawnPoints = new List<Transform>();
 
             foreach (Transform spawnRoot in spawnPoints)
@@ -45,7 +45,7 @@ public class TeamSpawner : MonoBehaviour
                 var spawnPoint = allSpawnPoints[slotIndex % spawnsCount];
 
                 var activeSlot = activeTeam.Slots[slotIndex];
-                
+
                 if (activeSlot.Status != SlotStatus.Closed || activeSlot.Status == SlotStatus.Open)
                 {
                     var ship = slotDefinition.SpawnShip(spawnPoint.position, spawnPoint.rotation, teamDefinition);
@@ -66,7 +66,7 @@ public class TeamSpawner : MonoBehaviour
                             SetupAIPlayer(ship);
                             break;
                         case SlotStatus.Human:
-                            SetupHumanPlayer(ship, teamDefinition);                            
+                            SetupHumanPlayer(ship, teamDefinition);
                             break;
                     }
 
@@ -89,7 +89,7 @@ public class TeamSpawner : MonoBehaviour
 
     [SerializeField]
     private Team[] teams;
-    
+
     public Team[] Teams { get { return teams; } }
 
     private Team FindTeam(string name)
@@ -105,17 +105,14 @@ public class TeamSpawner : MonoBehaviour
         return null;
     }
 
-    private void OnEnable()
+    private void Start()
     {
         MissionManager.Instance.OnPhaseChanged += OnPhaseChanged;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        if (MissionManager.Instance)
-        {
-            MissionManager.Instance.OnPhaseChanged -= OnPhaseChanged;
-        }
+        MissionManager.Instance.OnPhaseChanged -= OnPhaseChanged;
     }
 
     void OnPhaseChanged(MissionPhase phase)
