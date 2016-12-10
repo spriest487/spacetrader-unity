@@ -18,10 +18,10 @@ public class MissionTeamDividerItem : MonoBehaviour
 
     void Update()
     {
-        if (teamIndex >= 0)
-        {
-            var mission = MissionManager.Instance.Mission;
+        var mission = MissionManager.Instance.Mission;
 
+        if (teamIndex >= 0 && mission)
+        {
             var team = mission.Definition.Teams[teamIndex];
 
             teamNameLabel.text = team.Name.ToUpper();

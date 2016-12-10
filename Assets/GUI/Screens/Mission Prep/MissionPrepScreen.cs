@@ -10,12 +10,14 @@ public class MissionPrepScreen : MonoBehaviour
 
     [SerializeField]
     private Text readyText;
-    
+
     private GUIScreen guiScreen;
-    
+    private GUIController gui;
+
     private void Awake()
     {
         guiScreen = GetComponent<GUIScreen>();
+        gui = GetComponentInParent<GUIController>();
     }
 
     public void Ready()
@@ -28,28 +30,30 @@ public class MissionPrepScreen : MonoBehaviour
         GUIController.Current.SwitchTo(ScreenID.None);
     }
 
-    private void CancelMissionOnExit()
+    private void CancelMissionOnExit(GUIController.ProceedToDismiss proceed)
     {
         if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {
             MissionManager.Instance.CancelMission();
         }
+
+        proceed();
     }
-    
+
     private void OnEnable()
     {
-        GetComponent<GUIElement>().OnTransitionedOut += CancelMissionOnExit;
+        gui.OnDismiss += CancelMissionOnExit;
 
         var mission = MissionManager.Instance.Mission;
         Debug.Assert(mission, "must have an active mission to use the mission prep screen");
-        
+
         missionDescriptionText.text = mission.Definition.Description;
         guiScreen.HeaderText = mission.Definition.MissionName.ToUpper();
     }
 
     private void OnDisable()
     {
-        GetComponent<GUIElement>().OnTransitionedOut -= CancelMissionOnExit;
+        gui.OnDismiss -= CancelMissionOnExit;
     }
 
     private void Update()

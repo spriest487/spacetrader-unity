@@ -7,6 +7,9 @@ using UnityEngine.VR;
 
 public class GUIController : MonoBehaviour
 {
+    public delegate void ProceedToDismiss();
+    public delegate void DismissCallback(ProceedToDismiss proceed);
+
     private class GUIControllerTransition : GUITransition
     {
         public GUITransitionProgress progress = GUITransitionProgress.Waiting;
@@ -57,6 +60,8 @@ public class GUIController : MonoBehaviour
 
     [SerializeField]
     private FollowCamera vrCamera;
+
+    public event DismissCallback OnDismiss;
 
     public bool HasTransition
     {
@@ -312,7 +317,22 @@ public class GUIController : MonoBehaviour
             return;
         }
 
-        SwitchTo(ScreenID.None);
+        if (OnDismiss != null)
+        {
+            bool proceeded = false;
+            OnDismiss.Invoke(() =>
+            {
+                if (!proceeded)
+                {
+                    SwitchTo(ScreenID.None);
+                    proceeded = true;
+                }
+            });
+        }
+        else
+        {
+            SwitchTo(ScreenID.None);
+        }
     }
 
     private void OnScreenTransitionedOut(GUIScreen screen)

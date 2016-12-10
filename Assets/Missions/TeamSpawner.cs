@@ -105,17 +105,17 @@ public class TeamSpawner : MonoBehaviour
         return null;
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        MissionManager.Instance.OnPhaseChanged += OnPhaseChanged;
+        MissionManager.OnPhaseChanged += OnPhaseChanged;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        MissionManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+        MissionManager.OnPhaseChanged -= OnPhaseChanged;
     }
 
-    void OnPhaseChanged(MissionPhase phase)
+    private void OnPhaseChanged(MissionPhase phase)
     {
         var mission = MissionManager.Instance.Mission;
 

@@ -46,9 +46,9 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    public event Action<ActiveMission> OnMissionChanged;
+    public static event Action<ActiveMission> OnMissionChanged;
 
-    public event Action<MissionPhase> OnPhaseChanged;
+    public static event Action<MissionPhase> OnPhaseChanged;
 
     private void OnEnable()
     {

@@ -26,13 +26,15 @@ public class MissionTeamSlotItem : MonoBehaviour
         teamIndex = team;
         slotIndex = slot;
     }
-    
-    void Update()
-    {
-        if (teamIndex >= 0 && slotIndex >= 0)
-        {
-            var mission = MissionManager.Instance.Mission;
 
+    private void Update()
+    {
+        var mission = MissionManager.Instance.Mission;
+
+        if (teamIndex >= 0 &&
+            slotIndex >= 0 &&
+            mission) //if !mission, screen is probably being cancelled, just stop updating
+        {
             var teamDefinition = mission.Definition.Teams[teamIndex];
             var slotDefinition = teamDefinition.Slots[slotIndex];
 

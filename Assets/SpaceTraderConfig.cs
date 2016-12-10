@@ -61,6 +61,18 @@ public class SpaceTraderConfig : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
+
+        MissionManager.OnMissionChanged += mission =>
+        {
+            if (mission)
+        {
+            LocalPlayer = null;
+        }
+        else
+        {
+            LocalPlayer = FindObjectOfType<PlayerShip>();
+        }
+        };
     }
 
     private void Awake()
@@ -78,18 +90,6 @@ public class SpaceTraderConfig : MonoBehaviour
         SceneManager.activeSceneChanged += (oldScene, newScene) =>
         {
             PlayerNotifications.Clear();
-        };
-
-        FindObjectOfType<MissionManager>().OnMissionChanged += mission =>
-        {
-            if (mission)
-            {
-                LocalPlayer = null;
-            }
-            else
-            {
-                LocalPlayer = FindObjectOfType<PlayerShip>();
-            }
         };
 
         //apply initial settings
