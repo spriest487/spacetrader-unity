@@ -82,7 +82,7 @@ public class Targetable : MonoBehaviour
     }
 
     public ActionOnActivate ActionOnActivate { get { return actionOnActivate; } }
-    
+
     public string Faction { get { return faction; } set { faction = value; } }
 
     private void Start()
@@ -108,7 +108,7 @@ public class Targetable : MonoBehaviour
         {
             return TargetRelationship.Neutral;
         }
-        
+
         bool sameFaction = Faction == other.Faction;
         return sameFaction ? TargetRelationship.Friendly : TargetRelationship.Hostile;
     }

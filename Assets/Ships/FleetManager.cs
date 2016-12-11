@@ -1,93 +1,35 @@
 ﻿using UnityEngine;
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Fleet Manager")]
-public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
+public class FleetManager : ScriptableObject
 {
-    private class LeaderComparer : IEqualityComparer<Fleet>
-    {
-        public bool Equals(Fleet f1, Fleet f2)
-        {
-            return f1.Leader == f2.Leader;
-        }
-
-        public int GetHashCode(Fleet f)
-        {
-            return f.Leader.GetInstanceID();
-        }
-    }
-
     [SerializeField]
-    private List<Fleet> fleetsList;
-
-    private Dictionary<Ship, Fleet> fleets;
-    
-    public FleetManager()
-    {
-        fleets = new Dictionary<Ship, Fleet>();
-    } 
-
-    public void OnBeforeSerialize()
-    {
-        if (fleets != null)
-        {
-            fleetsList = new List<Fleet>(fleets.Values.Where(f => !!f)
-                .Distinct(new LeaderComparer()));
-        }
-        else
-        {
-            fleetsList = new List<Fleet>();
-        }        
-    }
-    
-    public void OnAfterDeserialize()
-    {
-        if (fleets == null)
-        {
-            fleets = new Dictionary<Ship, Fleet>(fleetsList.Count);
-        }
-        else
-        {
-            fleets.Clear();
-        }
-
-        fleetsList.ForEach(fleet =>
-        {
-            if (!fleet || !fleet.Leader)
-            {
-                return;
-            }
-
-            fleets.Add(fleet.Leader, fleet);
-            fleet.Followers.ForEach(follower => fleets.Add(follower, fleet));
-        });
-        fleetsList = null;
-    }
+    private List<Fleet> fleets = new List<Fleet>();
 
     public void AddToFleet(Ship leader, Ship follower)
     {
-        if (fleets.ContainsKey(follower))
+        var hasFleet = fleets.Where(f => f.IsMember(follower)).Any();
+        if (hasFleet)
         {
             LeaveFleet(follower);
         }
 
-        Fleet fleet;
-        if (!fleets.TryGetValue(leader, out fleet))
+        var fleet = fleets.Where(f => f.Leader == leader).FirstOrDefault();
+        if (!fleet)
         {
             fleet = Fleet.Create(leader);
-            fleets.Add(leader, fleet);
+            fleets.Add(fleet);
         }
 
-        fleet.Followers.Add(follower);        
-        fleets.Add(follower, fleet);
+        fleet.Followers.Add(follower);
     }
 
     public void LeaveFleet(Ship ship)
     {
-        Fleet fleet;
-        if (fleets.TryGetValue(ship, out fleet))
+        var fleet = fleets.Where(f => f.IsMember(ship)).FirstOrDefault();
+        if (fleet)
         {
             if (ship == fleet.Leader)
             {
@@ -102,22 +44,17 @@ public class FleetManager : ScriptableObject, ISerializationCallbackReceiver
                     DisbandFleet(fleet);
                 }
             }
-
-            fleets.Remove(ship);
         }
     }
 
     private void DisbandFleet(Fleet fleet)
     {
-        fleet.Followers.ForEach(ship => fleets.Remove(ship));
-        fleets.Remove(fleet.Leader);
-
+        fleets.Remove(fleet);
         Destroy(fleet);
     }
 
     public Fleet GetFleetOf(Ship ship)
     {
-        Fleet fleet;
-        return fleets.TryGetValue(ship, out fleet) ? fleet : null;
+        return fleets.Where(f => f.IsMember(ship)).FirstOrDefault();
     }
 }
