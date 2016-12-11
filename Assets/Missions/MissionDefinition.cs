@@ -28,8 +28,11 @@ public class MissionDefinition : ScriptableObject
             var ship = ShipType.CreateShip(pos, rot);
             ship.name = Name;
 
-            var targetable = ship.gameObject.AddComponent<Targetable>();
-            targetable.Faction = team.Name;
+            var targetable = ship.GetComponent<Targetable>();
+            if (targetable)
+            {
+                targetable.Faction = team.Name;
+            }
 
             if (modulePreset)
             {
