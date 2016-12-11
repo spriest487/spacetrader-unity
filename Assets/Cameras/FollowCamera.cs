@@ -378,16 +378,18 @@ public class FollowCamera : MonoBehaviour
         {
             OnHMDReset.Invoke(position, rotation);
         }
+
+        PlayerNotifications.GameMessage("Reset HMD orientation");
     }
 
     private void Update()
     {
         if (VRSettings.enabled)
         {
-            if (Input.GetButtonDown("Reset Orientation"))
+            if (Input.GetButtonDown("Reset Orientation") &&
+                !(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
             {
                 ResetHMD();
-                PlayerNotifications.GameMessage("Reset HMD orientation");
             }
         }
         else

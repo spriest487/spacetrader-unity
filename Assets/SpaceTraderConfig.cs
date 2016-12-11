@@ -58,6 +58,8 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private WorldMap worldMap;
 
+    public static event Action OnPrefsSaved;
+
     private void OnEnable()
     {
         Instance = this;
@@ -100,10 +102,27 @@ public class SpaceTraderConfig : MonoBehaviour
     {
         PlayerPrefs.SetInt("VR Enabled", VRSettings.enabled? 1 : 0);
         PlayerPrefs.Save();
+
+        if (OnPrefsSaved != null)
+        {
+            OnPrefsSaved.Invoke();
+        }
     }
 
     public static void ReloadPrefs()
     {
         VRSettings.enabled = PlayerPrefs.GetInt("VR Enabled", 0) == 1;
+    }
+
+    private void Update()
+    {
+        //global shortcut for changing vr mode
+        if (Input.GetButtonDown("Reset Orientation") &&
+            (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+        {
+            VRSettings.enabled = !VRSettings.enabled;
+
+            SavePrefs();
+        }
     }
 }

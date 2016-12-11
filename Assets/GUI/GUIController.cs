@@ -145,6 +145,8 @@ public class GUIController : MonoBehaviour
 
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
+
+        SpaceTraderConfig.OnPrefsSaved += SetupVRMode;
     }
 
     private void OnDisable()
@@ -154,6 +156,8 @@ public class GUIController : MonoBehaviour
 
         loadingOverlay.OnTransitionedIn -= OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut -= OnLoadingTransitionedOut;
+
+        SpaceTraderConfig.OnPrefsSaved -= SetupVRMode;
     }
 
     private bool ProcessScreenButton(string button, ScreenID screen)
