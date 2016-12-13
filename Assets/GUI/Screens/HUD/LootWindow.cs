@@ -12,14 +12,25 @@ public class LootWindow : MonoBehaviour
 
     [SerializeField]
     private Text title;
-   
+
+    public GUIElement Element { get; private set; }
+
     public LootContainer Container
     {
         get { return loot; }
     }
-    
+
     private CargoHoldList cargoList;
-            
+
+    private void Awake()
+    {
+        Element = GetComponent<GUIElement>();
+
+        Element.OnTransitionedOut += () => loot = null;
+
+        cargoList = GetComponent<CargoHoldList>();
+    }
+
     private void Update()
     {
         if (!loot)
@@ -32,21 +43,15 @@ public class LootWindow : MonoBehaviour
         }
     }
 
-    public void Dismiss()
-    {
-        loot = null;
-        gameObject.SetActive(false);
-    }
-
     public void ShowLoot(LootContainer loot)
     {
-        //this can actually get called before Start(), so make sure the ref is set here
-        cargoList = GetComponent<CargoHoldList>();
-
         this.loot = loot;
         title.text = loot.name;
-        gameObject.SetActive(true);
+
+        cargoList.CargoHold = loot.Ship.Cargo;
         cargoList.Refresh();
+
+        Element.Activate(true);
     }
 
     private IEnumerator TakeItemRoutine(int itemIndex)

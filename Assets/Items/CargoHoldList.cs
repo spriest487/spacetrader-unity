@@ -9,7 +9,7 @@ public class CargoHoldList : MonoBehaviour
     private CargoHold cargoHold;
 
     [SerializeField]
-    private int highlightedIndex = -1;
+    private int highlightedIndex = CargoHold.BadIndex;
 
     //[SerializeField]
     //private string sizeFormat = "{0}/{1}";
@@ -26,6 +26,9 @@ public class CargoHoldList : MonoBehaviour
 
     [SerializeField]
     private bool hideEmptySlots;
+
+    [SerializeField]
+    private bool allowHighlight = true;
 
     //[SerializeField]
     //private Text sizeLabel;
@@ -51,11 +54,16 @@ public class CargoHoldList : MonoBehaviour
     {
         get
         {
+            if (!allowHighlight)
+            {
+                return CargoHold.BadIndex;
+            }
+
             Debug.Assert(isActiveAndEnabled);
 
             if (!cargoHold.IsValidIndex(highlightedIndex))
             {
-                return -1;
+                return CargoHold.BadIndex;
             }
 
             return highlightedIndex;
@@ -71,6 +79,11 @@ public class CargoHoldList : MonoBehaviour
     {
         get
         {
+            if (!allowHighlight)
+            {
+                return null;
+            }
+
             var index = HighlightedIndex;
             if (index < 0)
             {
@@ -87,7 +100,7 @@ public class CargoHoldList : MonoBehaviour
         {
             foreach (var item in currentItems)
             {
-                item.Highlighted = highlightedIndex == item.ItemIndex;
+                item.Highlighted = allowHighlight && (highlightedIndex == item.ItemIndex);
             }
         }
     }

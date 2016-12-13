@@ -49,7 +49,9 @@ public class HUD : MonoBehaviour
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
 
-        lootWindow.Dismiss();
+        //just in case
+        lootWindow.gameObject.SetActive(false);
+
         radioMenu.Dismiss();
     }
 
