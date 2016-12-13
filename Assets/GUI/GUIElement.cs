@@ -42,7 +42,15 @@ public class GUIElement : MonoBehaviour
 
     public void Activate(bool active)
     {
-        Activated = active;
+        if (active && !gameObject.activeSelf)
+        {
+            //will set activated already in OnEnable()
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            Activated = active;
+        }
     }
 
     public void Dismiss()
