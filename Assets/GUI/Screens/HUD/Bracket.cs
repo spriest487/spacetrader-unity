@@ -17,7 +17,7 @@ public class Bracket : MonoBehaviour
     private Image edgeMarker;
 
     [Header("Local Object Marker")]
-    
+
     [SerializeField]
     private List<Image> localObjectCorners;
 
@@ -31,13 +31,13 @@ public class Bracket : MonoBehaviour
 
     [SerializeField]
     private Transform areaMarker;
-        
+
     //owner bracket manager
     private BracketManager bracketManager;
-    
+
     public Targetable Target { get { return target; } }
-    
-    private Collider targetCollider;    
+
+    private Collider targetCollider;
     private Hitpoints targetHitpoints;
 
     private CanvasGroup canvasGroup;
@@ -64,10 +64,10 @@ public class Bracket : MonoBehaviour
     void Start()
     {
         Debug.Assert(target, "bracket must have a target");
-        
+
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
-        
+
         var hitpoints = target.GetComponent<Hitpoints>();
         if (hitpoints)
         {
@@ -78,7 +78,7 @@ public class Bracket : MonoBehaviour
             healthbar.gameObject.SetActive(false);
         }
     }
-    
+
     private void CalculateBoundingBoxSize(out int width, out int height, Camera cam)
     {
         var extents = targetCollider.bounds.extents;
@@ -119,7 +119,7 @@ public class Bracket : MonoBehaviour
         var halfHeight = Screen.height * 0.5f;
         var center = new Vector2(halfWidth, halfHeight);
         var between = new Vector2(x, y) - center;
-        
+
         var angle = Vector2.Angle(Vector2.up, between);
         if (x > halfWidth)
         {
@@ -128,7 +128,7 @@ public class Bracket : MonoBehaviour
 
         edgeMarker.transform.rotation = Quaternion.AngleAxis(angle, new Vector3(0, 0, 1));
     }
-    
+
     void LateUpdate()
 	{
 		if (!target)
@@ -168,7 +168,7 @@ public class Bracket : MonoBehaviour
 
         /*if it's behind us...
             -things above and behind stick to the top of the screen
-            -things below and behind stick to the bottom of the screen 
+            -things below and behind stick to the bottom of the screen
         */
         if (pos.z < 0)
         {
@@ -185,10 +185,10 @@ public class Bracket : MonoBehaviour
             x = Screen.width - x;
         }
 
-        if (x == 0 
-            || x == Screen.width
-            || y == 0 
-            || y == Screen.height)
+        if (x == 0  ||
+            x == Screen.width ||
+            y == 0  ||
+            y == Screen.height)
         {
             nameplate.gameObject.SetActive(false);
             healthbar.gameObject.SetActive(false);
@@ -224,13 +224,15 @@ public class Bracket : MonoBehaviour
                     break;
             }
 
-            nameplate.gameObject.SetActive(true);
+            nameplate.gameObject.SetActive(isTarget);
+            if (nameplate.gameObject.activeSelf)
+            {
+                float nameplateAlpha = 1;//isTarget ? 1 : 0.75f;
+                nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, nameplateAlpha);
 
-            float nameplateAlpha = isTarget ? 1 : 0.75f;
-            nameplate.color = new Color(reactionColor.r, reactionColor.g, reactionColor.b, nameplateAlpha);
-
-            nameplate.text = target.name.ToUpper();
-            nameplate.fontSize = isTarget ? 24 : 16;
+                nameplate.text = target.name.ToUpper();
+                nameplate.fontSize = isTarget ? 24 : 16;
+            }
 
             if (targetHitpoints && isTarget)
             {
@@ -248,7 +250,7 @@ public class Bracket : MonoBehaviour
 		canvasGroup.blocksRaycasts = true;
 		canvasGroup.alpha = 1;
 	}
-    
+
     private void DrawDistantBracket(bool isTarget, Color reactionColor, Camera cam)
     {
         for (int i = 0; i < localObjectCorners.Count; ++i)
@@ -258,7 +260,7 @@ public class Bracket : MonoBehaviour
 
         areaMarker.gameObject.SetActive(true);
         selectedAreaMarker.gameObject.SetActive(isTarget);
-        
+
         var markerRect = (RectTransform)areaMarker.transform;
         rectTransform.sizeDelta = markerRect.sizeDelta;
     }
