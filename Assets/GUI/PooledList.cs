@@ -21,6 +21,30 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
         get { return currentItems == null? 0 : currentItems.Count; }
     }
 
+    public int Capacity
+    {
+        get { return currentItems == null? 0 : currentItems.Capacity; }
+        set
+        {
+            if (currentItems == null)
+            {
+                currentItems = new List<TItem>(value);
+            }
+            else
+            {
+                currentItems.Capacity = value;
+            }
+
+            int diff = value - currentItems.Count;
+            for (int i = 0; i < diff; ++i)
+            {
+                var item = UnityEngine.Object.Instantiate(itemPrefab);
+                item.transform.SetParent(root);
+                item.gameObject.SetActive(false);
+            }
+        }
+    }
+
     public TItem this[int index]
     {
         get { return currentItems == null ? null : currentItems[index]; }
