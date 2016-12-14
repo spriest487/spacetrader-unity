@@ -12,7 +12,7 @@ public class SpaceStation : ActionOnActivate
 
     [SerializeField]
     private MooringTrigger mooringTrigger;
-    
+
     [SerializeField]
     private List<Transform> undockPoints;
 
@@ -58,7 +58,7 @@ public class SpaceStation : ActionOnActivate
     {
         get { return mooringTrigger; }
     }
-    
+
     public IEnumerable<Transform> UndockPoints
     {
         get { return undockPoints; }
@@ -110,7 +110,7 @@ public class SpaceStation : ActionOnActivate
                 new List<ShipForSale>(value);
         }
     }
-            
+
     //eat a ship, disabling it and storing it in the hangar
     public void AddDockedShip(Moorable docked)
     {
@@ -130,7 +130,7 @@ public class SpaceStation : ActionOnActivate
 
     public void Unmoor(Moorable moorable)
     {
-        Debug.AssertFormat(dockedShips.Contains(moorable), 
+        Debug.AssertFormat(dockedShips.Contains(moorable),
             "tried to unmoor {0} from {1} but it's not moored here",
                 moorable,
                 gameObject);
@@ -168,21 +168,14 @@ public class SpaceStation : ActionOnActivate
         moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
     }
 
-    private IEnumerator UndockPlayerRoutine()
-    {
-        var player = SpaceTraderConfig.LocalPlayer;
-        Debug.Assert(dockedShips.Contains(player.Ship.Moorable));
-
-        yield return GUIController.Current.SwitchTo(ScreenID.HUD);
-
-        Unmoor(player.Ship.Moorable);
-    }
-
     public void UndockPlayer()
     {
         /*have to run this as a routine on the station since both the player
          and the undock gui disable themselves during this process! */
-        StartCoroutine(UndockPlayerRoutine());
+        var player = SpaceTraderConfig.LocalPlayer;
+        Debug.Assert(dockedShips.Contains(player.Ship.Moorable));
+
+        Unmoor(player.Ship.Moorable);
     }
 
     void Update()

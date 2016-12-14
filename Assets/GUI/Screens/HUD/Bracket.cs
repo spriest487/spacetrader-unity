@@ -224,7 +224,8 @@ public class Bracket : MonoBehaviour
                     break;
             }
 
-            nameplate.gameObject.SetActive(isTarget);
+            nameplate.gameObject.SetActive(isTarget ||
+                target.TargetSpace == TargetSpace.Distant);
             if (nameplate.gameObject.activeSelf)
             {
                 float nameplateAlpha = 1;//isTarget ? 1 : 0.75f;

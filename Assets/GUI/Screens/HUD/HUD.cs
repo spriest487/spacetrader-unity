@@ -2,7 +2,6 @@
 
 using UnityEngine;
 using UnityEngine.VR;
-using System.Collections;
 using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
@@ -34,13 +33,8 @@ public class HUD : MonoBehaviour
 
     private Animator animator;
 
-    private static readonly int CutsceneParamName = Animator.StringToHash("Cutscene");
-
-    private bool CutsceneParam
-    {
-        get { return animator.GetBool(CutsceneParamName); }
-        set { animator.SetBool(CutsceneParamName, value); }
-    }
+    [SerializeField]
+    private GUIElement cinemaBars;
 
     private void OnEnable()
     {
@@ -53,6 +47,8 @@ public class HUD : MonoBehaviour
         lootWindow.gameObject.SetActive(false);
 
         radioMenu.Dismiss();
+
+        cinemaBars.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -62,20 +58,22 @@ public class HUD : MonoBehaviour
         if (!player || !player.Ship)
         {
             content.gameObject.SetActive(false);
-            CutsceneParam = false;
+            cinemaBars.gameObject.SetActive(false);
         }
         else
         {
             if (VRSettings.enabled)
             {
-                CutsceneParam = false;
+                cinemaBars.gameObject.SetActive(false);
             }
             else
             {
-                CutsceneParam = player.Ship.Moorable.AutoDockingStation
+                cinemaBars.Activate(player.Ship.Moorable.AutoDockingStation
                     || player.Ship.JumpTarget
-                    || GUIController.Current.CutsceneOverlay.HasCutscene;
+                    || GUIController.Current.CutsceneOverlay.HasCutscene);
             }
+
+            content.gameObject.SetActive(!cinemaBars.Activated);
 
             var playerTarget = player.Ship.Target;
 
