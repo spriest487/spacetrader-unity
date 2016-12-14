@@ -13,7 +13,7 @@ public class MissionTeamSlotList : MonoBehaviour
 
     [SerializeField]
     private MissionTeamDividerItem teamDividerPrefab;
-    
+
     public void OnEnable()
     {
         var mission = MissionManager.Instance.Mission;
@@ -23,16 +23,16 @@ public class MissionTeamSlotList : MonoBehaviour
             Destroy(listChild.gameObject);
         }
 
-        var teamCount = mission.Definition.Teams.Count;
+        var teamCount = mission.Definition.TeamCount;
         for (int teamIndex = 0; teamIndex < teamCount; ++teamIndex)
         {
-            var team = mission.Definition.Teams[teamIndex];
+            var team = mission.Definition.GetTeam(teamIndex);
 
             var dividerObj = Instantiate(teamDividerPrefab);
             dividerObj.transform.SetParent(slotList, false);
             dividerObj.SetTeam(teamIndex);
 
-            var slotCount = team.Slots.Count;
+            var slotCount = team.SlotCount;
             for (int slotIndex = 0; slotIndex < slotCount; ++slotIndex)
             {
                 var slotObj = Instantiate(slotItemPrefab);

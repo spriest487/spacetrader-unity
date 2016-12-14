@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -104,9 +105,9 @@ public class MissionManager : MonoBehaviour
         for (int teamIt = 0; teamIt < mission.Teams.Length; ++teamIt)
         {
             var activeTeam = mission.Teams[teamIt];
-            var defTeam = mission.Definition.Teams[teamIt];
+            var defTeam = mission.Definition.GetTeam(teamIt);
 
-            for (int slotIt = 0; slotIt < defTeam.Slots.Count; ++slotIt)
+            for (int slotIt = 0; slotIt < defTeam.SlotCount; ++slotIt)
             {
                 var slot = activeTeam.Slots[slotIt];
 

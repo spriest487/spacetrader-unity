@@ -31,14 +31,11 @@ public class HUD : MonoBehaviour
 
     private RadioMenu radioMenu;
 
-    private Animator animator;
-
     [SerializeField]
     private GUIElement cinemaBars;
 
     private void OnEnable()
     {
-        animator = GetComponent<Animator>();
         useTargetText = useTargetButton.GetComponentInChildren<Text>();
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);

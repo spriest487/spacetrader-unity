@@ -7,59 +7,6 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "SpaceTrader/Missions/Mission Definition")]
 public class MissionDefinition : ScriptableObject
 {
-    [System.Serializable]
-    public class PlayerSlot
-    {
-        [SerializeField]
-        private ShipType shipType;
-
-        [SerializeField]
-        private ModulePreset modulePreset;
-
-        [SerializeField]
-        private string name;
-
-        public ShipType ShipType { get { return shipType; } }
-        public ModulePreset ModulePreset { get { return modulePreset; } }
-        public string Name { get { return name; } }
-
-        public Ship SpawnShip(Vector3 pos, Quaternion rot, TeamDefinition team)
-        {
-            var ship = ShipType.CreateShip(pos, rot);
-            ship.name = Name;
-
-            var targetable = ship.GetComponent<Targetable>();
-            if (targetable)
-            {
-                targetable.Faction = team.Name;
-            }
-
-            if (modulePreset)
-            {
-                modulePreset.Apply(ship);
-            }
-
-            return ship;
-        }
-    }
-
-    [System.Serializable]
-    public class TeamDefinition
-    {
-        [SerializeField]
-        private string name;
-
-        [SerializeField]
-        private List<PlayerSlot> slots;
-
-        [SerializeField]
-        private List<Quest> quests;
-
-        public string Name { get { return name; } }
-        public IList<PlayerSlot> Slots { get { return slots; } }
-        public IList<Quest> Quests { get { return quests; } }
-    }
-
     [SerializeField]
     private string sceneName;
 
@@ -81,10 +28,16 @@ public class MissionDefinition : ScriptableObject
     public string Description { get { return description; } }
     public Sprite Image { get { return image; } }
 
-    public IList<TeamDefinition> Teams { get { return teams; } }
+    public IEnumerable<TeamDefinition> Teams { get { return teams; } }
+    public int TeamCount { get {return teams.Count; } }
 
     public void LoadMission()
     {
         SceneManager.LoadScene(SceneName);
+    }
+
+    public TeamDefinition GetTeam(int team)
+    {
+        return teams[team];
     }
 }

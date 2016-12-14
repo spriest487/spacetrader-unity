@@ -21,11 +21,13 @@ public class CrewConfiguration : ScriptableObject
 
     [SerializeField]
     private Sprite defaultPortrait;
-    
+
     [SerializeField]
     private List<CrewMember> characters;
 
-    public IList<Sprite> Portraits { get { return portraits; } }
+    public IEnumerable<Sprite> Portraits { get { return portraits; } }
+    public int PortraitCount { get { return portraits.Count; } }
+
     public Sprite DefaultPortrait { get { return defaultPortrait; } }
 
     private IEnumerable<string> Forenames { get { return forenames; } }
@@ -35,7 +37,17 @@ public class CrewConfiguration : ScriptableObject
     {
         get { return characters; }
     }
-    
+
+    public Sprite GetPortrait(int portrait)
+    {
+        return portraits[portrait];
+    }
+
+    public int GetPortraitIndex(Sprite portrait)
+    {
+        return portraits.IndexOf(portrait);
+    }
+
     public static CrewConfiguration Create(CrewConfiguration prefab)
     {
         var result = Instantiate(prefab);
@@ -44,7 +56,7 @@ public class CrewConfiguration : ScriptableObject
 
         result.forenames = LoadNamesFromTextAsset(result.forenameList);
         result.surnames = LoadNamesFromTextAsset(result.surnameList);
-        
+
         result.characters = new List<CrewMember>();
 
         return result;
@@ -54,7 +66,7 @@ public class CrewConfiguration : ScriptableObject
     {
         return asset.text.Split('\n');
     }
-   
+
     public CrewMember NewCharacter(string name, Sprite portrait)
     {
         if (!portrait)
@@ -62,7 +74,7 @@ public class CrewConfiguration : ScriptableObject
             portrait = DefaultPortrait;
         }
 
-        Debug.Assert(portrait == defaultPortrait || portraits.Contains(portrait), 
+        Debug.Assert(portrait == defaultPortrait || portraits.Contains(portrait),
             "portrait for character must be in the portraits list");
 
         var result = CreateInstance<CrewMember>();

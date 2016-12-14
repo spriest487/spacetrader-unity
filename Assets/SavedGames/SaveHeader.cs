@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace SavedGames
@@ -124,10 +125,10 @@ namespace SavedGames
 
         public Sprite GetPortraitSprite()
         {
-            var portraits = SpaceTraderConfig.CrewConfiguration.Portraits;
-            if (CharacterPortrait >= 0 && CharacterPortrait < portraits.Count)
+            var crew = SpaceTraderConfig.CrewConfiguration;
+            if (CharacterPortrait >= 0 && CharacterPortrait < crew.PortraitCount)
             {
-                return portraits[CharacterPortrait];
+                return crew.GetPortrait(CharacterPortrait);
             }
 
             return null;

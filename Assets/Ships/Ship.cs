@@ -10,17 +10,17 @@ public partial class Ship : MonoBehaviour
 {
     [SerializeField]
 	private FormationManager formationManager = new FormationManager();
-        
+
     [SerializeField]
     private Targetable target;
-    
+
     [HideInInspector]
     [SerializeField]
     private List<Ability> abilities = new List<Ability>();
 
     [SerializeField]
     private List<StatusEffect> activeStatusEffects = new List<StatusEffect>();
-    
+
     [SerializeField]
     private CargoHold cargo;
 
@@ -46,11 +46,11 @@ public partial class Ship : MonoBehaviour
 
     [SerializeField]
     private float roll;
-    
+
     private Hitpoints hitPoints;
 
     private List<WeaponHardpoint> hardpoints;
-    
+
     public float Thrust
     {
         get { return thrust; }
@@ -91,7 +91,7 @@ public partial class Ship : MonoBehaviour
         get { return shipType; }
     }
 
-    public IList<WeaponHardpoint> Hardpoints
+    public IEnumerable<WeaponHardpoint> Hardpoints
     {
         get
         {
@@ -103,7 +103,7 @@ public partial class Ship : MonoBehaviour
             return hardpoints;
         }
     }
-    
+
     public ShipStats CurrentStats
     {
         get
@@ -120,14 +120,14 @@ public partial class Ship : MonoBehaviour
     {
         get { return moduleLoadout; }
     }
-    
+
     public Targetable Target
     {
         get { return target; }
         set
         {
 #if UNITY_EDITOR
-            if (PlayerShip.LocalPlayer 
+            if (PlayerShip.LocalPlayer
                 && PlayerShip.LocalPlayer.Ship == this)
             {
                 if (value)
@@ -155,12 +155,12 @@ public partial class Ship : MonoBehaviour
     public Targetable Targetable { get; private set; }
     public Moorable Moorable { get; private set; }
 
-    public IList<Ability> Abilities
+    public IEnumerable<Ability> Abilities
     {
         get { return abilities.AsReadOnly(); }
         set { abilities = new List<Ability>(value); }
     }
-    
+
     public IEnumerable<StatusEffect> StatusEffects
     {
         get { return activeStatusEffects.AsReadOnly(); }
@@ -184,6 +184,11 @@ public partial class Ship : MonoBehaviour
         }
     }
 
+    public Ability GetAbility(int ability)
+    {
+        return abilities[ability];
+    }
+
     public void ResetControls(float pitch = 0, float yaw = 0, float roll = 0, float thrust = 0, float strafe = 0, float lift = 0)
     {
         Debug.Assert(!float.IsNaN(pitch));
@@ -200,7 +205,7 @@ public partial class Ship : MonoBehaviour
         this.strafe = strafe;
         this.lift = lift;
     }
-    
+
     public CrewMember GetCaptain()
     {
         return SpaceTraderConfig.CrewConfiguration.Characters
@@ -222,13 +227,13 @@ public partial class Ship : MonoBehaviour
         {
             yield return GetCaptain();
         }
-        
+
         foreach (var passenger in GetPassengers())
         {
             yield return passenger;
         }
     }
-    
+
     private void UpdateHardpoints()
     {
         hardpoints = new List<WeaponHardpoint>(GetComponentsInChildren<WeaponHardpoint>());
@@ -248,7 +253,7 @@ public partial class Ship : MonoBehaviour
 
         var rb = ship.GetComponent<Rigidbody>();
         UpdateRigidBodyFromStats(rb, shipType.Stats);
-        
+
         var newAbilities = new List<Ability>();
         foreach (var ability in shipType.Abilities)
         {
@@ -266,7 +271,7 @@ public partial class Ship : MonoBehaviour
         {
             obj.gameObject.AddComponent<Moorable>();
         }
-        
+
         if (!ship.cargo)
         {
             ship.Cargo = ScriptableObject.CreateInstance<CargoHold>();
@@ -292,7 +297,7 @@ public partial class Ship : MonoBehaviour
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
-        
+
         Targetable = GetComponent<Targetable>();
 
         hitPoints = GetComponent<Hitpoints>();
@@ -302,7 +307,7 @@ public partial class Ship : MonoBehaviour
 #if UNITY_EDITOR
         Debug.Assert(!abilities
             .Where(a => UnityEditor.PrefabUtility.GetPrefabType(a) != UnityEditor.PrefabType.None)
-            .Any(), 
+            .Any(),
             "on spawn, no ship should reference ability assets directly, they should be cloned!");
 #endif
     }
@@ -317,7 +322,7 @@ public partial class Ship : MonoBehaviour
         rigidbody.maxAngularVelocity = Mathf.Deg2Rad * stats.MaxTurnSpeed;
         rigidbody.inertiaTensor = new Vector3(1, 1, 1);
     }
-   
+
     /**
 	 * Finds the equivalent thrust required for the "from" ship to match
 	 * the current speed of the "target" ship (value will not exceed 1, even
@@ -328,7 +333,7 @@ public partial class Ship : MonoBehaviour
 		var targetSpeed = target.RigidBody.velocity.magnitude;
 		var maxSpeed = Mathf.Max(1, from.CurrentStats.MaxSpeed);
 		var result = Mathf.Clamp01(targetSpeed / maxSpeed);
-		
+
 		return result;
 	}
 
@@ -464,7 +469,7 @@ public partial class Ship : MonoBehaviour
         var dotToTarget = Mathf.Clamp(Vector3.Dot(transform.forward, aimDir), -1.0f, 1.0f);
         float degToTarget = Mathf.Rad2Deg * Mathf.Acos(dotToTarget);
         float brakeToTurnFactor = Mathf.Clamp01(1 - (degToTarget / safeTurnAngle));
-        
+
         thrust *= brakeToTurnFactor;
         lift *= brakeToTurnFactor;
         strafe *= brakeToTurnFactor;
@@ -500,7 +505,7 @@ public partial class Ship : MonoBehaviour
 
             //adjust less forcefully if we're close to the destination
             var safeAdjustDist = CurrentStats.MaxSpeed * 2; //TODO calculate stopping distance?
-            
+
 
             if (!Mathf.Approximately(0, safeAdjustDist))
             {
@@ -534,7 +539,7 @@ public partial class Ship : MonoBehaviour
         {
             Destroy(ability);
         }
-        
+
         var fleetManager = SpaceTraderConfig.FleetManager;
         if (fleetManager)
         {
@@ -550,7 +555,7 @@ public partial class Ship : MonoBehaviour
     public void RecalculateCurrentStats()
     {
         var result = ShipType.Stats.Clone();
-        
+
         var proportionalTotals = new ShipStats();
 
         foreach (var statusEffect in activeStatusEffects)
@@ -596,9 +601,9 @@ public partial class Ship : MonoBehaviour
 
     public bool RemoveStatusEffect(StatusEffect effect)
     {
-        return activeStatusEffects.Remove(effect);        
+        return activeStatusEffects.Remove(effect);
     }
-    
+
     void Awake()
 	{
         //default these members in for instances not created in the editor
@@ -606,7 +611,7 @@ public partial class Ship : MonoBehaviour
         {
             formationManager = new FormationManager();
         }
-        
+
         if (moduleLoadout == null)
         {
             moduleLoadout = new ModuleLoadout();
@@ -614,16 +619,16 @@ public partial class Ship : MonoBehaviour
 
         activeStatusEffects.RemoveAll(e => e == null);
 	}
-    
+
 	void FixedUpdate()
 	{
 		formationManager.Update();
 		DebugDrawFollowerPositions();
-        
+
         if (RigidBody)
 		{
             UpdateRigidBodyFromStats(RigidBody, CurrentStats);
-            
+
             //all movement vals must be within -1..1
             thrust = Mathf.Clamp(thrust, -1, 1);
             strafe = Mathf.Clamp(strafe, -1, 1);
@@ -631,13 +636,13 @@ public partial class Ship : MonoBehaviour
             pitch = Mathf.Clamp(pitch, -1, 1);
             yaw = Mathf.Clamp(yaw, -1, 1);
             roll = Mathf.Clamp(roll, -1, 1);
-            
+
             var torqueInput = new Vector3(Pitch, Yaw, Roll);
             var forceInput = new Vector3(Strafe, Lift, Thrust);
-                                    
+
             var force = forceInput * CurrentStats.Thrust;
             var torque = torqueInput * Mathf.Deg2Rad * CurrentStats.Agility;
-            
+
             for (int i = 0; i <3; ++i)
             {
                 Debug.Assert(!float.IsNaN(torque[i]));
@@ -653,7 +658,7 @@ public partial class Ship : MonoBehaviour
 	private void Update()
 	{
         Debug.Assert(ShipType, "ship " + name + " must have a shiptype");
-        
+
         //force refresh of stats
         currentStats = null;
 
@@ -680,20 +685,20 @@ public partial class Ship : MonoBehaviour
             {
                 newStatusEffects.Add(effect);
             }
-            else 
+            else
             {
                 Destroy(effect);
             }
         }
         activeStatusEffects = newStatusEffects;
-                
+
         float speed = RigidBody.velocity.magnitude;
         if (speed > CurrentStats.MaxSpeed)
         {
             RigidBody.velocity = RigidBody.velocity.normalized * CurrentStats.MaxSpeed;
         }
 	}
-		
+
 	private Vector3 GetFormationPos(int followerId)
 	{
         var shipPos = transform.position;
@@ -716,7 +721,7 @@ public partial class Ship : MonoBehaviour
 	{
 		return GetFormationPos(follower.GetInstanceID());
 	}
-   
+
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void DebugDrawFollowerPositions()
 	{
@@ -733,7 +738,7 @@ public partial class Ship : MonoBehaviour
 
     public WeaponHardpoint GetHardpointAt(int index)
     {
-        return Hardpoints[index % Hardpoints.Count];
+        return hardpoints[index % hardpoints.Count];
     }
 
     public void Explode()
@@ -787,7 +792,7 @@ public partial class Ship : MonoBehaviour
             messageTargets.AddRange(FindObjectsOfType<Ship>());
         }
 
-        var radioMessage = new RadioMessage(this, message);        
+        var radioMessage = new RadioMessage(this, message);
         foreach (var messageTarget in messageTargets)
         {
             messageTarget.SendMessage("OnRadioMessage", radioMessage, SendMessageOptions.DontRequireReceiver);

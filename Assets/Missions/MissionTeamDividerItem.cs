@@ -22,7 +22,7 @@ public class MissionTeamDividerItem : MonoBehaviour
 
         if (teamIndex >= 0 && mission)
         {
-            var team = mission.Definition.Teams[teamIndex];
+            var team = mission.Definition.GetTeam(teamIndex);
 
             teamNameLabel.text = team.Name.ToUpper();
         }

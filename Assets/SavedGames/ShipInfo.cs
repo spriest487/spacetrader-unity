@@ -28,7 +28,7 @@ namespace SavedGames
         public int TransientID { get; private set; }
 
         public CharacterInfo Captain { get; private set; }
-        
+
         public ShipInfo()
         {
         }
@@ -108,7 +108,7 @@ namespace SavedGames
                 ship.gameObject.AddComponent<Targetable>();
             }
 
-            if (abilityCooldowns == null || ship.Abilities.Count != abilityCooldowns.Count)
+            if (abilityCooldowns == null || ship.Abilities.Count() != abilityCooldowns.Count)
             {
                 Debug.LogWarning("invalid ability count in save");
             }
@@ -123,7 +123,7 @@ namespace SavedGames
             for (int ac = 0; ac < abilityCooldowns.Count; ++ac)
             {
                 var cooldown = abilityCooldowns[ac];
-                ship.Abilities[ac].Cooldown = cooldown;
+                ship.GetAbility(ac).Cooldown = cooldown;
             }
 
             return ship;

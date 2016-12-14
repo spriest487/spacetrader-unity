@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Linq;
 using System.Collections;
 
 struct PlayerRadioMessage
@@ -138,9 +138,9 @@ public class PlayerShip : MonoBehaviour
 
     private void UseAbility(int number)
     {
-        if (number < ship.Abilities.Count)
+        if (number < ship.Abilities.Count())
         {
-            ship.Abilities[number].Use(ship);
+            ship.GetAbility(number).Use(ship);
         }
     }
 

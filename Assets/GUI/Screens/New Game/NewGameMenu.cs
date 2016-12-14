@@ -64,7 +64,7 @@ public class NewGameMenu : MonoBehaviour
 
     public void CyclePortrait(int diff)
     {
-        var portraits = SpaceTraderConfig.CrewConfiguration.Portraits;
+        var portraits = SpaceTraderConfig.CrewConfiguration.Portraits.ToList();
         Debug.Assert(portraits.Any());
 
         int selected = portraits.IndexOf(portrait.sprite);

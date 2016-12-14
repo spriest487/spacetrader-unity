@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace SavedGames
@@ -8,7 +9,7 @@ namespace SavedGames
     {
         int transientId;
         public int TransientID { get { return transientId; } }
-        
+
         public string Name { get; private set; }
         public int PortraitIndex { get; private set; }
 
@@ -24,7 +25,7 @@ namespace SavedGames
             var portrait = fromCharacter.Portrait;
             if (portrait)
             {
-                PortraitIndex = SpaceTraderConfig.CrewConfiguration.Portraits.IndexOf(portrait);
+                PortraitIndex = SpaceTraderConfig.CrewConfiguration.GetPortraitIndex(portrait);
             }
         }
 
@@ -32,13 +33,13 @@ namespace SavedGames
         {
             var allPortraits = SpaceTraderConfig.CrewConfiguration.Portraits;
             Sprite portrait;
-            if (PortraitIndex < 0 || PortraitIndex >= allPortraits.Count)
+            if (PortraitIndex < 0 || PortraitIndex >= allPortraits.Count())
             {
                 portrait = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
             }
             else
             {
-                portrait = allPortraits[PortraitIndex];
+                portrait = SpaceTraderConfig.CrewConfiguration.GetPortrait(PortraitIndex);
             }
 
             var crewMember = SpaceTraderConfig.CrewConfiguration.NewCharacter(Name, portrait);

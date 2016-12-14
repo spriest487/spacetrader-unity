@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 
 [Serializable]
 public class ActiveTeam
@@ -8,14 +9,14 @@ public class ActiveTeam
     private ActivePlayerSlot[] slots;
 
     [SerializeField]
-    private MissionDefinition.TeamDefinition definition;
+    private TeamDefinition definition;
 
     public ActivePlayerSlot[] Slots
     {
         get { return slots; }
     }
 
-    public MissionDefinition.TeamDefinition Definition
+    public TeamDefinition Definition
     {
         get { return definition; }
     }
@@ -24,13 +25,13 @@ public class ActiveTeam
     {
     }
 
-    public ActiveTeam(MissionDefinition.TeamDefinition team)
+    public ActiveTeam(TeamDefinition team)
     {
         definition = team;
 
-        slots = new ActivePlayerSlot[team.Slots.Count];
-        
-        for (int slot = 0; slot < team.Slots.Count; ++slot)
+        slots = new ActivePlayerSlot[team.SlotCount];
+
+        for (int slot = 0; slot < team.SlotCount; ++slot)
         {
             var newSlot = new ActivePlayerSlot();
             slots[slot] = newSlot;

@@ -35,8 +35,8 @@ public class MissionTeamSlotItem : MonoBehaviour
             slotIndex >= 0 &&
             mission) //if !mission, screen is probably being cancelled, just stop updating
         {
-            var teamDefinition = mission.Definition.Teams[teamIndex];
-            var slotDefinition = teamDefinition.Slots[slotIndex];
+            var teamDefinition = mission.Definition.GetTeam(teamIndex);
+            var slotDefinition = teamDefinition.GetSlot(slotIndex);
 
             var activeTeam = mission.Teams[teamIndex];
             var activeSlot = activeTeam.Slots[slotIndex];

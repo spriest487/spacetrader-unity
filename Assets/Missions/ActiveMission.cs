@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
-using System;
+using System.Linq;
 
 public class ActiveMission : ScriptableObject
 {
@@ -9,28 +9,28 @@ public class ActiveMission : ScriptableObject
 
     [SerializeField]
     private MissionDefinition missionDefinition;
-    
+
     [SerializeField]
     private ActiveTeam[] teams;
-    
+
     public MissionDefinition Definition { get { return missionDefinition; } }
-    
+
     public ActiveTeam[] Teams { get { return teams; } }
-    
+
     public static ActiveMission Create(MissionDefinition definition)
     {
         var result = CreateInstance<ActiveMission>();
 
         result.missionDefinition = definition;
-        result.teams = new ActiveTeam[definition.Teams.Count];
+        result.teams = new ActiveTeam[definition.Teams.Count()];
         result.name = definition.name;
 
         bool firstSlot = true;
 
         for (int team = 0; team < result.teams.Length; ++team)
         {
-            var newTeam = new ActiveTeam(definition.Teams[team]);
-            
+            var newTeam = new ActiveTeam(definition.GetTeam(team));
+
             foreach (var slot in newTeam.Slots)
             {
                 slot.Status = firstSlot ? SlotStatus.Human : SlotStatus.AI;
