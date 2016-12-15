@@ -23,6 +23,10 @@ public class FleetManager : ScriptableObject
             fleets.Add(fleet);
         }
 
+        Debug.AssertFormat(fleet.Members.Count() < Fleet.MaxSize,
+            "fleet must have {0} or fewer members",
+            Fleet.MaxSize);
+
         fleet.Followers.Add(follower);
     }
 

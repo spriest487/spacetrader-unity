@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class Fleet : ScriptableObject
 {
+    public const int MaxSize = 5;
+
     [SerializeField]
     private Ship leader;
 
@@ -35,7 +37,7 @@ public class Fleet : ScriptableObject
 
     public Fleet()
     {
-        followers = new List<Ship>();
+        followers = new List<Ship>(MaxSize);
     }
 
     public static Fleet Create(Ship leader)
