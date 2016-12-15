@@ -37,7 +37,7 @@ public class MainMenu : MonoBehaviour
 
     public void EndGame()
     {
-        SpaceTraderConfig.Instance.StartCoroutine(EndGameRoutine());
+        StartCoroutine(EndGameRoutine());
     }
 
     public void LoadGame()
@@ -74,7 +74,9 @@ public class MainMenu : MonoBehaviour
         }
 
         guiController.DismissLoadingOverlay();
-        guiController.SwitchTo(ScreenID.None);
+
+        //refresh
+        OnEnable();
     }
 
     private IEnumerator SaveGameRoutine()

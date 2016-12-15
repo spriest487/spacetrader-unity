@@ -136,13 +136,6 @@ public class GUIController : MonoBehaviour
 
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
 
-        var activeScreen = FindActiveScreen();
-        if (activeScreen)
-        {
-            header.Activate(activeScreen.ShowHeader);
-            statusBar.Activate(activeScreen.ShowStatusBar);
-        }
-
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
 
@@ -251,15 +244,16 @@ public class GUIController : MonoBehaviour
 
             var screen = FindScreen(activeTransition.toScreen);
             screen.gameObject.SetActive(true);
-
-            header.Activate(screen.ShowHeader);
-            statusBar.Activate(screen.ShowStatusBar);
         }
 
         /* update header if the current screen has a header, and
          we're either not in a transition, or currently transitioning
          into this screen*/
         var activeScreen = FindActiveScreen();
+
+        header.Activate(activeScreen.ShowHeader);
+        statusBar.Activate(activeScreen.ShowStatusBar);
+
         if (header.Activated
             && (activeTransition == null
                 || activeTransition.toScreen == activeScreen.ID))
