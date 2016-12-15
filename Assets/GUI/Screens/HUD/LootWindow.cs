@@ -35,7 +35,7 @@ public class LootWindow : MonoBehaviour
     {
         if (!loot)
         {
-            gameObject.SetActive(false);
+            Element.Activate(false);
         }
         else
         {
@@ -45,6 +45,9 @@ public class LootWindow : MonoBehaviour
 
     public void ShowLoot(LootContainer loot)
     {
+        //do this first so Awake() is called
+        gameObject.SetActive(true);
+
         this.loot = loot;
         title.text = loot.name;
 
