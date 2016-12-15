@@ -15,9 +15,6 @@ public class HUD : MonoBehaviour
     private Image playerPortrait;
 
     [SerializeField]
-    private Text playerName;
-
-    [SerializeField]
     private Text playerMoney;
 
     [Header("Overlays")]
@@ -91,12 +88,10 @@ public class HUD : MonoBehaviour
             var captain = player.Ship.GetCaptain();
             if (captain)
             {
-                playerName.text = captain.name;
                 playerPortrait.sprite = captain.Portrait;
             }
             else
             {
-                playerName.text = "Player";
                 playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
             }
 

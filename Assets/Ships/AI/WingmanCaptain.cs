@@ -11,9 +11,22 @@ public enum WingmanOrder
     AttackLeaderTarget = RadioMessageType.Attack,
 }
 
+public static class WingmanOrderUtility
+{
+    public static string GetHUDLabel(this WingmanOrder order)
+    {
+        switch (order)
+        {
+            case WingmanOrder.AttackLeaderTarget: return "ATTACK";
+            case WingmanOrder.FollowLeader: return "FOLLOW";
+            default: return "WAIT";
+        }
+    }
+}
+
 [RequireComponent(typeof(AITaskFollower))]
 public class WingmanCaptain : MonoBehaviour
-{ 
+{
     [SerializeField]
     private WingmanOrder activeOrder;
 
@@ -35,7 +48,7 @@ public class WingmanCaptain : MonoBehaviour
     {
         get { return activeOrder; }
     }
-	
+
     private void SetOrder(WingmanOrder newOrder)
     {
         if (activeOrder != newOrder && orderTask)
@@ -45,7 +58,7 @@ public class WingmanCaptain : MonoBehaviour
             activeOrder = newOrder;
         }
     }
-    
+
     private void OnRadioMessage(RadioMessage message)
     {
         var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
@@ -71,13 +84,13 @@ public class WingmanCaptain : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         Ship.SendRadioMessage(RadioMessageType.AcknowledgeOrder, order.SourceShip);
     }
-    
+
     private int CalculateThreat(Targetable target)
     {
         int threat = 1;
 
         //invert threat for friendlies
-        if (Ship.Targetable 
+        if (Ship.Targetable
             && Ship.Targetable.RelationshipTo(target) != TargetRelationship.Hostile)
         {
             threat = -threat;
@@ -119,7 +132,7 @@ public class WingmanCaptain : MonoBehaviour
             potentialTargets.RemoveAll(t => t.Threat < 0);
 
             if (potentialTargets.Count > 0)
-            { 
+            {
                 //highest threat comes first
                 potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
 
@@ -164,7 +177,7 @@ public class WingmanCaptain : MonoBehaviour
         AcquireTarget();
 
         if (!fleet)
-        {   
+        {
             SetOrder(WingmanOrder.Wait);
         }
         else if (fleet.Leader == Ship)

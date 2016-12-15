@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class FleetListItem : MonoBehaviour
 {
+    const int MaxLabelLength = 10;
+
     [SerializeField]
     private Text nameLabel;
 
@@ -31,7 +33,7 @@ public class FleetListItem : MonoBehaviour
     [HideInInspector]
     [SerializeField]
     private Hitpoints hitpoints;
-    
+
     public void Assign(Ship ship, Color labelColor)
     {
         this.ship = ship;
@@ -47,25 +49,6 @@ public class FleetListItem : MonoBehaviour
         Update();
     }
 
-    private string OrderString(WingmanOrder order)
-    {
-        switch (order)
-        {
-            case WingmanOrder.AttackLeaderTarget:
-                if (ship.Target)
-                {
-                    return "Attacking " + ship.Target.name;
-                }
-                else
-                {
-                    return "Following";
-                }
-            case WingmanOrder.FollowLeader: return "Following";
-            case WingmanOrder.Wait: return "Waiting";
-            default: return null;
-        }
-    }
-
     private void Update()
     {
         if (!ship)
@@ -74,7 +57,14 @@ public class FleetListItem : MonoBehaviour
             return;
         }
 
-        nameLabel.text = ship.name;
+        var label = ship.name;
+        if (label.Length > MaxLabelLength)
+        {
+            const string ellipsis = "...";
+            label = label.Substring(0, MaxLabelLength - ellipsis.Length) + ellipsis;
+        }
+
+        nameLabel.text = label;
 
         if (hitpoints && hitpoints.GetMaxArmor() > 0)
         {
@@ -85,16 +75,16 @@ public class FleetListItem : MonoBehaviour
         {
             armorBar.gameObject.SetActive(false);
         }
-        
+
         var captain = ship.GetCaptain();
         var portrait = captain ? captain.Portrait : SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
-        
+
         captainPortrait.sprite = portrait;
 
         string wingmanOrder = null;
         if (wingmanCaptain)
         {
-            wingmanOrder = OrderString(wingmanCaptain.ActiveOrder);
+            wingmanOrder = wingmanCaptain.ActiveOrder.GetHUDLabel();
         }
 
         if (wingmanOrder != null)
