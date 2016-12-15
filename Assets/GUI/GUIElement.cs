@@ -15,7 +15,14 @@ public class GUIElement : MonoBehaviour
 
     public bool Activated
     {
-        get { return GetComponent<Animator>().GetBool(ActiveParamName); }
+        get
+        {
+            if (!gameObject.activeSelf)
+            {
+                return false;
+            }
+            return GetComponent<Animator>().GetBool(ActiveParamName);
+        }
         set { GetComponent<Animator>().SetBool(ActiveParamName, value); }
     }
 
@@ -47,7 +54,7 @@ public class GUIElement : MonoBehaviour
             //will set activated already in OnEnable()
             gameObject.SetActive(true);
         }
-        else
+        else if (gameObject.activeSelf)
         {
             Activated = active;
         }
