@@ -29,6 +29,9 @@ public class HUD : MonoBehaviour
     private RadioMenu radioMenu;
 
     [SerializeField]
+    private MessagePanel messagePanel;
+
+    [SerializeField]
     private GUIElement cinemaBars;
 
     private void OnEnable()
@@ -84,19 +87,25 @@ public class HUD : MonoBehaviour
                 useTargetButton.gameObject.SetActive(false);
             }
 
-            //TODO: slow
-            var captain = player.Ship.GetCaptain();
-            if (captain)
+            if (content.gameObject.activeSelf)
             {
-                playerPortrait.sprite = captain.Portrait;
-            }
-            else
-            {
-                playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
-            }
+                //TODO: slow
+                var captain = player.Ship.GetCaptain();
+                if (captain)
+                {
+                    playerPortrait.sprite = captain.Portrait;
+                }
+                else
+                {
+                    playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+                }
 
-            var money = Market.FormatCurrency(player.Money);
-            playerMoney.text = money;
+                var money = Market.FormatCurrency(player.Money);
+                playerMoney.text = money;
+
+                float messageAlpha = messagePanel.MessageCount > 0? 1 : 0;
+                messagePanel.GetComponent<CanvasGroup>().alpha = messageAlpha;
+            }
         }
     }
 

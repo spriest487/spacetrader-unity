@@ -23,7 +23,12 @@ public class MessagePanel : MonoBehaviour
 
     [SerializeField]
     private NotificationCategory notificationCategory;
-    
+
+    public int MessageCount
+    {
+        get { return notifications == null? 0 : notifications.Count; }
+    }
+
     private void Update()
     {
         if (notifications == null)
@@ -34,7 +39,7 @@ public class MessagePanel : MonoBehaviour
         var items = PlayerNotifications.GetNotifications(notificationCount, notificationCategory)
             .Where(n => n.Created > Time.time - maxAge);
 
-        notifications.Refresh(items, (i, item, data) => 
+        notifications.Refresh(items, (i, item, data) =>
             item.Assign(data.Text));
     }
 }
