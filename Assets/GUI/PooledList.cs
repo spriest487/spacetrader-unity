@@ -18,12 +18,20 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
 
     public int Count
     {
-        get { return currentItems == null? 0 : currentItems.Count; }
+        get
+        {
+            if (currentItems == null)
+            {
+                return 0;
+            }
+
+            return currentItems.Where(i => i.isActiveAndEnabled).Count();
+        }
     }
 
     public int Capacity
     {
-        get { return currentItems == null? 0 : currentItems.Capacity; }
+        get { return currentItems == null? 0 : currentItems.Count; }
         set
         {
             if (currentItems == null)
