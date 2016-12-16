@@ -622,9 +622,6 @@ public partial class Ship : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		formationManager.Update();
-		DebugDrawFollowerPositions();
-
         if (RigidBody)
 		{
             UpdateRigidBodyFromStats(RigidBody, CurrentStats);
@@ -659,8 +656,7 @@ public partial class Ship : MonoBehaviour
 	{
         Debug.Assert(ShipType, "ship " + name + " must have a shiptype");
 
-        //force refresh of stats
-        currentStats = null;
+        formationManager.Update();
 
         //ability cooldowns
         foreach (var ability in abilities)
