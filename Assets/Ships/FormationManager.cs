@@ -8,25 +8,23 @@ using UnityEngine;
 public class FormationManager
 {
 	[SerializeField]
-	private HashSet<int> followRequests;
+	private List<int> followRequests;
 
 	[SerializeField]
-	private IDictionary<int, int> followerPositions;
+	private Dictionary<int, int> followerPositions;
 
 	public ICollection<int> followers { get { return followerPositions.Keys; } }
 
 	public FormationManager()
 	{
-		followRequests = new HashSet<int>();
+		followRequests = new List<int>();
 		followerPositions = new Dictionary<int, int>();
 	}
 
 	public void Update()
 	{
 		//remove any followers that didn't renew their follow status
-		var currentFollowers = new LinkedList<int>(followerPositions.Keys);
-
-		foreach (int currentFollower in currentFollowers)
+		foreach (int currentFollower in followerPositions.Keys)
 		{
 			if (!followRequests.Contains(currentFollower))
 			{
@@ -37,30 +35,27 @@ public class FormationManager
 				followRequests.Remove(currentFollower);
 			}
 		}
-		
-		//update to only include old 
-		currentFollowers = new LinkedList<int>(followerPositions.Keys);
+
+		//update to only include old
+		var currentFollowers = new LinkedList<int>(followerPositions.Keys);
 
 		//followRequests now only contains unique new followers
-		var newFollowers = new List<int>(followRequests);
-		followRequests.Clear();
-
 		/* add new followers alternately to the "left" and "right" (back and front of
 		 the list) */
-		var newFollowerCount = newFollowers.Count();
+		var newFollowerCount = followRequests.Count();
 		for (int newFollowerIt = 0; newFollowerIt < newFollowerCount; ++newFollowerIt)
 		{
 			if (newFollowerIt % 2 == 0)
 			{
-				currentFollowers.AddLast(newFollowers[newFollowerIt]);
+				currentFollowers.AddLast(followRequests[newFollowerIt]);
 			}
 			else
 			{
-				currentFollowers.AddFirst(newFollowers[newFollowerIt]);
+				currentFollowers.AddFirst(followRequests[newFollowerIt]);
 			}
 		}
 
-		followerPositions = new Dictionary<int, int>();
+		followerPositions.Clear();
 
 		var followerIds = currentFollowers.ToArray();
 		var count = currentFollowers.Count();
@@ -79,6 +74,8 @@ public class FormationManager
 
 	public int IncludeFollower(int followerId)
 	{
+        Debug.Assert(!followRequests.Contains(followerId), "should not receive duplicate follow requests");
+
 		followRequests.Add(followerId);
 
 		//return the current position if this id is already registered
