@@ -59,6 +59,14 @@ public class FleetManager : ScriptableObject
 
     public Fleet GetFleetOf(Ship ship)
     {
-        return fleets.Where(f => f.IsMember(ship)).FirstOrDefault();
+        foreach (var fleet in fleets)
+        {
+            if (fleet.IsMember(ship))
+            {
+                return fleet;
+            }
+        }
+
+        return null;
     }
 }
