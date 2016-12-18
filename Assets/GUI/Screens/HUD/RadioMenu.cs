@@ -2,61 +2,43 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using System;
-using System.Collections;
 
-public enum RadioMessageType
-{
-    Greeting,
-
-    FollowMe,
-    Attack,
-    Wait,
-
-    AcknowledgeOrder
-}
-
-public struct RadioMessage
-{
-    private readonly Ship source;
-    private RadioMessageType messageType;
-
-    public Ship SourceShip { get { return source; } }
-    public RadioMessageType MessageType { get { return messageType; } }
-
-    public RadioMessage(Ship source, RadioMessageType messageType)
-    {
-        this.source = source;
-        this.messageType = messageType;
-    }
-}
-
+[RequireComponent(typeof(GUIElement))]
 public class RadioMenu : MonoBehaviour
 {
     [SerializeField]
-    private Transform content;
+    private Button greetingButton;
+    private Text greetingText;
 
-    private IEnumerator AnimateShowRadioMenu()
+    private void Awake()
     {
-        foreach (var entry in content.GetComponentsInChildren<RadioMenuEntry>())
+        greetingText = greetingButton.GetComponentInChildren<Text>();
+    }
+
+    private void OnEnable()
+    {
+        foreach (var entry in GetComponentsInChildren<RadioMenuEntry>())
         {
             entry.RefreshRadioMenu();
         }
-
-        yield return null;
-
-        content.gameObject.SetActive(true);
-    }
-    
-    public void ShowRadioMenu()
-    {
-        StartCoroutine(AnimateShowRadioMenu());
     }
 
-    public void Dismiss()
+    private void Update()
     {
-        content.gameObject.SetActive(false);
+        var player = SpaceTraderConfig.LocalPlayer;
+
+        if (player.Ship.Target)
+        {
+            const string format = "Greetings, {0}!";
+            greetingText.text = string.Format(format, player.Ship.Target.name);
+            greetingButton.interactable = true;
+        }
+        else
+        {
+            greetingText.text = "Greetings!";
+            greetingButton.interactable = false;
+        }
     }
 
     private void Send(string messageName, Ship target)
@@ -65,7 +47,7 @@ public class RadioMenu : MonoBehaviour
         var source = PlayerShip.LocalPlayer.Ship;
 
         source.SendRadioMessage(message, target);
-        Dismiss();
+        GetComponent<GUIElement>().Dismiss();
     }
 
     public void SendGlobalBroadcast(string messageName)
@@ -92,7 +74,7 @@ public class RadioMenu : MonoBehaviour
         }
         else
         {
-            Dismiss();
+            GetComponent<GUIElement>().Dismiss();
         }
     }
 }

@@ -19,7 +19,6 @@ public class HUD : MonoBehaviour
 
     [Header("Overlays")]
 
-    [SerializeField]
     private LootWindow lootWindow;
 
     [SerializeField]
@@ -34,17 +33,18 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private GUIElement cinemaBars;
 
-    private void OnEnable()
+    private void Awake()
     {
-        useTargetText = useTargetButton.GetComponentInChildren<Text>();
+        useTargetText = useTargetButton.GetComponentInChildren<Text>(true);
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
+        lootWindow = GetComponentInChildren<LootWindow>(true);
+    }
 
-        //just in case
+    private void OnEnable()
+    {
         lootWindow.gameObject.SetActive(false);
-
-        radioMenu.Dismiss();
-
+        radioMenu.gameObject.SetActive(false);
         cinemaBars.gameObject.SetActive(false);
     }
 
