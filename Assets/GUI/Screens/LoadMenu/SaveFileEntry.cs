@@ -5,8 +5,8 @@ using UnityEngine.UI;
 using SavedGames;
 using System.Globalization;
 
-public class SaveFileEntry : Toggle {
-
+public class SaveFileEntry : Toggle
+{
     [SerializeField]
     private Text entryText;
 

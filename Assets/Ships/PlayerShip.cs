@@ -184,10 +184,13 @@ public class PlayerShip : MonoBehaviour
             {
                 UseAbility(3);
             }
-
-            var pitch = Input.GetAxis("pitch");
-            var yaw = Input.GetAxis("yaw");
-            var thrust = Input.GetAxis("Vertical");
+            
+            var pitch = Input.GetAxis("Pitch");
+            var yaw = Input.GetAxis("Yaw");
+            var roll = -Input.GetAxis("Roll");
+            var thrust = Input.GetAxis("Thrust");
+            var strafe = Input.GetAxis("Strafe");
+            var lift = Input.GetAxis("Lift");
 
             if (Universe.TouchControlsEnabled)
             {
@@ -209,15 +212,31 @@ public class PlayerShip : MonoBehaviour
                         pitch += turnAim.Value.y;
                     }
                 }
+            }            
+
+            //in yaw mode, the roll control (stick) maps to yaw instead
+            if (Mathf.Abs(yaw) <= float.Epsilon &&
+                Input.GetButton("Yaw Mode"))
+            {
+                yaw = -roll;
+                roll = Ship.Roll;
+            }
+
+            //in strafe mode, thrust maps to lift instead
+            if (Mathf.Abs(lift) <= float.Epsilon &&
+                Input.GetButton("Strafe Mode"))
+            {
+                lift = thrust;
+                thrust = Ship.Thrust;
             }
 
             Ship.ResetControls(
                 pitch: pitch,
                 yaw: yaw,
-                roll: -Input.GetAxis("roll"),
+                roll: roll,
                 thrust: thrust,
-                strafe: Input.GetAxis("Horizontal"),
-                lift:  Input.GetAxis("lift"));
+                strafe: strafe,
+                lift: lift);
 
             if (Input.GetButton("fire"))
             {

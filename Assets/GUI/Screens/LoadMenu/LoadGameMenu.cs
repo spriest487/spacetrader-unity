@@ -4,6 +4,7 @@ using System.Collections;
 using SavedGames;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -78,6 +79,11 @@ public class LoadGameMenu : MonoBehaviour
         {
             entry.isOn = entry == selectedEntry;
         }
+
+        var firstSelectable = entries.Select(e => e.GetComponentInChildren<Selectable>())
+            .FirstOrDefault();
+
+        GetComponent<GUIScreen>().SetNavigation(firstSelectable, loadButton);
     }
 
     public void Load()

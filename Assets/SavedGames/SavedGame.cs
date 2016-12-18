@@ -22,6 +22,20 @@ namespace SavedGames
 
         private int playerMoney;
 
+        public string UniqueName
+        {
+            get
+            {
+                if (playerShip != null && playerShip.Captain != null)
+                {
+                    return playerShip.Captain.Name;
+                }
+
+                Debug.LogWarning("no unique name available for save, using default name (don't allow game save in this state!)");
+                return "Save";
+            }
+        }
+
         public static SavedGame CaptureFromCurrentState()
         {
             var result = new SavedGame();

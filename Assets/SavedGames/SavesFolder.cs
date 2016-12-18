@@ -10,7 +10,7 @@ namespace SavedGames
     public static class SavesFolder
     {
         public const int CURRENT_VERSION = 1;
-        
+
         public class Entry
         {
             public string Path { get; private set; }
@@ -30,11 +30,11 @@ namespace SavedGames
             //read header length and header
             var headerLength = saveReader.ReadInt32();
             var headerBytes = saveReader.ReadBytes(headerLength);
-                
+
             using (var headerStream = new MemoryStream(headerBytes))
             {
                 var fields = binary.Deserialize(headerStream) as Dictionary<string, string>;
-                
+
                 return fields != null? new SaveHeader(fields) : null;
             }
         }
@@ -93,9 +93,9 @@ namespace SavedGames
             var save = SavedGame.CaptureFromCurrentState();
             var header = save.CreateHeader().ToDictionary();
 
-            var path = Path.Combine(Root, "Save1.dat");
+            var path = Path.Combine(Root, save.UniqueName + ".dat");
             var binary = new BinaryFormatter();
-            
+
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
             using (var saveFile = File.Create(path))
@@ -105,7 +105,7 @@ namespace SavedGames
             {
                 binary.Serialize(headerStream, header);
                 var headerBytes = headerStream.ToArray();
-                
+
                 //length of header followed by serializer header dictionary
                 saveWriter.Write(headerBytes.Length);
                 saveWriter.Write(headerBytes);

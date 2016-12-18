@@ -53,7 +53,7 @@ public class GUIController : MonoBehaviour
     private Text headerLabel;
 
     [SerializeField]
-    private Transform backButton;
+    private Button backButton;
 
     [SerializeField]
     private GUIElement statusBar;
@@ -136,6 +136,19 @@ public class GUIController : MonoBehaviour
 
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
 
+
+        foreach (var screen in screens)
+        {
+            screen.OnNavigationChanged += () => RefreshBackButtonNavigation(screen);
+        }
+
+        var activeScreen = FindActiveScreen();
+        if (activeScreen)
+        {
+            header.Activate(activeScreen.ShowHeader);
+            statusBar.Activate(activeScreen.ShowStatusBar);
+        }
+        
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
 
@@ -153,14 +166,24 @@ public class GUIController : MonoBehaviour
         Universe.OnPrefsSaved -= SetupVRMode;
     }
 
-    private bool ProcessScreenButton(string button, ScreenID screen)
+    private bool ProcessScreenButton(string button, ScreenID screen, ScreenID defaultScreen)
     {
         if (screen == ScreenID.None || string.IsNullOrEmpty(button) || HasTransition)
         {
             return false;
         }
 
-        if (Input.GetButtonDown(button))
+        var buttonState = Input.GetButtonDown(button);
+
+        /*special case: the screen bound to the "cancel" button only activates
+        if we're already in the default state, because cancel is also the
+        dismiss keybind*/
+        if (button == "Cancel")
+        {
+            buttonState &= screen == defaultScreen;
+        }
+
+        if (buttonState)
         {
             if (ActiveScreen == screen)
             {
@@ -203,6 +226,33 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    private void RefreshBackButtonNavigation(GUIScreen activeScreen)
+    {
+        var backNavigation = backButton.navigation;
+        if (activeScreen.TopSelectable || activeScreen.BottomSelectable)
+        {
+            backNavigation.mode = Navigation.Mode.Explicit;
+
+            backNavigation.selectOnUp = activeScreen.BottomSelectable;
+            backNavigation.selectOnDown = activeScreen.TopSelectable;
+
+            if (!backNavigation.selectOnUp)
+            {
+                backNavigation.selectOnUp = activeScreen.TopSelectable;
+            }
+
+            if (!backNavigation.selectOnDown)
+            {
+                backNavigation.selectOnDown = activeScreen.BottomSelectable;
+            }
+        }
+        else
+        {
+            backNavigation.mode = Navigation.Mode.None;
+        }
+        backButton.navigation = backNavigation;
+    }
+
     private void Update()
     {
         var canvas = GetComponent<Canvas>();
@@ -213,8 +263,9 @@ public class GUIController : MonoBehaviour
 
         if (!HasTransition)
         {
+            var defaultScreen = DefaultScreen();
             if (Input.GetButtonDown("Cancel")
-                && ActiveScreen != DefaultScreen())
+                && ActiveScreen != defaultScreen)
             {
                 DismissActive();
             }
@@ -222,7 +273,7 @@ public class GUIController : MonoBehaviour
             {
                 foreach (var screen in screens)
                 {
-                    if (ProcessScreenButton(screen.ShortcutButton, screen.ID))
+                    if (ProcessScreenButton(screen.ShortcutButton, screen.ID, defaultScreen))
                     {
                         break;
                     }
@@ -269,6 +320,8 @@ public class GUIController : MonoBehaviour
                 headerLabel.text = headerText;
                 backButton.gameObject.SetActive(activeScreen.IsBackEnabled);
             }
+            
+            RefreshBackButtonNavigation(activeScreen);
         }
     }
 

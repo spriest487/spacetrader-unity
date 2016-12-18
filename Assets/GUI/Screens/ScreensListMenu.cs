@@ -1,8 +1,9 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections;
+using System.Linq;
 
 public class ScreensListMenu : MonoBehaviour
 {
@@ -105,5 +106,11 @@ public class ScreensListMenu : MonoBehaviour
 
         var mission = MissionManager.Instance? MissionManager.Instance.Mission : null;
         missionButton.gameObject.SetActive(mission != null);
+
+        var firstEnabled = GetComponentsInChildren<Button>(false).FirstOrDefault();
+        if (firstEnabled)
+        {
+            EventSystem.current.SetSelectedGameObject(firstEnabled.gameObject);
+        }
     }
 }

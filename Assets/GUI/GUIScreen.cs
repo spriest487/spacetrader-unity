@@ -1,10 +1,19 @@
 ﻿#pragma warning disable 0649
 
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System;
 
 [RequireComponent(typeof(GUIElement))]
 public class GUIScreen : MonoBehaviour
 {
+    [SerializeField]
+    private Selectable topSelectable;
+
+    [SerializeField]
+    private Selectable bottomSelectable;
+
     [SerializeField]
     private ScreenID id;
 
@@ -55,6 +64,18 @@ public class GUIScreen : MonoBehaviour
         set { isBackEnabled = value; }
     }
 
+    public Selectable TopSelectable
+    {
+        get { return topSelectable; }
+    }
+
+    public Selectable BottomSelectable
+    {
+        get { return bottomSelectable; }
+    }
+
+    public event Action OnNavigationChanged;
+
     private void OnEnable()
     {
         Element = GetComponent<GUIElement>();
@@ -62,9 +83,22 @@ public class GUIScreen : MonoBehaviour
 
         Element.OnTransitionedIn += TransitionedInHandler;
         Element.OnTransitionedOut += TransitionedOutHandler;
-
+        
         Element.OnTransitioningIn += TransitioningInHandler;
         Element.OnTransitioningOut += TransitioningOutHandler;
+        AutoFocus();
+    }
+
+    private void AutoFocus()
+    {
+        var autoFocus = topSelectable;
+        if (!autoFocus)
+        {
+            autoFocus = bottomSelectable;
+        }
+
+        var focusedObj = autoFocus? autoFocus.gameObject : null;
+        EventSystem.current.SetSelectedGameObject(focusedObj);
     }
 
     private void OnDisable()
@@ -105,5 +139,18 @@ public class GUIScreen : MonoBehaviour
     private void TransitionedOutHandler()
     {
         SendMessageUpwards("OnScreenTransitionedOut", this);
+    }
+
+    public void SetNavigation(Selectable topSelectable, Selectable bottomSelectable)
+    {
+        this.topSelectable = topSelectable;
+        this.bottomSelectable = bottomSelectable;
+
+        AutoFocus();
+
+        if (OnNavigationChanged != null)
+        {
+            OnNavigationChanged.Invoke();
+        }
     }
 }
