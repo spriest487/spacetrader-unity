@@ -226,11 +226,6 @@ public class PlayerShip : MonoBehaviour
             {
                 ActivateTarget();
             }
-
-            if (Input.GetButtonDown("radio"))
-            {
-                GUIController.Current.BroadcastMessage("ShowRadioMenu", SendMessageOptions.DontRequireReceiver);
-            }
         }
     }
 

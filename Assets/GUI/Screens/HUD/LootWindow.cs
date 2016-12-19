@@ -26,7 +26,11 @@ public class LootWindow : MonoBehaviour
     {
         Element = GetComponent<GUIElement>();
 
-        Element.OnTransitionedOut += () => loot = null;
+        Element.OnTransitionedOut += () =>
+        {
+            loot = null;
+            gameObject.SetActive(false);
+        };
 
         cargoList = GetComponent<CargoHoldList>();
     }
@@ -49,7 +53,7 @@ public class LootWindow : MonoBehaviour
         gameObject.SetActive(true);
 
         this.loot = loot;
-        title.text = loot.name;
+        title.text = loot.name.ToUpper();
 
         cargoList.CargoHold = loot.Ship.Cargo;
         cargoList.Refresh();
@@ -71,7 +75,7 @@ public class LootWindow : MonoBehaviour
 
         if (request.Error != null)
         {
-            GUIController.Current.BroadcastMessage("OnPlayerError", request.Error);
+            PlayerNotifications.Error(request.Error);
         }
     }
 

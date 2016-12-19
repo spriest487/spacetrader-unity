@@ -62,6 +62,6 @@ public class GUIElement : MonoBehaviour
 
     public void Dismiss()
     {
-        Activated = false;
+        Activate(false);
     }
 }

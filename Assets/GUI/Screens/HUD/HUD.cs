@@ -38,7 +38,10 @@ public class HUD : MonoBehaviour
         useTargetText = useTargetButton.GetComponentInChildren<Text>(true);
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
+        radioMenu.Element.OnTransitionedOut += () => radioMenu.gameObject.SetActive(false);
+
         lootWindow = GetComponentInChildren<LootWindow>(true);
+        lootWindow.Element.OnTransitionedOut += () => lootWindow.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -106,6 +109,15 @@ public class HUD : MonoBehaviour
                 float messageAlpha = messagePanel.MessageCount > 0? 1 : 0;
                 messagePanel.GetComponent<CanvasGroup>().alpha = messageAlpha;
             }
+
+            if (Input.GetButtonDown("radio"))
+            {
+                radioMenu.Element.Activate(!radioMenu.gameObject.activeSelf);
+                if (lootWindow.isActiveAndEnabled)
+                {
+                    lootWindow.Element.Dismiss();
+                }
+            }
         }
     }
 
@@ -124,13 +136,14 @@ public class HUD : MonoBehaviour
     //activated a loot can, pop up the loot display window
     private void OnPlayerActivatedLoot(LootContainer loot)
     {
-        if (lootWindow.Container == loot)
+        if (lootWindow.isActiveAndEnabled && lootWindow.Container == loot)
         {
             lootWindow.TakeAll();
         }
         else
         {
             lootWindow.ShowLoot(loot);
+            radioMenu.Element.Dismiss();
         }
     }
 

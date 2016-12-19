@@ -246,25 +246,27 @@ public class GUIController : MonoBehaviour
             screen.gameObject.SetActive(true);
         }
 
-        /* update header if the current screen has a header, and
-         we're either not in a transition, or currently transitioning
-         into this screen*/
         var activeScreen = FindActiveScreen();
 
-        header.Activate(activeScreen.ShowHeader);
-        statusBar.Activate(activeScreen.ShowStatusBar);
-
-        if (header.Activated
-            && (activeTransition == null
-                || activeTransition.toScreen == activeScreen.ID))
+        if (activeTransition == null || activeTransition.toScreen == activeScreen.ID)
         {
-            var headerText = activeScreen.HeaderText;
-            if (string.IsNullOrEmpty(headerText))
+            /* update header if the current screen has a header, and
+            we're either not in a transition, or currently transitioning
+            into this screen*/
+
+            header.Activate(activeScreen.ShowHeader);
+            statusBar.Activate(activeScreen.ShowStatusBar);
+
+            if (header.Activated)
             {
-                headerText = activeScreen.name.ToUpper();
+                var headerText = activeScreen.HeaderText;
+                if (string.IsNullOrEmpty(headerText))
+                {
+                    headerText = activeScreen.name.ToUpper();
+                }
+                headerLabel.text = headerText;
+                backButton.gameObject.SetActive(activeScreen.IsBackEnabled);
             }
-            headerLabel.text = headerText;
-            backButton.gameObject.SetActive(activeScreen.IsBackEnabled);
         }
     }
 
@@ -322,7 +324,7 @@ public class GUIController : MonoBehaviour
             {
                 if (!proceeded)
                 {
-                    SwitchTo(ScreenID.None);
+        SwitchTo(ScreenID.None);
                     proceeded = true;
                 }
             });

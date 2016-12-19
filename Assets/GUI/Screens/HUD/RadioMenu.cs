@@ -7,6 +7,8 @@ using System;
 [RequireComponent(typeof(GUIElement))]
 public class RadioMenu : MonoBehaviour
 {
+    public GUIElement Element { get { return GetComponent<GUIElement>(); } }
+
     [SerializeField]
     private Button greetingButton;
     private Text greetingText;
@@ -14,6 +16,8 @@ public class RadioMenu : MonoBehaviour
     private void Awake()
     {
         greetingText = greetingButton.GetComponentInChildren<Text>();
+
+        Element.OnTransitionedOut += () => gameObject.SetActive(false);
     }
 
     private void OnEnable()

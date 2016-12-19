@@ -390,6 +390,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674e63b3ee25bc44fafbdcfc39911bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnMissionStart: 1
+  spawnTag: 
   teams:
   - name: Red
     spawnPoints:
