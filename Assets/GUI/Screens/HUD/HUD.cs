@@ -33,15 +33,39 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private GUIElement cinemaBars;
 
+    [Header("Touch Controls")]
+
+    [SerializeField]
+    private Slider touchThrottle;
+
+    [SerializeField]
+    private Image touchJoystick;
+
+    public bool TouchControlsEnabled
+    {
+        get
+        {
+            Debug.Assert(touchThrottle.gameObject.activeSelf == touchJoystick.gameObject.activeSelf);
+            return touchThrottle.gameObject.activeSelf;
+        }
+        set
+        {
+            touchThrottle.gameObject.SetActive(value);
+            touchJoystick.gameObject.SetActive(value);
+        }
+    }
+
     private void Awake()
     {
         useTargetText = useTargetButton.GetComponentInChildren<Text>(true);
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
-        radioMenu.Element.OnTransitionedOut += () => radioMenu.gameObject.SetActive(false);
+        radioMenu.GetComponent<GUIElement>().OnTransitionedOut += () =>
+            radioMenu.gameObject.SetActive(false);
 
         lootWindow = GetComponentInChildren<LootWindow>(true);
-        lootWindow.Element.OnTransitionedOut += () => lootWindow.gameObject.SetActive(false);
+        lootWindow.GetComponent<GUIElement>().OnTransitionedOut += () =>
+            lootWindow.gameObject.SetActive(false);
     }
 
     private void OnEnable()

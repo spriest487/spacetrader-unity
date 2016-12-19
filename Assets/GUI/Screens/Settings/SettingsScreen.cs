@@ -8,17 +8,32 @@ public class SettingsScreen : MonoBehaviour
     [SerializeField]
     private Toggle vrToggle;
 
-    public void OnEnable()
+    [SerializeField]
+    private Toggle touchControlsToggle;
+
+    private HUD hud;
+
+    private void Awake()
+    {
+        var gui = GetComponentInParent<GUIController>();
+        hud = gui.GetComponentInChildren<HUD>(true);
+    }
+
+    public void Start()
     {
         vrToggle.gameObject.SetActive(VRSettings.supportedDevices.Any());
         vrToggle.isOn = VRSettings.enabled;
+
+        touchControlsToggle.isOn = hud.TouchControlsEnabled;
     }
 
     public void Save()
     {
         VRSettings.enabled = vrToggle.isOn;
-        SpaceTraderConfig.SavePrefs();
+        hud.TouchControlsEnabled = touchControlsToggle.isOn;
 
-        GetComponentInParent<GUIController>().DismissActive();
+        SpaceTraderConfig.Instance.SavePrefs();
+
+        GetComponent<GUIElement>().Dismiss();
     }
 }

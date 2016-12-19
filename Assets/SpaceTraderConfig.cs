@@ -58,6 +58,9 @@ public class SpaceTraderConfig : MonoBehaviour
     [SerializeField]
     private WorldMap worldMap;
 
+    [SerializeField]
+    private GUIController gui;
+
     public static event Action OnPrefsSaved;
 
     private void OnEnable()
@@ -67,13 +70,13 @@ public class SpaceTraderConfig : MonoBehaviour
         MissionManager.OnMissionChanged += mission =>
         {
             if (mission)
-        {
-            LocalPlayer = null;
-        }
-        else
-        {
-            LocalPlayer = FindObjectOfType<PlayerShip>();
-        }
+            {
+                LocalPlayer = null;
+            }
+            else
+            {
+                LocalPlayer = FindObjectOfType<PlayerShip>();
+            }
         };
     }
 
@@ -98,9 +101,12 @@ public class SpaceTraderConfig : MonoBehaviour
         ReloadPrefs();
     }
 
-    public static void SavePrefs()
+    public void SavePrefs()
     {
+        var hud = gui.GetComponentInChildren<HUD>(true);
+
         PlayerPrefs.SetInt("VR Enabled", VRSettings.enabled? 1 : 0);
+        PlayerPrefs.SetInt("Touch Controls Enabled", hud.TouchControlsEnabled? 1 : 0);
         PlayerPrefs.Save();
 
         if (OnPrefsSaved != null)
@@ -109,9 +115,12 @@ public class SpaceTraderConfig : MonoBehaviour
         }
     }
 
-    public static void ReloadPrefs()
+    public void ReloadPrefs()
     {
         VRSettings.enabled = PlayerPrefs.GetInt("VR Enabled", 0) == 1;
+
+        var hud = gui.GetComponentInChildren<HUD>(true);
+        hud.TouchControlsEnabled = PlayerPrefs.GetInt("Touch Controls Enabled", 0) == 1;
     }
 
     private void Update()
