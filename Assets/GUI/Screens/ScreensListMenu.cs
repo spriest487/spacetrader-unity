@@ -34,6 +34,11 @@ public class ScreensListMenu : MonoBehaviour
         GUIController.Current.SwitchTo(ScreenID.Equipment);
     }
 
+    public void ShowFleet()
+    {
+        GUIController.Current.SwitchTo(ScreenID.Fleet);
+    }
+
     public void ShowMission()
     {
         GUIController.Current.SwitchTo(ScreenID.MissionPrep);
