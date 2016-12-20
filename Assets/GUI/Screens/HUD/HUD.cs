@@ -41,20 +41,6 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private Image touchJoystick;
 
-    public bool TouchControlsEnabled
-    {
-        get
-        {
-            Debug.Assert(touchThrottle.gameObject.activeSelf == touchJoystick.gameObject.activeSelf);
-            return touchThrottle.gameObject.activeSelf;
-        }
-        set
-        {
-            touchThrottle.gameObject.SetActive(value);
-            touchJoystick.gameObject.SetActive(value);
-        }
-    }
-
     private void Awake()
     {
         useTargetText = useTargetButton.GetComponentInChildren<Text>(true);
@@ -73,6 +59,9 @@ public class HUD : MonoBehaviour
         lootWindow.gameObject.SetActive(false);
         radioMenu.gameObject.SetActive(false);
         cinemaBars.gameObject.SetActive(false);
+
+        touchJoystick.gameObject.SetActive(SpaceTraderConfig.TouchControlsEnabled);
+        touchThrottle.gameObject.SetActive(SpaceTraderConfig.TouchControlsEnabled);
     }
 
     private void Update()

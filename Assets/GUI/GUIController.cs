@@ -213,17 +213,21 @@ public class GUIController : MonoBehaviour
 
         var defaultScreen = DefaultScreen();
 
-        if (Input.GetButtonDown("Cancel") && ActiveScreen != defaultScreen)
+        if (!HasTransition)
         {
-            DismissActive();
-        }
-        else
-        {
-            foreach (var screen in screens)
+            if (Input.GetButtonDown("Cancel")
+                && ActiveScreen != defaultScreen)
             {
-                if (ProcessScreenButton(screen.ShortcutButton, screen.ID))
+                DismissActive();
+            }
+            else
+            {
+                foreach (var screen in screens)
                 {
-                    break;
+                    if (ProcessScreenButton(screen.ShortcutButton, screen.ID))
+                    {
+                        break;
+                    }
                 }
             }
         }

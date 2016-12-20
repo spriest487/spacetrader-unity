@@ -185,20 +185,26 @@ public class PlayerShip : MonoBehaviour
 
             var pitch = Input.GetAxis("pitch");
             var yaw = Input.GetAxis("yaw");
+            var thrust = Input.GetAxis("Vertical");
 
-            var camera = FollowCamera.Current;
-            if (camera)
+            if (SpaceTraderConfig.TouchControlsEnabled)
             {
-                UpdateModuleAimPoints(camera);
+                pitch += -TouchJoystick.Value.y;
+                yaw += TouchJoystick.Value.x;
+                thrust += TouchThrottle.Value;
+            }
+            else if (FollowCamera.Current)
+            {
+                UpdateModuleAimPoints(FollowCamera.Current);
 
                 if (Input.GetButton("turn"))
                 {
-                    var turnAim = camera.DragInput;
+                    var turnAim = FollowCamera.Current.DragInput;
 
                     if (turnAim.HasValue)
                     {
-                        yaw = turnAim.Value.x;
-                        pitch = turnAim.Value.y;
+                        yaw += turnAim.Value.x;
+                        pitch += turnAim.Value.y;
                     }
                 }
             }
@@ -207,7 +213,7 @@ public class PlayerShip : MonoBehaviour
                 pitch: pitch,
                 yaw: yaw,
                 roll: -Input.GetAxis("roll"),
-                thrust: Input.GetAxis("Vertical"),
+                thrust: thrust,
                 strafe: Input.GetAxis("Horizontal"),
                 lift:  Input.GetAxis("lift"));
 
