@@ -12,5 +12,6 @@ public enum ScreenID
     LoadGame,
     HUD,
     MissionSelect,
-    Settings
+    Settings,
+    Fleet,
 }
