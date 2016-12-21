@@ -191,7 +191,7 @@ public class PlayerShip : MonoBehaviour
             {
                 pitch += -TouchJoystick.Value.y;
                 yaw += TouchJoystick.Value.x;
-                thrust += TouchThrottle.Value;
+                thrust += TouchThrottle.Value ?? 0;
             }
             else if (FollowCamera.Current)
             {

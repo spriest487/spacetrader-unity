@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.VR;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class HUD : MonoBehaviour
 {
@@ -36,13 +37,16 @@ public class HUD : MonoBehaviour
     [Header("Touch Controls")]
 
     [SerializeField]
-    private Slider touchThrottle;
-
-    [SerializeField]
-    private Image touchJoystick;
+    private List<Canvas> touchControlRoots;
 
     private void Awake()
     {
+        foreach (var touchControl in touchControlRoots)
+        {
+            touchControl.sortingLayerName = "GUI Overlay";
+            touchControl.overrideSorting = true;
+        }
+
         useTargetText = useTargetButton.GetComponentInChildren<Text>(true);
 
         radioMenu = GetComponentInChildren<RadioMenu>(true);
@@ -60,8 +64,12 @@ public class HUD : MonoBehaviour
         radioMenu.gameObject.SetActive(false);
         cinemaBars.gameObject.SetActive(false);
 
-        touchJoystick.gameObject.SetActive(SpaceTraderConfig.TouchControlsEnabled);
-        touchThrottle.gameObject.SetActive(SpaceTraderConfig.TouchControlsEnabled);
+        bool showTouchControls = SpaceTraderConfig.TouchControlsEnabled
+            && !VRSettings.enabled;
+        foreach (var touchControl in touchControlRoots)
+        {
+            touchControl.gameObject.SetActive(showTouchControls);
+        }
     }
 
     private void Update()
