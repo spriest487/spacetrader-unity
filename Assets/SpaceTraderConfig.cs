@@ -34,13 +34,7 @@ public class SpaceTraderConfig : MonoBehaviour
         }
     }
 
-    private bool touchControlsEnabled;
-
-    public static bool TouchControlsEnabled
-    {
-         get { return Instance.touchControlsEnabled; }
-         set { Instance.touchControlsEnabled = value; }
-    }
+    public static bool TouchControlsEnabled { get; set; }
 
     [SerializeField]
     private QuestBoard questBoard;
@@ -73,6 +67,8 @@ public class SpaceTraderConfig : MonoBehaviour
 
     private void OnEnable()
     {
+        Instance = this;
+
         MissionManager.OnMissionChanged += mission =>
         {
             if (mission)
@@ -84,12 +80,18 @@ public class SpaceTraderConfig : MonoBehaviour
                 LocalPlayer = FindObjectOfType<PlayerShip>();
             }
         };
+
+        SceneManager.activeSceneChanged += (oldScene, newScene) =>
+        {
+            PlayerNotifications.Clear();
+        };
+
+        //apply initial settings
+        ReloadPrefs();
     }
 
     private void Awake()
     {
-        Instance = this;
-
         //clone configs on startup so we don't modify the global assets
         questBoard = QuestBoard.Create(questBoard);
         crewConfig = CrewConfiguration.Create(crewConfig);
@@ -99,14 +101,6 @@ public class SpaceTraderConfig : MonoBehaviour
         fleetManager = Instantiate(fleetManager);
 
         Debug.Assert(worldMap);
-
-        SceneManager.activeSceneChanged += (oldScene, newScene) =>
-        {
-            PlayerNotifications.Clear();
-        };
-
-        //apply initial settings
-        ReloadPrefs();
     }
 
     public static void SavePrefs()
