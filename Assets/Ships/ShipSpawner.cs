@@ -15,6 +15,9 @@ public class ShipSpawner : MonoBehaviour
     private bool makeLocalPlayer = false;
 
     [SerializeField]
+    private string dockedAt;
+
+    [SerializeField]
     private int money = 1000;
 
     [Header("Crew")]
@@ -49,6 +52,16 @@ public class ShipSpawner : MonoBehaviour
             player.AddMoney(money);
 
             SpaceTraderConfig.LocalPlayer = player;
+        }
+
+        if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<Moorable>())
+        {
+            var dockedStation = GameObject.Find(dockedAt);
+            if (dockedStation)
+            {
+                dockedStation.GetComponent<SpaceStation>()
+                    .AddDockedShip(spawned.GetComponent<Moorable>());
+            }
         }
 
         //crew
