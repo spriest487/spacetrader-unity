@@ -1,3 +1,5 @@
+#pragma warning disable 0649
+
 using System;
 using UnityEngine;
 

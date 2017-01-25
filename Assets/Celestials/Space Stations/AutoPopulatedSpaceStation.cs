@@ -17,7 +17,10 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
 
     private void PopulateCrew()
     {
-        station.AvailableCrew.ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
+        foreach (var crew in station.FindAvailableCrew())
+        {
+            SpaceTraderConfig.CrewConfiguration.DestroyCharacter(crew);
+        }
 
         var crewCount = UnityEngine.Random.Range(0, 5);
         var newCrew = new List<CrewMember>(crewCount);
@@ -27,10 +30,9 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
             //TODO: people have faces
             var member = SpaceTraderConfig.CrewConfiguration.NewCharacter("No name", null);
             member.RandomStats(3);
+            member.Unassign(station);
             newCrew.Add(member);
         }
-
-        station.AvailableCrew = newCrew;
 
         //for now, all ships are available everywhere
         var shipsForSale = new List<ShipForSale>();

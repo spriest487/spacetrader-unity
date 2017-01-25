@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class MissionPrepScreen : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class MissionPrepScreen : MonoBehaviour
         GUIController.Current.SwitchTo(ScreenID.None);
     }
 
-    private void CancelMissionOnExit(GUIController.ProceedToDismiss proceed)
+    private void CancelMissionOnExit(Action proceed)
     {
         if (MissionManager.Instance.Phase == MissionPhase.Prep)
         {

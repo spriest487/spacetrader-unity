@@ -3,12 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine.VR;
 
 public class GUIController : MonoBehaviour
 {
-    public delegate void ProceedToDismiss();
-    public delegate void DismissCallback(ProceedToDismiss proceed);
+    public delegate void DismissCallback(Action proceed);
 
     private class GUIControllerTransition : GUITransition
     {
@@ -210,13 +210,11 @@ public class GUIController : MonoBehaviour
         {
             canvas.worldCamera = vrCamera.Camera;
         }
-
-        var defaultScreen = DefaultScreen();
-
+        
         if (!HasTransition)
         {
             if (Input.GetButtonDown("Cancel")
-                && ActiveScreen != defaultScreen)
+                && ActiveScreen != DefaultScreen())
             {
                 DismissActive();
             }
@@ -241,7 +239,7 @@ public class GUIController : MonoBehaviour
 
             if (activeTransition.toScreen == ScreenID.None)
             {
-                activeTransition.toScreen = defaultScreen;
+                activeTransition.toScreen = DefaultScreen();
             }
 
             activeTransition.progress = GUITransitionProgress.InProgress;

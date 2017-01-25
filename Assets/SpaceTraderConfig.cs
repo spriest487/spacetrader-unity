@@ -31,6 +31,11 @@ public class SpaceTraderConfig : MonoBehaviour
             }
 
             Instance.localPlayer = value;
+
+            if (OnLocalPlayerChanged != null)
+            {
+                OnLocalPlayerChanged.Invoke();
+            }
         }
     }
 
@@ -59,12 +64,10 @@ public class SpaceTraderConfig : MonoBehaviour
 
     [SerializeField]
     private WorldMap worldMap;
-
-    [SerializeField]
-    private GUIController gui;
-
+   
     public static event Action OnPrefsSaved;
-
+    public static event Action OnLocalPlayerChanged;
+        
     private void OnEnable()
     {
         Instance = this;

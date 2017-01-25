@@ -43,17 +43,7 @@ public class ShipSpawner : MonoBehaviour
     private void Start()
     {
         spawned = shipType.CreateShip(transform.position, transform.rotation);
-
-        if (makeLocalPlayer)
-        {
-            Debug.Assert(!SpaceTraderConfig.LocalPlayer, "local player should not already be spawned");
-
-            var player = spawned.gameObject.AddComponent<PlayerShip>();
-            player.AddMoney(money);
-
-            SpaceTraderConfig.LocalPlayer = player;
-        }
-
+        
         if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<Moorable>())
         {
             var dockedStation = GameObject.Find(dockedAt);
@@ -81,6 +71,17 @@ public class ShipSpawner : MonoBehaviour
         if (modulePreset)
         {
             modulePreset.Apply(spawned);
+        }
+
+        /* do this last, because the local player observes stuff with ui transitions
+         * etc which we probably don't want on player spawn */
+        if (makeLocalPlayer)
+        {
+            Debug.Assert(!SpaceTraderConfig.LocalPlayer, "local player should not already be spawned");
+            var player = PlayerShip.MakePlayer(spawned);
+            player.AddMoney(money);
+
+            SpaceTraderConfig.LocalPlayer = player;
         }
     }
 

@@ -17,6 +17,11 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private ScalableParticle explosionEffect;
 
+    [Header("UI")]
+
+    [SerializeField]
+    private Sprite thumbnail;
+
     [Header("Ship Details")]
 
     [SerializeField]
@@ -49,6 +54,7 @@ public class ShipType : ScriptableObject
     public int ModuleSlots { get { return moduleSlots; } }
     public bool HasCockpit { get { return !!cockpitPrefab; } }
     public int XPReward { get { return xpReward; } }
+    public Sprite Thumbnail { get { return thumbnail; } }
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {

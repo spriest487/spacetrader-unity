@@ -8,12 +8,13 @@ using System.Linq;
 using MarketRequests;
 
 [CreateAssetMenu(menuName = "SpaceTrader/Market")]
-public class Market : ScriptableObject {
+public class Market : ScriptableObject
+{
     public static string FormatCurrency(int amount)
     {
         return "*" + amount.ToString("N0");
     }
-    
+
     [SerializeField]
     private int baseHirePrice;
 
@@ -40,7 +41,7 @@ public class Market : ScriptableObject {
 
     public void HireCrewMember(PlayerShip player, SpaceStation fromStation, CrewMember crewMember)
     {
-        Debug.Assert(fromStation.AvailableCrew.Contains(crewMember), "can't buy crew who aren't available to buy");
+        Debug.Assert(fromStation == crewMember.AtStation, "can't buy crew who aren't available to buy");
 
         var ship = player.Ship;
         Debug.Assert(ship != null, "can't buy stuff without a ship");
@@ -61,7 +62,6 @@ public class Market : ScriptableObject {
 
         player.AddMoney(-price);
         crewMember.Assign(ship, CrewAssignment.Passenger);
-        fromStation.AvailableCrew.Remove(crewMember);
     }
 
     public void FireCrewMember(PlayerShip player, SpaceStation atStation, CrewMember crewMember)
@@ -70,8 +70,7 @@ public class Market : ScriptableObject {
         Debug.Assert(ship != null, "can't sell stuff without a ship");
         Debug.Assert(crewMember == ship.GetCaptain() || ship.GetPassengers().Contains(crewMember), "can't fire someone who doesn't work for you");
 
-        atStation.AvailableCrew.Add(crewMember);
-        crewMember.Unassign();
+        crewMember.Unassign(atStation);
     }
 
     private ShipForSale GetShipForSale(ShipType type)
@@ -98,7 +97,7 @@ public class Market : ScriptableObject {
         var oldShip = player.Ship;
 
         //check price
-        Debug.Assert(player.Money >= shipForSale.Price, 
+        Debug.Assert(player.Money >= shipForSale.Price,
             "player can't afford to buy ship");
 
         var passengers = oldShip.GetPassengers();
@@ -109,7 +108,7 @@ public class Market : ScriptableObject {
             "ship being bought doesn't have enough room for existing passengers");
 
         var newShip = shipType.CreateShip(player.transform.position, player.transform.rotation);
-        
+
         //copy player
         var newPlayer = newShip.gameObject.AddComponent<PlayerShip>();
         newPlayer.AddMoney(player.Money - shipForSale.Price);
@@ -120,7 +119,7 @@ public class Market : ScriptableObject {
         {
             passenger.Assign(newShip, CrewAssignment.Passenger);
         }
-            
+
         Destroy(player.gameObject);
         SpaceTraderConfig.LocalPlayer = newPlayer;
     }
@@ -147,7 +146,7 @@ public class Market : ScriptableObject {
 
         Debug.Assert(itemIndex < stationCargo.Size,
             "index of item to buy must be valid index of item in station's cargo");
-        Debug.Assert(playerCargo.FreeCapacity > 0, 
+        Debug.Assert(playerCargo.FreeCapacity > 0,
             "player must have space to put bought item");
         Debug.Assert(player.Money >= price, "player must have enough money to buy item");
 
@@ -186,7 +185,7 @@ public class Market : ScriptableObject {
     {
         var items = request.Loot.Ship.Cargo;
         var activator = request.Player.Ship;
-        
+
         var freeSpace = activator.Cargo.FreeCapacity;
 
         const string notEnoughSpace = "Not enough free cargo space";
@@ -208,7 +207,7 @@ public class Market : ScriptableObject {
                     activator.Cargo.Add(item);
                     items.RemoveAt(slot);
                 }
-                
+
                 request.Done = true;
             }
             else

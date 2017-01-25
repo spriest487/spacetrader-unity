@@ -15,7 +15,7 @@ public class ShipInspector : Editor
         {
             if (crewMember)
             {
-                crewMember.Unassign();
+                crewMember.Unassign(null);
             }
 
             if (selected)
@@ -49,7 +49,7 @@ public class ShipInspector : Editor
                 ship.ModuleLoadout.Equip(mod, null);
             }
         }
-        
+
         applyPreset = EditorGUILayout.ObjectField("Select module preset", applyPreset, typeof(ModulePreset), false) as ModulePreset;
         GUI.enabled = applyPreset;
         if (GUILayout.Button("Apply"))

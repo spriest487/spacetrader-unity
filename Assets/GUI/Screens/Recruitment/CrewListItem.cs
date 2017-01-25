@@ -14,7 +14,7 @@ public class CrewListItem : MonoBehaviour
         Buyable,
         Sellable
     }
-        
+
     [SerializeField]
     private CrewMember member;
 
@@ -53,14 +53,14 @@ public class CrewListItem : MonoBehaviour
 
     [SerializeField]
     private Text mechSkillLabel;
-    
+
     private BuySellMode buySellMode;
 
     public CrewMember CrewMember
     {
         get { return member; }
     }
-    
+
     public void Assign(CrewMember member, BuySellMode buySellMode)
     {
         this.member = member;
@@ -119,11 +119,11 @@ public class CrewListItem : MonoBehaviour
         var player = PlayerShip.LocalPlayer;
         var moorable = player.Moorable;
         Debug.Assert(moorable, "player must have a moorable!");
-        
+
         var station = moorable.DockedAtStation;
         Debug.Assert(station, "must be docked!");
-        
-        bool hiring = station.AvailableCrew.Contains(member);
+
+        bool hiring = member.AtStation == station;
 
         var market = SpaceTraderConfig.Market;
 

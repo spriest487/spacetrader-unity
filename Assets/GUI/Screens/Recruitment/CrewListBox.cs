@@ -28,10 +28,10 @@ public class CrewListBox : MonoBehaviour
 
     [SerializeField]
     private Transform contentArea;
-        
+
     [SerializeField]
     private Transform emptyLabel;
-    
+
     private PooledList<CrewListItem, CrewMember> crewItems;
 
     private void OnEnable()
@@ -42,7 +42,7 @@ public class CrewListBox : MonoBehaviour
         }
         Update();
     }
-    
+
     private void Update()
     {
         IEnumerable<CrewMember> crew = null;
@@ -56,7 +56,7 @@ public class CrewListBox : MonoBehaviour
                 var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
                 if (station)
                 {
-                    crew = station.AvailableCrew;
+                    crew = station.FindAvailableCrew();
                 }
             }
             else
@@ -98,7 +98,7 @@ public class CrewListBox : MonoBehaviour
                 buySellMode = CrewListItem.BuySellMode.ReadOnly;
             }
 
-            crewItems.Refresh(crew, (i, existingItem, newCrewMember) => 
+            crewItems.Refresh(crew, (i, existingItem, newCrewMember) =>
                 existingItem.Assign(newCrewMember, buySellMode));
 
             emptyLabel.gameObject.SetActive(false);

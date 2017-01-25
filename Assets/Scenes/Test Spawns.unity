@@ -120,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
   makeLocalPlayer: 0
+  dockedAt: 
   money: 1000
   passengers: []
   captain: {fileID: 11400000, guid: 9b870d3d0fcaad84f922176d2119ac5a, type: 2}
@@ -167,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
   makeLocalPlayer: 0
+  dockedAt: 
   money: 1000
   passengers: []
   captain: {fileID: 11400000, guid: 840e182f4481f7f4fac750d63f902540, type: 2}
@@ -214,6 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
   makeLocalPlayer: 1
+  dockedAt: Dummy Flat Station
   money: 2000
   passengers: []
   captain: {fileID: 11400000, guid: f361f9e26f88b8344a563289fa89cbc2, type: 2}

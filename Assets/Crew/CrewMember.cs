@@ -34,8 +34,11 @@ public class CrewMember : ScriptableObject
     private Ship assignedShip;
 
     [SerializeField]
+    private SpaceStation atStation;
+
+    [SerializeField]
     private CrewAssignment assignedRole;
-    
+
     public int PilotSkill
     {
         get { return pilotSkill; }
@@ -80,20 +83,24 @@ public class CrewMember : ScriptableObject
         get { return xp; }
     }
 
+    public SpaceStation AtStation { get { return atStation; } }
+
     public void Assign(Ship ship, CrewAssignment role)
     {
         Debug.Assert(role != CrewAssignment.Unassigned);
 
         assignedShip = ship;
         assignedRole = role;
+        atStation = null;
     }
 
-    public void Unassign()
+    public void Unassign(SpaceStation station)
     {
         assignedRole = CrewAssignment.Unassigned;
         assignedShip = null;
+        atStation = station;
     }
-    
+
     public void RandomStats(int budget)
     {
         var weights = new float[3];

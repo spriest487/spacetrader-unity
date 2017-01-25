@@ -13,6 +13,7 @@ struct PlayerRadioMessage
 [RequireComponent(typeof(Ship), typeof(Moorable))]
 public class PlayerShip : MonoBehaviour
 {
+    [System.Obsolete]
     public static PlayerShip LocalPlayer
     {
         get
@@ -46,9 +47,16 @@ public class PlayerShip : MonoBehaviour
         money += amount;
     }
 
+    public static PlayerShip MakePlayer(Ship nonPlayerShip)
+    {
+        var player = nonPlayerShip.gameObject.AddComponent<PlayerShip>();
+        player.ship = nonPlayerShip;
+        return player;
+    }
+
     void OnMoored()
     {
-        if (LocalPlayer == this)
+        if (SpaceTraderConfig.LocalPlayer == this)
         {
             GUIController.Current.SwitchTo(ScreenID.ScreensList);
         }
@@ -56,7 +64,7 @@ public class PlayerShip : MonoBehaviour
 
     void OnUnmoored()
     {
-        if (LocalPlayer == this)
+        if (SpaceTraderConfig.LocalPlayer == this)
         {
             GUIController.Current.SwitchTo(ScreenID.HUD);
         }
@@ -64,7 +72,7 @@ public class PlayerShip : MonoBehaviour
 
     bool LocalPlayerHasControl()
     {
-        return LocalPlayer == this
+        return SpaceTraderConfig.LocalPlayer == this
             && Moorable.State == DockingState.InSpace
             && !Ship.JumpTarget;
     }

@@ -15,6 +15,7 @@ MonoBehaviour:
   cockpitPrefab: {fileID: 114006428899263518, guid: 373fd67befda144419268dd2e099b462,
     type: 2}
   explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
   targetable: 1
   stats:
     agility: 180
