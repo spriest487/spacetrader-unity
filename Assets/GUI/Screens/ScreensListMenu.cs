@@ -61,8 +61,9 @@ public class ScreensListMenu : MonoBehaviour
 
     void OnEnable()
     {
-        var player = PlayerShip.LocalPlayer;
-        var station = player? player.Ship.Moorable.DockedAtStation : null;
+        var station = (SpaceTraderConfig.LocalPlayer && SpaceTraderConfig.LocalPlayer.Moorable)?
+                SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation :
+                null;
 
         if (station)
         {

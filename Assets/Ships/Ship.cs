@@ -251,25 +251,21 @@ public partial class Ship : MonoBehaviour
         var ship = obj.AddComponent<Ship>();
         ship.shipType = shipType;
 
-        var rb = ship.GetComponent<Rigidbody>();
-        UpdateRigidBodyFromStats(rb, shipType.Stats);
+        ship.RigidBody = ship.GetComponent<Rigidbody>();
+        UpdateRigidBodyFromStats(ship.RigidBody, shipType.Stats);
 
-        var newAbilities = new List<Ability>();
-        foreach (var ability in shipType.Abilities)
-        {
-            if (ability != null)
+        ship.Abilities = shipType.Abilities.Where(a => !!a)
+            .Select(a =>
             {
-                var abilityInstance = Instantiate(ability);
-                abilityInstance.name = ability.name;
+                var abilityInstance = Instantiate(a);
+                abilityInstance.name = a.name;
                 abilityInstance.Cooldown = 0;
-                newAbilities.Add(abilityInstance);
-            }
-        }
-        ship.Abilities = newAbilities;
+                return abilityInstance;
+            });
 
         if (shipType.Moorable && !obj.gameObject.GetComponent<Moorable>())
         {
-            obj.gameObject.AddComponent<Moorable>();
+            ship.Moorable = obj.gameObject.AddComponent<Moorable>();
         }
 
         if (!ship.cargo)
@@ -277,6 +273,8 @@ public partial class Ship : MonoBehaviour
             ship.Cargo = ScriptableObject.CreateInstance<CargoHold>();
         }
         ship.Cargo.Size = shipType.CargoSize;
+
+        Debug.Assert(!ship.GetComponent<Hitpoints>(), "ship base instance should not already have a Hitpoints component");
 
         ship.hitPoints = obj.gameObject.AddComponent<Hitpoints>();
         ship.hitPoints.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
@@ -291,10 +289,12 @@ public partial class Ship : MonoBehaviour
             ship.Targetable = ship.gameObject.AddComponent<Targetable>();
         }
 
+        ship.Collider = ship.GetComponent<Collider>();
+
         return ship;
     }
 
-    void Start()
+    void Awake()
     {
         RigidBody = GetComponent<Rigidbody>();
 
@@ -310,6 +310,19 @@ public partial class Ship : MonoBehaviour
             .Any(),
             "on spawn, no ship should reference ability assets directly, they should be cloned!");
 #endif
+
+        //default these members in for instances not created in the editor
+        if (formationManager == null)
+        {
+            formationManager = new FormationManager();
+        }
+
+        if (moduleLoadout == null)
+        {
+            moduleLoadout = new ModuleLoadout();
+        }
+
+        activeStatusEffects.RemoveAll(e => e == null);
     }
 
     private static void UpdateRigidBodyFromStats(Rigidbody rigidbody, ShipStats stats)
@@ -603,23 +616,7 @@ public partial class Ship : MonoBehaviour
     {
         return activeStatusEffects.Remove(effect);
     }
-
-    void Awake()
-	{
-        //default these members in for instances not created in the editor
-        if (formationManager == null)
-        {
-            formationManager = new FormationManager();
-        }
-
-        if (moduleLoadout == null)
-        {
-            moduleLoadout = new ModuleLoadout();
-        }
-
-        activeStatusEffects.RemoveAll(e => e == null);
-	}
-
+    
 	void FixedUpdate()
 	{
         if (RigidBody)

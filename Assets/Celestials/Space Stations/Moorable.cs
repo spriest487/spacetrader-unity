@@ -75,7 +75,7 @@ public class Moorable : MonoBehaviour
         }
     }
 
-    void Start()
+    void Awake()
     {
         ship = GetComponent<Ship>();
         localStation = null;

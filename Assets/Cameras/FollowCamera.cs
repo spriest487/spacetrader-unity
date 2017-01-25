@@ -319,7 +319,7 @@ public class FollowCamera : MonoBehaviour
     private void UpdateDrag()
     {
         var touchPos = FindTouchPos();
-        var playerShip = PlayerShip.LocalPlayer;
+        var playerShip = SpaceTraderConfig.LocalPlayer;
 
         if (!touchPos.HasValue || !playerShip)
         {

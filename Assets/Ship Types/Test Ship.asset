@@ -13,6 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 405804, guid: 0b0851bea097c0b40ba32a9237ffba85, type: 2}
   cockpitPrefab: {fileID: 0}
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
+  targetable: 1
   stats:
     agility: 45
     thrust: 1000
@@ -30,5 +33,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3a85a027c019cd34e9ad81668315562f, type: 2}
   - {fileID: 11400000, guid: 2db10c4da026b9c478e21e6c840b7584, type: 2}
   - {fileID: 0}
-  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
   xpReward: 1000

@@ -104,7 +104,7 @@ public class GUIController : MonoBehaviour
         var player = SpaceTraderConfig.LocalPlayer;
         if (player)
         {
-            var docked = player.Ship && player.Ship.Moorable.DockedAtStation;
+            var docked = player.Moorable && player.Moorable.DockedAtStation;
 
             if (docked)
             {

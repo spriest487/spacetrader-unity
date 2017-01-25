@@ -47,7 +47,6 @@ public class TouchThrottle : MonoBehaviour
     private void Awake()
     {
         slider = GetComponent<Slider>();
-
     }
 
     private void Update()
@@ -63,7 +62,6 @@ public class TouchThrottle : MonoBehaviour
             }
             else
             {
-                var range = zeroPoint;
                 slider.value = (1 + thrust) * zeroPoint;
             }
         }

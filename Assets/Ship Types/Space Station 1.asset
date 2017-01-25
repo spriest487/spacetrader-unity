@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Name: Space Station 1
   m_EditorClassIdentifier: 
   prefab: {fileID: 480894, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
+  cockpitPrefab: {fileID: 0}
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
+  targetable: 1
   stats:
     agility: 0
     thrust: 0
@@ -21,7 +25,9 @@ MonoBehaviour:
     armor: 0
     shield: 0
     mass: 0
+    damageMultiplier: 0
   cargoSize: 1000
+  moduleSlots: 0
   moorable: 0
   abilities: []
-  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  xpReward: 0

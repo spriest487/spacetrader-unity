@@ -28,9 +28,6 @@ public class SpaceStation : ActionOnActivate
     private List<TrafficShip> dockedTraffic;
 
     [SerializeField]
-    private List<CrewMember> availableCrew;
-
-    [SerializeField]
     private List<ShipForSale> shipsForSale;
 
     [SerializeField]
@@ -83,21 +80,7 @@ public class SpaceStation : ActionOnActivate
         }
     }
 
-    public List<CrewMember> AvailableCrew
-    {
-        get
-        {
-            return availableCrew;
-        }
-        set
-        {
-            availableCrew = value == null ?
-                 new List<CrewMember>() :
-                 new List<CrewMember>(value);
-        }
-    }
-
-    public List<ShipForSale> ShipsForSale
+    public IEnumerable<ShipForSale> ShipsForSale
     {
         get
         {
@@ -109,6 +92,12 @@ public class SpaceStation : ActionOnActivate
                 new List<ShipForSale>() :
                 new List<ShipForSale>(value);
         }
+    }
+
+    public IEnumerable<CrewMember> FindAvailableCrew()
+    {
+        return SpaceTraderConfig.CrewConfiguration.Characters
+            .Where(c => c.AtStation == this);
     }
 
     //eat a ship, disabling it and storing it in the hangar

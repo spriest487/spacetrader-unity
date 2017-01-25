@@ -22,7 +22,6 @@ public class PlayerShip : MonoBehaviour
     }
 
     private Ship ship;
-    private Moorable moorable;
 
     [SerializeField]
     private int money;
@@ -66,7 +65,7 @@ public class PlayerShip : MonoBehaviour
     bool LocalPlayerHasControl()
     {
         return LocalPlayer == this
-            && moorable.State == DockingState.InSpace
+            && Moorable.State == DockingState.InSpace
             && !Ship.JumpTarget;
     }
 
@@ -309,10 +308,9 @@ public class PlayerShip : MonoBehaviour
         GUIController.Current.BroadcastMessage("OnPlayerNotification", msg, SendMessageOptions.DontRequireReceiver);
     }
 
-	void Start()
+	void Awake()
 	{
 		ship = GetComponent<Ship>();
-        moorable = GetComponent<Moorable>();
 	}
 
     void OnDestroy()
