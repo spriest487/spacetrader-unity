@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.VR;
 using System;
+using System.Collections;
 
 public class SpaceTraderConfig : MonoBehaviour
 {
@@ -120,7 +121,8 @@ public class SpaceTraderConfig : MonoBehaviour
 
     public static void ReloadPrefs()
     {
-        VRSettings.enabled = PlayerPrefs.GetInt("VR Enabled", 0) == 1;
+        var vrEnabledPref = PlayerPrefs.GetInt("VR Enabled", 0);
+        Instance.StartCoroutine(Instance.EnableVR(vrEnabledPref == 1));
 
         TouchControlsEnabled = PlayerPrefs.GetInt("Touch Controls Enabled", 0) == 1;
     }
@@ -131,9 +133,29 @@ public class SpaceTraderConfig : MonoBehaviour
         if (Input.GetButtonDown("Reset Orientation") &&
             (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
         {
-            VRSettings.enabled = !VRSettings.enabled;
+            StartCoroutine(EnableVR(!VRSettings.enabled));
+        }
+    }
 
-            SavePrefs();
+    private IEnumerator EnableVR(bool enable)
+    {
+        if (!enable)
+        {
+            VRSettings.enabled = false;
+            yield break;
+        }
+
+        VRSettings.LoadDeviceByName(VRSettings.supportedDevices);
+        yield return null;
+
+        VRSettings.enabled = true;
+        if (VRSettings.enabled)
+        {
+            Debug.Log("initialized VR with device " +VRSettings.loadedDeviceName);
+        }
+        else
+        {
+            Debug.LogWarning("failed to initialize VR (no devices could be enabled)");
         }
     }
 }
