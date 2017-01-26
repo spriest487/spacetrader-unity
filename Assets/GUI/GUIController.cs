@@ -326,7 +326,7 @@ public class GUIController : MonoBehaviour
             {
                 if (!proceeded)
                 {
-        SwitchTo(ScreenID.None);
+                    SwitchTo(ScreenID.None);
                     proceeded = true;
                 }
             });

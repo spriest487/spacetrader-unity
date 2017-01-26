@@ -5,11 +5,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 405098}
-  - 33: {fileID: 3399348}
-  - 23: {fileID: 2352648}
+  - component: {fileID: 405098}
+  - component: {fileID: 3399348}
+  - component: {fileID: 2352648}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -22,11 +22,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 431042}
-  - 65: {fileID: 6579864}
-  - 114: {fileID: 11484880}
+  - component: {fileID: 431042}
+  - component: {fileID: 6579864}
+  - component: {fileID: 11484880}
   m_Layer: 2
   m_Name: Mooring Trigger
   m_TagString: Untagged
@@ -39,10 +39,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 475152}
-  - 20: {fileID: 2057524}
+  - component: {fileID: 475152}
+  - component: {fileID: 2057524}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -55,10 +55,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 453612}
-  - 20: {fileID: 2009822}
+  - component: {fileID: 453612}
+  - component: {fileID: 2009822}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -71,12 +71,12 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 499428}
-  - 33: {fileID: 3300378}
-  - 65: {fileID: 6576742}
-  - 23: {fileID: 2306580}
+  - component: {fileID: 499428}
+  - component: {fileID: 3300378}
+  - component: {fileID: 6576742}
+  - component: {fileID: 2306580}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -89,17 +89,18 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 480894}
-  - 33: {fileID: 3338768}
-  - 23: {fileID: 2328590}
-  - 114: {fileID: 11423814}
-  - 54: {fileID: 5408120}
-  - 114: {fileID: 11453806}
-  - 114: {fileID: 11470580}
-  - 65: {fileID: 6548620}
-  - 114: {fileID: 11493144}
+  - component: {fileID: 480894}
+  - component: {fileID: 3338768}
+  - component: {fileID: 2328590}
+  - component: {fileID: 11423814}
+  - component: {fileID: 5408120}
+  - component: {fileID: 11453806}
+  - component: {fileID: 11470580}
+  - component: {fileID: 6548620}
+  - component: {fileID: 11493144}
+  - component: {fileID: 114903451851111970}
   m_Layer: 0
   m_Name: Dummy Flat Station
   m_TagString: Untagged
@@ -112,9 +113,9 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 489100}
+  - component: {fileID: 489100}
   m_Layer: 0
   m_Name: Exit Point
   m_TagString: Untagged
@@ -127,10 +128,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 486722}
-  - 114: {fileID: 11429246}
+  - component: {fileID: 486722}
+  - component: {fileID: 11429246}
   m_Layer: 0
   m_Name: Mooring Effect
   m_TagString: Untagged
@@ -147,11 +148,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.90183234, y: 3.667722, z: 0.9018321}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 499428}
   m_Father: {fileID: 480894}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &431042
 Transform:
   m_ObjectHideFlags: 1
@@ -161,10 +162,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.695, y: 0.7, z: 0}
   m_LocalScale: {x: 0.46103096, y: 11.393634, z: 0.28477728}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &453612
 Transform:
   m_ObjectHideFlags: 1
@@ -174,10 +175,10 @@ Transform:
   m_LocalRotation: {x: 0.15391119, y: 0.23767412, z: -0.09968377, w: 0.95387924}
   m_LocalPosition: {x: 0.3883, y: 10.27, z: -0.3315}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 19.9384, y: 26.7241, z: -7.1503}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 19.9384, y: 26.7241, z: -7.1503}
 --- !u!4 &475152
 Transform:
   m_ObjectHideFlags: 1
@@ -187,10 +188,10 @@ Transform:
   m_LocalRotation: {x: 0.15391119, y: 0.23767412, z: -0.09968377, w: 0.95387924}
   m_LocalPosition: {x: 0.3883, y: 10.27, z: -0.3315}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 19.9384, y: 26.7241, z: -7.1503}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 19.9384, y: 26.7241, z: -7.1503}
 --- !u!4 &480894
 Transform:
   m_ObjectHideFlags: 1
@@ -198,9 +199,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 155668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45.9, y: 0, z: 0}
-  m_LocalScale: {x: 60.758987, y: 1.2795572, z: 60.75902}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -164, y: 0, z: 0}
+  m_LocalScale: {x: 246.26617, y: 5.186254, z: 246.26622}
   m_Children:
   - {fileID: 486722}
   - {fileID: 405098}
@@ -210,6 +210,7 @@ Transform:
   - {fileID: 453612}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &486722
 Transform:
   m_ObjectHideFlags: 1
@@ -218,11 +219,11 @@ Transform:
   m_GameObject: {fileID: 174472}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 0.51169384, y: 0.53924906, z: 0.0018104307}
-  m_LocalScale: {x: 741.577, y: 217.49226, z: 3.5045874}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalScale: {x: 3107.5588, y: 893.2266, z: 20.312695}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!4 &489100
 Transform:
   m_ObjectHideFlags: 1
@@ -232,10 +233,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 0.566, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_Children: []
   m_Father: {fileID: 480894}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!4 &499428
 Transform:
   m_ObjectHideFlags: 1
@@ -245,10 +246,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.349, y: 0.15, z: 0}
   m_LocalScale: {x: 0.43672794, y: 1, z: 0.28001967}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 405098}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2009822
 Camera:
   m_ObjectHideFlags: 1
@@ -326,17 +327,22 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: f0bf26a7c9ae95d4194656989b83a425, type: 2}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -352,17 +358,22 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 759a413b10d3e3a4293eae9fd2a5aefd, type: 2}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -378,17 +389,22 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: f0bf26a7c9ae95d4194656989b83a425, type: 2}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -478,13 +494,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590a5fe8bbd8b394bb3b1bfe8ed67f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mooringTrigger: {fileID: 11484880}
+  dockingTrigger: {fileID: 11484880}
   undockPoints:
   - {fileID: 489100}
   dockingViewpoint: {fileID: 453612}
   dockedShips: []
   dockedTraffic: []
-  availableCrew: []
   shipsForSale: []
   itemsForSale: {fileID: 0}
 --- !u!114 &11429246
@@ -545,6 +560,7 @@ MonoBehaviour:
     atime5: 0
     atime6: 0
     atime7: 0
+    m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 4
 --- !u!114 &11453806
@@ -559,6 +575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpTarget: {fileID: 0}
+  formationManager:
+    followRequests: 
   target: {fileID: 0}
   abilities: []
   activeStatusEffects: []
@@ -621,3 +639,17 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 155668}
   m_IsPrefabParent: 1
+--- !u!114 &114903451851111970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 155668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca02737b6f59e574eb760004b4dcef28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faction: 
+  hideBracket: 0
+  space: 0

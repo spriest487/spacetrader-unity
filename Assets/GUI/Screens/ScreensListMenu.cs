@@ -13,10 +13,12 @@ public class ScreensListMenu : MonoBehaviour
     private Transform missionButton;
 
     private GUIScreen guiScreen;
+    private GUIController guiController;
 
     private void Awake()
     {
         guiScreen = GetComponent<GUIScreen>();
+        guiController = GetComponentInParent<GUIController>();
     }
 
     public void Undock()
@@ -26,37 +28,58 @@ public class ScreensListMenu : MonoBehaviour
 
     public void ShowMainMenu()
     {
-        GUIController.Current.SwitchTo(ScreenID.MainMenu);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.MainMenu);
+        }
     }
 
     public void ShowEquipment()
     {
-        GUIController.Current.SwitchTo(ScreenID.Equipment);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.Equipment);
+        }
     }
 
     public void ShowFleet()
     {
-        GUIController.Current.SwitchTo(ScreenID.Fleet);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.Fleet);
+        }
     }
 
     public void ShowMission()
     {
-        GUIController.Current.SwitchTo(ScreenID.MissionPrep);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.MissionPrep);
+        }
     }
 
     public void ShowRecruitment()
     {
-        GUIController.Current.SwitchTo(ScreenID.Recruitment);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.Recruitment);
+        }
     }
 
     public void ShowQuests()
     {
-        GUIController.Current.SwitchTo(ScreenID.Quests);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.Quests);
+        }
     }
 
     public void ShowMap()
     {
-        GUIController.Current.SwitchTo(ScreenID.WorldMap);
+        if (!guiController.HasTransition)
+        {
+            guiController.SwitchTo(ScreenID.WorldMap);
+        }
     }
 
     void OnEnable()
@@ -76,7 +99,9 @@ public class ScreensListMenu : MonoBehaviour
         }
 
         undockButton.gameObject.SetActive(!!station);
-        GetComponent<GUIScreen>().IsBackEnabled = !station;
+        guiScreen.IsBackEnabled = !station;
+
+        bool transition = guiController.HasTransition;
 
         var mission = MissionManager.Instance? MissionManager.Instance.Mission : null;
         missionButton.gameObject.SetActive(mission != null);

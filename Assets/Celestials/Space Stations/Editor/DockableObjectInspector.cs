@@ -1,6 +1,4 @@
-﻿#if UNITY_EDITOR
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -18,5 +16,3 @@ public class DockableObjectInspector : Editor
         GUI.enabled = true;
     }
 }
-
-#endif

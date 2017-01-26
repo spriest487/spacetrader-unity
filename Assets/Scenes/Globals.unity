@@ -8865,12 +8865,12 @@ Prefab:
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 672.6667
+      value: 503.19904
       objectReference: {fileID: 0}
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -200
+      value: -201
       objectReference: {fileID: 0}
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8880,7 +8880,7 @@ Prefab:
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 380
+      value: 382
       objectReference: {fileID: 0}
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8930,7 +8930,7 @@ Prefab:
     - target: {fileID: 224251289020430492, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -45.99291
+      value: -46
       objectReference: {fileID: 0}
     - target: {fileID: 224251289020430492, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8940,7 +8940,7 @@ Prefab:
     - target: {fileID: 224251289020430492, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 71.98582
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 224025262694314254, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8960,7 +8960,7 @@ Prefab:
     - target: {fileID: 224025262694314254, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -149.0071
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 224025262694314254, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8970,7 +8970,7 @@ Prefab:
     - target: {fileID: 224025262694314254, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 278.0142
+      value: 280
       objectReference: {fileID: 0}
     - target: {fileID: 224336087356294716, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -8990,7 +8990,7 @@ Prefab:
     - target: {fileID: 224336087356294716, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -329.0071
+      value: -331
       objectReference: {fileID: 0}
     - target: {fileID: 224336087356294716, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -9000,7 +9000,7 @@ Prefab:
     - target: {fileID: 224336087356294716, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 81.98582
+      value: 82
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: baec3c4740556e442b9dc78df5c785f2, type: 2}
@@ -21448,7 +21448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 0.9375
+  m_ScaleFactor: 0.4169922
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -25821,6 +25821,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1388807022}
   - component: {fileID: 1388807023}
+  - component: {fileID: 1388807024}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -25859,6 +25860,17 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1388807024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1388807021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732246acd195810438ac62ae82c12d47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1395316028
 Prefab:
   m_ObjectHideFlags: 0
@@ -39682,8 +39694,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1116236080}
-        m_MethodName: DismissActive
+      - m_Target: {fileID: 1388807024}
+        m_MethodName: BackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

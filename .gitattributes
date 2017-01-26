@@ -39,6 +39,9 @@ README*            text
 TODO*              text
 WHATSNEW*          text
 
+*.controller       text eol=lf
+*.anim             text eol=lf
+
 # Apply Unix-style LF line-endings on checkout of these files...
 *.meta             text eol=lf
 *.sh               text eol=lf
@@ -49,18 +52,18 @@ WHATSNEW*          text
 *.unity            text eol=lf
 *.asset            text eol=lf
 *.prefab           text eol=lf
+*.prefab           text eol=lf
 
-# Apply Windows/DOS-style CR-LF line-endings on checkout of these files...
-*.bat              text eol=crlf
-*.cmd              text eol=crlf
-*.csproj           text eol=crlf
-*.sln              text eol=crlf
-*.user             text eol=crlf
-*.vcproj           text eol=crlf
-*.cs               text eol=crlf
-*.css              text eol=crlf
-*.htm              text eol=crlf
-*.html             text eol=crlf
+*.bat              text eol=lf
+*.cmd              text eol=lf
+*.csproj           text eol=lf
+*.sln              text eol=lf
+*.user             text eol=lf
+*.vcproj           text eol=lf
+*.cs               text eol=lf
+*.css              text eol=lf
+*.htm              text eol=lf
+*.html             text eol=lf
 
 # No end-of-line conversions are applied (i.e., "-text -diff") to these files...
 *.7z               binary

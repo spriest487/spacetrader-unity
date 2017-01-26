@@ -130,30 +130,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 480894, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 246.26617
-      objectReference: {fileID: 0}
-    - target: {fileID: 480894, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 5.186254
-      objectReference: {fileID: 0}
-    - target: {fileID: 480894, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 246.26622
-      objectReference: {fileID: 0}
-    - target: {fileID: 486722, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 3107.5588
-      objectReference: {fileID: 0}
-    - target: {fileID: 486722, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 893.2266
-      objectReference: {fileID: 0}
-    - target: {fileID: 486722, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 20.312695
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
   m_IsPrefabParent: 0
@@ -3000,7 +2976,7 @@ MonoBehaviour:
   target: {fileID: 0}
   abilities: []
   activeStatusEffects: []
-  cargo: {fileID: 1829976902}
+  cargo: {fileID: 0}
   moduleLoadout:
     hardpointModules: []
   thrust: 0
@@ -3179,24 +3155,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 41.8364, y: -64.8601, z: 7.68}
---- !u!1 &1258668992 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 155668, guid: 4829a84d57e07aa44913beb2fdc70ccb, type: 2}
-  m_PrefabInternal: {fileID: 618882327}
---- !u!114 &1258668993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1258668992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02737b6f59e574eb760004b4dcef28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  faction: 
-  hideBracket: 0
-  space: 0
 --- !u!1 &1394909443
 GameObject:
   m_ObjectHideFlags: 0
@@ -5972,20 +5930,3 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 248f3bfa1644d4840ac3e102273e9ec7, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &1829976902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 290fd498497777e479d507e7b60029d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items:
-  - {fileID: 11400000, guid: bc48b99a98eaccd4082a3c963c98211b, type: 2}
-  - {fileID: 11400000, guid: bc48b99a98eaccd4082a3c963c98211b, type: 2}
-  - {fileID: 11400000, guid: 0eaee98fa1acb4d4f9941953fb8fbb31, type: 2}
-  - {fileID: 11400000, guid: 0cad00bd0c2e23d40a4df753f5a7dd03, type: 2}
-  - {fileID: 11400000, guid: bc48b99a98eaccd4082a3c963c98211b, type: 2}
