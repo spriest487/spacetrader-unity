@@ -63,13 +63,13 @@ public class QuestList : MonoBehaviour
             acceptedQuestList = new PooledList<QuestListItem, Quest>(acceptedQuests.ItemsRoot, itemPrefab);
         }
 
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (player)
         {
             var station = player.Dockable.DockedAtStation;
-            var myQuests = SpaceTraderConfig.QuestBoard.QuestsForPlayer(player);
-            var questsNotAccepted = SpaceTraderConfig.QuestBoard.QuestsAtStation(station)
+            var myQuests = Universe.QuestBoard.QuestsForPlayer(player);
+            var questsNotAccepted = Universe.QuestBoard.QuestsAtStation(station)
                 .Except(myQuests);
 
             availableQuests.SetActive(station);

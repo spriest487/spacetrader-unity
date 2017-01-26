@@ -101,7 +101,7 @@ public class GUIController : MonoBehaviour
 
     private ScreenID DefaultScreen()
     {
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (player)
         {
             var docked = player.Dockable && player.Dockable.DockedAtStation;
@@ -139,7 +139,7 @@ public class GUIController : MonoBehaviour
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
 
-        SpaceTraderConfig.OnPrefsSaved += SetupVRMode;
+        Universe.OnPrefsSaved += SetupVRMode;
     }
 
     private void OnDisable()
@@ -150,7 +150,7 @@ public class GUIController : MonoBehaviour
         loadingOverlay.OnTransitionedIn -= OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut -= OnLoadingTransitionedOut;
 
-        SpaceTraderConfig.OnPrefsSaved -= SetupVRMode;
+        Universe.OnPrefsSaved -= SetupVRMode;
     }
 
     private bool ProcessScreenButton(string button, ScreenID screen)

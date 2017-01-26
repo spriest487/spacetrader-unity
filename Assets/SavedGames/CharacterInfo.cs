@@ -25,24 +25,24 @@ namespace SavedGames
             var portrait = fromCharacter.Portrait;
             if (portrait)
             {
-                PortraitIndex = SpaceTraderConfig.CrewConfiguration.GetPortraitIndex(portrait);
+                PortraitIndex = Universe.CrewConfiguration.GetPortraitIndex(portrait);
             }
         }
 
         public CrewMember Restore()
         {
-            var allPortraits = SpaceTraderConfig.CrewConfiguration.Portraits;
+            var allPortraits = Universe.CrewConfiguration.Portraits;
             Sprite portrait;
             if (PortraitIndex < 0 || PortraitIndex >= allPortraits.Count())
             {
-                portrait = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+                portrait = Universe.CrewConfiguration.DefaultPortrait;
             }
             else
             {
-                portrait = SpaceTraderConfig.CrewConfiguration.GetPortrait(PortraitIndex);
+                portrait = Universe.CrewConfiguration.GetPortrait(PortraitIndex);
             }
 
-            var crewMember = SpaceTraderConfig.CrewConfiguration.NewCharacter(Name, portrait);
+            var crewMember = Universe.CrewConfiguration.NewCharacter(Name, portrait);
             return crewMember;
         }
     }

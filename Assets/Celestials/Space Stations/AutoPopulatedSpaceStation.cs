@@ -19,7 +19,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
     {
         foreach (var crew in station.FindAvailableCrew())
         {
-            SpaceTraderConfig.CrewConfiguration.DestroyCharacter(crew);
+            Universe.CrewConfiguration.DestroyCharacter(crew);
         }
 
         var crewCount = UnityEngine.Random.Range(0, 5);
@@ -28,7 +28,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
         for (int crewNo = 0; crewNo < crewCount; ++crewNo)
         {
             //TODO: people have faces
-            var member = SpaceTraderConfig.CrewConfiguration.NewCharacter("No name", null);
+            var member = Universe.CrewConfiguration.NewCharacter("No name", null);
             member.RandomStats(3);
             member.Unassign(station);
             newCrew.Add(member);
@@ -36,9 +36,9 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
 
         //for now, all ships are available everywhere
         var shipsForSale = new List<ShipForSale>();
-        foreach (var shipType in SpaceTraderConfig.Market.BuyableShipTypes)
+        foreach (var shipType in Universe.Market.BuyableShipTypes)
         {
-            var price = SpaceTraderConfig.Market.GetShipPrice(shipType);
+            var price = Universe.Market.GetShipPrice(shipType);
             var item = new ShipForSale(shipType, price);
 
             shipsForSale.Add(item);
@@ -52,7 +52,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
             station.ItemsForSale.RemoveAt(slot);
         }
 
-        foreach (var itemType in SpaceTraderConfig.CargoItemConfiguration.ItemTypes)
+        foreach (var itemType in Universe.CargoItemConfiguration.ItemTypes)
         {
             station.ItemsForSale.Add(itemType);
         }
@@ -60,7 +60,7 @@ public class AutoPopulatedSpaceStation : MonoBehaviour
 
     public void PopulateQuests()
     {
-        var questBoard = SpaceTraderConfig.QuestBoard;
+        var questBoard = Universe.QuestBoard;
 
         var questsWithOwners = questBoard.QuestsAtStation(station)
             .Where(q => questBoard.OwnerOf(q))

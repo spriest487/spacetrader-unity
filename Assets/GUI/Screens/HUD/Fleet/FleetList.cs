@@ -34,7 +34,7 @@ public class FleetList : MonoBehaviour
         Fleet playerFleet;
         if (!player 
             || !player.Ship 
-            || !(playerFleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship)))
+            || !(playerFleet = Universe.FleetManager.GetFleetOf(player.Ship)))
         {
             items.Clear();
         }

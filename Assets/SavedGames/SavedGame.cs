@@ -31,7 +31,7 @@ namespace SavedGames
             var charactersByInstanceId = new Dictionary<int, CharacterInfo>();
 
             int nextCharacterId = 0;
-            foreach (var character in SpaceTraderConfig.CrewConfiguration.Characters)
+            foreach (var character in Universe.CrewConfiguration.Characters)
             {
                 charactersByInstanceId[character.GetInstanceID()] = new CharacterInfo(character, nextCharacterId++);
             }
@@ -55,7 +55,7 @@ namespace SavedGames
                 shipsByInstanceId[ship.GetInstanceID()] = new ShipInfo(ship, captainInfo, nextTransientId++);
             }
 
-            var allFleets = sceneShips.Select<Ship, Fleet>(SpaceTraderConfig.FleetManager.GetFleetOf)
+            var allFleets = sceneShips.Select<Ship, Fleet>(Universe.FleetManager.GetFleetOf)
                 .Where(f => !!f)
                 .Distinct();
 
@@ -88,9 +88,9 @@ namespace SavedGames
                 {
                     yield return MissionManager.Instance.CancelMission();
                 }
-                else if (SpaceTraderConfig.WorldMap.IsWorldSceneActive)
+                else if (Universe.WorldMap.IsWorldSceneActive)
                 {
-                    yield return SpaceTraderConfig.WorldMap.LoadArea(null);
+                    yield return Universe.WorldMap.LoadArea(null);
                 }
 
                 yield return SceneManager.LoadSceneAsync(save.level, LoadSceneMode.Additive);
@@ -104,7 +104,7 @@ namespace SavedGames
                 }
 
                 //TODO: need a better way of storing non-scene game session state!
-                SpaceTraderConfig.CrewConfiguration.Characters.ToList().ForEach(SpaceTraderConfig.CrewConfiguration.DestroyCharacter);
+                Universe.CrewConfiguration.Characters.ToList().ForEach(Universe.CrewConfiguration.DestroyCharacter);
 
                 //wait for the nice clean scene next frame
                 yield return null;
@@ -130,7 +130,7 @@ namespace SavedGames
                         var newLocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
                         newLocalPlayer.AddMoney(save.playerMoney);
 
-                        SpaceTraderConfig.LocalPlayer = newLocalPlayer;
+                        Universe.LocalPlayer = newLocalPlayer;
                     }
                 }
 
@@ -139,7 +139,7 @@ namespace SavedGames
 
             public RestoreOperation(SavedGame save)
             {
-                SpaceTraderConfig.Instance.StartCoroutine(Restore(save));
+                Universe.Instance.StartCoroutine(Restore(save));
             }
         }
 

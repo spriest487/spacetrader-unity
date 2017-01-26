@@ -29,7 +29,7 @@ public abstract class Quest : ScriptableObject
     {
         get
         {
-            if (SpaceTraderConfig.QuestBoard.OwnerOf(this))
+            if (Universe.QuestBoard.OwnerOf(this))
             {
                 return QuestStatus.InProgress;
             }
@@ -46,7 +46,7 @@ public abstract class Quest : ScriptableObject
         get
         {
             //TODO: cache?
-            return SpaceTraderConfig.QuestBoard.OwnerOf(this);
+            return Universe.QuestBoard.OwnerOf(this);
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class Quest : ScriptableObject
         quest.name = template.name;
         quest.location = new LocationID
         {
-            Area = SpaceTraderConfig.WorldMap.GetCurrentArea().name,
+            Area = Universe.WorldMap.GetCurrentArea().name,
             Station = station.name
         };
 

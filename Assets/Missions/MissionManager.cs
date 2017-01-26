@@ -68,14 +68,14 @@ public class MissionManager : MonoBehaviour
 
     private void SceneChanged(Scene oldScene, Scene newScene)
     {
-        if (SpaceTraderConfig.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
             return;
         }
 
         /* if loading into a new scene with no player, and it's a mission scene,
          start that mission */
-        var missionForScene = SpaceTraderConfig.MissionsConfiguration.MissionForScene(newScene);
+        var missionForScene = Universe.MissionsConfiguration.MissionForScene(newScene);
         if (missionForScene)
         {
             Debug.Assert(!missionScene.HasValue, "can't load two missions scenes at once");
@@ -121,8 +121,8 @@ public class MissionManager : MonoBehaviour
                 foreach (var quest in defTeam.Quests)
                 {
                     var playerQuest = Instantiate(quest);
-                    SpaceTraderConfig.QuestBoard.NewQuest(playerQuest);
-                    SpaceTraderConfig.QuestBoard.AcceptQuest(player, playerQuest);
+                    Universe.QuestBoard.NewQuest(playerQuest);
+                    Universe.QuestBoard.AcceptQuest(player, playerQuest);
                 }
             }
         }
@@ -160,7 +160,7 @@ public class MissionManager : MonoBehaviour
 
     private IEnumerator PrepMissionRoutine(MissionDefinition missionDef)
     {
-        Debug.Assert(!SpaceTraderConfig.WorldMap.IsWorldSceneActive);
+        Debug.Assert(!Universe.WorldMap.IsWorldSceneActive);
         Debug.Assert(!Mission);
 
         yield return SceneManager.LoadSceneAsync(missionDef.SceneName, LoadSceneMode.Additive);

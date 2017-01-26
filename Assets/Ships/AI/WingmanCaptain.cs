@@ -61,7 +61,7 @@ public class WingmanCaptain : MonoBehaviour
 
     private void OnRadioMessage(RadioMessage message)
     {
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(Ship);
 
         if (message.SourceShip == fleet.Leader && fleet.Leader != Ship)
         {
@@ -70,7 +70,7 @@ public class WingmanCaptain : MonoBehaviour
             //if we're the player's number two, acknowledge the order
             if (PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship == message.SourceShip)
             {
-                var myFleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+                var myFleet = Universe.FleetManager.GetFleetOf(Ship);
                 if (myFleet && myFleet.Followers.IndexOf(Ship) == 0)
                 {
                     StartCoroutine(AcknowledgeOrder(message));
@@ -154,7 +154,7 @@ public class WingmanCaptain : MonoBehaviour
 
     void OnTakeDamage(HitDamage damage)
     {
-        var fm = SpaceTraderConfig.FleetManager;
+        var fm = Universe.FleetManager;
         if (damage.Owner != null
             && fm.GetFleetOf(Ship) != fm.GetFleetOf(damage.Owner))
         {
@@ -171,7 +171,7 @@ public class WingmanCaptain : MonoBehaviour
 
 	void Update()
     {
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(Ship);
 
         //check for targets myself
         AcquireTarget();

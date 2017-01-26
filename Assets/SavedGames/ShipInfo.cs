@@ -73,7 +73,7 @@ namespace SavedGames
 
         public Ship RestoreShip(IDictionary<int, CrewMember> charactersByTransientId)
         {
-            var type = SpaceTraderConfig.Market.BuyableShipTypes.Where(st => st.name == shipType).FirstOrDefault();
+            var type = Universe.Market.BuyableShipTypes.Where(st => st.name == shipType).FirstOrDefault();
             if (!type)
             {
                 Debug.Log("no shiptype matches " + shipType);

@@ -13,7 +13,7 @@ public class AutoCreateFleet : MonoBehaviour
     {
         var leader = GetComponent<Ship>();
 
-        members.ForEach(member => SpaceTraderConfig.FleetManager.AddToFleet(leader, member));
+        members.ForEach(member => Universe.FleetManager.AddToFleet(leader, member));
 
         Destroy(this);
     }

@@ -39,14 +39,14 @@ public class CollectItemsQuest : Quest
 
     private ItemType GetItemType()
     {
-        return SpaceTraderConfig.CargoItemConfiguration.FindType(itemTypeName);
+        return Universe.CargoItemConfiguration.FindType(itemTypeName);
     }
 
     public override QuestStatus Status
     {
         get
         {
-            var owner = SpaceTraderConfig.QuestBoard.OwnerOf(this);
+            var owner = Universe.QuestBoard.OwnerOf(this);
             if (!owner)
             {
                 return QuestStatus.NotAccepted;
@@ -77,7 +77,7 @@ public class CollectItemsQuest : Quest
     {
         //remove the required items from the player
 
-        var owner = SpaceTraderConfig.QuestBoard.OwnerOf(this);
+        var owner = Universe.QuestBoard.OwnerOf(this);
         Debug.Assert(owner);
 
         var cargo = owner.Ship.Cargo;

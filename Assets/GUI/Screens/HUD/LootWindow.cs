@@ -65,7 +65,7 @@ public class LootWindow : MonoBehaviour
     {
         var request = new MarketRequests.PlayerTakeLootRequest(PlayerShip.LocalPlayer, Container, itemIndex);
 
-        SpaceTraderConfig.Market.PlayerTakeLoot(request);
+        Universe.Market.PlayerTakeLoot(request);
 
         do
         {
@@ -81,13 +81,13 @@ public class LootWindow : MonoBehaviour
 
     public void TakeAll()
     {
-        SpaceTraderConfig.Instance.StartCoroutine(TakeItemRoutine(-1));
+        Universe.Instance.StartCoroutine(TakeItemRoutine(-1));
     }
 
     public void OnSelectCargoItem(CargoHoldListItem selected)
     {
         cargoList.HighlightedIndex = CargoHold.BadIndex;
 
-        SpaceTraderConfig.Instance.StartCoroutine(TakeItemRoutine(selected.ItemIndex));
+        Universe.Instance.StartCoroutine(TakeItemRoutine(selected.ItemIndex));
     }
 }

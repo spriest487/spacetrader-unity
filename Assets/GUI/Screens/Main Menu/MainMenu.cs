@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
         guiController = GetComponentInParent<GUIController>();
         guiScreen = GetComponent<GUIScreen>();
 
-        var inGame = !!SpaceTraderConfig.LocalPlayer;
+        var inGame = !!Universe.LocalPlayer;
 
         guiScreen.ShowHeader = inGame;
         headerImage.gameObject.SetActive(!inGame);
@@ -70,7 +70,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            yield return SpaceTraderConfig.WorldMap.LoadArea(null);
+            yield return Universe.WorldMap.LoadArea(null);
         }
 
         guiController.DismissLoadingOverlay();

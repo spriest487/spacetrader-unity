@@ -208,14 +208,14 @@ public partial class Ship : MonoBehaviour
 
     public CrewMember GetCaptain()
     {
-        return SpaceTraderConfig.CrewConfiguration.Characters
+        return Universe.CrewConfiguration.Characters
             .Where(c => c.AssignedShip == this && c.AssignedRole == CrewAssignment.Captain)
             .FirstOrDefault();
     }
 
     public IEnumerable<CrewMember> GetPassengers()
     {
-        return SpaceTraderConfig.CrewConfiguration.Characters
+        return Universe.CrewConfiguration.Characters
             .Where(c => c.AssignedShip == this && c.AssignedRole == CrewAssignment.Passenger)
             .ToList();
     }
@@ -553,10 +553,10 @@ public partial class Ship : MonoBehaviour
             Destroy(ability);
         }
 
-        var fleetManager = SpaceTraderConfig.FleetManager;
+        var fleetManager = Universe.FleetManager;
         if (fleetManager)
         {
-            SpaceTraderConfig.FleetManager.LeaveFleet(this);
+            Universe.FleetManager.LeaveFleet(this);
         }
     }
 
@@ -763,7 +763,7 @@ public partial class Ship : MonoBehaviour
                 hd.Owner.GrantCrewXP(xp);
             }
 
-            SpaceTraderConfig.QuestBoard.NotifyDeath(this, hd.Owner);
+            Universe.QuestBoard.NotifyDeath(this, hd.Owner);
 
             //:(
             Explode();
@@ -794,7 +794,7 @@ public partial class Ship : MonoBehaviour
 
     public bool IsFleetMember(Ship other)
     {
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(this);
+        var fleet = Universe.FleetManager.GetFleetOf(this);
 
         return fleet && fleet.IsMember(other);
     }

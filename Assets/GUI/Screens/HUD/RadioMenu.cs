@@ -30,7 +30,7 @@ public class RadioMenu : MonoBehaviour
 
     private void Update()
     {
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (player.Ship.Target)
         {
@@ -61,7 +61,7 @@ public class RadioMenu : MonoBehaviour
 
     public void SendFleetRadioBroadcast(string messageName)
     {
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(PlayerShip.LocalPlayer.Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(PlayerShip.LocalPlayer.Ship);
         foreach (var member in fleet.Members)
         {
             Send(messageName, member);

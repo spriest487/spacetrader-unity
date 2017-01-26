@@ -17,7 +17,7 @@ public class SpaceStationInspector : Editor {
 
         EditorGUILayout.LabelField("Quests", EditorStyles.boldLabel);
 
-        var quests = SpaceTraderConfig.QuestBoard.QuestsAtStation(station);
+        var quests = Universe.QuestBoard.QuestsAtStation(station);
         foreach (var quest in quests)
         {
             var content = new GUIContent(quest.name, quest.Description);

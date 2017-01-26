@@ -75,8 +75,8 @@ public class WorldMapMarker : MonoBehaviour
 
     private void Update()
     {
-        var map = SpaceTraderConfig.WorldMap;
-        var player = SpaceTraderConfig.LocalPlayer;
+        var map = Universe.WorldMap;
+        var player = Universe.LocalPlayer;
         var cam = map.Camera;
 
         billboard.transform.rotation = cam.transform.rotation;

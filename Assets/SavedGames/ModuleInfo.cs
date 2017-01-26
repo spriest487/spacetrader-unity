@@ -28,7 +28,7 @@ namespace SavedGames
             ModuleItemType moduleType;
             if (itemType != null)
             {
-                moduleType = SpaceTraderConfig.CargoItemConfiguration.FindType(itemType) as ModuleItemType;
+                moduleType = Universe.CargoItemConfiguration.FindType(itemType) as ModuleItemType;
 
                 if (moduleType)
                 {

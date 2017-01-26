@@ -18,15 +18,15 @@ public class SettingsScreen : MonoBehaviour
         vrToggle.gameObject.SetActive(VRSettings.supportedDevices.Any());
         vrToggle.isOn = VRSettings.enabled;
 
-        touchControlsToggle.isOn = SpaceTraderConfig.TouchControlsEnabled;
+        touchControlsToggle.isOn = Universe.TouchControlsEnabled;
     }
 
     public void Save()
     {
         VRSettings.enabled = vrToggle.isOn;
-        SpaceTraderConfig.TouchControlsEnabled = touchControlsToggle.isOn;
+        Universe.TouchControlsEnabled = touchControlsToggle.isOn;
 
-        SpaceTraderConfig.SavePrefs();
+        Universe.SavePrefs();
 
         GetComponent<GUIElement>().Dismiss();
     }

@@ -26,7 +26,7 @@ namespace SavedGames
         {
             var leader = shipsByTransientId[Leader.TransientID];
             Followers.ForEach(f =>
-                SpaceTraderConfig.FleetManager.AddToFleet(leader, shipsByTransientId[f.TransientID]));
+                Universe.FleetManager.AddToFleet(leader, shipsByTransientId[f.TransientID]));
         }
     }
 }

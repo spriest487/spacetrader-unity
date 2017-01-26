@@ -43,8 +43,8 @@ public class QuestListItem : MonoBehaviour
 
     public void UpdateStatus()
     {
-        var docked = !!SpaceTraderConfig.LocalPlayer.Dockable.DockedAtStation;
-        var myQuest = SpaceTraderConfig.LocalPlayer == SpaceTraderConfig.QuestBoard.OwnerOf(quest);
+        var docked = !!Universe.LocalPlayer.Dockable.DockedAtStation;
+        var myQuest = Universe.LocalPlayer == Universe.QuestBoard.OwnerOf(quest);
 
         completeButton.gameObject.SetActive(docked && myQuest && quest.Status == QuestStatus.Completed);
         acceptButton.gameObject.SetActive(docked && !myQuest && quest.Status == QuestStatus.NotAccepted);
@@ -53,21 +53,21 @@ public class QuestListItem : MonoBehaviour
 
     public void AcceptQuest()
     {
-        SpaceTraderConfig.QuestBoard.AcceptQuest(SpaceTraderConfig.LocalPlayer, quest);
+        Universe.QuestBoard.AcceptQuest(Universe.LocalPlayer, quest);
 
         GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }
 
     public void AbandonQuest()
     {
-        SpaceTraderConfig.QuestBoard.CancelQuest(quest);
+        Universe.QuestBoard.CancelQuest(quest);
 
         GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }
 
     public void FinishQuest()
     {
-        SpaceTraderConfig.QuestBoard.FinishQuest(quest);
+        Universe.QuestBoard.FinishQuest(quest);
 
         GUIController.Current.BroadcastMessage("OnQuestsUpdated", this, SendMessageOptions.DontRequireReceiver);
     }

@@ -39,7 +39,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
             }
             else if (station && sourceCargo == station.ItemsForSale)
             {
-                SpaceTraderConfig.Market.BuyItemFromStation(player, item.ItemIndex);
+                Universe.Market.BuyItemFromStation(player, item.ItemIndex);
                 playerCargoList.HighlightedIndex = CargoHold.BadIndex;
             }
         }

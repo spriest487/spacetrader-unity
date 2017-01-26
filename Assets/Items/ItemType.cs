@@ -58,6 +58,6 @@ public static class ItemTypeUtility
 {
     public static Color Color(this Rarity rarity)
     {
-        return SpaceTraderConfig.CargoItemConfiguration.RarityColor(rarity);
+        return Universe.CargoItemConfiguration.RarityColor(rarity);
     }
 }

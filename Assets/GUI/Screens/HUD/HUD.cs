@@ -64,7 +64,7 @@ public class HUD : MonoBehaviour
         radioMenu.gameObject.SetActive(false);
         cinemaBars.gameObject.SetActive(false);
 
-        bool showTouchControls = SpaceTraderConfig.TouchControlsEnabled
+        bool showTouchControls = Universe.TouchControlsEnabled
             && !VRSettings.enabled;
         foreach (var touchControl in touchControlRoots)
         {
@@ -121,7 +121,7 @@ public class HUD : MonoBehaviour
                 }
                 else
                 {
-                    playerPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+                    playerPortrait.sprite = Universe.CrewConfiguration.DefaultPortrait;
                 }
 
                 var money = Market.FormatCurrency(player.Money);

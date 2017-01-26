@@ -89,7 +89,7 @@ public class TrafficShip : MonoBehaviour
     void JumpOut()
     {
         //pick a random world map point
-        var mapPoint = SpaceTraderConfig.WorldMap.DistantAreas.ToList().Random();
+        var mapPoint = Universe.WorldMap.DistantAreas.ToList().Random();
 
         const float JUMP_OUT_CLEAR_DIST = 50;
         var targetPos = mapPoint.transform.localPosition * JUMP_OUT_CLEAR_DIST;

@@ -55,7 +55,7 @@ public class ShipSpawner : MonoBehaviour
         }
 
         //crew
-        var characters = SpaceTraderConfig.CrewConfiguration;
+        var characters = Universe.CrewConfiguration;
 
         passengers.Where(p => !!p)
             .Select(p => characters.NewCharacter(p))
@@ -77,11 +77,11 @@ public class ShipSpawner : MonoBehaviour
          * etc which we probably don't want on player spawn */
         if (makeLocalPlayer)
         {
-            Debug.Assert(!SpaceTraderConfig.LocalPlayer, "local player should not already be spawned");
+            Debug.Assert(!Universe.LocalPlayer, "local player should not already be spawned");
             var player = PlayerShip.MakePlayer(spawned);
             player.AddMoney(money);
 
-            SpaceTraderConfig.LocalPlayer = player;
+            Universe.LocalPlayer = player;
         }
     }
 
@@ -89,7 +89,7 @@ public class ShipSpawner : MonoBehaviour
     {
         if (spawned && joinFleetOf && joinFleetOf.spawned)
         {
-            SpaceTraderConfig.FleetManager.AddToFleet(joinFleetOf.spawned, spawned);
+            Universe.FleetManager.AddToFleet(joinFleetOf.spawned, spawned);
         }
 
         Destroy(gameObject);

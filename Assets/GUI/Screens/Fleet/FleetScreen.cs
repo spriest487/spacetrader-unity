@@ -21,7 +21,7 @@ public class FleetScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        SpaceTraderConfig.OnLocalPlayerChanged += Refresh;
+        Universe.OnLocalPlayerChanged += Refresh;
 
         Refresh();
 
@@ -36,7 +36,7 @@ public class FleetScreen : MonoBehaviour
 
     private void OnDisable()
     {
-        SpaceTraderConfig.OnLocalPlayerChanged -= Refresh;
+        Universe.OnLocalPlayerChanged -= Refresh;
     }
 
     private void Awake()
@@ -57,7 +57,7 @@ public class FleetScreen : MonoBehaviour
             fleetShips = new PooledList<FleetShipItem, Ship>(shipListRoot, fleetShipItem);
         }
 
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (!player || !player.Ship)
         {
             fleetShips.Clear();
@@ -66,7 +66,7 @@ public class FleetScreen : MonoBehaviour
 
         var shipsInFleet = new List<Ship>();
 
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(player.Ship);
         if (fleet)
         {
             shipsInFleet.AddRange(fleet.Members);

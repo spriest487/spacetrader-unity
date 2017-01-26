@@ -96,7 +96,7 @@ public class SpaceStation : ActionOnActivate
 
     public IEnumerable<CrewMember> FindAvailableCrew()
     {
-        return SpaceTraderConfig.CrewConfiguration.Characters
+        return Universe.CrewConfiguration.Characters
             .Where(c => c.AtStation == this);
     }
 
@@ -161,7 +161,7 @@ public class SpaceStation : ActionOnActivate
     {
         /*have to run this as a routine on the station since both the player
          and the undock gui disable themselves during this process! */
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         Debug.Assert(dockedShips.Contains(player.Ship.Dockable));
 
         Undock(player.Ship.Dockable);

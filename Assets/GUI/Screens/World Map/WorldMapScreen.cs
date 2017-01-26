@@ -19,13 +19,13 @@ public class WorldMapScreen : MonoBehaviour
 
     void OnEnable()
     {
-        var currentArea = SpaceTraderConfig.WorldMap.GetCurrentArea();
+        var currentArea = Universe.WorldMap.GetCurrentArea();
         camOffset = currentArea.transform.position + new Vector3(0, 20, -40);
 
         mapCamera.transform.position = camOffset;
         mapCamera.transform.rotation = Quaternion.LookRotation(-camOffset.normalized, Vector3.up);
 
-        foreach (var marker in SpaceTraderConfig.WorldMap.Markers)
+        foreach (var marker in Universe.WorldMap.Markers)
         {
             marker.RefreshLayout();
         }
@@ -33,17 +33,17 @@ public class WorldMapScreen : MonoBehaviour
 
     void BlackedOut()
     {
-        SpaceTraderConfig.WorldMap.Visible = guiElement.Activated;
+        Universe.WorldMap.Visible = guiElement.Activated;
     }
 
     public void Update()
     {
         if (Input.GetMouseButtonDown(0)
-            && SpaceTraderConfig.LocalPlayer
-            && SpaceTraderConfig.LocalPlayer.Ship)
+            && Universe.LocalPlayer
+            && Universe.LocalPlayer.Ship)
         {
             var pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y);
-            var ray = SpaceTraderConfig.WorldMap.Camera.ScreenPointToRay(pos);
+            var ray = Universe.WorldMap.Camera.ScreenPointToRay(pos);
 
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask.GetMask("World Map")))
@@ -51,7 +51,7 @@ public class WorldMapScreen : MonoBehaviour
                 //the only things on this layer with colliders should be markers
                 var mapArea = hit.collider.GetComponent<WorldMapMarker>().Area;
 
-                SpaceTraderConfig.LocalPlayer.Ship.Target = mapArea.GetComponent<Targetable>();
+                Universe.LocalPlayer.Ship.Target = mapArea.GetComponent<Targetable>();
 
                 Debug.Log("targetted area " + mapArea);
             }

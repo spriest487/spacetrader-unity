@@ -26,7 +26,7 @@ public class RadioMenuEntry : MonoBehaviour
         switch (target)
         {
             case RadioMenuEntryTarget.Fleet:
-                var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
+                var fleet = Universe.FleetManager.GetFleetOf(player.Ship);
                 button.interactable = fleet;
                 break;
             case RadioMenuEntryTarget.Target:

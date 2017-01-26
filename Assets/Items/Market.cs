@@ -126,7 +126,7 @@ public class Market : ScriptableObject
         }
 
         Destroy(player.gameObject);
-        SpaceTraderConfig.LocalPlayer = newPlayer;
+        Universe.LocalPlayer = newPlayer;
     }
 
     public int GetSellingItemPrice(ItemType itemType, SpaceStation atStation)
@@ -201,7 +201,7 @@ public class Market : ScriptableObject
             return false;
         }
 
-        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(player.Ship);
         var sellableShips = fleet.Members.Where(m => m != player.Ship)
             .ToList();
 
@@ -238,7 +238,7 @@ public class Market : ScriptableObject
             }
         }
 
-        SpaceTraderConfig.FleetManager.LeaveFleet(soldShip);
+        Universe.FleetManager.LeaveFleet(soldShip);
 
         Destroy(soldShip.gameObject);
         player.AddMoney(totalValue);
@@ -315,6 +315,6 @@ public class Market : ScriptableObject
 
     public void PlayerTakeLoot(PlayerTakeLootRequest request)
     {
-        SpaceTraderConfig.Instance.StartCoroutine(TakeLoot(request));
+        Universe.Instance.StartCoroutine(TakeLoot(request));
     }
 }

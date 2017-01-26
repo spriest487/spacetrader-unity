@@ -87,7 +87,7 @@ public class LoadGameMenu : MonoBehaviour
             return;
         }
 
-        SpaceTraderConfig.Instance.StartCoroutine(LoadGameRoutine(selectedEntry.SaveEntry.Path));
+        Universe.Instance.StartCoroutine(LoadGameRoutine(selectedEntry.SaveEntry.Path));
     }
 
     private IEnumerator LoadGameRoutine(string path)
@@ -129,7 +129,7 @@ public class LoadGameMenu : MonoBehaviour
             selectedPortrait.sprite = header.GetPortraitSprite();
             if (!selectedPortrait.sprite)
             {
-                selectedPortrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+                selectedPortrait.sprite = Universe.CrewConfiguration.DefaultPortrait;
             }
 
             selectedLocation.text = header.Location;

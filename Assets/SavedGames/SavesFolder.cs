@@ -72,7 +72,7 @@ namespace SavedGames
 
                 if (save != null)
                 {
-                    yield return SpaceTraderConfig.Instance.StartCoroutine(save.RestoreState());
+                    yield return Universe.Instance.StartCoroutine(save.RestoreState());
 
                     Result = true;
                 }
@@ -84,7 +84,7 @@ namespace SavedGames
 
             public LoadSaveOperation(string path)
             {
-                SpaceTraderConfig.Instance.StartCoroutine(Load(path));
+                Universe.Instance.StartCoroutine(Load(path));
             }
         }
 

@@ -80,7 +80,7 @@ public class CrewListItem : MonoBehaviour
 
         if (hirePriceLabel)
         {
-            var price = SpaceTraderConfig.Market.GetHirePrice(member);
+            var price = Universe.Market.GetHirePrice(member);
 
             hirePriceLabel.text = "*" + price.ToString();
         }
@@ -94,8 +94,8 @@ public class CrewListItem : MonoBehaviour
     {
         if (buySellMode == BuySellMode.Buyable)
         {
-            var price = SpaceTraderConfig.Market.GetHirePrice(member);
-            var money = SpaceTraderConfig.LocalPlayer.Money;
+            var price = Universe.Market.GetHirePrice(member);
+            var money = Universe.LocalPlayer.Money;
 
             if (price > money)
             {
@@ -116,7 +116,7 @@ public class CrewListItem : MonoBehaviour
 
     public void HireOrFire()
     {
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var dockable = player.Dockable;
         Debug.Assert(dockable, "player must have a dockable!");
 
@@ -125,19 +125,19 @@ public class CrewListItem : MonoBehaviour
 
         bool hiring = member.AtStation == station;
 
-        var market = SpaceTraderConfig.Market;
+        var market = Universe.Market;
 
         if (hiring)
         {
             var price = market.GetHirePrice(member);
             if (price <= player.Money)
             {
-                SpaceTraderConfig.Market.HireCrewMember(player, station, member);
+                Universe.Market.HireCrewMember(player, station, member);
             }
         }
         else
         {
-            SpaceTraderConfig.Market.FireCrewMember(player, station, member);
+            Universe.Market.FireCrewMember(player, station, member);
         }
     }
 }

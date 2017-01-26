@@ -56,9 +56,9 @@ public class ItemInformationPanel : MonoBehaviour
 
             var stats = new List<KeyValuePair<string, string>>();
 
-            var player = SpaceTraderConfig.LocalPlayer;
+            var player = Universe.LocalPlayer;
             var station = player.Ship.Dockable.DockedAtStation;
-            var market = SpaceTraderConfig.Market;
+            var market = Universe.Market;
 
             var baseVal = Market.FormatCurrency(itemType.BaseValue);
             stats.Add(new KeyValuePair<string, string>("Base Value", baseVal));

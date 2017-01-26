@@ -56,7 +56,7 @@ public class NewGameMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        portrait.sprite = SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+        portrait.sprite = Universe.CrewConfiguration.DefaultPortrait;
         SelectCareer(0);
 
         nameInput.text = "";
@@ -64,7 +64,7 @@ public class NewGameMenu : MonoBehaviour
 
     public void CyclePortrait(int diff)
     {
-        var portraits = SpaceTraderConfig.CrewConfiguration.Portraits.ToList();
+        var portraits = Universe.CrewConfiguration.Portraits.ToList();
         Debug.Assert(portraits.Any());
 
         int selected = portraits.IndexOf(portrait.sprite);
@@ -115,23 +115,23 @@ public class NewGameMenu : MonoBehaviour
     public void Submit()
     {
         //run on global obj to persist through level change
-        SpaceTraderConfig.Instance.StartCoroutine(LoadNextLevel(nameInput.text, portrait.sprite));
+        Universe.Instance.StartCoroutine(LoadNextLevel(nameInput.text, portrait.sprite));
     }
 
     private IEnumerator LoadNextLevel(string pcName, Sprite pcPortrait)
     {
         yield return guiController.ShowLoadingOverlay();
 
-        var world = SpaceTraderConfig.WorldMap;
+        var world = Universe.WorldMap;
         var area = world.GetArea(newGameScene);
 
-        yield return SpaceTraderConfig.WorldMap.LoadArea(area);
+        yield return Universe.WorldMap.LoadArea(area);
 
         var ship = selectedCareer.ShipType.CreateShip(Vector3.zero, Quaternion.identity);
-        var player = SpaceTraderConfig.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
+        var player = Universe.LocalPlayer = ship.gameObject.AddComponent<PlayerShip>();
         player.AddMoney(1000);
 
-        var pc = SpaceTraderConfig.CrewConfiguration.NewCharacter(pcName, pcPortrait);
+        var pc = Universe.CrewConfiguration.NewCharacter(pcName, pcPortrait);
         pc.Assign(ship, CrewAssignment.Captain);
         pc.PilotSkill = selectedCareer.PilotSkill;
         pc.MechanicalSkill = selectedCareer.MechanicalSkill;

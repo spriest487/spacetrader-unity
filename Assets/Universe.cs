@@ -6,9 +6,9 @@ using UnityEngine.VR;
 using System;
 using System.Collections;
 
-public class SpaceTraderConfig : MonoBehaviour
+public class Universe : MonoBehaviour
 {
-    public static SpaceTraderConfig Instance { get; private set; }
+    public static Universe Instance { get; private set; }
 
     public static QuestBoard QuestBoard { get { return Instance.questBoard; } }
     public static CrewConfiguration CrewConfiguration { get { return Instance.crewConfig; } }

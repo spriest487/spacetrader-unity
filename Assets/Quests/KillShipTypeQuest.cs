@@ -44,7 +44,7 @@ public class KillShipTypeQuest : Quest
 
     private ShipType GetShipType()
     {
-        return SpaceTraderConfig.Market.BuyableShipTypes.Find(s => s.name == shipTypeName);
+        return Universe.Market.BuyableShipTypes.Find(s => s.name == shipTypeName);
     }
 
     public override void NotifyDeath(Ship ship, Ship killer)
@@ -66,7 +66,7 @@ public class KillShipTypeQuest : Quest
     {
         get
         {
-            return targetCount * SpaceTraderConfig.Market.GetShipPrice(GetShipType()) / 10;
+            return targetCount * Universe.Market.GetShipPrice(GetShipType()) / 10;
         }
     }
 

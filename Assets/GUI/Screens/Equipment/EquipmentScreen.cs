@@ -47,7 +47,7 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         Debug.Assert(!!targetCargoList);
 
         dragItem.gameObject.SetActive(false);
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         playerCargoList.CargoHold = player ? player.Ship.Cargo : null;
 
         playerCargoList.Refresh();

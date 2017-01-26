@@ -319,7 +319,7 @@ public class FollowCamera : MonoBehaviour
     private void UpdateDrag()
     {
         var touchPos = FindTouchPos();
-        var playerShip = SpaceTraderConfig.LocalPlayer;
+        var playerShip = Universe.LocalPlayer;
 
         if (!touchPos.HasValue || !playerShip)
         {
@@ -474,7 +474,7 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (player && player.Ship)
         {
@@ -518,7 +518,7 @@ public class FollowCamera : MonoBehaviour
 
 	void FixedUpdate()
 	{
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
 		if (!player || !player.isActiveAndEnabled)
 		{
 			return;

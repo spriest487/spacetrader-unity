@@ -18,7 +18,7 @@ public partial class Ship
     private IEnumerator JumpRoutine()
     {
         Debug.Assert(Dockable.State == DockingState.InSpace);
-        Debug.Assert(SpaceTraderConfig.WorldMap && SpaceTraderConfig.WorldMap.JumpEffectCurve != null);
+        Debug.Assert(Universe.WorldMap && Universe.WorldMap.JumpEffectCurve != null);
 
         yield return null;
 
@@ -51,7 +51,7 @@ public partial class Ship
 
         var jumpOrigin = transform.position;
         var jumpEnd = transform.position + (jumpDir * JUMP_DIST);
-        var jumpCurve = SpaceTraderConfig.WorldMap.JumpEffectCurve;
+        var jumpCurve = Universe.WorldMap.JumpEffectCurve;
 
         float jumpProgress = 0;
         float increment = 1 / JUMP_TIME;

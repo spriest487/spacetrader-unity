@@ -39,7 +39,7 @@ public class HUDQuestList : MonoBehaviour
             return;
         }
 
-        var quests = SpaceTraderConfig.QuestBoard.QuestsForPlayer(player);
+        var quests = Universe.QuestBoard.QuestsForPlayer(player);
 
         questItems.Refresh(quests, (i, item, quest) =>
         {

@@ -62,7 +62,7 @@ public class TeamSpawnerTeam
                 }
                 else
                 {
-                    SpaceTraderConfig.FleetManager.AddToFleet(firstSpawned, ship);
+                    Universe.FleetManager.AddToFleet(firstSpawned, ship);
                 }
 
                 switch (activeSlot.Status)
@@ -83,7 +83,7 @@ public class TeamSpawnerTeam
     private void SetupHumanPlayer(Ship ship, TeamDefinition teamDef)
     {
         var player = ship.gameObject.AddComponent<PlayerShip>();
-        SpaceTraderConfig.LocalPlayer = player;
+        Universe.LocalPlayer = player;
     }
 
     private void SetupAIPlayer(Ship ship)

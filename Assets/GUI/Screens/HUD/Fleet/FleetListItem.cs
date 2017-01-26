@@ -77,7 +77,7 @@ public class FleetListItem : MonoBehaviour
         }
 
         var captain = ship.GetCaptain();
-        var portrait = captain ? captain.Portrait : SpaceTraderConfig.CrewConfiguration.DefaultPortrait;
+        var portrait = captain ? captain.Portrait : Universe.CrewConfiguration.DefaultPortrait;
 
         captainPortrait.sprite = portrait;
 

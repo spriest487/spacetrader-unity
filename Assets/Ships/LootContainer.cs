@@ -18,7 +18,7 @@ public class LootContainer : ActionOnActivate
 
     public override void Activate(Ship activator)
     {
-        Debug.Assert(SpaceTraderConfig.LocalPlayer.Ship == activator);
+        Debug.Assert(Universe.LocalPlayer.Ship == activator);
 
         GUIController.Current.BroadcastMessage("OnPlayerActivatedLoot", 
             this,

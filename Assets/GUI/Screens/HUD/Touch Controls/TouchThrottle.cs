@@ -51,7 +51,7 @@ public class TouchThrottle : MonoBehaviour
 
     private void Update()
     {
-        var player = SpaceTraderConfig.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (!dragging && player && player.Ship)
         {
             var thrust = player.Ship.Thrust;

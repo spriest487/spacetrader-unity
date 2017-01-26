@@ -19,7 +19,7 @@ public class TargetCargoDropTarget : MonoBehaviour
 
         if (sourceCargo == equipmentScreen.PlayerCargo)
         {
-            SpaceTraderConfig.Market.SellItemToStation(player, item.ItemIndex);
+            Universe.Market.SellItemToStation(player, item.ItemIndex);
 
             //this slot should now be empty, doing this will "select" the empty slot
             item.OnClickCargoItem();

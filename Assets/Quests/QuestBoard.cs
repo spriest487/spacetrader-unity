@@ -43,7 +43,7 @@ public class QuestBoard : ScriptableObject
 
     public IEnumerable<Quest> QuestsAtStation(SpaceStation station)
     {
-        var area = SpaceTraderConfig.WorldMap.GetCurrentArea().name;
+        var area = Universe.WorldMap.GetCurrentArea().name;
 
         if (station == null)
         {

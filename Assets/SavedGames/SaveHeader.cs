@@ -125,7 +125,7 @@ namespace SavedGames
 
         public Sprite GetPortraitSprite()
         {
-            var crew = SpaceTraderConfig.CrewConfiguration;
+            var crew = Universe.CrewConfiguration;
             if (CharacterPortrait >= 0 && CharacterPortrait < crew.PortraitCount)
             {
                 return crew.GetPortrait(CharacterPortrait);

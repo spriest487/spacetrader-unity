@@ -154,7 +154,7 @@ public class WorldMap : MonoBehaviour
         {
             var currentArea = GetCurrentArea();
 
-            SceneManager.SetActiveScene(SpaceTraderConfig.GlobalScene);
+            SceneManager.SetActiveScene(Universe.GlobalScene);
             yield return null;
 
             yield return SceneManager.UnloadSceneAsync(currentArea.name);

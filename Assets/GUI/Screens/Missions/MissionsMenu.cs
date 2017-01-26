@@ -52,7 +52,7 @@ public class MissionsMenu : MonoBehaviour
             Destroy(button.gameObject);
         }
 
-        foreach (var mission in SpaceTraderConfig.MissionsConfiguration.Missions)
+        foreach (var mission in Universe.MissionsConfiguration.Missions)
         {
             var missionItem = MissionMenuItem.Create(missionElementPrefab, mission);
             missionItem.transform.SetParent(missionsLayout, false);

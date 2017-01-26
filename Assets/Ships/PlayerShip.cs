@@ -18,7 +18,7 @@ public class PlayerShip : MonoBehaviour
     {
         get
         {
-            return SpaceTraderConfig.LocalPlayer;
+            return Universe.LocalPlayer;
         }
     }
     
@@ -51,7 +51,7 @@ public class PlayerShip : MonoBehaviour
 
     void OnDocked()
     {
-        if (SpaceTraderConfig.LocalPlayer == this)
+        if (Universe.LocalPlayer == this)
         {
             GUIController.Current.SwitchTo(ScreenID.ScreensList);
         }
@@ -59,7 +59,7 @@ public class PlayerShip : MonoBehaviour
 
     void OnUndocked()
     {
-        if (SpaceTraderConfig.LocalPlayer == this)
+        if (Universe.LocalPlayer == this)
         {
             GUIController.Current.SwitchTo(ScreenID.HUD);
         }
@@ -67,7 +67,7 @@ public class PlayerShip : MonoBehaviour
 
     bool LocalPlayerHasControl()
     {
-        return SpaceTraderConfig.LocalPlayer == this
+        return Universe.LocalPlayer == this
             && Dockable.State == DockingState.InSpace
             && !Ship.JumpTarget;
     }
@@ -189,7 +189,7 @@ public class PlayerShip : MonoBehaviour
             var yaw = Input.GetAxis("yaw");
             var thrust = Input.GetAxis("Vertical");
 
-            if (SpaceTraderConfig.TouchControlsEnabled)
+            if (Universe.TouchControlsEnabled)
             {
                 pitch += -TouchJoystick.Value.y;
                 yaw += TouchJoystick.Value.x;
@@ -285,7 +285,7 @@ public class PlayerShip : MonoBehaviour
     {
         yield return GUIController.Current.ShowLoadingOverlay();
 
-        yield return SpaceTraderConfig.WorldMap.LoadArea(area);
+        yield return Universe.WorldMap.LoadArea(area);
 
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
@@ -318,10 +318,10 @@ public class PlayerShip : MonoBehaviour
 
     void OnDestroy()
     {
-        if (SpaceTraderConfig.Instance &&
-            SpaceTraderConfig.LocalPlayer == this)
+        if (Universe.Instance &&
+            Universe.LocalPlayer == this)
         {
-            SpaceTraderConfig.LocalPlayer = null;
+            Universe.LocalPlayer = null;
         }
     }
 }
