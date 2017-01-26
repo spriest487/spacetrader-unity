@@ -11,7 +11,7 @@ public class SpaceStation : ActionOnActivate
     [Header("Outside")]
 
     [SerializeField]
-    private MooringTrigger mooringTrigger;
+    private DockingTrigger dockingTrigger;
 
     [SerializeField]
     private List<Transform> undockPoints;
@@ -22,7 +22,7 @@ public class SpaceStation : ActionOnActivate
     [Header("Inside")]
 
     [SerializeField]
-    private List<Moorable> dockedShips;
+    private List<DockableObject> dockedShips;
 
     [SerializeField]
     private List<TrafficShip> dockedTraffic;
@@ -40,20 +40,20 @@ public class SpaceStation : ActionOnActivate
 
     public override void Activate(Ship activator)
     {
-        var moorable = activator.Moorable;
-        Debug.Assert(moorable);
+        var dockable = activator.Dockable;
+        Debug.Assert(dockable);
 
-        moorable.BeginAutoDocking(this);
+        dockable.BeginAutoDocking(this);
     }
 
     public override bool CanBeActivatedBy(Ship activator)
     {
-        return activator.Moorable.LocalStation == this;
+        return activator.Dockable.LocalStation == this;
     }
 
-    public MooringTrigger MooringTrigger
+    public DockingTrigger DockingTrigger
     {
-        get { return mooringTrigger; }
+        get { return dockingTrigger; }
     }
 
     public IEnumerable<Transform> UndockPoints
@@ -101,12 +101,12 @@ public class SpaceStation : ActionOnActivate
     }
 
     //eat a ship, disabling it and storing it in the hangar
-    public void AddDockedShip(Moorable docked)
+    public void AddDockedShip(DockableObject docked)
     {
         //just in case...
         docked.transform.position = transform.position;
 
-        docked.gameObject.SendMessage("OnMoored", this, SendMessageOptions.DontRequireReceiver);
+        docked.gameObject.SendMessage("OnDocked", this, SendMessageOptions.DontRequireReceiver);
 
         docked.gameObject.SetActive(false);
         dockedShips.Add(docked);
@@ -117,44 +117,44 @@ public class SpaceStation : ActionOnActivate
         }
     }
 
-    public void Unmoor(Moorable moorable)
+    public void Undock(DockableObject dockable)
     {
-        Debug.AssertFormat(dockedShips.Contains(moorable),
-            "tried to unmoor {0} from {1} but it's not moored here",
-                moorable,
+        Debug.AssertFormat(dockedShips.Contains(dockable),
+            "tried to undock {0} from {1} but it's not docked here",
+                dockable,
                 gameObject);
 
-        dockedShips.Remove(moorable);
-        dockedTraffic.RemoveAll(t => t.Ship.Moorable == moorable);
+        dockedShips.Remove(dockable);
+        dockedTraffic.RemoveAll(t => t.Ship.Dockable == dockable);
 
         Transform undockPoint;
         if (undockPoints.Count == 0)
         {
-            undockPoint = mooringTrigger.transform;
+            undockPoint = dockingTrigger.transform;
         }
         else
         {
             undockPoint = undockPoints[UnityEngine.Random.Range(0, undockPoints.Count)];
         }
 
-        moorable.transform.position = undockPoint.position;
-        moorable.transform.rotation = undockPoint.rotation;
+        dockable.transform.position = undockPoint.position;
+        dockable.transform.rotation = undockPoint.rotation;
 
-        var rigidBody = moorable.GetComponent<Rigidbody>();
+        var rigidBody = dockable.GetComponent<Rigidbody>();
         if (rigidBody)
         {
             rigidBody.angularVelocity = Vector3.zero;
             rigidBody.velocity = Vector3.zero;
         }
 
-        var ship = moorable.GetComponent<Ship>();
+        var ship = dockable.GetComponent<Ship>();
         if (ship)
         {
             ship.ResetControls();
         }
 
-        moorable.gameObject.SetActive(true);
-        moorable.gameObject.SendMessage("OnUnmoored", this, SendMessageOptions.DontRequireReceiver);
+        dockable.gameObject.SetActive(true);
+        dockable.gameObject.SendMessage("OnUndocked", this, SendMessageOptions.DontRequireReceiver);
     }
 
     public void UndockPlayer()
@@ -162,9 +162,9 @@ public class SpaceStation : ActionOnActivate
         /*have to run this as a routine on the station since both the player
          and the undock gui disable themselves during this process! */
         var player = SpaceTraderConfig.LocalPlayer;
-        Debug.Assert(dockedShips.Contains(player.Ship.Moorable));
+        Debug.Assert(dockedShips.Contains(player.Ship.Dockable));
 
-        Unmoor(player.Ship.Moorable);
+        Undock(player.Ship.Dockable);
     }
 
     void Update()

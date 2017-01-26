@@ -76,7 +76,7 @@ public class FleetScreen : MonoBehaviour
             shipsInFleet.Add(player.Ship);
         }
 
-        var dockedAtStation = player.Moorable.DockedAtStation;
+        var dockedAtStation = player.Dockable.DockedAtStation;
         if (dockedAtStation)
         {
             //blank item to display the buy options

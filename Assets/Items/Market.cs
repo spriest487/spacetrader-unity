@@ -141,7 +141,7 @@ public class Market : ScriptableObject
 
     public void BuyItemFromStation(PlayerShip player, int itemIndex)
     {
-        var station = player.Moorable.DockedAtStation;
+        var station = player.Dockable.DockedAtStation;
         var playerCargo = player.Ship.Cargo;
         var stationCargo = station.ItemsForSale;
 
@@ -164,7 +164,7 @@ public class Market : ScriptableObject
     public void SellItemToStation(PlayerShip player, int itemIndex)
     {
         var playerCargo = player.Ship.Cargo;
-        var station = player.Moorable.DockedAtStation;
+        var station = player.Dockable.DockedAtStation;
         var stationCargo = station.ItemsForSale;
 
         var itemType = playerCargo[itemIndex];

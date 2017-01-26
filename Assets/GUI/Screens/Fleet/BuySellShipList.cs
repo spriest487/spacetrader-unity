@@ -27,7 +27,7 @@ public class BuySellShipList : MonoBehaviour
 
     private void OnEnable()
     {
-        var station = SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation;
+        var station = SpaceTraderConfig.LocalPlayer.Dockable.DockedAtStation;
 
         availableShips = station.ShipsForSale.ToList();
 

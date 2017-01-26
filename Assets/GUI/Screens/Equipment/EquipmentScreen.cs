@@ -53,11 +53,11 @@ public class EquipmentScreen : MonoBehaviour, IDropHandler
         playerCargoList.Refresh();
         shipModules.Refresh();
 
-        if (player && player.Moorable.DockedAtStation)
+        if (player && player.Dockable.DockedAtStation)
         {
             targetCargoPanel.gameObject.SetActive(true);
             targetCargoList.Refresh();
-            targetCargoList.CargoHold = player.Moorable.DockedAtStation.ItemsForSale;
+            targetCargoList.CargoHold = player.Dockable.DockedAtStation.ItemsForSale;
         }
         else
         {

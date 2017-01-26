@@ -67,7 +67,7 @@ public class QuestList : MonoBehaviour
 
         if (player)
         {
-            var station = player.Moorable.DockedAtStation;
+            var station = player.Dockable.DockedAtStation;
             var myQuests = SpaceTraderConfig.QuestBoard.QuestsForPlayer(player);
             var questsNotAccepted = SpaceTraderConfig.QuestBoard.QuestsAtStation(station)
                 .Except(myQuests);

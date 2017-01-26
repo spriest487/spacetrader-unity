@@ -17,7 +17,7 @@ public partial class Ship
 
     private IEnumerator JumpRoutine()
     {
-        Debug.Assert(Moorable.State == DockingState.InSpace);
+        Debug.Assert(Dockable.State == DockingState.InSpace);
         Debug.Assert(SpaceTraderConfig.WorldMap && SpaceTraderConfig.WorldMap.JumpEffectCurve != null);
 
         yield return null;

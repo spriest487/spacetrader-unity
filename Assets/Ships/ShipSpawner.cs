@@ -43,14 +43,14 @@ public class ShipSpawner : MonoBehaviour
     private void Start()
     {
         spawned = shipType.CreateShip(transform.position, transform.rotation);
-        
-        if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<Moorable>())
+
+        if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<DockableObject>())
         {
             var dockedStation = GameObject.Find(dockedAt);
             if (dockedStation)
             {
                 dockedStation.GetComponent<SpaceStation>()
-                    .AddDockedShip(spawned.GetComponent<Moorable>());
+                    .AddDockedShip(spawned.GetComponent<DockableObject>());
             }
         }
 

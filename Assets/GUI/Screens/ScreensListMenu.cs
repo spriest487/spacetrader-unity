@@ -21,7 +21,7 @@ public class ScreensListMenu : MonoBehaviour
 
     public void Undock()
     {
-        SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation.UndockPlayer();
+        SpaceTraderConfig.LocalPlayer.Dockable.DockedAtStation.UndockPlayer();
     }
 
     public void ShowMainMenu()
@@ -61,8 +61,8 @@ public class ScreensListMenu : MonoBehaviour
 
     void OnEnable()
     {
-        var station = (SpaceTraderConfig.LocalPlayer && SpaceTraderConfig.LocalPlayer.Moorable)?
-                SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation :
+        var station = (SpaceTraderConfig.LocalPlayer && SpaceTraderConfig.LocalPlayer.Dockable)?
+                SpaceTraderConfig.LocalPlayer.Dockable.DockedAtStation :
                 null;
 
         if (station)

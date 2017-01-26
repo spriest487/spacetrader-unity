@@ -37,7 +37,7 @@ public class ShipType : ScriptableObject
     private int moduleSlots;
 
     [SerializeField]
-    private bool moorable = true;
+    private bool dockable = true;
 
     [SerializeField]
     private List<Ability> abilities;
@@ -49,7 +49,7 @@ public class ShipType : ScriptableObject
     public ShipStats Stats { get { return stats; } }
     public IEnumerable<Ability> Abilities { get { return abilities; } }
     public bool Targetable { get { return targetable; } }
-    public bool Moorable { get { return moorable; } }
+    public bool Dockable { get { return dockable; } }
     public int CargoSize { get { return cargoSize; } }
     public int ModuleSlots { get { return moduleSlots; } }
     public bool HasCockpit { get { return !!cockpitPrefab; } }

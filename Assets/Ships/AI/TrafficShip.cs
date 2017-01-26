@@ -34,7 +34,7 @@ public class TrafficShip : MonoBehaviour
         ai = GetComponent<AITaskFollower>();
         dockedTime = 0;
     }
-    
+
     private void Update()
     {
         if (ai.Idle)
@@ -46,7 +46,7 @@ public class TrafficShip : MonoBehaviour
             else
             {
                 //wait for dock/undock routines to finish before doing this
-                if (Ship.Moorable.State == DockingState.InSpace)
+                if (Ship.Dockable.State == DockingState.InSpace)
                 {
                     JumpOut();
                 }
@@ -56,11 +56,11 @@ public class TrafficShip : MonoBehaviour
 
     public void DockedUpdate(SpaceStation dockedAtStation)
     {
-        Debug.Assert(dockedAtStation && ai.Ship && ai.Ship.Moorable);
+        Debug.Assert(dockedAtStation && ai.Ship && ai.Ship.Dockable);
 
         if (Time.time > dockedTime + 5)
         {
-            dockedAtStation.Unmoor(ai.Ship.Moorable);
+            dockedAtStation.Undock(ai.Ship.Dockable);
 
             //just to make sure..
             ai.ClearTasks();
@@ -77,7 +77,7 @@ public class TrafficShip : MonoBehaviour
         var undock = ai.transform.Closest(spaceStation.UndockPoints);
         if (undock)
         {
-            ai.AssignTask(NavigateTask.Create(undock.transform.position + undock.transform.forward * Moorable.DOCK_DISTANCE));
+            ai.AssignTask(NavigateTask.Create(undock.transform.position + undock.transform.forward * DockableObject.DOCK_DISTANCE));
         }
     }
 
@@ -85,7 +85,7 @@ public class TrafficShip : MonoBehaviour
     {
         ai.ClearTasks();
     }
-    
+
     void JumpOut()
     {
         //pick a random world map point
@@ -103,7 +103,7 @@ public class TrafficShip : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnMoored()
+    void OnDocked()
     {
         dockedTime = Time.time;
     }

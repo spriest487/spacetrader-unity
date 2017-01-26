@@ -10,7 +10,7 @@ struct PlayerRadioMessage
     public Ship Source;
 }
 
-[RequireComponent(typeof(Ship), typeof(Moorable))]
+[RequireComponent(typeof(Ship), typeof(DockableObject))]
 public class PlayerShip : MonoBehaviour
 {
     [System.Obsolete]
@@ -21,20 +21,15 @@ public class PlayerShip : MonoBehaviour
             return SpaceTraderConfig.LocalPlayer;
         }
     }
-
-    private Ship ship;
-
+    
     [SerializeField]
     private int money;
 
-    public Ship Ship
-    {
-        get { return ship; }
-    }
+    public Ship Ship { get; private set; }
 
-    public Moorable Moorable
+    public DockableObject Dockable
     {
-        get { return Ship? Ship.Moorable : null; }
+        get { return Ship? Ship.Dockable : null; }
     }
 
     public int Money
@@ -50,11 +45,11 @@ public class PlayerShip : MonoBehaviour
     public static PlayerShip MakePlayer(Ship nonPlayerShip)
     {
         var player = nonPlayerShip.gameObject.AddComponent<PlayerShip>();
-        player.ship = nonPlayerShip;
+        player.Ship = nonPlayerShip;
         return player;
     }
 
-    void OnMoored()
+    void OnDocked()
     {
         if (SpaceTraderConfig.LocalPlayer == this)
         {
@@ -62,7 +57,7 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
-    void OnUnmoored()
+    void OnUndocked()
     {
         if (SpaceTraderConfig.LocalPlayer == this)
         {
@@ -73,13 +68,13 @@ public class PlayerShip : MonoBehaviour
     bool LocalPlayerHasControl()
     {
         return SpaceTraderConfig.LocalPlayer == this
-            && Moorable.State == DockingState.InSpace
+            && Dockable.State == DockingState.InSpace
             && !Ship.JumpTarget;
     }
 
     private Vector3 AutoaimSnapToPredictor(Vector3 mousePos, int slot)
     {
-        if (!ship.Target)
+        if (!Ship.Target)
         {
             return mousePos;
         }
@@ -90,12 +85,12 @@ public class PlayerShip : MonoBehaviour
         const float AUTOAIM_SNAP_DIST = 30;
         const float AUTOAIM_SNAP_DIST_SQR = AUTOAIM_SNAP_DIST * AUTOAIM_SNAP_DIST;
 
-        var module = ship.ModuleLoadout.GetSlot(slot);
+        var module = Ship.ModuleLoadout.GetSlot(slot);
         if (module.ModuleType)
         {
             var behavior = module.ModuleType.Behaviour;
 
-            var predictedPos = behavior.PredictTarget(ship, slot, ship.Target);
+            var predictedPos = behavior.PredictTarget(Ship, slot, Ship.Target);
             if (predictedPos.HasValue)
             {
                 var screenPredicted = FollowCamera.Current.Camera.WorldToScreenPoint(predictedPos.Value);
@@ -115,7 +110,7 @@ public class PlayerShip : MonoBehaviour
 
     private void UpdateModuleAimPoints(FollowCamera cam)
     {
-        var loadout = ship.ModuleLoadout;
+        var loadout = Ship.ModuleLoadout;
 
         for (int moduleIndex = 0; moduleIndex < loadout.SlotCount; ++moduleIndex)
         {
@@ -126,7 +121,7 @@ public class PlayerShip : MonoBehaviour
 
             var module = loadout.GetSlot(moduleIndex);
 
-            var hardpoint = ship.GetHardpointAt(moduleIndex);
+            var hardpoint = Ship.GetHardpointAt(moduleIndex);
 
             var aimOrigin = hardpoint.transform.position;
 
@@ -138,16 +133,16 @@ public class PlayerShip : MonoBehaviour
             }
             else
             {
-                module.Aim = ship.transform.position + ship.transform.forward * 1000;
+                module.Aim = Ship.transform.position + Ship.transform.forward * 1000;
             }
         }
     }
 
     private void UseAbility(int number)
     {
-        if (number < ship.Abilities.Count())
+        if (number < Ship.Abilities.Count())
         {
-            ship.GetAbility(number).Use(ship);
+            Ship.GetAbility(number).Use(Ship);
         }
     }
 
@@ -216,7 +211,7 @@ public class PlayerShip : MonoBehaviour
                 }
             }
 
-            ship.ResetControls(
+            Ship.ResetControls(
                 pitch: pitch,
                 yaw: yaw,
                 roll: -Input.GetAxis("roll"),
@@ -226,11 +221,11 @@ public class PlayerShip : MonoBehaviour
 
             if (Input.GetButton("fire"))
             {
-                for (int mod = 0; mod < ship.ModuleLoadout.SlotCount; ++mod)
+                for (int mod = 0; mod < Ship.ModuleLoadout.SlotCount; ++mod)
                 {
-                    if (!ship.ModuleLoadout.IsFreeSlot(mod))
+                    if (!Ship.ModuleLoadout.IsFreeSlot(mod))
                     {
-                        ship.ModuleLoadout.Activate(ship, mod);
+                        Ship.ModuleLoadout.Activate(Ship, mod);
                     }
                 }
             }
@@ -318,7 +313,7 @@ public class PlayerShip : MonoBehaviour
 
 	void Awake()
 	{
-		ship = GetComponent<Ship>();
+        Ship = GetComponent<Ship>();
 	}
 
     void OnDestroy()

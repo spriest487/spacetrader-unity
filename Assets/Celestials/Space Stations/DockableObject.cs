@@ -10,7 +10,7 @@ public enum DockingState
 }
 
 [RequireComponent(typeof(Ship))]
-public class Moorable : MonoBehaviour
+public class DockableObject : MonoBehaviour
 {
     //TODO
     public const float DOCK_DISTANCE = 25;
@@ -47,7 +47,7 @@ public class Moorable : MonoBehaviour
             return state == DockingState.Docked ? localStation : null;
         }
     }
-    
+
     void OnTriggerStay(Collider collider)
     {
         if (State != DockingState.InSpace)
@@ -55,10 +55,10 @@ public class Moorable : MonoBehaviour
             return;
         }
 
-        var mooringTrigger = collider.GetComponent<MooringTrigger>();
-        if (mooringTrigger)
+        var dockingTrigger = collider.GetComponent<DockingTrigger>();
+        if (dockingTrigger)
         {
-            localStation = mooringTrigger.SpaceStation;
+            localStation = dockingTrigger.SpaceStation;
         }
     }
 
@@ -69,7 +69,7 @@ public class Moorable : MonoBehaviour
             return;
         }
 
-        if (localStation && localStation.MooringTrigger.Collider == collider)
+        if (localStation && localStation.DockingTrigger.Collider == collider)
         {
             localStation = null;
         }
@@ -82,13 +82,13 @@ public class Moorable : MonoBehaviour
         state = DockingState.InSpace;
     }
 
-    void OnMoored(SpaceStation station)
+    void OnDocked(SpaceStation station)
     {
         localStation = station;
         state = DockingState.Docked;
     }
 
-    void OnUnmoored(SpaceStation station)
+    void OnUndocked(SpaceStation station)
     {
         localStation = null;
         BeginAutoUndocking(station);
@@ -132,7 +132,7 @@ public class Moorable : MonoBehaviour
                 yield return null;
             }
         }
-        
+
         while (!goToEnd.Done)
         {
             yield return null;
@@ -140,7 +140,7 @@ public class Moorable : MonoBehaviour
 
         state = DockingState.Docked;
         spaceStation.AddDockedShip(this);
-        
+
         shipAi.ClearTasks();
     }
 

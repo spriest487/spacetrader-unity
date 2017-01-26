@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Collider))]
-public class MooringTrigger : MonoBehaviour
+public class DockingTrigger : MonoBehaviour
 {
     [SerializeField]
     private SpaceStation spaceStation;

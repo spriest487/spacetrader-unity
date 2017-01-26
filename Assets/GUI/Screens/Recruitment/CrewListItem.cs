@@ -95,7 +95,7 @@ public class CrewListItem : MonoBehaviour
         if (buySellMode == BuySellMode.Buyable)
         {
             var price = SpaceTraderConfig.Market.GetHirePrice(member);
-            var money = PlayerShip.LocalPlayer.Money;
+            var money = SpaceTraderConfig.LocalPlayer.Money;
 
             if (price > money)
             {
@@ -116,11 +116,11 @@ public class CrewListItem : MonoBehaviour
 
     public void HireOrFire()
     {
-        var player = PlayerShip.LocalPlayer;
-        var moorable = player.Moorable;
-        Debug.Assert(moorable, "player must have a moorable!");
+        var player = SpaceTraderConfig.LocalPlayer;
+        var dockable = player.Dockable;
+        Debug.Assert(dockable, "player must have a dockable!");
 
-        var station = moorable.DockedAtStation;
+        var station = dockable.DockedAtStation;
         Debug.Assert(station, "must be docked!");
 
         bool hiring = member.AtStation == station;

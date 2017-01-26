@@ -153,7 +153,7 @@ public partial class Ship : MonoBehaviour
     public Rigidbody RigidBody { get; private set; }
     public Collider Collider { get; private set; }
     public Targetable Targetable { get; private set; }
-    public Moorable Moorable { get; private set; }
+    public DockableObject Dockable { get; private set; }
 
     public IEnumerable<Ability> Abilities
     {
@@ -263,9 +263,9 @@ public partial class Ship : MonoBehaviour
                 return abilityInstance;
             });
 
-        if (shipType.Moorable && !obj.gameObject.GetComponent<Moorable>())
+        if (shipType.Dockable && !obj.gameObject.GetComponent<DockableObject>())
         {
-            ship.Moorable = obj.gameObject.AddComponent<Moorable>();
+            ship.Dockable = obj.gameObject.AddComponent<DockableObject>();
         }
 
         if (!ship.cargo)
@@ -302,7 +302,7 @@ public partial class Ship : MonoBehaviour
 
         hitPoints = GetComponent<Hitpoints>();
         Collider = GetComponent<Collider>();
-        Moorable = GetComponent<Moorable>();
+        Dockable = GetComponent<DockableObject>();
 
 #if UNITY_EDITOR
         Debug.Assert(!abilities
@@ -838,7 +838,7 @@ public partial class Ship : MonoBehaviour
         return baseXp + Mathf.FloorToInt(baseXp * 0.5f * (captain? captain.Level : 0));
     }
 
-    private void OnUnmoored()
+    private void OnUndocked()
     {
         ResetControls();
     }

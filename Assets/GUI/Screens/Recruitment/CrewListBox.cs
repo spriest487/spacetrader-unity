@@ -53,7 +53,7 @@ public class CrewListBox : MonoBehaviour
         {
             if (targetCrew == TargetCrew.Station)
             {
-                var station = PlayerShip.LocalPlayer.Moorable.DockedAtStation;
+                var station = PlayerShip.LocalPlayer.Dockable.DockedAtStation;
                 if (station)
                 {
                     crew = station.FindAvailableCrew();
@@ -82,7 +82,7 @@ public class CrewListBox : MonoBehaviour
         {
             CrewListItem.BuySellMode buySellMode;
 
-            if (playerShip.Moorable.DockedAtStation)
+            if (playerShip.Dockable.DockedAtStation)
             {
                 if (targetCrew == TargetCrew.Player)
                 {

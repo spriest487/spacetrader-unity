@@ -141,7 +141,7 @@ public class FollowCamera : MonoBehaviour
     {
         Camera.fieldOfView = NORMAL_FOV;
         transform.rotation = Quaternion.identity;
-        transform.position = player.Moorable.DockedAtStation.transform.position;
+        transform.position = player.Dockable.DockedAtStation.transform.position;
         transform.position -= new Vector3(0, 0, 100);
     }
 
@@ -474,19 +474,19 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = SpaceTraderConfig.LocalPlayer;
 
         if (player && player.Ship)
         {
-            var moorable = player.Moorable;
-            if (moorable && moorable.State != DockingState.InSpace)
+            var dockable = player.Dockable;
+            if (dockable && dockable.State != DockingState.InSpace)
             {
                 SetupCockpit(player, false);
 
-                switch (moorable.State)
+                switch (dockable.State)
                 {
                     case DockingState.AutoDocking:
-                        AutoDockingCam(player, moorable.AutoDockingStation);
+                        AutoDockingCam(player, dockable.AutoDockingStation);
                         break;
                     case DockingState.Docked:
                         DockedCam(player);
@@ -518,7 +518,7 @@ public class FollowCamera : MonoBehaviour
 
 	void FixedUpdate()
 	{
-        var player = PlayerShip.LocalPlayer;
+        var player = SpaceTraderConfig.LocalPlayer;
 		if (!player || !player.isActiveAndEnabled)
 		{
 			return;

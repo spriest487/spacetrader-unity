@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class MooringEffect : MonoBehaviour
+public class DockingEffect : MonoBehaviour
 {
     public Mesh mesh;
     public Material material;

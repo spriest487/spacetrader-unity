@@ -104,7 +104,7 @@ public class GUIController : MonoBehaviour
         var player = SpaceTraderConfig.LocalPlayer;
         if (player)
         {
-            var docked = player.Moorable && player.Moorable.DockedAtStation;
+            var docked = player.Dockable && player.Dockable.DockedAtStation;
 
             if (docked)
             {
@@ -210,7 +210,7 @@ public class GUIController : MonoBehaviour
         {
             canvas.worldCamera = vrCamera.Camera;
         }
-        
+
         if (!HasTransition)
         {
             if (Input.GetButtonDown("Cancel")

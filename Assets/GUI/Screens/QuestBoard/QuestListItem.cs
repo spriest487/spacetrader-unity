@@ -43,7 +43,7 @@ public class QuestListItem : MonoBehaviour
 
     public void UpdateStatus()
     {
-        var docked = !!SpaceTraderConfig.LocalPlayer.Moorable.DockedAtStation;
+        var docked = !!SpaceTraderConfig.LocalPlayer.Dockable.DockedAtStation;
         var myQuest = SpaceTraderConfig.LocalPlayer == SpaceTraderConfig.QuestBoard.OwnerOf(quest);
 
         completeButton.gameObject.SetActive(docked && myQuest && quest.Status == QuestStatus.Completed);

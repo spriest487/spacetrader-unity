@@ -89,7 +89,7 @@ public class HUD : MonoBehaviour
             }
             else
             {
-                cinemaBars.Activate(player.Moorable.AutoDockingStation
+                cinemaBars.Activate(player.Dockable.AutoDockingStation
                     || player.Ship.JumpTarget
                     || GUIController.Current.CutsceneOverlay.HasCutscene);
             }
