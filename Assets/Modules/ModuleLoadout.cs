@@ -57,13 +57,8 @@ public class ModuleLoadout : IEnumerable<HardpointModule>
         Debug.Assert(IsValidSlot(slot), "slots passed to ModuleLoadout.Equip() must be valid slot numbers");
 
         var free = IsFreeSlot(slot);
-        if (!free)
-        {
-            if (moduleType)
-            {
-                Debug.LogWarning("equipping a module to an occupied slot!");
-            }
-        }
+
+        Debug.Assert(free || !moduleType, "equipping a module to an occupied slot is not allowed");
 
         hardpointModules[slot] = new HardpointModule(moduleType);
     }

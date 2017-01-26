@@ -91,6 +91,11 @@ public class Market : ScriptableObject
         return GetShipForSale(type).Price;
     }
 
+    public int GetShipSellingPrice(ShipType type)
+    {
+        return GetShipForSale(type).Price;
+    }
+
     public void BuyShip(PlayerShip player, ShipType shipType, SpaceStation atStation)
     {
         var shipForSale = GetShipForSale(shipType);
@@ -179,6 +184,67 @@ public class Market : ScriptableObject
         stationCargo.Add(itemType);
 
         player.AddMoney(price);
+    }
+
+    public bool TrySellShipToStation(PlayerShip player, Ship soldShip, out string error)
+    {
+        if (!player || !player.Ship || !soldShip)
+        {
+            error = "Can't sell ship due to an error";
+            return false;
+        }
+
+        var station = player.Moorable.DockedAtStation;
+        if (!station)
+        {
+            error = "Can only sell ships when docked";
+            return false;
+        }
+
+        var fleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
+        var sellableShips = fleet.Members.Where(m => m != player.Ship)
+            .ToList();
+
+        if (!sellableShips.Contains(soldShip))
+        {
+            error = "Can't sell that ship";
+            return false;
+        }
+
+        //convert crew into unassigned characters
+        foreach (var spareCrew in soldShip.GetAllCrew())
+        {
+            spareCrew.Assign(player.Ship, CrewAssignment.Passenger);
+        }
+
+        int totalValue = GetShipSellingPrice(soldShip.ShipType);
+
+        //sell all items
+        for (int slot = 0; slot < soldShip.ModuleLoadout.SlotCount; ++slot)
+        {
+            var item = soldShip.ModuleLoadout.RemoveAt(slot);
+            if (item)
+            {
+                totalValue += GetSellingItemPrice(item, station);
+            }
+        }
+
+        for (int slot = 0; slot < soldShip.Cargo.Size; ++slot)
+        {
+            var item = soldShip.Cargo.RemoveAt(slot);
+            if (item)
+            {
+                totalValue += GetSellingItemPrice(item, station);
+            }
+        }
+
+        SpaceTraderConfig.FleetManager.LeaveFleet(soldShip);
+
+        Destroy(soldShip.gameObject);
+        player.AddMoney(totalValue);
+
+        error = null;
+        return true;
     }
 
     private IEnumerator TakeLoot(PlayerTakeLootRequest request)

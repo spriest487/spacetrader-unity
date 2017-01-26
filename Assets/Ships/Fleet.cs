@@ -35,6 +35,26 @@ public class Fleet : ScriptableObject
         }
     }
 
+    // max size, from the leader's skills
+    public int Capacity
+    {
+        get
+        {
+            if (!leader)
+            {
+                return 0;
+            }
+
+            var captain = leader.GetCaptain();
+            if (!captain)
+            {
+                return 1;
+            }
+
+            return 1 + captain.PilotSkill; //todo: leader skill?
+        }
+    }
+
     public Fleet()
     {
         followers = new List<Ship>(MaxSize);

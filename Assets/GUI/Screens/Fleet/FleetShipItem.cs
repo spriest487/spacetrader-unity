@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class FleetShipItem : MonoBehaviour
 {
@@ -32,8 +33,19 @@ public class FleetShipItem : MonoBehaviour
     [SerializeField]
     private Transform emptyItemRoot;
 
+    [SerializeField]
+    private Text emptyLabel;
+
     private Ship ship;
     private SpaceStation dockedAtStation;
+
+    private FleetScreen fleetScreen;
+
+    private void Awake()
+    {
+        fleetScreen = GetComponentInParent<FleetScreen>();
+        Debug.Assert(fleetScreen, "fleet ship item must belong to a fleet list screen");
+    }
 
     public void Assign(Ship ship, SpaceStation dockedAtStation)
     {
@@ -45,19 +57,39 @@ public class FleetShipItem : MonoBehaviour
             var shipType = ship.ShipType;
             image.sprite = shipType.Thumbnail;
             nameLabel.text = shipType.name;
+
+            //todo: "swap to" option for my ship
+            bool isMyShip = SpaceTraderConfig.LocalPlayer.Ship == ship;
+
+            buySellButton.interactable = dockedAtStation && !isMyShip;
+            buySellText.text = "SELL";
+
+            shipInfoRoot.gameObject.SetActive(true);
+            emptyItemRoot.gameObject.SetActive(false);
         }
         else
         {
             Debug.Assert(dockedAtStation, "shouldn't create empty FleetShipItems when not docked");
-        }
 
-        shipInfoRoot.gameObject.SetActive(ship);
-        emptyItemRoot.gameObject.SetActive(!ship);
+            shipInfoRoot.gameObject.SetActive(false);
+            emptyItemRoot.gameObject.SetActive(true);
 
-        buySellText.text = ship? "SELL" : "BUY";
-        if (!dockedAtStation)
-        {
-            buySellButton.interactable = false;
+            var player = SpaceTraderConfig.LocalPlayer;
+            var localFleet = SpaceTraderConfig.FleetManager.GetFleetOf(player.Ship);
+            var fleetSize = localFleet? localFleet.Members.Count() : 0;
+            var fleetCapacity = localFleet? localFleet.Capacity : 1;
+
+            var emptyText = string.Format("Fleet Size: {0}/{1} ", fleetSize, fleetCapacity);
+
+            var freeSlots = fleetCapacity - fleetSize;
+            emptyText += (freeSlots > 0)?
+                "(from Pilot skill)" :
+                "(Increase Pilot skill to unlock more slots)";
+
+            emptyLabel.text = emptyText;
+
+            buySellButton.interactable = freeSlots > 0;
+            buySellText.text = "BUY...";
         }
     }
 
@@ -65,7 +97,20 @@ public class FleetShipItem : MonoBehaviour
     {
         if (ship)
         {
-            //sell
+            //SELL
+
+            //we're hopefully about to destroy the ship so get this first
+            var soldShipName = ship.ShipType.name;
+            string error;
+            if (SpaceTraderConfig.Market.TrySellShipToStation(SpaceTraderConfig.LocalPlayer, ship, out error))
+            {
+                PlayerNotifications.GameMessage("Sold " +soldShipName);
+                fleetScreen.Refresh();
+            }
+            else
+            {
+                PlayerNotifications.Error(error);
+            }
         }
         else
         {

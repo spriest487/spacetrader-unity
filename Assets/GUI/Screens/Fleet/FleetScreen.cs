@@ -50,7 +50,7 @@ public class FleetScreen : MonoBehaviour
         fleetListGroup.interactable = false;
     }
 
-    private void Refresh()
+    public void Refresh()
     {
         if (fleetShips == null)
         {

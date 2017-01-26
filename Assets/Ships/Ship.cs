@@ -616,7 +616,7 @@ public partial class Ship : MonoBehaviour
     {
         return activeStatusEffects.Remove(effect);
     }
-    
+
 	void FixedUpdate()
 	{
         if (RigidBody)

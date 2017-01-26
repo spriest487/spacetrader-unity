@@ -85,9 +85,16 @@ public class CrewMember : ScriptableObject
 
     public SpaceStation AtStation { get { return atStation; } }
 
+    public static CrewMember CreateRandom()
+    {
+        var character = ScriptableObject.CreateInstance<CrewMember>();
+        character.RandomStats(10);
+        return character;
+    }
+
     public void Assign(Ship ship, CrewAssignment role)
     {
-        Debug.Assert(role != CrewAssignment.Unassigned);
+        Debug.Assert(role != CrewAssignment.Unassigned, "can't assign a crew member to the Unassigned role");
 
         assignedShip = ship;
         assignedRole = role;
@@ -99,6 +106,11 @@ public class CrewMember : ScriptableObject
         assignedRole = CrewAssignment.Unassigned;
         assignedShip = null;
         atStation = station;
+    }
+
+    public void RandomizeStats()
+    {
+        RandomStats(PilotSkill + MechanicalSkill + WeaponsSkill);
     }
 
     public void RandomStats(int budget)

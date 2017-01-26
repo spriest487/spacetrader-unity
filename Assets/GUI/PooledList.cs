@@ -115,8 +115,7 @@ public class PooledList<TItem, TData> : IEnumerable<TItem>
             TItem item;
             if (itemIndex >= existingItemsCount)
             {
-                item = currentItems[itemIndex] = UnityEngine.Object.Instantiate(itemPrefab);
-                item.transform.SetParent(root, false);
+                item = currentItems[itemIndex] = UnityEngine.Object.Instantiate(itemPrefab, root, false);
             }
             else
             {

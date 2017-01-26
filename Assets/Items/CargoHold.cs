@@ -43,7 +43,7 @@ public class CargoHold : ScriptableObject
         get
         {
             int empty = 0;
-            items.ForEach(item => 
+            items.ForEach(item =>
             {
                 if (item == null)
                 {
@@ -84,7 +84,7 @@ public class CargoHold : ScriptableObject
     /// <param name="item">non-null item type to add</param>
     public void Add(ItemType item)
     {
-        Debug.Assert(!!item, "item must not be null");        
+        Debug.Assert(!!item, "item must not be null");
         Debug.AssertFormat(FreeCapacity > 0, "cargo hold does not have space to add item {0}, size is {1} and free capacity is {2}",
             item, Size, FreeCapacity);
 
@@ -98,17 +98,19 @@ public class CargoHold : ScriptableObject
         }
     }
 
-    public void RemoveAt(int index)
+    public ItemType RemoveAt(int index)
     {
-        if (IsValidIndex(index))
-        {
-            this[index] = null;
-        }
+        Debug.Assert(IsValidIndex(index), "RemoveAt should only reference valid indices");
+
+        var removed = this[index];
+
+        this[index] = null;
+        return removed;
     }
 
     public void Swap(int src, int dest)
     {
-        Debug.Assert(IsValidIndex(src) && IsValidIndex(dest));
+        Debug.Assert(IsValidIndex(src) && IsValidIndex(dest), "Swap should only reference valid indices");
 
         var old = this[dest];
         this[dest] = this[src];
