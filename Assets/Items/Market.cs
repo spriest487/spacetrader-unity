@@ -194,7 +194,7 @@ public class Market : ScriptableObject
             return false;
         }
 
-        var station = player.Moorable.DockedAtStation;
+        var station = player.Dockable.DockedAtStation;
         if (!station)
         {
             error = "Can only sell ships when docked";
