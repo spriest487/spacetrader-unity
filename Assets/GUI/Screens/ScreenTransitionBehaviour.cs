@@ -13,4 +13,10 @@ public class ScreenTransitionBehaviour : StateMachineBehaviour
             animator.SendMessage(message);
         }
     }
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        string message = transitionIn ? "TransitioningIn" : "TransitioningOut";
+        animator.SendMessage(message);
+    }
 }

@@ -10,7 +10,10 @@ public class GUIElement : MonoBehaviour
 
     public Animator Animator { get; private set; }
 
+    public event Action OnTransitioningIn;
     public event Action OnTransitionedIn;
+
+    public event Action OnTransitioningOut;
     public event Action OnTransitionedOut;
 
     public bool Activated
@@ -44,6 +47,22 @@ public class GUIElement : MonoBehaviour
         if (Activated && OnTransitionedIn != null)
         {
             OnTransitionedIn.Invoke();
+        }
+    }
+
+    private void TransitioningIn()
+    {
+        if (Activated && OnTransitioningIn != null)
+        {
+            OnTransitioningIn.Invoke();
+        }
+    }
+
+    private void TransitioningOut()
+    {
+        if (Activated && OnTransitioningOut != null)
+        {
+            OnTransitioningOut.Invoke();
         }
     }
 

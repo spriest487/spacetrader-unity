@@ -23,6 +23,8 @@ public class GUIScreen : MonoBehaviour
     [SerializeField]
     private bool isBackEnabled = true;
 
+    public CanvasGroup CanvasGroup { get; private set; }
+
     public GUIElement Element { get; private set; }
 
     public ScreenID ID { get { return id; } }
@@ -56,20 +58,48 @@ public class GUIScreen : MonoBehaviour
     private void OnEnable()
     {
         Element = GetComponent<GUIElement>();
+        CanvasGroup = GetComponent<CanvasGroup>();
 
         Element.OnTransitionedIn += TransitionedInHandler;
         Element.OnTransitionedOut += TransitionedOutHandler;
+
+        Element.OnTransitioningIn += TransitioningInHandler;
+        Element.OnTransitioningOut += TransitioningOutHandler;
     }
 
     private void OnDisable()
     {
         Element.OnTransitionedIn -= TransitionedInHandler;
         Element.OnTransitionedOut -= TransitionedOutHandler;
+
+        Element.OnTransitioningIn -= TransitioningInHandler;
+        Element.OnTransitioningOut -= TransitioningOutHandler;
+    }
+
+    private void TransitioningOutHandler()
+    {
+        if (CanvasGroup)
+        {
+            CanvasGroup.interactable = false;
+        }
+    }
+
+    private void TransitioningInHandler()
+    {
+        if (CanvasGroup)
+        {
+            CanvasGroup.interactable = false;
+        }
     }
 
     private void TransitionedInHandler()
     {
         SendMessageUpwards("OnScreenTransitionedIn", this);
+
+        if (CanvasGroup)
+        {
+            CanvasGroup.interactable = true;
+        }
     }
 
     private void TransitionedOutHandler()

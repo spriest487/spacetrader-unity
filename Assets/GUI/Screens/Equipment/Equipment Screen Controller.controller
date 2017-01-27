@@ -27,7 +27,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!114 &114355759580644552
+--- !u!114 &114547522086533834
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -39,7 +39,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionIn: 1
---- !u!114 &114656619470622582
+--- !u!114 &114806723682564102
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -111,7 +111,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101000010701777818}
   m_StateMachineBehaviours:
-  - {fileID: 114656619470622582}
+  - {fileID: 114806723682564102}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -136,7 +136,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101000012869593164}
   m_StateMachineBehaviours:
-  - {fileID: 114355759580644552}
+  - {fileID: 114547522086533834}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
