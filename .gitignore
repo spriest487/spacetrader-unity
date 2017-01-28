@@ -24,3 +24,7 @@
 Builds/
 Assets/Standard Assets/
 Assets/Standard Assets.meta
+Assets/WSATestCertificate.pfx
+Assets/WSATestCertificate.pfx.meta
+UWP/project.json
+UWP/project.lock.json

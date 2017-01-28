@@ -8865,7 +8865,7 @@ Prefab:
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 503.19904
+      value: 672.6667
       objectReference: {fileID: 0}
     - target: {fileID: 224987828215277022, guid: baec3c4740556e442b9dc78df5c785f2,
         type: 2}
@@ -15187,7 +15187,7 @@ ParticleSystem:
   m_GameObject: {fileID: 964843849}
   serializedVersion: 5
   lengthInSec: 5
-  speed: 1
+  simulationSpeed: 1
   looping: 1
   prewarm: 1
   playOnAwake: 0
@@ -21448,7 +21448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 0.4169922
+  m_ScaleFactor: 0.9375
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
