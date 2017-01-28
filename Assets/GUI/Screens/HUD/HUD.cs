@@ -74,7 +74,7 @@ public class HUD : MonoBehaviour
 
     private void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (!player || !player.Ship)
         {

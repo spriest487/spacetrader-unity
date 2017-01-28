@@ -28,7 +28,7 @@ public class GUIElement : MonoBehaviour
         }
         set { GetComponent<Animator>().SetBool(ActiveParamName, value); }
     }
-
+    
     private void OnEnable()
     {
         Activated = true;
