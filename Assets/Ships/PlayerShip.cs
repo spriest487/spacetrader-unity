@@ -231,7 +231,7 @@ public class PlayerShip : MonoBehaviour
             }
 
             Ship.ResetControls(
-                pitch: pitch,
+                pitch: -pitch,
                 yaw: yaw,
                 roll: roll,
                 thrust: thrust,
