@@ -47,14 +47,8 @@ public class GUIController : MonoBehaviour
     private GUIElement loadingOverlay;
 
     [SerializeField]
-    private GUIElement header;
-
-    [SerializeField]
-    private Text headerLabel;
-
-    [SerializeField]
-    private Button backButton;
-
+    private HeaderBar header;
+    
     [SerializeField]
     private GUIElement statusBar;
 
@@ -67,16 +61,18 @@ public class GUIController : MonoBehaviour
     {
         get { return activeTransition != null; }
     }
-
-    public ScreenID ActiveScreen
+    
+    public GUIScreen ActiveScreen
     {
         get
         {
             var activeScreen = FindActiveScreen();
             Debug.Assert(!!activeScreen, "there must be an active screen");
-            return activeScreen.ID;
+            return activeScreen;
         }
     }
+
+    public ScreenID ActiveScreenID { get { return ActiveScreen.ID; } }
 
     public CutsceneOverlay CutsceneOverlay
     {
@@ -125,7 +121,7 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
         SetupVRMode();
 
@@ -135,17 +131,11 @@ public class GUIController : MonoBehaviour
         Current = this;
 
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
-
-
-        foreach (var screen in screens)
-        {
-            screen.OnNavigationChanged += () => RefreshBackButtonNavigation(screen);
-        }
-
+        
         var activeScreen = FindActiveScreen();
         if (activeScreen)
         {
-            header.Activate(activeScreen.ShowHeader);
+            header.Element.Activate(activeScreen.ShowHeader);
             statusBar.Activate(activeScreen.ShowStatusBar);
         }
         
@@ -185,7 +175,7 @@ public class GUIController : MonoBehaviour
 
         if (buttonState)
         {
-            if (ActiveScreen == screen)
+            if (ActiveScreenID == screen)
             {
                 DismissActive();
             }
@@ -225,34 +215,7 @@ public class GUIController : MonoBehaviour
             canvasXform.localPosition = Vector3.zero;
         }
     }
-
-    private void RefreshBackButtonNavigation(GUIScreen activeScreen)
-    {
-        var backNavigation = backButton.navigation;
-        if (activeScreen.TopSelectable || activeScreen.BottomSelectable)
-        {
-            backNavigation.mode = Navigation.Mode.Explicit;
-
-            backNavigation.selectOnUp = activeScreen.BottomSelectable;
-            backNavigation.selectOnDown = activeScreen.TopSelectable;
-
-            if (!backNavigation.selectOnUp)
-            {
-                backNavigation.selectOnUp = activeScreen.TopSelectable;
-            }
-
-            if (!backNavigation.selectOnDown)
-            {
-                backNavigation.selectOnDown = activeScreen.BottomSelectable;
-            }
-        }
-        else
-        {
-            backNavigation.mode = Navigation.Mode.None;
-        }
-        backButton.navigation = backNavigation;
-    }
-
+    
     private void Update()
     {
         var canvas = GetComponent<Canvas>();
@@ -265,7 +228,7 @@ public class GUIController : MonoBehaviour
         {
             var defaultScreen = DefaultScreen();
             if (Input.GetButtonDown("Cancel")
-                && ActiveScreen != defaultScreen)
+                && ActiveScreenID != defaultScreen)
             {
                 DismissActive();
             }
@@ -307,21 +270,8 @@ public class GUIController : MonoBehaviour
             we're either not in a transition, or currently transitioning
             into this screen*/
 
-            header.Activate(activeScreen.ShowHeader);
+            header.Element.Activate(activeScreen.ShowHeader);
             statusBar.Activate(activeScreen.ShowStatusBar);
-
-            if (header.Activated)
-            {
-                var headerText = activeScreen.HeaderText;
-                if (string.IsNullOrEmpty(headerText))
-                {
-                    headerText = activeScreen.name.ToUpper();
-                }
-                headerLabel.text = headerText;
-                backButton.gameObject.SetActive(activeScreen.IsBackEnabled);
-            }
-            
-            RefreshBackButtonNavigation(activeScreen);
         }
     }
 
@@ -341,7 +291,7 @@ public class GUIController : MonoBehaviour
 
         if (!nextScreen.ShowHeader)
         {
-            header.Activate(false);
+            header.Element.Activate(false);
         }
         if (!nextScreen.ShowStatusBar)
         {

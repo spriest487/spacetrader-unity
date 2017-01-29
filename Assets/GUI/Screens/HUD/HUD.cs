@@ -145,7 +145,7 @@ public class HUD : MonoBehaviour
     //"use target" hud button event
     public void PlayerActivateTarget()
     {
-        PlayerShip.LocalPlayer.ActivateTarget();
+        Universe.LocalPlayer.ActivateTarget();
     }
 
     //gui screens menu button event
