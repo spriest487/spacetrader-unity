@@ -31,9 +31,23 @@ public class BuySellShipList : MonoBehaviour
 
         availableShips = station.ShipsForSale.ToList();
 
-        if (availableShips.Count > 0)
+        SetSelection(0);
+    }
+
+    private void SetSelection(int selectIndex)
+    {
+        if (selectIndex > 0 && selectIndex < availableShips.Count)
         {
-            selected = availableShips[0];
+            selected = availableShips[selectIndex];
+
+            nameLabel.gameObject.SetActive(true);
+            nameLabel.text = selected.ShipType.name;
+
+            priceLabel.gameObject.SetActive(true);
+            priceLabel.text = Market.FormatCurrency(selected.Price);
+
+            thumbnail.gameObject.SetActive(true);
+            thumbnail.sprite = selected.ShipType.Thumbnail;
         }
         else
         {
@@ -50,7 +64,7 @@ public class BuySellShipList : MonoBehaviour
         var selectedIndex = Mathf.Max(0, availableShips.IndexOf(selected));
         var newIndex = (selectedIndex + amount) % availableShips.Count;
 
-        selected = availableShips[newIndex];
+        SetSelection(newIndex);
     }
 
     public void NextShip()
