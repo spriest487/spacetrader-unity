@@ -11,13 +11,13 @@ public class TouchThrottle : MonoBehaviour
     private Slider slider;
     private bool dragging;
 
-    public static float? Value
+    public static float Value
     {
         get
         {
-            if (!instance || !instance.dragging)
+            if (!instance)
             {
-                return null;
+                return 0;
             }
 
             return instance.GetValue();
@@ -31,6 +31,9 @@ public class TouchThrottle : MonoBehaviour
 
     [SerializeField]
     private float zeroPoint = 0.25f;
+
+    [SerializeField]
+    private float snapToZero = 0.1f;
 
     private EventTrigger.Entry EventEntry(EventTriggerType eventID, Action callback)
     {
@@ -49,24 +52,47 @@ public class TouchThrottle : MonoBehaviour
         slider = GetComponent<Slider>();
     }
 
-    private void Update()
+    private void Start()
     {
-        var player = Universe.LocalPlayer;
-        if (!dragging && player && player.Ship)
+        slider.value = zeroPoint;
+    }
+    
+    private float ThrustToSliderVal(float thrust)
+    {
+        if (thrust >= 0)
         {
-            var thrust = player.Ship.Thrust;
-            if (thrust >= 0)
-            {
-                var range = 1 - zeroPoint;
-                slider.value = (thrust / range) + zeroPoint;
-            }
-            else
-            {
-                slider.value = (1 + thrust) * zeroPoint;
-            }
+            var range = 1 - zeroPoint;
+            return (thrust / range) + zeroPoint;
+        }
+        else
+        {
+            return (1 + thrust) * zeroPoint;
         }
     }
 
+    private void Update()
+    {
+        var player = Universe.LocalPlayer;
+
+        if (!(player && player.Ship))
+        {
+            return;
+        }
+
+        if (!dragging)
+        {
+            if (slider.value < zeroPoint)
+            {
+                slider.value = zeroPoint;
+            }
+
+            if (Mathf.Abs(slider.value - zeroPoint) < snapToZero)
+            {
+                slider.value = zeroPoint;
+            }
+        }
+    }
+    
     private float GetValue()
     {
         var sliderPos = instance.slider.normalizedValue;
