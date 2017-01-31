@@ -51,7 +51,8 @@
         "Obj/":true,
         "ProjectSettings/":true,
         "temp/":true,
-        "Temp/":true
+        "Temp/":true,
+        "Builds": true
     },
     "editor.detectIndentation": false,
     "editor.insertSpaces": true,
