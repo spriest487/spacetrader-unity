@@ -333,7 +333,7 @@ public class FollowCamera : MonoBehaviour
         var eyePos = new Vector2(0.5f, 0.5f);
 
         var dragX = (screenDragX - eyePos.x) / eyePos.x;
-        var dragY = -((screenDragY - eyePos.y) / eyePos.y);
+        var dragY = ((screenDragY - eyePos.y) / eyePos.y);
 
         dragX = dragInputCurve.Evaluate(dragX) * Mathf.Sign(dragX);
         dragY = dragInputCurve.Evaluate(dragY) * Mathf.Sign(dragY);

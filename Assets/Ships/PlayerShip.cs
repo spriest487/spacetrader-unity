@@ -21,7 +21,7 @@ public class PlayerShip : MonoBehaviour
             return Universe.LocalPlayer;
         }
     }
-    
+
     [SerializeField]
     private int money;
 
@@ -184,7 +184,7 @@ public class PlayerShip : MonoBehaviour
             {
                 UseAbility(3);
             }
-            
+
             var pitch = Input.GetAxis("Pitch");
             var yaw = Input.GetAxis("Yaw");
             var roll = -Input.GetAxis("Roll");
@@ -212,18 +212,18 @@ public class PlayerShip : MonoBehaviour
                         pitch += turnAim.Value.y;
                     }
                 }
-            }            
+            }
 
-            //in yaw mode, the roll control (stick) maps to yaw instead
-            if (Mathf.Abs(yaw) <= float.Epsilon &&
+            //in alt-yaw mode, swap yaw and roll
+            if (Mathf.Approximately(0, roll) &&
                 Input.GetButton("Yaw Mode"))
             {
-                yaw = -roll;
-                roll = Ship.Roll;
+                roll = -yaw;
+                yaw = Ship.Yaw;
             }
 
             //in strafe mode, thrust maps to lift instead
-            if (Mathf.Abs(lift) <= float.Epsilon &&
+            if (Mathf.Approximately(0, lift) &&
                 Input.GetButton("Strafe Mode"))
             {
                 lift = thrust;

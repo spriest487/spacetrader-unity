@@ -61,7 +61,7 @@ public class WorldMapScreen : MonoBehaviour
             Input.GetAxis("Yaw"),
             Input.GetAxis("Strafe"));
         float northSouth = MathUtils.MaxAbs(Input.GetAxis("Vertical"),
-            Input.GetAxis("Pitch"),
+            -Input.GetAxis("Pitch"),
             Input.GetAxis("Thrust"));
 
         const float PAN_SPEED = 50;

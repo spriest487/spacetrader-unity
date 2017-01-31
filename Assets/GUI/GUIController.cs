@@ -48,7 +48,7 @@ public class GUIController : MonoBehaviour
 
     [SerializeField]
     private HeaderBar header;
-    
+
     [SerializeField]
     private GUIElement statusBar;
 
@@ -61,7 +61,7 @@ public class GUIController : MonoBehaviour
     {
         get { return activeTransition != null; }
     }
-    
+
     public GUIScreen ActiveScreen
     {
         get
@@ -121,6 +121,11 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        Current = this;
+    }
+
     private void Start()
     {
         SetupVRMode();
@@ -128,17 +133,15 @@ public class GUIController : MonoBehaviour
         Debug.Assert(cutsceneOverlay);
         Debug.Assert(!Current || Current == this);
 
-        Current = this;
-
         screens = new List<GUIScreen>(GetComponentsInChildren<GUIScreen>(true));
-        
+
         var activeScreen = FindActiveScreen();
         if (activeScreen)
         {
             header.Element.Activate(activeScreen.ShowHeader);
             statusBar.Activate(activeScreen.ShowStatusBar);
         }
-        
+
         loadingOverlay.OnTransitionedIn += OnLoadingTransitionedIn;
         loadingOverlay.OnTransitionedOut += OnLoadingTransitionedOut;
 
@@ -215,7 +218,7 @@ public class GUIController : MonoBehaviour
             canvasXform.localPosition = Vector3.zero;
         }
     }
-    
+
     private void Update()
     {
         var canvas = GetComponent<Canvas>();
