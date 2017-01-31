@@ -14,7 +14,7 @@ public static class MathUtils
 	}
 
     public static void OrderByDistance(Transform[] transforms, Vector3 point)
-    {        
+    {
         Array.Sort(transforms, (a, b) =>
         {
             var aDist = (a.position - point).sqrMagnitude;
@@ -23,7 +23,7 @@ public static class MathUtils
             return (int) (aDist - bDist);
         });
     }
-    
+
     public static Vector3 OnUnitSphere(this System.Random random)
     {
         var phi = random.NextDouble() * Math.PI * 2;
@@ -36,5 +36,18 @@ public static class MathUtils
         var z = Math.Cos(theta);
 
         return new Vector3((float) x, (float) y, (float) z);
+    }
+
+    public static float MaxAbs(params float[] vals)
+    {
+        float max = 0;
+        foreach (var x in vals)
+        {
+            if (Mathf.Abs(x) > Mathf.Abs(max))
+            {
+                max = x;
+            }
+        }
+        return max;
     }
 }

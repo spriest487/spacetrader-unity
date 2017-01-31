@@ -57,8 +57,12 @@ public class WorldMapScreen : MonoBehaviour
             }
         }
 
-        float eastWest = Input.GetAxis("Horizontal");
-        float northSouth = Input.GetAxis("Vertical");
+        float eastWest = MathUtils.MaxAbs(Input.GetAxis("Horizontal"),
+            Input.GetAxis("Yaw"),
+            Input.GetAxis("Strafe"));
+        float northSouth = MathUtils.MaxAbs(Input.GetAxis("Vertical"),
+            Input.GetAxis("Pitch"),
+            Input.GetAxis("Thrust"));
 
         const float PAN_SPEED = 50;
 
