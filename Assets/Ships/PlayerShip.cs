@@ -13,15 +13,6 @@ struct PlayerRadioMessage
 [RequireComponent(typeof(Ship), typeof(DockableObject))]
 public class PlayerShip : MonoBehaviour
 {
-    [System.Obsolete]
-    public static PlayerShip LocalPlayer
-    {
-        get
-        {
-            return Universe.LocalPlayer;
-        }
-    }
-
     [SerializeField]
     private int money;
 

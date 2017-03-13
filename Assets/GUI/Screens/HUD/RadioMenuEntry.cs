@@ -20,7 +20,7 @@ public class RadioMenuEntry : MonoBehaviour
 
     public void RefreshRadioMenu()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var button = GetComponent<Button>();
 
         switch (target)

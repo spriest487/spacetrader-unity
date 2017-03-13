@@ -97,14 +97,14 @@ public class FleetListItem : MonoBehaviour
             wingmanStatus.gameObject.SetActive(false);
         }
 
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var shipTargetable = ship.GetComponent<Targetable>();
         selectionOverlay.gameObject.SetActive(shipTargetable && player && player.Ship.Target == shipTargetable);
     }
 
     public void TargetMember()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var shipTargetable = ship.GetComponent<Targetable>();
 
         if (player && shipTargetable)

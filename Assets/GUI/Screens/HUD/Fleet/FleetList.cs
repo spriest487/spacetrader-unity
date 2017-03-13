@@ -24,7 +24,7 @@ public class FleetList : MonoBehaviour
     
     public void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (items == null)
         {

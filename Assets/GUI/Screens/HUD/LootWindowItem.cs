@@ -26,7 +26,7 @@ public class LootWindowItem : MonoBehaviour
     public void Take()
     {
         var item = cargoHold[slot];
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         
         if (player.Ship && player.Ship.Cargo.FreeCapacity > 0)
         {

@@ -13,7 +13,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
         
     private void OnDropCargoItem(CargoHoldListItem item)
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var station = player.Dockable.DockedAtStation;
         var playerCargo = player.Ship.Cargo;
         var sourceCargo = item.CargoHold;
@@ -47,7 +47,7 @@ public class PlayerCargoDropTarget : MonoBehaviour
 
     private void OnDropHardpointModule(ShipModuleController module)
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var targetCargo = playerCargoList.CargoHold;
         var loadout = player.Ship.ModuleLoadout;
 

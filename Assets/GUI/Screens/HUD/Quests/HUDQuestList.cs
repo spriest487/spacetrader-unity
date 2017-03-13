@@ -26,7 +26,7 @@ public class HUDQuestList : MonoBehaviour
 
     void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (questItems == null)
         {

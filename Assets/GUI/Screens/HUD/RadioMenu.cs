@@ -48,7 +48,7 @@ public class RadioMenu : MonoBehaviour
     private void Send(string messageName, Ship target)
     {
         var message = (RadioMessageType)Enum.Parse(typeof(RadioMessageType), messageName);
-        var source = PlayerShip.LocalPlayer.Ship;
+        var source = Universe.LocalPlayer.Ship;
 
         source.SendRadioMessage(message, target);
         GetComponent<GUIElement>().Dismiss();
@@ -61,7 +61,7 @@ public class RadioMenu : MonoBehaviour
 
     public void SendFleetRadioBroadcast(string messageName)
     {
-        var fleet = Universe.FleetManager.GetFleetOf(PlayerShip.LocalPlayer.Ship);
+        var fleet = Universe.FleetManager.GetFleetOf(Universe.LocalPlayer.Ship);
         foreach (var member in fleet.Members)
         {
             Send(messageName, member);
@@ -70,7 +70,7 @@ public class RadioMenu : MonoBehaviour
 
     public void SendTargetRadioBroadcast(string messageName)
     {
-        var target = PlayerShip.LocalPlayer.Ship.Target;
+        var target = Universe.LocalPlayer.Ship.Target;
         var targetShip = target.GetComponent<Ship>();
         if (targetShip)
         {

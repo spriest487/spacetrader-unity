@@ -59,9 +59,9 @@ public class MainMenu : MonoBehaviour
     {
         yield return guiController.ShowLoadingOverlay();
 
-        if (PlayerShip.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
-            Destroy(PlayerShip.LocalPlayer.gameObject);
+            Destroy(Universe.LocalPlayer.gameObject);
         }
 
         if (MissionManager.Instance.Mission)
@@ -83,7 +83,7 @@ public class MainMenu : MonoBehaviour
     {
         SavedGames.SavesFolder.SaveGame();
 
-        if (PlayerShip.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
             yield return guiController.SwitchTo(ScreenID.None);
 
@@ -103,7 +103,7 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        var ingame = !!PlayerShip.LocalPlayer;
+        var ingame = !!Universe.LocalPlayer;
 
         foreach (var obj in activeWhenPlayerExists)
         {

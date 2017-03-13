@@ -127,8 +127,8 @@ public partial class Ship : MonoBehaviour
         set
         {
 #if UNITY_EDITOR
-            if (PlayerShip.LocalPlayer
-                && PlayerShip.LocalPlayer.Ship == this)
+            if (Universe.LocalPlayer
+                && Universe.LocalPlayer.Ship == this)
             {
                 if (value)
                 {
@@ -403,7 +403,7 @@ public partial class Ship : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + (aimDir * 5), Color.cyan, Time.deltaTime);
 
         //local rotation required to get to target
-        var rotateTo = Quaternion.LookRotation(aimDirLocal, targetUp.HasValue ? targetUp.Value : transform.up);
+        var rotateTo = Quaternion.LookRotation(aimDirLocal, targetUp ?? transform.up);
 
         var totalAngle = Mathf.Clamp(Vector3.Dot(aimDir, transform.forward), -1, 1);
         totalAngle = Mathf.Acos(totalAngle) * Mathf.Rad2Deg;

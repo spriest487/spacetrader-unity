@@ -51,7 +51,7 @@ public class Hitpoints : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (PlayerShip.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
             GUIController.Current.BroadcastMessage("OnDamageNotification",
                 new DamageNotification(amount, this),

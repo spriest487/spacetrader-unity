@@ -13,7 +13,7 @@ public class TargetCargoDropTarget : MonoBehaviour
     
     private void OnDropCargoItem(CargoHoldListItem item)
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         var sourceCargo = item.CargoHold;
 

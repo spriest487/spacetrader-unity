@@ -15,7 +15,7 @@ public class MoneyLabel : MonoBehaviour
 
     private void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (player)
         {
             text.text = Market.FormatCurrency(player.Money);

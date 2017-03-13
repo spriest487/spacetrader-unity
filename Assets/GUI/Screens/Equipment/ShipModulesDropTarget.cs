@@ -16,7 +16,7 @@ public class ShipModulesDropTarget : MonoBehaviour
 
     private void OnDropCargoItem(CargoHoldListItem droppedItem)
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var loadout = player.Ship.ModuleLoadout;
         var droppedModuleType = droppedItem.ItemType as ModuleItemType;
 
@@ -62,7 +62,7 @@ public class ShipModulesDropTarget : MonoBehaviour
             return;
         }
 
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var loadout = player.Ship.ModuleLoadout;
 
         loadout.Swap(module.ModuleSlot, droppedModule.ModuleSlot);

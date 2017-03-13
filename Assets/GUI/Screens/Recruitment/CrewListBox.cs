@@ -47,13 +47,13 @@ public class CrewListBox : MonoBehaviour
     {
         IEnumerable<CrewMember> crew = null;
 
-        Ship playerShip = PlayerShip.LocalPlayer ? PlayerShip.LocalPlayer.Ship : null;
+        Ship playerShip = Universe.LocalPlayer ? Universe.LocalPlayer.Ship : null;
 
         if (playerShip)
         {
             if (targetCrew == TargetCrew.Station)
             {
-                var station = PlayerShip.LocalPlayer.Dockable.DockedAtStation;
+                var station = Universe.LocalPlayer.Dockable.DockedAtStation;
                 if (station)
                 {
                     crew = station.FindAvailableCrew();

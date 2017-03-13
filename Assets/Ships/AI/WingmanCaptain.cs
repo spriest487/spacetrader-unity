@@ -68,7 +68,7 @@ public class WingmanCaptain : MonoBehaviour
             SetOrder((WingmanOrder) message.MessageType);
 
             //if we're the player's number two, acknowledge the order
-            if (PlayerShip.LocalPlayer && PlayerShip.LocalPlayer.Ship == message.SourceShip)
+            if (Universe.LocalPlayer && Universe.LocalPlayer.Ship == message.SourceShip)
             {
                 var myFleet = Universe.FleetManager.GetFleetOf(Ship);
                 if (myFleet && myFleet.Followers.IndexOf(Ship) == 0)

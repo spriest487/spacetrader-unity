@@ -139,10 +139,10 @@ public class Bracket : MonoBehaviour
         Targetable playerTargetable = null;
         Ship playerShip = null;
 
-        if (PlayerShip.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
-            playerTargetable = PlayerShip.LocalPlayer.GetComponent<Targetable>();
-            playerShip = PlayerShip.LocalPlayer.Ship;
+            playerTargetable = Universe.LocalPlayer.GetComponent<Targetable>();
+            playerShip = Universe.LocalPlayer.Ship;
         }
 
         bool isTarget;
@@ -312,7 +312,7 @@ public class Bracket : MonoBehaviour
 
     public void SetPlayerTarget()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (player)
         {
             player.Ship.Target = target;

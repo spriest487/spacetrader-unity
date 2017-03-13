@@ -456,7 +456,7 @@ public class FollowCamera : MonoBehaviour
         if (player && showCockpit && cockpitCam && Camera.enabled)
         {
             cockpitCam.gameObject.SetActive(true);
-            player.gameObject.SetLayerRecursive(invisibleLayer);
+            player.gameObject.WalkChildren(obj => obj.layer = invisibleLayer);
         }
         else
         {
@@ -467,7 +467,7 @@ public class FollowCamera : MonoBehaviour
 
             if (player)
             {
-                player.gameObject.SetLayerRecursive(defaultLayer);
+                player.gameObject.WalkChildren(obj => obj.layer = defaultLayer);
             }
         }
     }

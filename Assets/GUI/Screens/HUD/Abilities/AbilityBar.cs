@@ -30,7 +30,7 @@ public class AbilityBar : MonoBehaviour
             RemoveExistingButtons();
         }
 
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (player)
         {
             var abilities = new List<Ability>();

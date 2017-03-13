@@ -28,7 +28,7 @@ public class Healthbar : MonoBehaviour
 
     void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var target = ship;
         if (target == null && player != null)
         {

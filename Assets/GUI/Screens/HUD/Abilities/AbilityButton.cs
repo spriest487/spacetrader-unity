@@ -39,7 +39,7 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             return;
         }
 
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (player)
         {
             var ship = player.GetComponent<Ship>();

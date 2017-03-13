@@ -31,23 +31,25 @@ public class ShipStatsPanel : MonoBehaviour
             items = new PooledList<ShipStatsEntry, KeyValuePair<string, string>>(content, statsEntryPrefab);
         }
 
-        if (!PlayerShip.LocalPlayer)
+        if (!Universe.LocalPlayer)
         {
             items.Clear();
             return;
         }
 
-        var ship = PlayerShip.LocalPlayer.Ship;
+        var ship = Universe.LocalPlayer.Ship;
         var stats = ship.CurrentStats;
         var hp = ship.GetComponent<Hitpoints>();
-      
-        var entries = new Dictionary<string, string>();
-        entries.Add("DPS", ship.EstimateDps().ToString("F2"));
-        entries.Add("Max speed", stats.MaxSpeed.ToString("F2") +"m/s");
-        entries.Add("Agility", stats.MaxTurnSpeed.ToString("F2") + "deg/s");
-        entries.Add("Armor", hp.GetMaxArmor().ToString());
-        entries.Add("Shield", hp.GetMaxShields().ToString());
-        entries.Add("Mass", (stats.Mass * 0.001f).ToString("F2") + "t");
+
+        var entries = new Dictionary<string, string>
+        {
+            { "DPS", ship.EstimateDps().ToString("F2") },
+            { "Max speed", stats.MaxSpeed.ToString("F2") + "m/s" },
+            { "Agility", stats.MaxTurnSpeed.ToString("F2") + "deg/s" },
+            { "Armor", hp.GetMaxArmor().ToString() },
+            { "Shield", hp.GetMaxShields().ToString() },
+            { "Mass", (stats.Mass * 0.001f).ToString("F2") + "t" }
+        };
 
         if (items == null)
         {

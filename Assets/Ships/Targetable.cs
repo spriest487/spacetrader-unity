@@ -67,8 +67,8 @@ public class Targetable : MonoBehaviour
             }
             else
             {
-                var isPlayer = PlayerShip.LocalPlayer
-                    && PlayerShip.LocalPlayer.Ship == ship;
+                var isPlayer = Universe.LocalPlayer
+                    && Universe.LocalPlayer.Ship == ship;
 
                 return !isPlayer;
             }

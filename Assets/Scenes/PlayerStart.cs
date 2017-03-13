@@ -9,7 +9,7 @@ public class PlayerStart : MonoBehaviour {
     
     void Start()
     {
-        if (PlayerShip.LocalPlayer)
+        if (Universe.LocalPlayer)
         {
             Debug.LogError("there's already a player spawned");
         }

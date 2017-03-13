@@ -23,7 +23,7 @@ public class Predictor : MonoBehaviour
             markers = new PooledList<PredictorMarker, Vector3>(transform, markerPrefab);
         }
 
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         var camera = FollowCamera.Current.Camera;
         Ship playerShip;
 

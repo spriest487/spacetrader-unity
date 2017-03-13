@@ -13,7 +13,7 @@ public class Speedometer : MonoBehaviour
 
     void LateUpdate()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (player)
         {

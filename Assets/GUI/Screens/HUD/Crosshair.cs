@@ -12,15 +12,15 @@ public class Crosshair : MonoBehaviour
         }
 
         var screenPos = FollowCamera.Current.Camera.WorldToScreenPoint(worldPos);
-		
-		Rect xhairRect = new Rect();
-		xhairRect.width = crosshairTexture.width;
-		xhairRect.height = crosshairTexture.height;
-		xhairRect.x = screenPos.x - (xhairRect.width / 2);
-		xhairRect.y = screenPos.y + (xhairRect.height / 2);
 
-		xhairRect.y = Screen.height - xhairRect.y;
-
+        var xhairRect = new Rect
+        {
+            width = crosshairTexture.width,
+            height = crosshairTexture.height,
+            x = screenPos.x - (crosshairTexture.width / 2),
+            y = Screen.height - (screenPos.y + (crosshairTexture.height / 2)),
+        };
+        
 		var guiColor = GUI.color;
 		GUI.color = new Color(guiColor.r, guiColor.g, guiColor.b, alpha);
 		GUI.DrawTexture(xhairRect, crosshairTexture);
@@ -29,7 +29,7 @@ public class Crosshair : MonoBehaviour
 
 	void OnGUI()
 	{
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
         if (!player)
         {
             return;

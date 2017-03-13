@@ -6,13 +6,13 @@ using UnityEngine;
 
 public static class GameObjectUtility
 {
-    public static void SetLayerRecursive(this GameObject obj, int layer)
+    public static void WalkChildren(this GameObject obj, Action<GameObject> action)
     {
-        obj.layer = layer;
-
-        foreach (Transform child in obj.transform)
+        action(obj);
+        int count = obj.transform.childCount;
+        for (int child = 0; child < count; ++child)
         {
-            child.gameObject.SetLayerRecursive(layer);
+            obj.transform.GetChild(child).gameObject.WalkChildren(action);
         }
     }
 

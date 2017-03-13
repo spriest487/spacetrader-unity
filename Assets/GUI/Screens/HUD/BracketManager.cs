@@ -128,7 +128,7 @@ public class BracketManager : MonoBehaviour
         }
         else if (Input.GetButtonUp("turn"))
         {
-            var player = PlayerShip.LocalPlayer;
+            var player = Universe.LocalPlayer;
 
             if (player && Time.time - clickOffTargetTime < FollowCamera.UI_DRAG_DELAY)
             {

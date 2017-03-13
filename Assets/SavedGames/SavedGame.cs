@@ -38,10 +38,10 @@ namespace SavedGames
 
         public static SavedGame CaptureFromCurrentState()
         {
-            var result = new SavedGame();
-
-            result.level = SceneManager.GetActiveScene().buildIndex;
-
+            var result = new SavedGame
+            {
+                level = SceneManager.GetActiveScene().buildIndex
+            };
             var charactersByInstanceId = new Dictionary<int, CharacterInfo>();
 
             int nextCharacterId = 0;
@@ -76,7 +76,7 @@ namespace SavedGames
             result.fleets = allFleets.Select<Fleet, FleetInfo>(f => new FleetInfo(f, shipsByInstanceId)).ToList();
             result.ships = shipsByInstanceId.Values.ToList();
 
-            var player = PlayerShip.LocalPlayer;
+            var player = Universe.LocalPlayer;
             if (player)
             {
                 result.playerMoney = player.Money;

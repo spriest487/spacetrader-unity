@@ -63,7 +63,7 @@ public class LootWindow : MonoBehaviour
 
     private IEnumerator TakeItemRoutine(int itemIndex)
     {
-        var request = new MarketRequests.PlayerTakeLootRequest(PlayerShip.LocalPlayer, Container, itemIndex);
+        var request = new MarketRequests.PlayerTakeLootRequest(Universe.LocalPlayer, Container, itemIndex);
 
         Universe.Market.PlayerTakeLoot(request);
 

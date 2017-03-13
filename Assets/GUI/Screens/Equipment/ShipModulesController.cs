@@ -34,7 +34,7 @@ public class ShipModulesController : MonoBehaviour
                 Update();
             }
 
-            if (!PlayerShip.LocalPlayer || !PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(value))
+            if (!Universe.LocalPlayer || !Universe.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(value))
             {
                 value = -1;
             }
@@ -52,7 +52,7 @@ public class ShipModulesController : MonoBehaviour
     {
         get
         {
-            if (modules == null || !PlayerShip.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(highlightedIndex))
+            if (modules == null || !Universe.LocalPlayer.Ship.ModuleLoadout.IsValidSlot(highlightedIndex))
             {
                 return null;
             }
@@ -63,7 +63,7 @@ public class ShipModulesController : MonoBehaviour
 
     private void Update()
     {
-        var player = PlayerShip.LocalPlayer;
+        var player = Universe.LocalPlayer;
 
         if (modules == null)
         {
