@@ -7,6 +7,11 @@ public class HandController : MonoBehaviour
 {
     [SerializeField]
     private VRNode node;
+
+    [SerializeField]
+    private Collider hotspotCollider;
+
+    public Collider Hotspot { get { return hotspotCollider; } }
     
 	private void Update ()
     {
