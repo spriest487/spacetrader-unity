@@ -13,9 +13,9 @@
 
         Blend SrcAlpha One
         ZWrite Off
-        ZTest Always
+        ZTest LEqual
         
-        CGPROGRAM
+    CGPROGRAM
         #pragma surface surf AtmosphereFresnel approxview
 
         struct Input {
