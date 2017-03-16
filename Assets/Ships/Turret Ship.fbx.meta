@@ -54,6 +54,7 @@ ModelImporter:
     100092: polySurface7
     100094: Turret_L_Front
     100096: Turret_R_Front
+    100098: left
     400000: pCube1
     400002: pCube4
     400004: pCube5
@@ -103,6 +104,7 @@ ModelImporter:
     400092: polySurface7
     400094: Turret_L_Front
     400096: Turret_R_Front
+    400098: left
     2300000: pCube1
     2300002: polySurface1
     2300004: polySurface2
