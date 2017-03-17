@@ -42,6 +42,8 @@ public class Universe : MonoBehaviour
 
     public static bool TouchControlsEnabled { get; set; }
 
+    [Header("World State")]
+
     [SerializeField]
     private QuestBoard questBoard;
 
@@ -58,13 +60,20 @@ public class Universe : MonoBehaviour
     private Market market;
 
     [SerializeField]
-    private PlayerShip localPlayer;
-
-    [SerializeField]
     private FleetManager fleetManager;
 
     [SerializeField]
     private WorldMap worldMap;
+
+    [Header("Globals")]
+
+    [SerializeField]
+    private PlayerShip localPlayer;
+
+    [Header("Override Settings")]
+
+    [SerializeField]
+    private bool forceEnableVR;
    
     public static event Action OnPrefsSaved;
     public static event Action OnLocalPlayerChanged;
@@ -103,8 +112,6 @@ public class Universe : MonoBehaviour
         missionsConfig = Instantiate(missionsConfig);
         market = Instantiate(market);
         fleetManager = Instantiate(fleetManager);
-
-        Debug.Assert(worldMap);
     }
 
     public static void SavePrefs()
@@ -121,8 +128,8 @@ public class Universe : MonoBehaviour
 
     public static void ReloadPrefs()
     {
-        var vrEnabledPref = PlayerPrefs.GetInt("VR Enabled", 0);
-        Instance.StartCoroutine(Instance.EnableVR(vrEnabledPref == 1));
+        var vrEnabledPref = (PlayerPrefs.GetInt("VR Enabled", 0) == 1) || Instance.forceEnableVR;
+        Instance.StartCoroutine(Instance.EnableVR(vrEnabledPref));
 
         TouchControlsEnabled = PlayerPrefs.GetInt("Touch Controls Enabled", 0) == 1;
     }
