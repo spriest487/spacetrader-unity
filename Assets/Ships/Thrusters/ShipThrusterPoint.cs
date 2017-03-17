@@ -60,10 +60,7 @@ public class ShipThrusterPoint : MonoBehaviour
 	void Start()
 	{
 		ship = GetComponentInParent<Ship>();
-		if (!ship)
-		{
-			throw new UnityException("Requires a Ship parent");
-		}
+        Debug.Assert(ship, "ShipThrusterPoint must be a child of a Ship");
 
 		intensity = 0;
 

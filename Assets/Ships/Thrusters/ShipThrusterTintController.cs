@@ -3,8 +3,11 @@
 [RequireComponent(typeof(ShipThrusterPoint))]
 public class ShipThrusterTintController : MonoBehaviour
 {
-	public string tintShaderProperty = "_TintColor";
-	public int fadeTimeMs = 100;
+    [SerializeField]
+	private string tintShaderProperty = "_TintColor";
+
+    [SerializeField]
+	private int fadeTimeMs = 100;
 
 	private ParticleSystem[] particles;
 	private ShipThrusterPoint thruster;
@@ -33,11 +36,12 @@ public class ShipThrusterTintController : MonoBehaviour
 
 		foreach (var particle in particles)
 		{
-			particle.GetComponent<Renderer>().enabled = enable;
+            var renderer = particle.GetComponent<Renderer>();
+			renderer.enabled = enable;
 
-			if (enabled)
+			if (enable)
 			{
-				var material = particle.GetComponent<Renderer>().material;
+				var material = renderer.material;
 				if (material)
 				{
 					var color = material.GetColor(tintShaderProperty);

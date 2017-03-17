@@ -9,9 +9,9 @@ class ShipThrustersInspector : Editor
 {
 	public override void OnInspectorGUI()
 	{
-		var thruster = (ShipThrusterPoint) target;
+        DrawDefaultInspector();
 
-		base.OnInspectorGUI();
+		var thruster = (ShipThrusterPoint) target;
 
 		GUILayout.Label(new GUIContent(string.Format("X hull pos: " + thruster.GetXPos())));
 		GUILayout.Label(new GUIContent(string.Format("Y hull pos: " + thruster.GetYPos())));
