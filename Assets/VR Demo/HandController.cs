@@ -67,8 +67,6 @@ public class HandController : MonoBehaviour
             moveLine.SetPosition(1, to);
 
             var dist = (from - to).magnitude;
-            moveLine.material.mainTextureScale = new Vector2(dist, 1);
-            moveLine.material.renderQueue = 3001;
 
             yield return null;
         }
