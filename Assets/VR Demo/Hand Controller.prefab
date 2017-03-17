@@ -76,7 +76,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4127350816196638
 Transform:
   m_ObjectHideFlags: 1
@@ -250,7 +250,7 @@ LineRenderer:
         rgba: 16777215
       key1:
         serializedVersion: 2
-        rgba: 4294967295
+        rgba: 4290117376
       key2:
         serializedVersion: 2
         rgba: 4278190080
