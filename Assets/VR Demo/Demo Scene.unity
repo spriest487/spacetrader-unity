@@ -86743,15 +86743,6 @@ Prefab:
       propertyPath: m_Name
       value: Right Hand
       objectReference: {fileID: 0}
-    - target: {fileID: 120112755990751228, guid: 47ba2dedd9de07e4cb498fd11b12249d,
-        type: 2}
-      propertyPath: m_Parameters.colorGradient.key1.rgba
-      value: 4290117376
-      objectReference: {fileID: 0}
-    - target: {fileID: 1998300629266576, guid: 47ba2dedd9de07e4cb498fd11b12249d, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 47ba2dedd9de07e4cb498fd11b12249d, type: 2}
   m_IsPrefabParent: 0
