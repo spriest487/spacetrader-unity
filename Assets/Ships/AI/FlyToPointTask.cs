@@ -31,6 +31,8 @@ public class FlyToPointTask : AITask
 
     private IEnumerator FlyRoutine()
     {
+        var origin = TaskFollower.transform.position;
+
         var checkInterval = new WaitForSeconds(.1f);
         var ship = TaskFollower.Ship;
 
@@ -40,7 +42,7 @@ public class FlyToPointTask : AITask
             further away from the correct heading we are) */
             //ship.ResetControls(thrust: 1);
             ship.PreciseManeuverTo(dest);
-            ship.RotateToPoint(dest);
+            ship.RotateToPoint(dest + (dest - origin));
 
             yield return checkInterval;            
         }
@@ -61,5 +63,7 @@ public class FlyToPointTask : AITask
             TaskFollower.StopCoroutine(flyRoutine);
             flyRoutine = null;
         }
+
+        TaskFollower.Ship.ResetControls();
     }
 }
