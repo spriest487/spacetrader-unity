@@ -17,11 +17,17 @@ public class HandController : MonoBehaviour
     public HandControllerHotspot Hotspot { get; private set; }
     
     private Coroutine dragging;
+    private Room room;
 
     private float TriggerAxisValue
     {
         get
         {
+            if (!VRSettings.enabled)
+            {
+                return Input.GetMouseButton(0) ? 1 : 0;
+            }
+
             switch (node)
             {
                 case VRNode.LeftHand: return Input.GetAxisRaw("OpenVR Trigger L");
@@ -34,6 +40,7 @@ public class HandController : MonoBehaviour
     private void Awake()
     {
         Hotspot = GetComponentInChildren<HandControllerHotspot>();
+        room = GetComponentInParent<Room>();
     }
 
     private void Update ()
@@ -48,7 +55,33 @@ public class HandController : MonoBehaviour
         {
             dragging = StartCoroutine(DragShipMovement(Hotspot.TouchingShip));
         }
+
+        if (!VRSettings.enabled && node == VRNode.RightHand)
+        {
+            transform.rotation = Quaternion.identity;
+
+            var mousePos = Input.mousePosition;
+            var mouseRay = room.OverheadCamera.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity))
+            {
+                AlignByHotspot(hit.point);
+            }
+            else
+            {
+                var worldPos = room.OverheadCamera.ScreenToWorldPoint(mousePos);
+                worldPos.y = 0;
+                AlignByHotspot(worldPos);
+            }
+        }
 	}
+
+    private void AlignByHotspot(Vector3 point)
+    {
+        var offset = Hotspot.transform.position - transform.position;
+
+        transform.position = point - offset;
+    }
 
     private void OnDisable()
     {
