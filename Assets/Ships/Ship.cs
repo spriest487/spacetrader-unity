@@ -279,7 +279,7 @@ public partial class Ship : MonoBehaviour
         ship.hitPoints = obj.gameObject.AddComponent<Hitpoints>();
         ship.hitPoints.Reset(shipType.Stats.Armor, shipType.Stats.Shield);
 
-        ship.moduleLoadout.SlotCount = shipType.ModuleSlots;
+        ship.moduleLoadout = new ModuleLoadout { SlotCount = shipType.ModuleSlots };
 
         ship.UpdateHardpoints();
 
@@ -289,7 +289,10 @@ public partial class Ship : MonoBehaviour
             ship.Targetable = ship.gameObject.AddComponent<Targetable>();
         }
 
-        ship.Collider = ship.GetComponent<Collider>();
+        ship.Collider = ship.GetComponentInChildren<Collider>();
+
+        /* we nearly always need this... */
+        AITaskFollower.AddToShip(ship);
 
         return ship;
     }
