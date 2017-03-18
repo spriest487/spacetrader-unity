@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.VR;
 
 public class Room : MonoBehaviour
@@ -17,8 +19,29 @@ public class Room : MonoBehaviour
 
     public Camera VRCamera { get { return vrCamera; } }
     public Camera OverheadCamera { get { return overheadCamera; } }
-    
-    private void Update()
+
+    private void Awake()
+    {
+        UpdateVRSetting();
+    }
+
+    private void OnEnable()
+    {
+        if (Universe.Instance)
+        {
+            Universe.OnPrefsSaved += UpdateVRSetting;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (Universe.Instance)
+        {
+            Universe.OnPrefsSaved -= UpdateVRSetting;
+        }
+    }
+
+    private void UpdateVRSetting()
     {
         vrCamera.gameObject.SetActive(VRSettings.enabled);
         floor.gameObject.SetActive(VRSettings.enabled);
