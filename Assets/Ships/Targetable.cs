@@ -112,4 +112,14 @@ public class Targetable : MonoBehaviour
         bool sameFaction = Faction == other.Faction;
         return sameFaction ? TargetRelationship.Friendly : TargetRelationship.Hostile;
     }
+
+    public static TargetRelationship Relationship(Targetable from, Targetable to)
+    {
+        if (!from || string.IsNullOrEmpty(from.Faction))
+        {
+            return TargetRelationship.Neutral;
+        }
+
+        return from.RelationshipTo(to);
+    }
 }

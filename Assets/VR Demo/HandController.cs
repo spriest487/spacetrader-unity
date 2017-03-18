@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿#pragma warning disable 0649
+
+using System.Collections;
 using UnityEngine;
 using UnityEngine.VR;
 
@@ -7,12 +8,18 @@ public class HandController : MonoBehaviour
 {
     [SerializeField]
     private VRNode node;
-
-    [SerializeField]
-    private Collider hotspotCollider;
-
+    
     [SerializeField]
     private LineRenderer moveLine;
+
+    [SerializeField]
+    private Gradient moveLineGradient;
+
+    [SerializeField]
+    private Gradient attackLineGradient;
+
+    [SerializeField]
+    private Gradient followLineGradient;
 
     public HandControllerHotspot Hotspot { get; private set; }
     
@@ -100,17 +107,55 @@ public class HandController : MonoBehaviour
             moveLine.SetPosition(1, to);
 
             var dist = (from - to).magnitude;
+            
+            if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
+            {
+                switch (Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable))
+                {
+                    case TargetRelationship.Friendly:
+                    case TargetRelationship.FleetMember:
+                        moveLine.colorGradient = followLineGradient;
+                        break;
+                    default:
+                        moveLine.colorGradient = attackLineGradient;
+                        break;
+                }
+            }
+            else
+            {
+                moveLine.colorGradient = moveLineGradient;
+            }
 
             yield return null;
         }
 
         if (ship)
         {
+            //dragged to empty space
             var tasks = ship.GetComponent<AITaskFollower>();
             if (tasks)
             {
                 tasks.ClearTasks();
-                tasks.AssignTask(FlyToPointTask.Create(Hotspot.transform.position, Hotspot.Size));
+
+                if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
+                {
+                    var relationship = Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable);
+
+                    switch (relationship)
+                    {
+                        case TargetRelationship.Friendly:
+                        case TargetRelationship.FleetMember:
+                            tasks.AssignTask(FlyInFormationTask.Create(Hotspot.TouchingShip));
+                            break;
+                        default:
+                            tasks.AssignTask(AttackTask.Create(Hotspot.TouchingShip.Targetable));
+                            break;
+                    }
+                }
+                else
+                {
+                    tasks.AssignTask(FlyToPointTask.Create(Hotspot.transform.position, Hotspot.Size));
+                }
             }
         }
 
