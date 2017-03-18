@@ -9,7 +9,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     public static AITaskFollower AddToShip(Ship ship)
     {
         var ai = ship.gameObject.AddComponent<AITaskFollower>();
-        ai.ship = ship;
+        ai.Ship = ship;
 
         return ai;
     }
@@ -19,24 +19,9 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     [SerializeField]
     private AITask[] serializedTasks;
     
-    [SerializeField]
-    private Ship ship;
+    public Ship Ship { get; private set; }
 
-    public Ship Ship
-    {
-        get
-        {
-            return ship;
-        }
-    }
-
-    public bool Idle
-    {
-        get
-        {
-            return tasks.Count == 0;
-        }
-    }
+    public bool Idle { get { return tasks.Count == 0; } }
 
     public void OnBeforeSerialize()
     {
@@ -58,10 +43,7 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     
     public void AssignTask(AITask task)
     {
-        if (!ship)
-        {
-            Start();
-        }
+        Debug.Assert(Ship, "AI must have a ship reference before assigning tasks");
 
         task.CheckRequiredConstraints();
         task.Status = AITask.TaskStatus.NEW;
@@ -104,17 +86,13 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     void Awake()
     {
         tasks = new LinkedList<AITask>();
-    }
-
-    void Start()
-    {
-        ship = GetComponent<Ship>();
+        Ship = GetComponent<Ship>();
     }
     
     void Update()
     {
         //ai doesn't run while jumping
-        if (ship.JumpTarget)
+        if (Ship.JumpTarget)
         {
             return;
         }
