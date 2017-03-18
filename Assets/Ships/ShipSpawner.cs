@@ -94,4 +94,21 @@ public class ShipSpawner : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    private void OnDrawGizmos()
+    {
+        if (shipType && shipType.Prefab)
+        {
+            var meshes = shipType.Prefab.GetComponentsInChildren<MeshFilter>();
+            foreach (var meshFilter in meshes)
+            {
+                if (!meshFilter.sharedMesh)
+                {
+                    continue;
+                }
+
+                Gizmos.DrawWireMesh(meshFilter.sharedMesh, transform.position, transform.rotation, transform.localScale);
+            }
+        }
+    }
 }

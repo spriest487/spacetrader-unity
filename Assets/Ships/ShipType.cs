@@ -17,6 +17,12 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private ScalableParticle explosionEffect;
 
+    [SerializeField]
+    private Transform miniThrusterEffect;
+
+    [SerializeField]
+    private Transform thrusterEffect;
+
     [Header("UI")]
 
     [SerializeField]
@@ -45,7 +51,12 @@ public class ShipType : ScriptableObject
     [SerializeField]
     private int xpReward;
 
+    public Transform Prefab { get { return prefab; } }
+
     public ScalableParticle ExplosionEffect { get { return explosionEffect; } }
+    public Transform MiniThrusterEffect { get { return miniThrusterEffect ?? thrusterEffect; } }
+    public Transform ThrusterEffect { get { return thrusterEffect;  } }
+
     public ShipStats Stats { get { return stats; } }
     public IEnumerable<Ability> Abilities { get { return abilities; } }
     public bool Targetable { get { return targetable; } }
@@ -58,9 +69,8 @@ public class ShipType : ScriptableObject
 
     public Ship CreateShip(Vector3 position, Quaternion rotation)
     {
-        var obj = (Transform) Instantiate(prefab, position, rotation);
-        obj.name = this.name;
-
+        var obj = Instantiate(prefab, position, rotation);
+        obj.name = name;
         var ship = Ship.Create(obj.gameObject, this);
 
         return ship;

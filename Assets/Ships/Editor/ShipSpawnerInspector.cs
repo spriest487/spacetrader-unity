@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
+[CanEditMultipleObjects]
 [CustomEditor(typeof(ShipSpawner))]
 public class ShipSpawnerInspector : Editor
 {
