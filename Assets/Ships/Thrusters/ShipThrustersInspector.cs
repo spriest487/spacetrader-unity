@@ -3,7 +3,9 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection;
 
+[CanEditMultipleObjects]
 [CustomEditor(typeof(ShipThrusterPoint))]
 class ShipThrustersInspector : Editor
 {
@@ -11,13 +13,19 @@ class ShipThrustersInspector : Editor
 	{
         DrawDefaultInspector();
 
-		var thruster = (ShipThrusterPoint) target;
+        if (!serializedObject.isEditingMultipleObjects)
+        {
+            var thruster = (ShipThrusterPoint)target;
 
-		GUILayout.Label(new GUIContent(string.Format("X hull pos: " + thruster.GetXPos())));
-		GUILayout.Label(new GUIContent(string.Format("Y hull pos: " + thruster.GetYPos())));
-		GUILayout.Label(new GUIContent(string.Format("Z hull pos: " + thruster.GetZPos())));
+            GUILayout.Label(new GUIContent(string.Format("X hull pos: " + thruster.GetXPos())));
+            GUILayout.Label(new GUIContent(string.Format("Y hull pos: " + thruster.GetYPos())));
+            GUILayout.Label(new GUIContent(string.Format("Z hull pos: " + thruster.GetZPos())));
 
-		GUILayout.Label(new GUIContent(string.Format("Target intensity: " + thruster.GetIntensity())));
+            var intensity = typeof(ShipThrusterPoint).GetField("intensity", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(thruster);
+
+            GUILayout.Label(new GUIContent(string.Format("Target intensity: " + intensity)));
+        }
 	}
 }
 

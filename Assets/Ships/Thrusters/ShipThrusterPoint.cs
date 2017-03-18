@@ -3,6 +3,7 @@
 public class ShipThrusterPoint : MonoBehaviour
 {
 	const float CENTER_MARGIN = 0.1f;
+    const float MIN_VISIBLE_THRUST = 0.01f;
 	
 	public enum HullPos
 	{
@@ -32,16 +33,22 @@ public class ShipThrusterPoint : MonoBehaviour
 
 	private Ship ship;
 
-	public Quaternion GetDirection()
-	{
-		return directionRot;
-	}
+    [SerializeField]
+    private Transform effectRoot;
 
-	public float GetIntensity()
-	{
-		return intensity;
-	}
+    [HideInInspector]
+    [SerializeField]
+    private Renderer[] thrusterParticles;
 
+    [SerializeField]
+    private bool miniThruster;
+
+    [SerializeField]
+    private string tintShaderProperty = "_TintColor";
+
+    [SerializeField]
+    private int fadeTimeMs = 100;
+        
 	public HullPos GetXPos()
 	{
 		return xPos;
@@ -62,9 +69,28 @@ public class ShipThrusterPoint : MonoBehaviour
 		ship = GetComponentInParent<Ship>();
         Debug.Assert(ship, "ShipThrusterPoint must be a child of a Ship");
 
-		intensity = 0;
+        if (!effectRoot && ship.ShipType)
+        {
+            var baseEffect = miniThruster ? ship.ShipType.MiniThrusterEffect : ship.ShipType.ThrusterEffect;
+            if (baseEffect)
+            {
+                effectRoot = Instantiate(baseEffect, transform, false);
+                effectRoot.localPosition = Vector3.zero;
+                effectRoot.localRotation = Quaternion.identity;
+            }
+        }
 
-		//var offset = transform.localPosition;
+        if (effectRoot)
+        {
+            thrusterParticles = effectRoot.GetComponentsInChildren<Renderer>();
+        }
+        else
+        {
+            thrusterParticles = new Renderer[0];
+        }
+
+		intensity = 0;
+        
 		var offset = ship.transform.InverseTransformPoint(transform.position);
 
 		if (offset.x > CENTER_MARGIN)
@@ -121,7 +147,13 @@ public class ShipThrusterPoint : MonoBehaviour
 			case ThrusterDirection.RIGHT:
 				directionRot.eulerAngles = new Vector3(0, 90, 0);
 				break;
-		}
+            case ThrusterDirection.FORWARD:
+                directionRot.eulerAngles = new Vector3(0, 0, 0);
+                break;
+            case ThrusterDirection.BACK:
+                directionRot.eulerAngles = new Vector3(0, 180, 0);
+                break;
+        }
 
 		//Debug.Log(string.Format("Local pos is {0}, XPos is {1}, YPos is {2}, ZPos is {3}", offset.ToString("F2"), xPos, yPos, zPos));
 	}
@@ -226,14 +258,45 @@ public class ShipThrusterPoint : MonoBehaviour
 				thrust = -1;
 				break;
 		}
+        
+		var nextIntensity = Mathf.Clamp01(ship.Thrust * thrust);
+		nextIntensity += Mathf.Clamp01(ship.Strafe * strafe);
+		nextIntensity += Mathf.Clamp01(ship.Lift * lift);
+		nextIntensity += Mathf.Clamp01(ship.Roll * roll);
+		nextIntensity += Mathf.Clamp01(ship.Yaw * yaw);
+		nextIntensity += Mathf.Clamp01(ship.Pitch * pitch);
 
-		intensity = Mathf.Clamp01(ship.Thrust * thrust);
-		intensity += Mathf.Clamp01(ship.Strafe * strafe);
-		intensity += Mathf.Clamp01(ship.Lift * lift);
-		intensity += Mathf.Clamp01(ship.Roll * roll);
-		intensity += Mathf.Clamp01(ship.Yaw * yaw);
-		intensity += Mathf.Clamp01(ship.Pitch * pitch);
+		nextIntensity = Mathf.Clamp01(nextIntensity);
 
-		intensity = Mathf.Clamp01(intensity);
-	}
+        var smoothIntensity = Mathf.Lerp(intensity, nextIntensity, Time.deltaTime * (1000f / fadeTimeMs));
+        SetTint(smoothIntensity);
+
+        intensity = nextIntensity;
+
+        if (effectRoot)
+        {
+            effectRoot.localRotation = directionRot;
+        }
+    }
+
+    private void SetTint(float intensity)
+    {
+        bool thrusterVisible = intensity > MIN_VISIBLE_THRUST;
+
+        foreach (var renderer in thrusterParticles)
+        {
+            renderer.enabled = thrusterVisible;
+
+            if (thrusterVisible)
+            {
+                var material = renderer.material;
+                if (material)
+                {
+                    var color = material.GetColor(tintShaderProperty);
+                    var newColor = new Color(color.r, color.g, color.b, Mathf.Clamp01(intensity));
+                    material.SetColor(tintShaderProperty, newColor);
+                }
+            }
+        }
+    }
 }

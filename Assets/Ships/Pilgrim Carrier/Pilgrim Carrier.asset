@@ -9,30 +9,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90b9b35c56399ef4faa1890285f37814, type: 3}
-  m_Name: Jovum Patroller
+  m_Name: Pilgrim Carrier
   m_EditorClassIdentifier: 
-  prefab: {fileID: 405804, guid: 0b0851bea097c0b40ba32a9237ffba85, type: 2}
-  cockpitPrefab: {fileID: 114006428899263518, guid: 373fd67befda144419268dd2e099b462,
-    type: 2}
+  prefab: {fileID: 4191959692757658, guid: 3620b899cef59ff45b7f86ba3d7ef28a, type: 2}
+  cockpitPrefab: {fileID: 0}
   explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
   miniThrusterEffect: {fileID: 400000, guid: af000e2c08dd278409d3c47dac5dad3b, type: 2}
   thrusterEffect: {fileID: 400000, guid: c750fc75f3f598447a964064b07dacec, type: 2}
-  thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
+  thumbnail: {fileID: 21300000, guid: df047865214e81945b6082e0c9b94532, type: 3}
   targetable: 1
   stats:
-    agility: 180
-    thrust: 1000
-    maxTurnSpeed: 120
-    maxSpeed: 20
-    passengerCapacity: 2
-    armor: 10
-    shield: 20
-    mass: 10
-    damageMultiplier: 0
-  cargoSize: 10
+    agility: 45
+    thrust: 200000
+    maxTurnSpeed: 60
+    maxSpeed: 100
+    passengerCapacity: 20
+    armor: 100
+    shield: 100
+    mass: 10000
+    damageMultiplier: 1
+  cargoSize: 16
   moduleSlots: 4
   dockable: 1
   abilities:
-  - {fileID: 11400000, guid: 3a85a027c019cd34e9ad81668315562f, type: 2}
   - {fileID: 11400000, guid: 2db10c4da026b9c478e21e6c840b7584, type: 2}
-  xpReward: 100
+  - {fileID: 11400000, guid: 2db10c4da026b9c478e21e6c840b7584, type: 2}
+  xpReward: 10000
