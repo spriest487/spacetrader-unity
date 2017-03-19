@@ -1,13 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
-public class StatusEffect : ScriptableObject
+[Serializable]
+public class StatusEffect
 {
-    public UnityEngine.Object Source;
+    public string Name { get; private set; }
 
-    public ShipStats FlatStats = new ShipStats();
-    public ShipStats ProportionalStats = new ShipStats();
+    public ShipStats FlatStats { get; private set; }
+    public ShipStats ProportionalStats { get; private set; }
 
-    public float Lifetime = 0;
-    public bool Expires = false;
+    public float Expires { get; private set; }
+
+    public StatusEffect(string name, 
+        float expires, 
+        ShipStats flatBonus = null, 
+        ShipStats proportionalBonus = null)
+    {
+        Name = name;
+        Expires = expires;
+        FlatStats = flatBonus ?? new ShipStats();
+        ProportionalStats = proportionalBonus ?? new ShipStats();
+    }
 }

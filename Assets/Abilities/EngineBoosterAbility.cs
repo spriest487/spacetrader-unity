@@ -19,23 +19,24 @@ public class EngineBoosterAbility : Ability
 
     public override void Use(Ship ship)
     {
-        if (!(Cooldown > 0 || activeEffect))
+        if (!(Cooldown > 0 || activeEffect != null))
         {
-            activeEffect = CreateInstance<StatusEffect>();
-            activeEffect.FlatStats.MaxSpeed = boostAmount;
-            activeEffect.FlatStats.Thrust = boostAmount;
-            activeEffect.Expires = true;
-            activeEffect.Lifetime = boostDuration;
+            var boost = new ShipStats
+            {
+                MaxSpeed = boostAmount,
+                Thrust = boostAmount
+            };
 
             Cooldown = boostCooldown;
 
+            activeEffect = new StatusEffect("Speed Boost", Time.time + boostDuration, boost, null);
             ship.AddStatusEffect(activeEffect);
         }
     }
 
     public override void Cancel(Ship ship)
     {
-        if (activeEffect)
+        if (activeEffect != null)
         {
             if (!ship.RemoveStatusEffect(activeEffect))
             {

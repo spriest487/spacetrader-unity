@@ -546,11 +546,6 @@ public partial class Ship : MonoBehaviour
     }
     private void OnDestroy()
     {
-        foreach (var effect in activeStatusEffects)
-        {
-            Destroy(effect);
-        }
-
         foreach (var ability in abilities)
         {
             Destroy(ability);
@@ -602,14 +597,9 @@ public partial class Ship : MonoBehaviour
 
     public void AddStatusEffect(StatusEffect effect)
     {
-        if (effect == null)
-        {
-            Debug.LogErrorFormat("tried to add null status effect to {0}", name);
-        }
-
         if (RemoveStatusEffect(effect))
         {
-            Debug.LogWarningFormat("removed status effect {0} from {1} because it was added again", effect.name, name);
+            Debug.LogWarningFormat("removed status effect {0} from {1} because it was added again", effect.Name, name);
         }
 
         activeStatusEffects.Add(effect);
@@ -673,20 +663,7 @@ public partial class Ship : MonoBehaviour
             module.UpdateBehaviour(this);
         }
 
-        List<StatusEffect> newStatusEffects = new List<StatusEffect>(activeStatusEffects.Count);
-        foreach (var effect in activeStatusEffects)
-        {
-            effect.Lifetime -= Time.deltaTime;
-            if (!effect.Expires || effect.Lifetime > 0)
-            {
-                newStatusEffects.Add(effect);
-            }
-            else
-            {
-                Destroy(effect);
-            }
-        }
-        activeStatusEffects = newStatusEffects;
+        activeStatusEffects.RemoveAll(effect => effect.Expires <= Time.time);
 
         float speed = RigidBody.velocity.magnitude;
         if (speed > CurrentStats.MaxSpeed)
