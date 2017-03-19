@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+
+using UnityEngine;
 
 public class ShipThrusterPoint : MonoBehaviour
 {
@@ -271,7 +273,7 @@ public class ShipThrusterPoint : MonoBehaviour
         var smoothIntensity = Mathf.Lerp(intensity, nextIntensity, Time.deltaTime * (1000f / fadeTimeMs));
         SetTint(smoothIntensity);
 
-        intensity = nextIntensity;
+        intensity = smoothIntensity;
 
         if (effectRoot)
         {
