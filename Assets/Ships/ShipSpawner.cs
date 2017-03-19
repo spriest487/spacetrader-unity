@@ -8,7 +8,7 @@ public class ShipSpawner : MonoBehaviour
 {
     [SerializeField]
     private ShipType shipType;
-
+    
     [Header("Player Spawn")]
 
     [SerializeField]
@@ -19,6 +19,7 @@ public class ShipSpawner : MonoBehaviour
 
     [SerializeField]
     private int money = 1000;
+
 
     [Header("Crew")]
 
@@ -37,6 +38,9 @@ public class ShipSpawner : MonoBehaviour
 
     [SerializeField]
     private ShipSpawner joinFleetOf;
+
+    [SerializeField]
+    private bool combatAI;
 
     private Ship spawned;
 
@@ -82,6 +86,11 @@ public class ShipSpawner : MonoBehaviour
             player.AddMoney(money);
 
             Universe.LocalPlayer = player;
+        }
+
+        if (combatAI)
+        {
+            spawned.gameObject.AddComponent<WingmanCaptain>();
         }
     }
 
