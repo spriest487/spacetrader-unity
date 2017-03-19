@@ -20,29 +20,36 @@ public class AttackTask : AITask
 
     [SerializeField]
     private bool evasive;
-
-    [SerializeField]
-    private Targetable attackTarget;
-
+    
     [SerializeField]
     private Ship attackShip;
 
     public static AttackTask Create(Targetable ship)
     {
         AttackTask task = CreateInstance<AttackTask>();
-        task.attackTarget = ship;
         task.attackShip = ship.GetComponent<Ship>();
         return task;
     }
 
     public override void Update()
     {
-        if (!attackTarget)
+        if (!attackShip || !attackShip.Targetable)
         {
             return;
         }
-        
-        canSeeTarget = TaskFollower.Ship.CanSee(attackTarget.transform.position);
+
+        Ship.Target = attackShip.Targetable;
+        var fleet = Universe.FleetManager.GetFleetOf(Ship);
+        if (fleet && fleet.Leader == Ship)
+        {
+            /* everyone else attack too */
+            foreach (var lackey in fleet.Followers)
+            {
+                Ship.SendRadioMessage(RadioMessageType.Attack, lackey);
+            }
+        }
+
+        canSeeTarget = Ship.CanSee(attackShip.transform.position);
 
         bool navigatingToTarget = false;
         if (!canSeeTarget)
@@ -50,27 +57,27 @@ public class AttackTask : AITask
             /*there must be some obstacle in the way, 
             let's follow the nav points directly to them
             and see if that helps */
-            TaskFollower.AssignTask(NavigateTask.Create(attackTarget.transform.position));
+            TaskFollower.AssignTask(NavigateTask.Create(attackShip.transform.position));
             navigatingToTarget = true;
         }
 
         if (!navigatingToTarget)
         {
             //are we aiming in the same direction as the target
-            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, attackTarget.transform.forward);
+            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, attackShip.transform.forward);
             aimCloseEnough = dotToForward > ANGLE_MATCH;
 
             //is my ship behind the Target
-            var TargetToMe = (TaskFollower.transform.position - attackTarget.transform.position).normalized;
-            var dotToMe = Vector3.Dot(attackTarget.transform.forward, TargetToMe);
+            var TargetToMe = (TaskFollower.transform.position - attackShip.transform.position).normalized;
+            var dotToMe = Vector3.Dot(attackShip.transform.forward, TargetToMe);
             behind = dotToMe < 0;
 
-            Vector3 dest = attackTarget.transform.position;
+            Vector3 dest = attackShip.transform.position;
 
             if (evasive)
             {
                 //try to get behind them
-                var behindOffset = attackTarget.transform.forward - (attackTarget.transform.forward * FOLLOW_RANGE);
+                var behindOffset = attackShip.transform.forward - (attackShip.transform.forward * FOLLOW_RANGE);
                 dest += behindOffset;
             }
 
@@ -78,8 +85,8 @@ public class AttackTask : AITask
             {
                 /* we're close to where we want to be, now aim at them */
                 var thrust = attackShip? Ship.EquivalentThrust(TaskFollower.Ship, attackShip) : 0;
-                TaskFollower.Ship.ResetControls(thrust: thrust);
-                TaskFollower.Ship.RotateToPoint(attackTarget.transform.position);
+                Ship.ResetControls(thrust: thrust);
+                Ship.RotateToPoint(attackShip.transform.position);
             }
             else
             {
@@ -91,7 +98,12 @@ public class AttackTask : AITask
             }
 
             //pew pew pew
-            TaskFollower.AssignTask(FireWeaponsTask.Create());
+            var loadout = Ship.ModuleLoadout;
+            for (int module = 0; module < loadout.SlotCount; ++module)
+            {
+                loadout.GetSlot(module).Aim = attackShip.transform.position;
+                loadout.Activate(Ship, module);
+            }
         }        
     }
 
@@ -99,7 +111,7 @@ public class AttackTask : AITask
     {
         get
         {
-            if (!attackTarget)
+            if (!attackShip || !attackShip.Targetable)
             {
                 //it's probably died
                 return true;

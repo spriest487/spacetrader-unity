@@ -29,6 +29,11 @@ public abstract class AITask : ScriptableObject
         set { taskFollower = value; }
     }
 
+    public Ship Ship
+    {
+        get { return TaskFollower.Ship; }
+    }
+
     public virtual void Update()
     {
     }
@@ -50,10 +55,10 @@ public abstract class AITask : ScriptableObject
             var require = (RequireComponent)attr;
             var requiredComponents = new[]
             {
-            require.m_Type0,
-            require.m_Type1,
-            require.m_Type2
-        };
+                require.m_Type0,
+                require.m_Type1,
+                require.m_Type2
+            };
 
             foreach (var requiredComponent in requiredComponents)
             {
