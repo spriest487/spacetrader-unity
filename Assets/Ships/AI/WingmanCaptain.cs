@@ -54,9 +54,9 @@ public class WingmanCaptain : MonoBehaviour
         if (activeOrder != newOrder && orderTask)
         {
             taskFollower.CancelTask(orderTask);
-
-            activeOrder = newOrder;
         }
+
+        activeOrder = newOrder;
     }
 
     private void OnRadioMessage(RadioMessage message)

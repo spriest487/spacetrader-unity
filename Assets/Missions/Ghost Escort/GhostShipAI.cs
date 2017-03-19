@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+#pragma warning disable 0649
+
 [RequireComponent(typeof(AITaskFollower), typeof(Ship))]
 public class GhostShipAI : MonoBehaviour
 {
