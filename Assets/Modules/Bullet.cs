@@ -84,12 +84,13 @@ public class Bullet : MonoBehaviour
 
 	private bool Hit(GameObject hitObject, Vector3 hitPos)
 	{
-		if (hitObject != owner && hitObject != gameObject) //bullets are never triggered by the person shooting them
+        //bullets are never triggered by the person shooting them
+        var hitShip = hitObject.GetComponentInParent<Ship>();
+
+		if (hitShip != owner) 
 		{
-			//Debug.Log(string.Format("bullet with owner {0} hit non-owner object {1}", owner, hitObject));
-            
             var hitDamage = new HitDamage(hitPos, damage, owner);
-			hitObject.gameObject.SendMessage("OnTakeDamage", hitDamage, SendMessageOptions.DontRequireReceiver);
+			hitShip.gameObject.SendMessage("OnTakeDamage", hitDamage, SendMessageOptions.DontRequireReceiver);
 
             //if a handler changed it
             hitPos = hitDamage.Location;
