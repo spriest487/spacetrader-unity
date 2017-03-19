@@ -107,8 +107,25 @@ public class ShipSpawner : MonoBehaviour
                     continue;
                 }
 
-                Gizmos.DrawWireMesh(meshFilter.sharedMesh, transform.position, transform.rotation, transform.localScale);
+                var meshXform = meshFilter.transform;
+                var prefabRoot = meshXform.root;
+
+                var pos = transform.position + meshXform.position - prefabRoot.position;
+                var rot = transform.rotation * meshXform.rotation * Quaternion.Inverse(prefabRoot.rotation);
+
+                var scale = transform.lossyScale;
+                scale.x *= meshXform.lossyScale.x;
+                scale.y *= meshXform.lossyScale.y;
+                scale.z *= meshXform.lossyScale.z;
+                
+                Gizmos.DrawWireMesh(meshFilter.sharedMesh, pos, rot, scale);
             }
+        }
+
+        if (joinFleetOf)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, joinFleetOf.transform.position);
         }
     }
 }
