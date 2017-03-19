@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 157edeb1a43ad404b9d5898f301359da, type: 3}
+  m_Name: Training Laser
+  m_EditorClassIdentifier: 
+  baseValue: 1
+  icon: {fileID: 21300000, guid: 19635a1bca89682428d7acba484fbbb6, type: 3}
+  rarity: 0
+  behaviour: {fileID: 11400000, guid: e2f114419e02de143b440a70e9eb4b84, type: 2}
+  flavorText: Totally safe!
