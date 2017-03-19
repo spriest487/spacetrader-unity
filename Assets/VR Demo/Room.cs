@@ -5,6 +5,8 @@ using UnityEngine.VR;
 
 public class Room : MonoBehaviour
 {
+    const float HandIdleSleepTime = 5;
+
     [SerializeField]
     private Transform floor;
 
@@ -20,6 +22,8 @@ public class Room : MonoBehaviour
     public Camera VRCamera { get { return vrCamera; } }
     public Camera OverheadCamera { get { return overheadCamera; } }
 
+    private HandController[] hands;
+
     private void Awake()
     {
         UpdateVRSetting();
@@ -31,6 +35,13 @@ public class Room : MonoBehaviour
         {
             Universe.OnPrefsSaved += UpdateVRSetting;
         }
+
+        //disable all hands initially until they move
+        hands = GetComponentsInChildren<HandController>();
+        foreach (var hand in hands)
+        {
+            hand.gameObject.SetActive(false);
+        }
     }
 
     private void OnDisable()
@@ -38,6 +49,27 @@ public class Room : MonoBehaviour
         if (Universe.Instance)
         {
             Universe.OnPrefsSaved -= UpdateVRSetting;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        foreach (var hand in hands)
+        {
+            if (hand.gameObject.activeSelf)
+            {
+                if (hand.IdleTime > HandIdleSleepTime)
+                {
+                    hand.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (hand.HasMoved)
+                {
+                    hand.gameObject.SetActive(true);
+                }
+            }
         }
     }
 

@@ -6,6 +6,8 @@ using UnityEngine.VR;
 
 public class HandController : MonoBehaviour
 {
+    const float WakeUpDist = 0.01f;
+
     [SerializeField]
     private VRNode node;
     
@@ -20,11 +22,14 @@ public class HandController : MonoBehaviour
 
     [SerializeField]
     private Gradient followLineGradient;
-
+    
     public HandControllerHotspot Hotspot { get; private set; }
     
     private Coroutine dragging;
     private Room room;
+
+    private Vector3 lastPos;
+    private float lastMoved;
 
     private float TriggerAxisValue
     {
@@ -44,17 +49,42 @@ public class HandController : MonoBehaviour
         }
     }
 
+    public bool HasMoved
+    {
+        get
+        {
+            const float WakeUpSqr = WakeUpDist * WakeUpDist;
+
+            var trackedPos = InputTracking.GetLocalPosition(node);
+
+            return (trackedPos - lastPos).sqrMagnitude > WakeUpSqr;
+        }
+    }
+
+    public float IdleTime
+    {
+        get
+        {
+            return Time.time - lastMoved;
+        }
+    }
+
     private void Awake()
     {
         Hotspot = GetComponentInChildren<HandControllerHotspot>();
         room = GetComponentInParent<Room>();
     }
 
-    private void Update ()
+    private void OnEnable()
+    {
+        lastPos = InputTracking.GetLocalPosition(node);
+    }
+
+    private void Update()
     {
         var pos = InputTracking.GetLocalPosition(node);
         var rot = InputTracking.GetLocalRotation(node);
-
+        
         transform.localPosition = pos;
         transform.localRotation = rot;
 
@@ -80,6 +110,12 @@ public class HandController : MonoBehaviour
                 worldPos.y = 0;
                 AlignByHotspot(worldPos);
             }
+        }
+
+        if (HasMoved)
+        {
+            lastMoved = Time.time;
+            lastPos = pos;
         }
 	}
 
