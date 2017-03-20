@@ -40,15 +40,34 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     {
         tasks = new LinkedList<AITask>(serializedTasks);
     }
-    
-    public void AssignTask(AITask task)
+
+    private void PrepareNewTask(AITask task)
     {
         Debug.Assert(Ship, "AI must have a ship reference before assigning tasks");
 
         task.CheckRequiredConstraints();
         task.Status = AITask.TaskStatus.NEW;
         task.TaskFollower = this;
+    }
+    
+    /// <summary>
+    /// adds a task to the end of the task list, to be done right now
+    /// </summary>
+    /// <param name="task"></param>
+    public void AssignTask(AITask task)
+    {
+        PrepareNewTask(task);
         tasks.AddLast(task);
+    }
+
+    /// <summary>
+    /// Adds a task to the beginning of the task list, to be done when all other tasks
+    /// are finished
+    /// </summary>
+    public void QueueTask(AITask task)
+    {
+        PrepareNewTask(task);
+        tasks.AddFirst(task);
     }
 
     public void ClearTasks()
@@ -60,6 +79,15 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
             last.Value.End();
             Destroy(last.Value);
             tasks.RemoveLast();
+        }
+    }
+    
+    private void OnCollisionStay(Collision collision)
+    {
+        var task = tasks.First;
+        if (task != null)
+        {
+            task.Value.OnCollided(collision);
         }
     }
 

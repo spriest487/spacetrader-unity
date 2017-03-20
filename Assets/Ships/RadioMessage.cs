@@ -6,7 +6,8 @@ public enum RadioMessageType
     Attack,
     Wait,
 
-    AcknowledgeOrder
+    AcknowledgeOrder,
+    HelpMe,
 }
 
 public struct RadioMessage

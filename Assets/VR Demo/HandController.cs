@@ -8,6 +8,13 @@ public class HandController : MonoBehaviour
 {
     const float WakeUpDist = 0.01f;
 
+    public enum HandControllerOrder
+    {
+        Move,
+        Attack,
+        Follow,
+    }
+
     [SerializeField]
     private VRNode node;
     
@@ -130,11 +137,31 @@ public class HandController : MonoBehaviour
     {
         dragging = null;
     }
-
+    
     private IEnumerator DragShipMovement(Ship ship)
     {
+        var issuedOrder = HandControllerOrder.Move;
+
         while (TriggerAxisValue > 0 && ship)
         {
+            if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
+            {
+                switch (Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable))
+                {
+                    case TargetRelationship.Friendly:
+                    case TargetRelationship.FleetMember:
+                        issuedOrder = HandControllerOrder.Follow;
+                        break;
+                    default:
+                        issuedOrder = HandControllerOrder.Attack;
+                        break;
+                }
+            }
+            else
+            {
+                issuedOrder = HandControllerOrder.Move;
+            }
+
             moveLine.gameObject.SetActive(true);
             var from = ship.transform.position;
             var to = Hotspot.transform.position;
@@ -143,24 +170,8 @@ public class HandController : MonoBehaviour
             moveLine.SetPosition(1, to);
 
             var dist = (from - to).magnitude;
-            
-            if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
-            {
-                switch (Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable))
-                {
-                    case TargetRelationship.Friendly:
-                    case TargetRelationship.FleetMember:
-                        moveLine.colorGradient = followLineGradient;
-                        break;
-                    default:
-                        moveLine.colorGradient = attackLineGradient;
-                        break;
-                }
-            }
-            else
-            {
-                moveLine.colorGradient = moveLineGradient;
-            }
+
+            moveLine.colorGradient = OrderLineColor(issuedOrder);
 
             yield return null;
         }
@@ -173,29 +184,69 @@ public class HandController : MonoBehaviour
             {
                 tasks.ClearTasks();
 
-                if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
+                switch (issuedOrder)
                 {
-                    var relationship = Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable);
+                    case HandControllerOrder.Follow:
+                        if (!Hotspot.TouchingShip)
+                        {
+                            goto default;
+                        }
+                        tasks.AssignTask(FlyInFormationTask.Create(Hotspot.TouchingShip));
+                        break;
+                    case HandControllerOrder.Attack:
+                        if (!(Hotspot.TouchingShip && Hotspot.TouchingShip.Targetable))
+                        {
+                            goto default;
+                        }
+                        tasks.AssignTask(AttackTask.Create(Hotspot.TouchingShip.Targetable));
+                        break;
+                    default:
+                        tasks.AssignTask(FlyToPointTask.Create(Hotspot.transform.position, Hotspot.Size));
+                        break;
+                }
 
-                    switch (relationship)
-                    {
-                        case TargetRelationship.Friendly:
-                        case TargetRelationship.FleetMember:
-                            tasks.AssignTask(FlyInFormationTask.Create(Hotspot.TouchingShip));
-                            break;
-                        default:
-                            tasks.AssignTask(AttackTask.Create(Hotspot.TouchingShip.Targetable));
-                            break;
-                    }
-                }
-                else
-                {
-                    tasks.AssignTask(FlyToPointTask.Create(Hotspot.transform.position, Hotspot.Size));
-                }
+                IssueCombatAIOrder(ship, issuedOrder);
             }
         }
 
         moveLine.gameObject.SetActive(false);
         dragging = null;
+    }
+
+    private Gradient OrderLineColor(HandControllerOrder order)
+    {
+        switch (order)
+        {
+            case HandControllerOrder.Attack: return attackLineGradient;
+            case HandControllerOrder.Follow: return followLineGradient;
+            default: return moveLineGradient;
+        }
+    }
+
+    private void IssueCombatAIOrder(Ship ship, HandControllerOrder order)
+    {
+        var fleet = Universe.FleetManager.GetFleetOf(ship);
+        if (fleet && fleet.Leader == ship)
+        {
+            WingmanOrder aiOrder;
+            switch (order)
+            {
+                case HandControllerOrder.Attack: aiOrder = WingmanOrder.AttackLeaderTarget; break;
+                case HandControllerOrder.Follow: aiOrder = WingmanOrder.FollowLeader; break;
+                default: aiOrder = WingmanOrder.Wait; break;
+            }
+
+            if (aiOrder != WingmanOrder.Wait)
+            {
+                foreach (var follower in fleet.Followers)
+                {
+                    var combatAI = follower.GetComponent<WingmanCaptain>();
+                    if (combatAI)
+                    {
+                        combatAI.SetOrder(aiOrder);
+                    }
+                }
+            }
+        }
     }
 }

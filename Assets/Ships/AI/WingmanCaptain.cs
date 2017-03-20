@@ -49,7 +49,7 @@ public class WingmanCaptain : MonoBehaviour
         get { return activeOrder; }
     }
 
-    private void SetOrder(WingmanOrder newOrder)
+    public void SetOrder(WingmanOrder newOrder)
     {
         if (activeOrder != newOrder && orderTask)
         {
@@ -74,6 +74,23 @@ public class WingmanCaptain : MonoBehaviour
                 if (myFleet && myFleet.Followers.IndexOf(Ship) == 0)
                 {
                     StartCoroutine(AcknowledgeOrder(message));
+                }
+            }
+        }
+
+        if (fleet.Leader == Ship && message.MessageType == RadioMessageType.HelpMe)
+        {
+            //fleet member's in trouble, if we're not already attacking something else, send help
+
+            //when asking for help you have to target the attacker!
+            var attacker = message.SourceShip.Target;
+
+            if (!Ship.Target)
+            {
+                Ship.Target = attacker;
+                foreach (var follower in fleet.Followers)
+                {
+                    Ship.SendRadioMessage(RadioMessageType.Attack, follower);
                 }
             }
         }
@@ -155,16 +172,48 @@ public class WingmanCaptain : MonoBehaviour
     void OnTakeDamage(HitDamage damage)
     {
         var fm = Universe.FleetManager;
-        if (damage.Owner != null
-            && fm.GetFleetOf(Ship) != fm.GetFleetOf(damage.Owner))
+        var myFleet = fm.GetFleetOf(Ship);
+        
+        if (damage.Owner != null && 
+            (!(myFleet && myFleet == fm.GetFleetOf(damage.Owner))))
         {
-            //get spooked and forget what we were doing if we're not attacking
-
+            //get angry and forget what we were doing if we're not already in attack mode
             if (activeOrder != WingmanOrder.AttackLeaderTarget
                 && orderTask)
             {
-                taskFollower.CancelTask(orderTask);
                 orderTask = null;
+                taskFollower.ClearTasks();
+            }
+
+            //fight back
+            if (damage.Owner.Targetable)
+            {
+                Ship.Target = damage.Owner.Targetable;
+
+                if (!myFleet)
+                {
+                    //just go for it
+                    taskFollower.QueueTask(AttackTask.Create(damage.Owner.Targetable));
+                }
+                else
+                {
+                    if (myFleet.Leader == Ship)
+                    {
+                        //sic the gang on them
+                        foreach (var follower in myFleet.Followers)
+                        {
+                            Ship.SendRadioMessage(RadioMessageType.Attack, follower);
+                        }
+                    }
+                    else
+                    {
+                        if (activeOrder != WingmanOrder.AttackLeaderTarget)
+                        {
+                            //ask leader for help
+                            Ship.SendRadioMessage(RadioMessageType.HelpMe, myFleet.Leader);
+                        }
+                    }
+                }
             }
         }
     }

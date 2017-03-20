@@ -63,20 +63,20 @@ public class GunBehaviour : ModuleBehaviour
 
             var aimRot = Quaternion.LookRotation((module.Aim - firedTransform.position).normalized);
 
-            var bulletInstance = (Bullet)Instantiate(bulletType, firedTransform.position, aimRot);
+            var bulletInstance = Instantiate(bulletType, firedTransform.position, aimRot);
 
             bulletInstance.owner = activator;
-            var randomDamage = UnityEngine.Random.Range(minDamage, maxDamage);
+            var randomDamage = Random.Range(minDamage, maxDamage);
             bulletInstance.damage = activator.ApplyDamageModifier(randomDamage);
 
-            if (activator.GetComponent<Rigidbody>())
+            if (activator.RigidBody)
             {
-                bulletInstance.baseVelocity = activator.GetComponent<Rigidbody>().velocity;
+                bulletInstance.baseVelocity = activator.RigidBody.velocity;
             }
 
             if (muzzleFlashType)
             {
-                var flash = (Transform)Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
+                var flash = Instantiate(muzzleFlashType, firedTransform.position, firedTransform.rotation);
                 flash.SetParent(firedTransform, true);
             }
 
@@ -88,7 +88,7 @@ public class GunBehaviour : ModuleBehaviour
     {
         Vector3 speedDiff;
         var targetBody = target.GetComponent<Rigidbody>();
-        var activatorBody = activator.GetComponent<Rigidbody>();
+        var activatorBody = activator.RigidBody;
 
         if (bulletType.applyBaseVelocity)
         {

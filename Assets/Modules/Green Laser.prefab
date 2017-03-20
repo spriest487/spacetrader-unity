@@ -145,8 +145,8 @@ MonoBehaviour:
   owner: {fileID: 0}
   hitEffect: {fileID: 400000, guid: 5eebd0e0bd946364fb195bcc2a90d92d, type: 2}
   damage: 0
-  velocity: 0
-  lifetime: 0
+  velocity: 200
+  lifetime: 10
   baseVelocity: {x: 0, y: 0, z: 0}
   applyBaseVelocity: 0
 --- !u!120 &120352595334764898

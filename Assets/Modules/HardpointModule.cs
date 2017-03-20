@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System;
+using Object = UnityEngine.Object;
 
 [Serializable]
 public class HardpointModule
@@ -56,7 +57,7 @@ public class HardpointModule
         if (definition)
         {
             this.definition = definition;
-            behaviour = ScriptableObject.Instantiate(definition.Behaviour);
+            behaviour = Object.Instantiate(definition.Behaviour);
             behaviour.Equip(this);
         }
     }

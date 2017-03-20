@@ -1,125 +1,150 @@
 ﻿#pragma warning disable 0649
 
 using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class AttackTask : AITask
-{
-    private const float MINIMUM_THRUST = 0.25f;
-    private const float FOLLOW_RANGE = 50;
-    private const float ANGLE_MATCH = 0.8f; //TODO: get from weapons?
+{ 
+//{
+//    private const float MINIMUM_THRUST = 0.25f;
+//    private const float FOLLOW_RANGE = 50;
+//    private const float ANGLE_MATCH = 0.8f; //TODO: get from weapons?
+    
+    //[SerializeField]
+    //private bool behind;
+    
+    //[SerializeField]
+    //private bool aimCloseEnough;
+
+    //[SerializeField]
+    //private bool canSeeTarget;
+
+    //[SerializeField]
+    //private bool evasive;
     
     [SerializeField]
-    private bool behind;
-    
-    [SerializeField]
-    private bool aimCloseEnough;
+    private Ship targetShip;
 
-    [SerializeField]
-    private bool canSeeTarget;
+    bool done;
+    bool collided;
 
-    [SerializeField]
-    private bool evasive;
-    
-    [SerializeField]
-    private Ship attackShip;
+    private Coroutine attackRoutine;
 
-    public static AttackTask Create(Targetable ship)
+    public static AttackTask Create(Targetable target)
     {
-        AttackTask task = CreateInstance<AttackTask>();
-        task.attackShip = ship.GetComponent<Ship>();
+        var task = CreateInstance<AttackTask>();
+        task.targetShip = target.GetComponent<Ship>();
+        task.done = false;
         return task;
     }
 
-    public override void Update()
+    private IEnumerator AttackLoop()
     {
-        if (!attackShip || !attackShip.Targetable)
+        while (targetShip && targetShip.Targetable)
         {
-            return;
+            //keep focused on this target
+            Ship.Target = targetShip.Targetable;
+
+            var repositionDistance = 40f + targetShip.CloseDistance + Ship.CloseDistance; //TODO
+            var closeDistance = repositionDistance / 2;
+
+            //attack run
+            while (true)
+            {
+                var canSee = Ship.CanSee(targetShip.transform.position);
+                var distSqr = (Ship.transform.position - targetShip.transform.position).sqrMagnitude;
+
+                if (distSqr < closeDistance * closeDistance ||
+                    !canSee)
+                {
+                    break;
+                }
+
+                if (collided)
+                {
+                    collided = false;
+                    break;
+                }
+
+                Ship.ResetControls(thrust: 1);
+                Ship.RotateToPoint(targetShip.transform.position);
+
+                //try to keep moving while fighting
+                if (Ship.Thrust < 0.33f)
+                {
+                    Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, 0.33f, 0, 0);
+                }
+
+                for (int mod = 0; mod < Ship.ModuleLoadout.SlotCount; ++mod)
+                {
+                    var module = Ship.ModuleLoadout.GetSlot(mod);
+                    module.Aim = targetShip.transform.position;
+                    module.Activate(Ship, mod);
+                }
+
+                yield return null;
+            }
+
+            //reposition
+            Vector3 newPos;
+
+            do
+            {
+                Ship.ResetControls(thrust: 0.33f);
+                newPos = targetShip.transform.position + (Random.onUnitSphere * repositionDistance);
+                yield return null;
+            }
+            while (!Ship.CanSee(newPos) || Ship.IsCloseTo(newPos));
+
+            while (!Ship.IsCloseTo(newPos))
+            {
+                if (collided)
+                {
+                    collided = false;
+                    break;
+                }
+
+                Ship.RotateToPoint(newPos);
+                
+                //always fly max speed here, don't brake to turn
+                Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, thrust: 1);
+
+                //don't stop firing if we can help it!!
+                for (int mod = 0; mod < Ship.ModuleLoadout.SlotCount; ++mod)
+                {
+                    var module = Ship.ModuleLoadout.GetSlot(mod);
+                    module.Aim = targetShip.transform.position;
+                    module.Activate(Ship, mod);
+                }
+
+                yield return null;
+            }
         }
 
-        Ship.Target = attackShip.Targetable;
-        var fleet = Universe.FleetManager.GetFleetOf(Ship);
-        if (fleet && fleet.Leader == Ship)
+        done = true;
+        attackRoutine = null;
+    }
+
+    public override void OnCollided(Collision collision)
+    {
+        collided = true;
+    }
+
+    public override void Update()
+    {   
+        if (attackRoutine == null && !done)
         {
-            /* everyone else attack too */
-            foreach (var lackey in fleet.Followers)
-            {
-                Ship.SendRadioMessage(RadioMessageType.Attack, lackey);
-            }
+            attackRoutine = Ship.StartCoroutine(AttackLoop());
         }
-
-        canSeeTarget = Ship.CanSee(attackShip.transform.position);
-
-        bool navigatingToTarget = false;
-        if (!canSeeTarget)
-        {
-            /*there must be some obstacle in the way, 
-            let's follow the nav points directly to them
-            and see if that helps */
-            TaskFollower.AssignTask(NavigateTask.Create(attackShip.transform.position));
-            navigatingToTarget = true;
-        }
-
-        if (!navigatingToTarget)
-        {
-            //are we aiming in the same direction as the target
-            var dotToForward = Vector3.Dot(TaskFollower.transform.forward, attackShip.transform.forward);
-            aimCloseEnough = dotToForward > ANGLE_MATCH;
-
-            //is my ship behind the Target
-            var TargetToMe = (TaskFollower.transform.position - attackShip.transform.position).normalized;
-            var dotToMe = Vector3.Dot(attackShip.transform.forward, TargetToMe);
-            behind = dotToMe < 0;
-
-            Vector3 dest = attackShip.transform.position;
-
-            if (evasive)
-            {
-                //try to get behind them
-                var behindOffset = attackShip.transform.forward - (attackShip.transform.forward * FOLLOW_RANGE);
-                dest += behindOffset;
-            }
-
-            if (TaskFollower.Ship.IsCloseTo(dest))
-            {
-                /* we're close to where we want to be, now aim at them */
-                var thrust = attackShip? Ship.EquivalentThrust(TaskFollower.Ship, attackShip) : 0;
-                Ship.ResetControls(thrust: thrust);
-                Ship.RotateToPoint(attackShip.transform.position);
-            }
-            else
-            {
-                //keep trying to get behind them
-                TaskFollower.AssignTask(NavigateTask.Create(dest));
-
-                //don't drop the speed too much in combat to keep dodging!
-                //TaskFollower.Captain.MinimumThrust = MINIMUM_THRUST;
-            }
-
-            //pew pew pew
-            var loadout = Ship.ModuleLoadout;
-            for (int module = 0; module < loadout.SlotCount; ++module)
-            {
-                loadout.GetSlot(module).Aim = attackShip.transform.position;
-                loadout.Activate(Ship, module);
-            }
-        }        
     }
 
     public override bool Done
     {
         get
         {
-            if (!attackShip || !attackShip.Targetable)
-            {
-                //it's probably died
-                return true;
-            }
-
-            return (behind || !evasive)
-                && aimCloseEnough 
-                && canSeeTarget;
+            return done;
         }
     }
 }

@@ -46,6 +46,10 @@ public abstract class AITask : ScriptableObject
     {
     }
 
+    public virtual void OnCollided(Collision collision)
+    {
+    }
+
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void CheckRequiredConstraints()
     {
