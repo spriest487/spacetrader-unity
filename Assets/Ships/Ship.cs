@@ -822,4 +822,14 @@ public partial class Ship : MonoBehaviour
     {
         ResetControls();
     }
+    
+    private void OnDrawGizmos()
+    {
+        var fleet = Universe.FleetManager.GetFleetOf(this);
+        if (fleet && fleet.Leader != this)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, fleet.Leader.transform.position);
+        }
+    }
 }

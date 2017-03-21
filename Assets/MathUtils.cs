@@ -50,4 +50,11 @@ public static class MathUtils
         }
         return max;
     }
+
+    public static Vector3 Multiply(this Vector3 left, Vector3 right)
+    {
+        return new Vector3(left.x * right.x,
+            left.y * right.y,
+            left.z * right.z);
+    }
 }

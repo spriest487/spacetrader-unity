@@ -38,4 +38,45 @@ public static class GameObjectUtility
 
         return sorted.First();
     }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    public static void DrawPrefabWire(this GameObject prefab, Transform baseTransform,
+        Vector3 position, Quaternion rotation, Vector3 localScale)
+    {
+        if (!prefab)
+        {
+            return;
+        }
+
+        var meshes = prefab.GetComponentsInChildren<MeshFilter>();
+        foreach (var meshFilter in meshes)
+        {
+            if (!meshFilter.sharedMesh)
+            {
+                continue;
+            }
+
+            var meshXform = meshFilter.transform;
+            var prefabRoot = meshXform.root;
+
+            var pos = baseTransform.position 
+                + position 
+                + (meshXform.position - prefabRoot.position);
+            var rot = baseTransform.rotation 
+                * rotation 
+                * meshXform.rotation 
+                * Quaternion.Inverse(prefabRoot.rotation);
+            var scale = baseTransform.lossyScale
+                .Multiply(localScale)
+                .Multiply(meshXform.lossyScale);
+
+            Gizmos.DrawWireMesh(meshFilter.sharedMesh, pos, rot, scale);
+        }
+    }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    public static void DrawPrefabWire(this GameObject prefab, Transform baseTransform)
+    {
+        prefab.DrawPrefabWire(baseTransform, Vector3.zero, Quaternion.identity, Vector3.one);
+    }
 }

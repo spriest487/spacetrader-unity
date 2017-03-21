@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(Collider))]
 public class Asteroid : MonoBehaviour
 {
     [System.Serializable]
@@ -21,7 +20,18 @@ public class Asteroid : MonoBehaviour
 
     private void Start()
     {
-        var collider = GetComponent<Collider>();
+        var collider = GetComponentInChildren<Collider>();
+        Debug.Assert(collider, "asteroid must have a collider child");
+
+        //spin randomly
+        var rigidBody = GetComponent<Rigidbody>();
+        if (rigidBody)
+        {
+            rigidBody.angularVelocity = new Vector3(
+                Mathf.Deg2Rad * Random.Range(0, 15f),
+                Mathf.Deg2Rad * Random.Range(0, 15f),
+                Mathf.Deg2Rad * Random.Range(0, 15f));
+        }
 
         deposits = new List<Targetable>();
 

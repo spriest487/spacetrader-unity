@@ -108,27 +108,7 @@ public class ShipSpawner : MonoBehaviour
     {
         if (shipType && shipType.Prefab)
         {
-            var meshes = shipType.Prefab.GetComponentsInChildren<MeshFilter>();
-            foreach (var meshFilter in meshes)
-            {
-                if (!meshFilter.sharedMesh)
-                {
-                    continue;
-                }
-
-                var meshXform = meshFilter.transform;
-                var prefabRoot = meshXform.root;
-
-                var pos = transform.position + meshXform.position - prefabRoot.position;
-                var rot = transform.rotation * meshXform.rotation * Quaternion.Inverse(prefabRoot.rotation);
-
-                var scale = transform.lossyScale;
-                scale.x *= meshXform.lossyScale.x;
-                scale.y *= meshXform.lossyScale.y;
-                scale.z *= meshXform.lossyScale.z;
-                
-                Gizmos.DrawWireMesh(meshFilter.sharedMesh, pos, rot, scale);
-            }
+            shipType.Prefab.gameObject.DrawPrefabWire(transform);
         }
 
         if (joinFleetOf)
