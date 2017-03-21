@@ -115,7 +115,7 @@ public class Targetable : MonoBehaviour
 
     public static TargetRelationship Relationship(Targetable from, Targetable to)
     {
-        if (!from || string.IsNullOrEmpty(from.Faction))
+        if (!from)
         {
             return TargetRelationship.Neutral;
         }
