@@ -87,7 +87,7 @@ public class Bullet : MonoBehaviour
         //bullets are never triggered by the person shooting them
         var hitShip = hitObject.GetComponentInParent<Ship>();
 
-		if (hitShip != owner) 
+		if (hitShip && hitShip != owner) 
 		{
             var hitDamage = new HitDamage(hitPos, damage, owner);
 			hitShip.gameObject.SendMessage("OnTakeDamage", hitDamage, SendMessageOptions.DontRequireReceiver);
