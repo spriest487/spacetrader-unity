@@ -111,13 +111,7 @@ public class AttackTask : AITask
                 //always fly max speed here, don't brake to turn
                 Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, thrust: 1);
 
-                //don't stop firing if we can help it!!
-                for (int mod = 0; mod < Ship.ModuleLoadout.SlotCount; ++mod)
-                {
-                    var module = Ship.ModuleLoadout.GetSlot(mod);
-                    module.Aim = targetShip.transform.position;
-                    module.Activate(Ship, mod);
-                }
+                Ship.ActivateWeapons();
 
                 yield return null;
             }

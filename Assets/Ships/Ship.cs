@@ -642,12 +642,25 @@ public partial class Ship : MonoBehaviour
 		}
 	}
 
+    public void ActivateWeapons()
+    {
+        if (Target)
+        {
+            for (int mod = 0; mod < ModuleLoadout.SlotCount; ++mod)
+            {
+                var module = ModuleLoadout.GetSlot(mod);
+                module.Aim = Target.transform.position;
+                module.Activate(this, mod);
+            }
+        }
+    }
+
 	private void Update()
 	{
         Debug.Assert(ShipType, "ship " + name + " must have a shiptype");
 
         formationManager.Update();
-
+        
         //ability cooldowns
         foreach (var ability in abilities)
         {
