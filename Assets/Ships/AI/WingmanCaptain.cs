@@ -192,8 +192,11 @@ public class WingmanCaptain : MonoBehaviour
 
                 if (!myFleet)
                 {
-                    //just go for it
-                    taskFollower.QueueTask(AttackTask.Create(damage.Owner.Targetable));
+                    if (taskFollower.Idle)
+                    {
+                        //just go for it
+                        taskFollower.QueueTask(AttackTask.Create(damage.Owner.Targetable));
+                    }
                 }
                 else
                 {
