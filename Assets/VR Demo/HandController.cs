@@ -201,7 +201,7 @@ public class HandController : MonoBehaviour
                         tasks.AssignTask(AttackTask.Create(Hotspot.TouchingShip.Targetable));
                         break;
                     default:
-                        tasks.AssignTask(FlyToPointTask.Create(Hotspot.transform.position, Hotspot.Size));
+                        tasks.AssignTask(NavigateTask.Create(Hotspot.transform.position));
                         break;
                 }
 
@@ -231,9 +231,15 @@ public class HandController : MonoBehaviour
             WingmanOrder aiOrder;
             switch (order)
             {
-                case HandControllerOrder.Attack: aiOrder = WingmanOrder.AttackLeaderTarget; break;
-                case HandControllerOrder.Follow: aiOrder = WingmanOrder.FollowLeader; break;
-                default: aiOrder = WingmanOrder.Wait; break;
+                case HandControllerOrder.Attack:
+                    aiOrder = WingmanOrder.AttackLeaderTarget;
+                    break;
+                case HandControllerOrder.Move:
+                case HandControllerOrder.Follow:
+                    aiOrder = WingmanOrder.FollowLeader;
+                    break;
+                default: aiOrder = WingmanOrder.Wait;
+                    break;
             }
 
             if (aiOrder != WingmanOrder.Wait)
