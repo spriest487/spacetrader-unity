@@ -46,9 +46,14 @@
             half soften = pow(fresnel, _Soften);
 
             fresnel -= soften;
+
+            half3 diffuse = tex2D(_Diffuse, IN.uv_Diffuse).rgb;
         
-            o.Albedo = tex2D(_Diffuse, IN.uv_Diffuse).rgb * fresnel;
-            o.Emission = lerp(o.Albedo, _Color.rgb, _Color.a) * fresnel;
+            //o.Albedo = tex2D(_Diffuse, IN.uv_Diffuse).rgb * fresnel;
+            //o.Albedo = half4(fresnel, fresnel, fresnel, 1);
+            //o.Emission = lerp(o.Albedo, _Color.rgb, _Color.a) * fresnel;
+            o.Albedo = _Color.rgb;
+            o.Emission = lerp(diffuse * _Color.rgb, _Color.rgb, _Color.a) * fresnel;
         }
 
     ENDCG
