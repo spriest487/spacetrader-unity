@@ -60,6 +60,11 @@ public class HandController : MonoBehaviour
     {
         get
         {
+            if (!VRSettings.enabled)
+            {
+                return node == VRNode.RightHand;
+            }
+
             const float WakeUpSqr = WakeUpDist * WakeUpDist;
 
             var trackedPos = InputTracking.GetLocalPosition(node);
