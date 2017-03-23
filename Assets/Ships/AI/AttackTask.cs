@@ -6,24 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AttackTask : AITask
-{ 
-//{
-//    private const float MINIMUM_THRUST = 0.25f;
-//    private const float FOLLOW_RANGE = 50;
-//    private const float ANGLE_MATCH = 0.8f; //TODO: get from weapons?
-    
-    //[SerializeField]
-    //private bool behind;
-    
-    //[SerializeField]
-    //private bool aimCloseEnough;
-
-    //[SerializeField]
-    //private bool canSeeTarget;
-
-    //[SerializeField]
-    //private bool evasive;
-    
+{     
     [SerializeField]
     private Ship targetShip;
 

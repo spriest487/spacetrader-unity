@@ -29,6 +29,8 @@ public class FlyToPointTask : AITask
         }
     }
 
+    public override Vector3? TargetLocation { get { return dest; } }
+
     private IEnumerator FlyRoutine()
     {
         var origin = TaskFollower.transform.position;

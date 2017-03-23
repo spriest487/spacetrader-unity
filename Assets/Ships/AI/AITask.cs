@@ -34,6 +34,8 @@ public abstract class AITask : ScriptableObject
         get { return TaskFollower.Ship; }
     }
 
+    public virtual Vector3? TargetLocation { get { return null; } }
+
     public virtual void Update()
     {
     }

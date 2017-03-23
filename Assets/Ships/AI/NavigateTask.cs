@@ -13,6 +13,8 @@ public class NavigateTask : AITask
 
     private Coroutine navigate;
 
+    public override Vector3? TargetLocation { get { return destination; } }
+
     public static NavigateTask Create(Vector3 dest)
     {
         var task = CreateInstance<NavigateTask>();

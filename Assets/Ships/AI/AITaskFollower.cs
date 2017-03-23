@@ -23,6 +23,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 
     public bool Idle { get { return tasks.Count == 0; } }
 
+    public AITask CurrentTask { get { return tasks.Count == 0 ? null : tasks.Last.Value; } }
+
     public void OnBeforeSerialize()
     {
         if (tasks != null)

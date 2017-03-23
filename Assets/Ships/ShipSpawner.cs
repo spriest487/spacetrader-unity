@@ -20,7 +20,6 @@ public class ShipSpawner : MonoBehaviour
     [SerializeField]
     private int money = 1000;
 
-
     [Header("Crew")]
 
     [SerializeField]
@@ -42,6 +41,9 @@ public class ShipSpawner : MonoBehaviour
     [SerializeField]
     private bool combatAI;
 
+    [SerializeField]
+    private Transform[] additionalChildren;
+        
     private Ship spawned;
 
     private void Start()
@@ -92,9 +94,14 @@ public class ShipSpawner : MonoBehaviour
         {
             spawned.gameObject.AddComponent<WingmanCaptain>();
         }
+
+        foreach (var child in additionalChildren)
+        {
+            Instantiate(child, spawned.transform, false);
+        }
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (spawned && joinFleetOf && joinFleetOf.spawned)
         {

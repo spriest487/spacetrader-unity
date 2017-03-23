@@ -97,7 +97,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1106029485569826}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.1682, y: 0.0517, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4577294129222108}
@@ -197,7 +197,7 @@ MonoBehaviour:
   moveLineGradient:
     key0:
       serializedVersion: 2
-      rgba: 16777215
+      rgba: 11927296
     key1:
       serializedVersion: 2
       rgba: 4290117376
@@ -241,7 +241,7 @@ MonoBehaviour:
   attackLineGradient:
     key0:
       serializedVersion: 2
-      rgba: 16777215
+      rgba: 6504703
     key1:
       serializedVersion: 2
       rgba: 4284694783
@@ -285,7 +285,7 @@ MonoBehaviour:
   followLineGradient:
     key0:
       serializedVersion: 2
-      rgba: 16777215
+      rgba: 16742966
     key1:
       serializedVersion: 2
       rgba: 4294933046
@@ -339,7 +339,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 08cd798519153104db033414b66d9a25, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -378,7 +378,7 @@ LineRenderer:
     colorGradient:
       key0:
         serializedVersion: 2
-        rgba: 16777215
+        rgba: 11927296
       key1:
         serializedVersion: 2
         rgba: 4290117376
