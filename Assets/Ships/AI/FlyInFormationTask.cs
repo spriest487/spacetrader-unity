@@ -56,14 +56,37 @@ public class FlyInFormationTask : AITask
 
     public override void Update()
     {
-        var ship = TaskFollower.Ship;
+        Debug.Assert(leader != Ship, "can't fly in formation with myself");
+        
+        /* if we're not close to the leader, fly towards them first */
+        var fleet = Universe.FleetManager.GetFleetOf(Ship);
+        if (fleet && fleet.Leader == leader)
+        {
+            var formationPos = fleet.GetFormationPos(Ship);
+
+            if (!Ship.IsCloseTo(formationPos))
+            {
+                TaskFollower.AssignTask(NavigateTask.Create(formationPos));
+                return;
+            }
+        }
+        else
+        {
+            var safeDist = (leader.CloseDistance + Ship.CloseDistance) * 2;
+
+            if (!Ship.IsCloseTo(leader.transform.position, safeDist))
+            {
+                TaskFollower.AssignTask(NavigateTask.Create(leader.transform.position));
+                return;
+            }
+        }
 
         //fly in same direction as leader
-        var dest = TaskFollower.transform.position + (leader.transform.forward * ship.CurrentStats.MaxSpeed);
+        var dest = TaskFollower.transform.position + (leader.transform.forward * Ship.CurrentStats.MaxSpeed);
 
         float throttle = MatchLeaderThrust();
 
-        ship.ResetControls(thrust: throttle);
-        ship.RotateToDirection((dest - ship.transform.position).normalized, leader.transform.up);        
+        Ship.ResetControls(thrust: throttle);
+        Ship.RotateToDirection((dest - Ship.transform.position).normalized, leader.transform.up);        
     }
 }
