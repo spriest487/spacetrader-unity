@@ -72,4 +72,20 @@ public class Fleet : ScriptableObject
     {
         return Followers.Contains(ship) || leader == ship;
     }
+
+    public Vector3 GetFormationPos(Ship ship)
+    {
+        var positionIndex = Followers.IndexOf(ship);
+        Debug.Assert(positionIndex >= 0, "can't use GetFormationPos for ships that aren't fleet members");
+
+        /* there can only be 4 member so this doesn't need to be too complicated */
+        var offset = Vector3.right * Leader.Collider.bounds.extents.magnitude * (positionIndex / 2 + 1);
+        
+        if (positionIndex % 2 != 0)
+        {
+            offset = -offset;
+        }
+
+        return Leader.transform.localToWorldMatrix.MultiplyPoint(offset);
+    }
 }

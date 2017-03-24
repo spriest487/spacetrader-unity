@@ -9,9 +9,6 @@ using System.Collections.Generic;
 public partial class Ship : MonoBehaviour
 {
     [SerializeField]
-	private FormationManager formationManager = new FormationManager();
-
-    [SerializeField]
     private Targetable target;
 
     [HideInInspector]
@@ -313,12 +310,6 @@ public partial class Ship : MonoBehaviour
             .Any(),
             "on spawn, no ship should reference ability assets directly, they should be cloned!");
 #endif
-
-        //default these members in for instances not created in the editor
-        if (formationManager == null)
-        {
-            formationManager = new FormationManager();
-        }
 
         if (moduleLoadout == null)
         {
@@ -658,8 +649,6 @@ public partial class Ship : MonoBehaviour
 	private void Update()
 	{
         Debug.Assert(ShipType, "ship " + name + " must have a shiptype");
-
-        formationManager.Update();
         
         //ability cooldowns
         foreach (var ability in abilities)
@@ -684,44 +673,7 @@ public partial class Ship : MonoBehaviour
             RigidBody.velocity = RigidBody.velocity.normalized * CurrentStats.MaxSpeed;
         }
 	}
-
-	private Vector3 GetFormationPos(int followerId)
-	{
-        var shipPos = transform.position;
-
-		var posIndex = formationManager.IncludeFollower(followerId);
-		if (posIndex != 0)
-		{
-			var spacing = Collider.bounds.extents.magnitude * 4;
-			var offset = RigidBody.transform.right * posIndex * spacing;
-
-			return shipPos + offset;
-		}
-		else
-		{
-			return shipPos;
-		}
-	}
-
-	public Vector3 GetFormationPos(Ship follower)
-	{
-		return GetFormationPos(follower.GetInstanceID());
-	}
-
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private void DebugDrawFollowerPositions()
-	{
-		foreach (var follower in formationManager.followers)
-		{
-			var pos = GetFormationPos(follower);
-
-			var debugOff = (RigidBody.transform.forward * Collider.bounds.extents.magnitude * 0.5f);
-
-			Debug.DrawLine(pos - debugOff, pos + debugOff, Color.green, Time.deltaTime);
-			//Debug.Log("pos: " +pos);
-		}
-	}
-
+    
     public WeaponHardpoint GetHardpointAt(int index)
     {
         return hardpoints[index % hardpoints.Count];
@@ -836,13 +788,26 @@ public partial class Ship : MonoBehaviour
         ResetControls();
     }
     
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         var fleet = Universe.FleetManager.GetFleetOf(this);
-        if (fleet && fleet.Leader != this)
+        if (fleet)
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(transform.position, fleet.Leader.transform.position);
+            if (fleet.Leader == this)
+            {
+                foreach (var follower in fleet.Followers)
+                {
+                    var formationPos = fleet.GetFormationPos(follower);
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawLine(transform.position, formationPos);
+                    UnityEditor.Handles.Label(formationPos, "Formation Pos #" +fleet.Followers.IndexOf(follower));
+                }
+            }
+            else
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, fleet.Leader.transform.position);
+            }
         }
     }
 }
