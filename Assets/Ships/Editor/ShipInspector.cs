@@ -7,6 +7,9 @@ public class ShipInspector : Editor
 {
     private ModulePreset applyPreset;
 
+    private bool showCrew = false;
+    private bool showFleet = true;
+
     private void CrewField(CrewMember crewMember, CrewAssignment assignment)
     {
         var selected = EditorGUILayout.ObjectField(crewMember, typeof(CrewMember), true) as CrewMember;
@@ -59,33 +62,43 @@ public class ShipInspector : Editor
         }
         GUI.enabled = true;
 
-        EditorGUILayout.LabelField("Crew assignments", EditorStyles.boldLabel);
-        if (Application.isPlaying)
+        if ((showCrew = EditorGUILayout.Foldout(showCrew, "Crew Assignments")))
         {
-            EditorGUILayout.LabelField("Captain");
-
-            CrewField(ship.GetCaptain(), CrewAssignment.Captain);
-
-            EditorGUILayout.LabelField("Passengers");
-            var passengers = ship.GetPassengers().ToList();
-            passengers.Resize((int)ship.CurrentStats.PassengerCapacity);
-
-            foreach (var passenger in passengers)
+            if (Application.isPlaying)
             {
-                CrewField(passenger, CrewAssignment.Passenger);
+                EditorGUILayout.LabelField("Captain");
+
+                CrewField(ship.GetCaptain(), CrewAssignment.Captain);
+
+                EditorGUILayout.LabelField("Passengers");
+                var passengers = ship.GetPassengers().ToList();
+                passengers.Resize((int)ship.CurrentStats.PassengerCapacity);
+
+                foreach (var passenger in passengers)
+                {
+                    CrewField(passenger, CrewAssignment.Passenger);
+                }
+            }
+            else
+            {
+                EditorGUILayout.LabelField("(crew assignment not available when not playing)");
             }
         }
-        else
-        {
-            EditorGUILayout.LabelField("(crew assignment not available when not playing)");
-        }
 
-        Hitpoints hp;
-        if (Application.isPlaying && (hp = ship.GetComponent<Hitpoints>()))
+        if ((showFleet = EditorGUILayout.Foldout(showFleet, "Fleet")))
         {
-            if (GUILayout.Button("Destroy"))
+            Fleet fleet;
+            if (Application.isPlaying && 
+                (fleet = Universe.FleetManager.GetFleetOf(ship)))
             {
-                hp.TakeDamage(1000000);
+                if (GUILayout.Button("Select"))
+                {
+                    Selection.activeObject = fleet;
+                }
+            }
+            else
+            {
+                EditorGUILayout.LabelField("(no fleet)");
             }
         }
     }
