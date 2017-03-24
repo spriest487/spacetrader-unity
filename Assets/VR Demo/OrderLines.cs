@@ -31,19 +31,16 @@ public class OrderLines : MonoBehaviour
 
     private void Update()
     {
-        var current = owner.CurrentTask;
-        if (current)
+        var currentTask = owner.CurrentTask;
+        Vector3? taskTargetPos;
+        if (currentTask && (taskTargetPos = currentTask.TargetLocation).HasValue)
         {
-            var targetPos = current.TargetLocation;
-            if (targetPos.HasValue)
-            {
-                moveLine.gameObject.SetActive(true);
-                SetLineTo(moveLine, targetPos.Value);
-            }
-            else
-            {
-                moveLine.gameObject.SetActive(false);
-            }
+            moveLine.gameObject.SetActive(true);
+            SetLineTo(moveLine, taskTargetPos.Value);
+        }
+        else
+        {
+            moveLine.gameObject.SetActive(false);
         }
 
         if (owner.Ship.Target)
