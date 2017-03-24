@@ -254,6 +254,9 @@ public class NavigateTask : AITask
             TaskFollower.GetComponent<Seeker>().StopCoroutine(navigate);
         }
 
+        //stop moving
+        Ship.ResetControls();
+
         base.End();
     }
 
