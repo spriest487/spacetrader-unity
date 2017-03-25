@@ -1,5 +1,6 @@
 ﻿#pragma warning disable 0649
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,10 @@ public class HandControllerHotspot : MonoBehaviour
     private new Collider collider;
     
     public Ship TouchingShip { get; private set; }
+
     public float Size { get; private set; }
+
+    public event Action OnTouchingShipChanged;
 
     private void Awake()
     {

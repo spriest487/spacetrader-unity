@@ -1,20 +1,22 @@
 ﻿#pragma warning disable 0649
 
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.VR;
 
+public enum HandControllerOrder
+{
+    None,
+    Move,
+    Attack,
+    Follow,
+}
+
 public class HandController : MonoBehaviour
 {
     const float WakeUpDist = 0.01f;
-
-    public enum HandControllerOrder
-    {
-        Move,
-        Attack,
-        Follow,
-    }
-
+        
     [SerializeField]
     private VRNode node;
     
@@ -29,9 +31,18 @@ public class HandController : MonoBehaviour
 
     [SerializeField]
     private Gradient followLineGradient;
-    
+
     public HandControllerHotspot Hotspot { get; private set; }
+    public Canvas InfoPanel { get; private set; }
+
+    /// <summary>
+    /// order currently being issued to focus - player is dragging with the button,
+    /// but hasn't released to issue the order yet
+    /// </summary>
+    public HandControllerOrder PendingOrder { get; private set; }
     
+    public Ship Focus { get; private set; }
+
     private Coroutine dragging;
     private Room room;
 
@@ -85,11 +96,18 @@ public class HandController : MonoBehaviour
     {
         Hotspot = GetComponentInChildren<HandControllerHotspot>();
         room = GetComponentInParent<Room>();
+        InfoPanel = GetComponentInChildren<Canvas>();
     }
 
     private void OnEnable()
     {
         lastPos = InputTracking.GetLocalPosition(node);
+    }
+
+    private void OnDisable()
+    {
+        dragging = null;
+        Focus = null;
     }
 
     private void Update()
@@ -124,6 +142,8 @@ public class HandController : MonoBehaviour
             }
         }
 
+        InfoPanel.worldCamera = VRSettings.enabled ? room.VRCamera : room.OverheadCamera;
+
         if (HasMoved)
         {
             lastMoved = Time.time;
@@ -137,38 +157,34 @@ public class HandController : MonoBehaviour
 
         transform.position = point - offset;
     }
-
-    private void OnDisable()
+        
+    private IEnumerator DragShipMovement(Ship focus)
     {
-        dragging = null;
-    }
-    
-    private IEnumerator DragShipMovement(Ship ship)
-    {
-        var issuedOrder = HandControllerOrder.Move;
-
-        while (TriggerAxisValue > 0 && ship)
+        Focus = focus;
+        PendingOrder = HandControllerOrder.None;
+        
+        while (TriggerAxisValue > 0 && Focus)
         {
-            if (Hotspot.TouchingShip && Hotspot.TouchingShip != ship)
+            if (Hotspot.TouchingShip && Hotspot.TouchingShip != Focus)
             {
-                switch (Targetable.Relationship(ship.Targetable, Hotspot.TouchingShip.Targetable))
+                switch (Targetable.Relationship(Focus.Targetable, Hotspot.TouchingShip.Targetable))
                 {
                     case TargetRelationship.Friendly:
                     case TargetRelationship.FleetMember:
-                        issuedOrder = HandControllerOrder.Follow;
+                        PendingOrder = HandControllerOrder.Follow;
                         break;
                     default:
-                        issuedOrder = HandControllerOrder.Attack;
+                        PendingOrder = HandControllerOrder.Attack;
                         break;
                 }
             }
             else
             {
-                issuedOrder = HandControllerOrder.Move;
+                PendingOrder = HandControllerOrder.Move;
             }
 
             moveLine.gameObject.SetActive(true);
-            var from = ship.transform.position;
+            var from = Focus.transform.position;
             var to = Hotspot.transform.position;
 
             moveLine.SetPosition(0, from);
@@ -176,20 +192,21 @@ public class HandController : MonoBehaviour
 
             var dist = (from - to).magnitude;
 
-            moveLine.colorGradient = OrderLineColor(issuedOrder);
-
+            Debug.Assert(OrderLineColor(PendingOrder) != null, "must have an order with a valid color when dragging");
+            moveLine.colorGradient = OrderLineColor(PendingOrder);
+            
             yield return null;
         }
 
-        if (ship)
+        if (Focus)
         {
             //dragged to empty space
-            var tasks = ship.GetComponent<AITaskFollower>();
+            var tasks = Focus.GetComponent<AITaskFollower>();
             if (tasks)
             {
                 tasks.ClearTasks();
 
-                switch (issuedOrder)
+                switch (PendingOrder)
                 {
                     case HandControllerOrder.Follow:
                         if (!Hotspot.TouchingShip)
@@ -210,21 +227,24 @@ public class HandController : MonoBehaviour
                         break;
                 }
 
-                IssueCombatAIOrder(ship, issuedOrder);
+                IssueCombatAIOrder(Focus, PendingOrder);
             }
         }
 
         moveLine.gameObject.SetActive(false);
         dragging = null;
+        Focus = null;
+        PendingOrder = HandControllerOrder.None;
     }
 
-    private Gradient OrderLineColor(HandControllerOrder order)
+    public Gradient OrderLineColor(HandControllerOrder order)
     {
         switch (order)
         {
             case HandControllerOrder.Attack: return attackLineGradient;
             case HandControllerOrder.Follow: return followLineGradient;
-            default: return moveLineGradient;
+            case HandControllerOrder.Move: return moveLineGradient;
+            default: return null;
         }
     }
 
