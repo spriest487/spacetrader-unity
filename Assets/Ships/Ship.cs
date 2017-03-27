@@ -787,7 +787,8 @@ public partial class Ship : MonoBehaviour
     {
         ResetControls();
     }
-    
+
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         var fleet = Universe.FleetManager.GetFleetOf(this);
@@ -810,4 +811,5 @@ public partial class Ship : MonoBehaviour
             }
         }
     }
+#endif
 }
