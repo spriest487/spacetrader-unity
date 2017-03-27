@@ -1,10 +1,16 @@
 fileFormatVersion: 2
 guid: 90b9b35c56399ef4faa1890285f37814
-timeCreated: 1425565589
+timeCreated: 1490620784
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - prefab: {instanceID: 0}
+  - cockpitPrefab: {instanceID: 0}
+  - explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  - miniThrusterEffect: {fileID: 400000, guid: af000e2c08dd278409d3c47dac5dad3b, type: 2}
+  - thrusterEffect: {fileID: 400000, guid: c750fc75f3f598447a964064b07dacec, type: 2}
+  - thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
