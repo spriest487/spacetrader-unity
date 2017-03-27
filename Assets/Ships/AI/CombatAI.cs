@@ -228,7 +228,7 @@ public class CombatAI : MonoBehaviour
                     }
                     else
                     {
-                        orderTask = FlyInFormationTask.Create(fleet.Leader);
+                        orderTask = FlyInFormationTask.Create(fleet);
                     }
                     break;
                 case AIOrder.Attack:

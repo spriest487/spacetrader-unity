@@ -8,7 +8,11 @@ public class FleetManager : ScriptableObject
     [SerializeField]
     private List<Fleet> fleets = new List<Fleet>();
 
-    public void AddToFleet(Ship leader, Ship follower)
+    /// <summary>
+    /// add "follower" to the fleet of "leader". works even if "leader"
+    /// isn't actually the leader of their own fleet
+    /// </summary>
+    public Fleet AddToFleet(Ship leader, Ship follower)
     {
         var hasFleet = fleets.Where(f => f.IsMember(follower)).Any();
         if (hasFleet)
@@ -16,7 +20,7 @@ public class FleetManager : ScriptableObject
             LeaveFleet(follower);
         }
 
-        var fleet = fleets.Where(f => f.Leader == leader).FirstOrDefault();
+        var fleet = fleets.Where(f => f.IsMember(leader)).FirstOrDefault();
         if (!fleet)
         {
             fleet = Fleet.Create(leader);
@@ -28,6 +32,8 @@ public class FleetManager : ScriptableObject
             Fleet.MaxSize);
 
         fleet.Followers.Add(follower);
+
+        return fleet;
     }
 
     public void LeaveFleet(Ship ship)
