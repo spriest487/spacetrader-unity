@@ -4,8 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - WorldConfig
-  - WorldCommon
   - UIOnlyIngame
   - UIOnlyOutOfGame
   - WorldListener
@@ -13,9 +11,10 @@ TagManager:
   - MissionObjective
   - WorldPathfinding
   - LocalPathfinding
-  - Ships
   - Pathfinding
   - Local Pathfinding
+  - Asteroid
+  - Ship
   layers:
   - Default
   - TransparentFX

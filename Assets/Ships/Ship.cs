@@ -8,6 +8,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody))]
 public partial class Ship : MonoBehaviour
 {
+    public const string SHIP_TAG = "Ship";
+
     [SerializeField]
     private Targetable target;
 
@@ -296,6 +298,8 @@ public partial class Ship : MonoBehaviour
 
     void Awake()
     {
+        gameObject.tag = SHIP_TAG;
+
         RigidBody = GetComponent<Rigidbody>();
 
         Targetable = GetComponent<Targetable>();

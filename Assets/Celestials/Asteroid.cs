@@ -1,25 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
+using Random = UnityEngine.Random;
 
 public class Asteroid : MonoBehaviour
 {
-    [System.Serializable]
+    public const string ASTEROID_TAG = "Asteroid";
+
+    [Serializable]
     public class Deposit
     {
         public Hitpoints hitpoints;
         public Targetable targetable;
     }
 
-    //[SerializeField]
-    //private int seed = new System.Random().Next(0, int.MaxValue);
-
     [SerializeField]
     private List<Targetable> deposits;
-
-    //private Collider collider;
-
-    private void Start()
+    
+    private void Awake()
     {
+        gameObject.tag = ASTEROID_TAG;
+
         var collider = GetComponentInChildren<Collider>();
         Debug.Assert(collider, "asteroid must have a collider child");
 
@@ -34,16 +35,14 @@ public class Asteroid : MonoBehaviour
         }
 
         deposits = new List<Targetable>();
-
-        var random = new System.Random();
-        
-        var count = random.Next(1, 10);
+                
+        var count = Random.Range(1, 10);
 
         for (int i = 0; i < count; ++i)
         {
-            var offset = random.OnUnitSphere() * collider.bounds.extents.sqrMagnitude;
+            var offset = Random.onUnitSphere * collider.bounds.extents.sqrMagnitude;
             var outerPoint = offset + transform.position;
-            Vector3 surfacePos = transform.position;
+            var surfacePos = transform.position;
 
             //fire a ray inwards to find our own surface
             foreach (var hit in Physics.RaycastAll(outerPoint, -offset, collider.bounds.extents.sqrMagnitude))

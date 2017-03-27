@@ -11,25 +11,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b9b35c56399ef4faa1890285f37814, type: 3}
   m_Name: Junum Harvester
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 4645767315708082, guid: 7bd0503235db91649b5a6a3ba70d6798, type: 2}
   cockpitPrefab: {fileID: 0}
-  explosionEffect: {fileID: 0}
-  miniThrusterEffect: {fileID: 0}
-  thrusterEffect: {fileID: 0}
-  thumbnail: {fileID: 0}
+  explosionEffect: {fileID: 11400470, guid: d2aae45968022f64aa7587f17038a8a3, type: 2}
+  miniThrusterEffect: {fileID: 400000, guid: af000e2c08dd278409d3c47dac5dad3b, type: 2}
+  thrusterEffect: {fileID: 400000, guid: c750fc75f3f598447a964064b07dacec, type: 2}
+  thumbnail: {fileID: 21300000, guid: a5c3e63906a7dbc42ac9e093e525189d, type: 3}
   targetable: 1
   stats:
-    agility: 0
-    thrust: 0
-    maxTurnSpeed: 0
-    maxSpeed: 0
+    agility: 90
+    thrust: 800
+    maxTurnSpeed: 90
+    maxSpeed: 15
     passengerCapacity: 0
-    armor: 0
+    armor: 20
     shield: 0
-    mass: 0
+    mass: 15
     damageMultiplier: 0
   cargoSize: 1
   moduleSlots: 0
   dockable: 1
-  abilities: []
+  abilities:
+  - {fileID: 0}
   xpReward: 0
