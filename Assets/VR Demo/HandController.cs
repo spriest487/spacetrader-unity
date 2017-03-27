@@ -5,13 +5,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.VR;
 
-public enum HandControllerOrder
-{
-    None,
-    Move,
-    Attack,
-    Follow,
-}
+//public enum HandControllerOrder
+//{
+//    None,
+//    Move,
+//    Attack,
+//    Follow,
+//}
 
 public class HandController : MonoBehaviour
 {
@@ -39,7 +39,7 @@ public class HandController : MonoBehaviour
     /// order currently being issued to focus - player is dragging with the button,
     /// but hasn't released to issue the order yet
     /// </summary>
-    public HandControllerOrder PendingOrder { get; private set; }
+    public AIOrder PendingOrder { get; private set; }
     
     public Ship Focus { get; private set; }
 
@@ -161,7 +161,7 @@ public class HandController : MonoBehaviour
     private IEnumerator DragShipMovement(Ship focus)
     {
         Focus = focus;
-        PendingOrder = HandControllerOrder.None;
+        PendingOrder = AIOrder.Wait;
         
         while (TriggerAxisValue > 0 && Focus)
         {
@@ -171,16 +171,16 @@ public class HandController : MonoBehaviour
                 {
                     case TargetRelationship.Friendly:
                     case TargetRelationship.FleetMember:
-                        PendingOrder = HandControllerOrder.Follow;
+                        PendingOrder = AIOrder.Follow;
                         break;
                     default:
-                        PendingOrder = HandControllerOrder.Attack;
+                        PendingOrder = AIOrder.Attack;
                         break;
                 }
             }
             else
             {
-                PendingOrder = HandControllerOrder.Move;
+                PendingOrder = AIOrder.Move;
             }
 
             moveLine.gameObject.SetActive(true);
@@ -208,14 +208,14 @@ public class HandController : MonoBehaviour
 
                 switch (PendingOrder)
                 {
-                    case HandControllerOrder.Follow:
+                    case AIOrder.Follow:
                         if (!Hotspot.TouchingShip)
                         {
                             goto default;
                         }
                         tasks.AssignTask(FlyInFormationTask.Create(Hotspot.TouchingShip));
                         break;
-                    case HandControllerOrder.Attack:
+                    case AIOrder.Attack:
                         if (!(Hotspot.TouchingShip && Hotspot.TouchingShip.Targetable))
                         {
                             goto default;
@@ -234,44 +234,30 @@ public class HandController : MonoBehaviour
         moveLine.gameObject.SetActive(false);
         dragging = null;
         Focus = null;
-        PendingOrder = HandControllerOrder.None;
+        PendingOrder = AIOrder.Wait;
     }
 
-    public Gradient OrderLineColor(HandControllerOrder order)
+    public Gradient OrderLineColor(AIOrder order)
     {
         switch (order)
         {
-            case HandControllerOrder.Attack: return attackLineGradient;
-            case HandControllerOrder.Follow: return followLineGradient;
-            case HandControllerOrder.Move: return moveLineGradient;
+            case AIOrder.Attack: return attackLineGradient;
+            case AIOrder.Follow: return followLineGradient;
+            case AIOrder.Move: return moveLineGradient;
             default: return null;
         }
     }
 
-    private void IssueCombatAIOrder(Ship ship, HandControllerOrder order)
+    private void IssueCombatAIOrder(Ship ship, AIOrder aiOrder)
     {
         var fleet = Universe.FleetManager.GetFleetOf(ship);
         if (fleet && fleet.Leader == ship)
         {
-            WingmanOrder aiOrder;
-            switch (order)
-            {
-                case HandControllerOrder.Attack:
-                    aiOrder = WingmanOrder.AttackLeaderTarget;
-                    break;
-                case HandControllerOrder.Move:
-                case HandControllerOrder.Follow:
-                    aiOrder = WingmanOrder.FollowLeader;
-                    break;
-                default: aiOrder = WingmanOrder.Wait;
-                    break;
-            }
-
-            if (aiOrder != WingmanOrder.Wait)
+            if (aiOrder != AIOrder.Wait)
             {
                 foreach (var follower in fleet.Followers)
                 {
-                    var combatAI = follower.GetComponent<WingmanCaptain>();
+                    var combatAI = follower.GetComponent<CombatAI>();
                     if (combatAI)
                     {
                         combatAI.SetOrder(aiOrder);

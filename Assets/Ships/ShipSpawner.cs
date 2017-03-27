@@ -92,7 +92,7 @@ public class ShipSpawner : MonoBehaviour
 
         if (combatAI)
         {
-            spawned.gameObject.AddComponent<WingmanCaptain>();
+            spawned.gameObject.AddComponent<CombatAI>();
         }
 
         foreach (var child in additionalChildren)

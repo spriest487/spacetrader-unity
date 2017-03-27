@@ -4,31 +4,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-public enum WingmanOrder
-{
-    FollowLeader = RadioMessageType.FollowMe,
-    Wait = RadioMessageType.Wait,
-    AttackLeaderTarget = RadioMessageType.Attack,
-}
-
-public static class WingmanOrderUtility
-{
-    public static string GetHUDLabel(this WingmanOrder order)
-    {
-        switch (order)
-        {
-            case WingmanOrder.AttackLeaderTarget: return "ATTACK";
-            case WingmanOrder.FollowLeader: return "FOLLOW";
-            default: return "WAIT";
-        }
-    }
-}
-
 [RequireComponent(typeof(AITaskFollower))]
-public class WingmanCaptain : MonoBehaviour
+public class CombatAI : MonoBehaviour
 {
     [SerializeField]
-    private WingmanOrder activeOrder;
+    private AIOrder activeOrder;
 
     private AITaskFollower taskFollower;
     private AITask orderTask;
@@ -44,12 +24,12 @@ public class WingmanCaptain : MonoBehaviour
         get { return taskFollower.Ship; }
     }
 
-    public WingmanOrder ActiveOrder
+    public AIOrder ActiveOrder
     {
         get { return activeOrder; }
     }
 
-    public void SetOrder(WingmanOrder newOrder)
+    public void SetOrder(AIOrder newOrder)
     {
         if (activeOrder != newOrder && orderTask)
         {
@@ -65,7 +45,7 @@ public class WingmanCaptain : MonoBehaviour
 
         if (message.SourceShip == fleet.Leader && fleet.Leader != Ship)
         {
-            SetOrder((WingmanOrder) message.MessageType);
+            SetOrder((AIOrder) message.MessageType);
 
             //if we're the player's number two, acknowledge the order
             if (Universe.LocalPlayer && Universe.LocalPlayer.Ship == message.SourceShip)
@@ -166,7 +146,7 @@ public class WingmanCaptain : MonoBehaviour
 	{
         taskFollower = GetComponent<AITaskFollower>();
 
-        activeOrder = WingmanOrder.FollowLeader;
+        activeOrder = AIOrder.Follow;
     }
 
     void OnTakeDamage(HitDamage damage)
@@ -178,7 +158,7 @@ public class WingmanCaptain : MonoBehaviour
             (!(myFleet && myFleet == fm.GetFleetOf(damage.Owner))))
         {
             //get angry and forget what we were doing if we're not already in attack mode
-            if (activeOrder != WingmanOrder.AttackLeaderTarget
+            if (activeOrder != AIOrder.Attack
                 && orderTask)
             {
                 orderTask = null;
@@ -210,7 +190,7 @@ public class WingmanCaptain : MonoBehaviour
                     }
                     else
                     {
-                        if (activeOrder != WingmanOrder.AttackLeaderTarget)
+                        if (activeOrder != AIOrder.Attack)
                         {
                             //ask leader for help
                             Ship.SendRadioMessage(RadioMessageType.HelpMe, myFleet.Leader);
@@ -230,18 +210,18 @@ public class WingmanCaptain : MonoBehaviour
 
         if (!fleet)
         {
-            SetOrder(WingmanOrder.Wait);
+            SetOrder(AIOrder.Wait);
         }
         else if (fleet.Leader == Ship)
         {
-            SetOrder(WingmanOrder.AttackLeaderTarget);
+            SetOrder(AIOrder.Attack);
         }
 
         if (!orderTask)
         {
             switch (activeOrder)
             {
-                case WingmanOrder.FollowLeader:
+                case AIOrder.Follow:
                     if (Ship.Target)
                     {
                         orderTask = AttackTask.Create(Ship.Target);
@@ -251,13 +231,13 @@ public class WingmanCaptain : MonoBehaviour
                         orderTask = FlyInFormationTask.Create(fleet.Leader);
                     }
                     break;
-                case WingmanOrder.AttackLeaderTarget:
+                case AIOrder.Attack:
                     if (fleet.Leader.Target)
                     {
                         orderTask = AttackTask.Create(fleet.Leader.Target);
                     }
                     break;
-                case WingmanOrder.Wait:
+                case AIOrder.Wait:
                     //while waiting, use individual target
                     if (Ship.Target)
                     {

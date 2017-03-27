@@ -39,15 +39,15 @@ public class InfoPanel : MonoBehaviour
 
             switch (hand.PendingOrder)
             {
-                case HandControllerOrder.Attack:
+                case AIOrder.Attack:
                     var target = hand.Hotspot.TouchingShip;
                     newOrderLabel.text = "Attack " + target.name;
                     break;
-                case HandControllerOrder.Follow:
+                case AIOrder.Follow:
                     var leader = hand.Hotspot.TouchingShip;
                     newOrderLabel.text = "Follow " + leader.name;
                     break;
-                case HandControllerOrder.Move:
+                case AIOrder.Move:
                     newOrderLabel.text = "Move";
                     break;
                 default:

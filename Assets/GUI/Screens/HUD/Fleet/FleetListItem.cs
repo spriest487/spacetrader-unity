@@ -7,6 +7,8 @@ public class FleetListItem : MonoBehaviour
 {
     const int MaxLabelLength = 10;
 
+    [Header("UI Elements")]
+
     [SerializeField]
     private Text nameLabel;
 
@@ -14,31 +16,28 @@ public class FleetListItem : MonoBehaviour
     private Image armorBar;
 
     [SerializeField]
-    private Text wingmanStatus;
+    private Text memberStatusLabel;
 
     [SerializeField]
     private Image captainPortrait;
 
     [SerializeField]
     private Transform selectionOverlay;
-
-    [HideInInspector]
-    [SerializeField]
+    
+    [SerializeField, HideInInspector]
     private Ship ship;
 
-    [SerializeField]
-    [HideInInspector]
-    private WingmanCaptain wingmanCaptain;
+    [SerializeField, HideInInspector]
+    private CombatAI combatAI;
 
-    [HideInInspector]
-    [SerializeField]
+    [SerializeField, HideInInspector]
     private Hitpoints hitpoints;
 
     public void Assign(Ship ship, Color labelColor)
     {
         this.ship = ship;
         hitpoints = ship.GetComponent<Hitpoints>();
-        wingmanCaptain = ship.GetComponent<WingmanCaptain>();
+        combatAI = ship.GetComponent<CombatAI>();
 
         nameLabel.color = labelColor;
         foreach (var selectionImage in selectionOverlay.GetComponentsInChildren<Image>())
@@ -81,20 +80,20 @@ public class FleetListItem : MonoBehaviour
 
         captainPortrait.sprite = portrait;
 
-        string wingmanOrder = null;
-        if (wingmanCaptain)
+        string combatOrderText = null;
+        if (combatAI)
         {
-            wingmanOrder = wingmanCaptain.ActiveOrder.GetHUDLabel();
+            combatOrderText = combatAI.ActiveOrder.GetHUDLabel();
         }
 
-        if (wingmanOrder != null)
+        if (combatOrderText != null)
         {
-            wingmanStatus.gameObject.SetActive(true);
-            wingmanStatus.text = wingmanOrder;
+            memberStatusLabel.gameObject.SetActive(true);
+            memberStatusLabel.text = combatOrderText;
         }
         else
         {
-            wingmanStatus.gameObject.SetActive(false);
+            memberStatusLabel.gameObject.SetActive(false);
         }
 
         var player = Universe.LocalPlayer;

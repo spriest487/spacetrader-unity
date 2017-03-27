@@ -88,6 +88,6 @@ public class TeamSpawnerTeam
 
     private void SetupAIPlayer(Ship ship)
     {
-        ship.gameObject.AddComponent<WingmanCaptain>();
+        ship.gameObject.AddComponent<CombatAI>();
     }
 }
