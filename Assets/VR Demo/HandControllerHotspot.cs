@@ -8,8 +8,13 @@ using UnityEngine;
 public class HandControllerHotspot : MonoBehaviour
 {
     private new Collider collider;
-    
-    public Ship TouchingShip { get; private set; }
+
+    private List<Ship> touchingShips;
+
+    public Ship TouchingShip
+    {
+        get { return touchingShips.Count > 0 ? touchingShips[0] : null; }
+    }
 
     public float Size { get; private set; }
 
@@ -23,17 +28,32 @@ public class HandControllerHotspot : MonoBehaviour
         Size = sphere? sphere.radius * 2 : 1;
     }
 
+    private void OnEnable()
+    {
+        touchingShips = new List<Ship>();
+    }
+
+    private void OnDisable()
+    {
+        touchingShips = null;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         var ship = other.GetComponentInParent<Ship>();
-        if (ship && !TouchingShip)
+        if (ship && !touchingShips.Contains(ship))
         {
-            TouchingShip = ship;
+            touchingShips.Add(ship);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        TouchingShip = null;
+        var ship = other.GetComponentInParent<Ship>();
+
+        if (ship)
+        {
+            touchingShips.Remove(ship);
+        }
     }
 }

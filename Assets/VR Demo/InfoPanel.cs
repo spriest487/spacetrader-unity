@@ -22,7 +22,7 @@ public class InfoPanel : MonoBehaviour
         Debug.Assert(hand, "InfoPanel must be a child of a HandController");
     }
     
-    private void Update()
+    private void LateUpdate()
     {
         var focusShip = hand.Focus ?? hand.Hotspot.TouchingShip;
 

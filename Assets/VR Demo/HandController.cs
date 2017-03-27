@@ -204,6 +204,19 @@ public class HandController : MonoBehaviour
             var tasks = Focus.GetComponent<AITaskFollower>();
             if (tasks)
             {
+                var fleets = Universe.FleetManager;
+
+                /* issuing order to anyone except fleet leader causes them to 
+                 leave the fleet to do their own thing */
+                if (PendingOrder != HandControllerOrder.None)
+                {
+                    var fleet = fleets.GetFleetOf(Focus);
+                    if (fleet && fleet.Leader != Focus)
+                    {
+                        fleets.LeaveFleet(Focus);
+                    }
+                }
+                
                 tasks.ClearTasks();
 
                 switch (PendingOrder)
@@ -213,7 +226,9 @@ public class HandController : MonoBehaviour
                         {
                             goto default;
                         }
-                        tasks.AssignTask(FlyInFormationTask.Create(Hotspot.TouchingShip));
+                        /* join fleet of target ship */
+                        var joinedFleet = fleets.AddToFleet(Hotspot.TouchingShip, Focus);
+                        tasks.AssignTask(FlyInFormationTask.Create(joinedFleet));
                         break;
                     case AIOrder.Attack:
                         if (!(Hotspot.TouchingShip && Hotspot.TouchingShip.Targetable))

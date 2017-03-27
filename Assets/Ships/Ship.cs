@@ -182,7 +182,7 @@ public partial class Ship : MonoBehaviour
             return closeDistance * closeDistance;
         }
     }
-
+    
     public Ability GetAbility(int ability)
     {
         return abilities[ability];
@@ -516,8 +516,7 @@ public partial class Ship : MonoBehaviour
 
             //adjust less forcefully if we're close to the destination
             var safeAdjustDist = CurrentStats.MaxSpeed * 2; //TODO calculate stopping distance?
-
-
+            
             if (!Mathf.Approximately(0, safeAdjustDist))
             {
                 float adjustPower = Mathf.Clamp01(localBetween.magnitude / safeAdjustDist);
