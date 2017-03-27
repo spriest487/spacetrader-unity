@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class FlyInFormationTask : AITask
 {
-    const float FORMATION_MATCH_ANGLE = 15;
+    const float FormationMatchAngle = 3;
 
-    private Ship leader;
+    private Fleet fleet;
 
-    public static FlyInFormationTask Create(Ship leader)
+    public static FlyInFormationTask Create(Fleet fleet)
     {
         var task = CreateInstance<FlyInFormationTask>();
-        task.leader = leader;
+        task.fleet = fleet;
+        Debug.Assert(fleet, "can only assign formation task to fleet member");
         return task;
     }
 
@@ -18,8 +19,10 @@ public class FlyInFormationTask : AITask
     {
         get
         {
-            //this task doesn't end unless it's cancelled or leader dies
-            return !leader;
+            //this task doesn't end unless it's cancelled or ship leaves fleet
+            return !fleet ||
+                !fleet.IsMember(Ship) ||
+                fleet.Leader == Ship;
         }
     }
 
@@ -32,21 +35,21 @@ public class FlyInFormationTask : AITask
         var ship = TaskFollower.Ship;
 
         float angleDiffBetweenHeadings;
-        var leaderVelocity = leader.RigidBody.velocity;
+        var leaderVelocity = fleet.Leader.RigidBody.velocity;
 
-        if (leader.RigidBody.velocity.sqrMagnitude > Vector3.kEpsilon)
+        if (fleet.Leader.RigidBody.velocity.sqrMagnitude > Vector3.kEpsilon)
         {
-            var dotToHeading = Vector3.Dot(leaderVelocity.normalized, leader.RigidBody.transform.forward);
+            var dotToHeading = Vector3.Dot(leaderVelocity.normalized, fleet.Leader.RigidBody.transform.forward);
             angleDiffBetweenHeadings = Mathf.Acos(dotToHeading) * Mathf.Rad2Deg;
         }
         else
         {
             angleDiffBetweenHeadings = 0;
         }
-        
-        if (angleDiffBetweenHeadings < FORMATION_MATCH_ANGLE)
+
+        if (angleDiffBetweenHeadings < FormationMatchAngle)
         {
-            return Ship.EquivalentThrust(ship, leader);
+            return Ship.EquivalentThrust(ship, fleet.Leader);
         }
         else
         {
@@ -56,37 +59,23 @@ public class FlyInFormationTask : AITask
 
     public override void Update()
     {
-        Debug.Assert(leader != Ship, "can't fly in formation with myself");
-        
         /* if we're not close to the leader, fly towards them first */
-        var fleet = Universe.FleetManager.GetFleetOf(Ship);
-        if (fleet && fleet.Leader == leader)
+        var formationPos = fleet.GetFormationPos(Ship);
+
+        if (!Ship.CanSee(formationPos))
         {
-            var formationPos = fleet.GetFormationPos(Ship);
-
-            if (!Ship.IsCloseTo(formationPos))
-            {
-                TaskFollower.AssignTask(NavigateTask.Create(formationPos));
-                return;
-            }
+            TaskFollower.AssignTask(NavigateTask.Create(formationPos));
+            return;
         }
-        else
+    
+        Ship.PreciseManeuverTo(formationPos);
+        
+        if (Ship.IsCloseTo(formationPos))
         {
-            var safeDist = (leader.CloseDistance + Ship.CloseDistance) * 2;
+            Ship.RotateToDirection(fleet.Leader.transform.forward);
 
-            if (!Ship.IsCloseTo(leader.transform.position, safeDist))
-            {
-                TaskFollower.AssignTask(NavigateTask.Create(leader.transform.position));
-                return;
-            }
+            float throttle = MatchLeaderThrust();
+            Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, Mathf.Min(throttle, Ship.Thrust), Ship.Strafe, Ship.Lift);
         }
-
-        //fly in same direction as leader
-        var dest = TaskFollower.transform.position + (leader.transform.forward * Ship.CurrentStats.MaxSpeed);
-
-        float throttle = MatchLeaderThrust();
-
-        Ship.ResetControls(thrust: throttle);
-        Ship.RotateToDirection((dest - Ship.transform.position).normalized, leader.transform.up);        
     }
 }
