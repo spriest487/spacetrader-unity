@@ -27,7 +27,7 @@ public class OrderLines : MonoBehaviour
         for (int pos = 1; pos < moveLine.numPositions - 1; ++pos)
         {
             var middleVert = Vector3.Lerp(transform.position, targetPos, 1f / pos);
-            moveLine.SetPosition(pos, middleVert);
+            lineRenderer.SetPosition(pos, middleVert);
         }
     }
 
