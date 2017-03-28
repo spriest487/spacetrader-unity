@@ -205,6 +205,13 @@ public partial class Ship : MonoBehaviour
         this.lift = lift;
     }
 
+    public Fleet GetFleet()
+    {
+        //TODO: slow?
+        var fleets = Universe.FleetManager;
+        return fleets ? fleets.GetFleetOf(this) : null;
+    }
+
     public CrewMember GetCaptain()
     {
         return Universe.CrewConfiguration.Characters
@@ -398,7 +405,7 @@ public partial class Ship : MonoBehaviour
     {
         var aimDirLocal = transform.InverseTransformDirection(aimDir);
 
-        Debug.DrawLine(transform.position, transform.position + (aimDir * 5), Color.cyan, Time.deltaTime);
+        //Debug.DrawLine(transform.position, transform.position + (aimDir * 5), Color.cyan, Time.deltaTime);
 
         //local rotation required to get to target
         var rotateTo = Quaternion.LookRotation(aimDirLocal, targetUp ?? transform.up);

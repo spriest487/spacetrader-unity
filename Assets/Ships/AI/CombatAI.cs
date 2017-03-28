@@ -4,39 +4,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-[RequireComponent(typeof(AITaskFollower))]
-public class CombatAI : MonoBehaviour
+public class CombatAI : OrderableAI
 {
-    [SerializeField]
-    private AIOrder activeOrder;
-
-    private AITaskFollower taskFollower;
-    private AITask orderTask;
-
     struct PotentialTarget
     {
         public int Threat;
         public Targetable Target;
-    }
-
-    public Ship Ship
-    {
-        get { return taskFollower.Ship; }
-    }
-
-    public AIOrder ActiveOrder
-    {
-        get { return activeOrder; }
-    }
-
-    public void SetOrder(AIOrder newOrder)
-    {
-        if (activeOrder != newOrder && orderTask)
-        {
-            taskFollower.CancelTask(orderTask);
-        }
-
-        activeOrder = newOrder;
     }
 
     private void OnRadioMessage(RadioMessage message)
@@ -104,10 +77,10 @@ public class CombatAI : MonoBehaviour
         return threat;
     }
 
-    private int AcquireTarget()
+    private Targetable AcquireTarget()
     {
         //todo: use saved local ships list
-        var targetables = FindObjectsOfType(typeof(Targetable)) as Targetable[];
+        var targetables = FindObjectsOfType<Targetable>();
         if (targetables != null && targetables.Length > 0)
         {
             var potentialTargets = new List<PotentialTarget>(targetables.Length);
@@ -133,56 +106,37 @@ public class CombatAI : MonoBehaviour
                 //highest threat comes first
                 potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
 
-                Ship.Target = potentialTargets[0].Target;
-                return potentialTargets[0].Threat;
+                return potentialTargets[0].Target;
             }
         }
 
-        Ship.Target = null;
-        return 0;
+        return null;
     }
-
-	void Start()
-	{
-        taskFollower = GetComponent<AITaskFollower>();
-
-        activeOrder = AIOrder.Follow;
-    }
-
-    void OnTakeDamage(HitDamage damage)
+    
+    private void OnTakeDamage(HitDamage damage)
     {
-        var fm = Universe.FleetManager;
-        var myFleet = fm.GetFleetOf(Ship);
-        
-        if (damage.Owner != null && 
-            (!(myFleet && myFleet == fm.GetFleetOf(damage.Owner))))
-        {
-            //get angry and forget what we were doing if we're not already in attack mode
-            if (activeOrder != AIOrder.Attack
-                && orderTask)
-            {
-                orderTask = null;
-                taskFollower.ClearTasks();
-            }
+        var myFleet = Ship.GetFleet();
+        Debug.Assert((myFleet && myFleet.Leader) || !myFleet);
 
+        if (damage.Owner && 
+            damage.Owner.Targetable &&
+            (!myFleet || myFleet != damage.Owner.GetFleet()))
+        {
             //fight back
             if (damage.Owner.Targetable)
             {
-                Ship.Target = damage.Owner.Targetable;
-
-                if (!myFleet)
+                //get angry and forget what we were doing if we're not already in attack mode
+                if (ActiveOrder != AIOrder.Attack)
                 {
-                    if (taskFollower.Idle)
-                    {
-                        //just go for it
-                        taskFollower.QueueTask(AttackTask.Create(damage.Owner.Targetable));
-                    }
+                    Ship.Target = damage.Owner.Targetable;
+                    SetOrder(AIOrder.Attack);
                 }
-                else
+
+                if (myFleet)
                 {
                     if (myFleet.Leader == Ship)
                     {
-                        //sic the gang on them
+                        /* i'm the boss, call the gang for help (tell them to attack my target) */
                         foreach (var follower in myFleet.Followers)
                         {
                             Ship.SendRadioMessage(RadioMessageType.Attack, follower);
@@ -190,7 +144,10 @@ public class CombatAI : MonoBehaviour
                     }
                     else
                     {
-                        if (activeOrder != AIOrder.Attack)
+                        /* i'm not the boss but i have a fleet, ask them for help! 
+                         don't do this if we're already attacking, because we expect
+                         to take various damage during combat */
+                        if (ActiveOrder != AIOrder.Attack)
                         {
                             //ask leader for help
                             Ship.SendRadioMessage(RadioMessageType.HelpMe, myFleet.Leader);
@@ -201,55 +158,41 @@ public class CombatAI : MonoBehaviour
         }
     }
 
-	void Update()
+	protected override void Update()
     {
-        var fleet = Universe.FleetManager.GetFleetOf(Ship);
-
-        //check for targets myself
-        AcquireTarget();
-
-        if (!fleet)
+        if (ActiveOrder == AIOrder.Wait)
         {
-            SetOrder(AIOrder.Wait);
-        }
-        else if (fleet.Leader == Ship)
-        {
-            SetOrder(AIOrder.Attack);
-        }
-
-        if (!orderTask)
-        {
-            switch (activeOrder)
+            var fleet = Ship.GetFleet();
+            
+            /* if in a fleet, first check to see if the boss has a target */
+            if (fleet && fleet.Leader != this && fleet.Leader.Target)
             {
-                case AIOrder.Follow:
-                    if (Ship.Target)
-                    {
-                        orderTask = AttackTask.Create(Ship.Target);
-                    }
-                    else
-                    {
-                        orderTask = FlyInFormationTask.Create(fleet);
-                    }
-                    break;
-                case AIOrder.Attack:
-                    if (fleet.Leader.Target)
-                    {
-                        orderTask = AttackTask.Create(fleet.Leader.Target);
-                    }
-                    break;
-                case AIOrder.Wait:
-                    //while waiting, use individual target
-                    if (Ship.Target)
-                    {
-                        orderTask = AttackTask.Create(Ship.Target);
-                    }
-                    break;
+                Ship.Target = fleet.Leader.Target;
             }
-
-            if (orderTask)
+            else
             {
-                taskFollower.AssignTask(orderTask);
+                Ship.Target = AcquireTarget();
             }
+            
+            if (Ship.Target)
+            {
+                /* found something to attack - defer to the normal attack behaviour */
+                SetOrder(AIOrder.Attack);
+                base.Update();
+            }
+            else if (fleet && TaskFollower.Idle)
+            {
+                /* nothing to do, and i'm in a fleet, so just follow the boss */
+                TaskFollower.AssignTask(FlyInFormationTask.Create(fleet));
+            }
+            else
+            {
+                base.Update();
+            }
+        }
+        else
+        {
+            base.Update();
         }
 	}
 }

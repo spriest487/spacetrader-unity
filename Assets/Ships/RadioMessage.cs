@@ -4,7 +4,6 @@ public enum RadioMessageType
 
     FollowMe,
     Attack,
-    Wait,
 
     AcknowledgeOrder,
     HelpMe,

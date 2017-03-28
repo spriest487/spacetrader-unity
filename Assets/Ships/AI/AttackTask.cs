@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AttackTask : AITask
-{     
+{
     [SerializeField]
     private Ship targetShip;
 
@@ -17,6 +17,8 @@ public class AttackTask : AITask
 
     public static AttackTask Create(Targetable target)
     {
+        Debug.Assert(target, "must attack a valid target");
+
         var task = CreateInstance<AttackTask>();
         task.targetShip = target.GetComponent<Ship>();
         task.done = false;
@@ -34,7 +36,7 @@ public class AttackTask : AITask
             var closeDistance = repositionDistance / 2;
 
             //attack run
-            while (true)
+            while (Ship.Target)
             {
                 var canSee = Ship.CanSee(targetShip.transform.position);
                 var distSqr = (Ship.transform.position - targetShip.transform.position).sqrMagnitude;
@@ -60,26 +62,26 @@ public class AttackTask : AITask
                     Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, 0.33f, 0, 0);
                 }
 
-                for (int mod = 0; mod < Ship.ModuleLoadout.SlotCount; ++mod)
-                {
-                    var module = Ship.ModuleLoadout.GetSlot(mod);
-                    module.Aim = targetShip.transform.position;
-                    module.Activate(Ship, mod);
-                }
+                Ship.ActivateWeapons();
 
                 yield return null;
+            }
+            
+            if (!targetShip || !targetShip.Targetable)
+            {
+                //probably destroyed them! hooray
+                break;
             }
 
             //reposition
-            Vector3 newPos;
+            var newPos = targetShip.transform.position + (Random.onUnitSphere * repositionDistance);
 
-            do
+            while (!Ship.CanSee(newPos) || Ship.IsCloseTo(newPos))
             {
                 Ship.ResetControls(thrust: 0.33f);
-                newPos = targetShip.transform.position + (Random.onUnitSphere * repositionDistance);
+                Ship.ActivateWeapons();
                 yield return null;
             }
-            while (!Ship.CanSee(newPos) || Ship.IsCloseTo(newPos));
 
             while (!Ship.IsCloseTo(newPos))
             {
@@ -90,10 +92,9 @@ public class AttackTask : AITask
                 }
 
                 Ship.RotateToPoint(newPos);
-                
+
                 //always fly max speed here, don't brake to turn
                 Ship.ResetControls(Ship.Pitch, Ship.Yaw, Ship.Roll, thrust: 1);
-
                 Ship.ActivateWeapons();
 
                 yield return null;
@@ -110,7 +111,7 @@ public class AttackTask : AITask
     }
 
     public override void Update()
-    {   
+    {
         if (attackRoutine == null && !done)
         {
             attackRoutine = Ship.StartCoroutine(AttackLoop());

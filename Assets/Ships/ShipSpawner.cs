@@ -33,10 +33,13 @@ public class ShipSpawner : MonoBehaviour
     [SerializeField]
     private ModulePreset modulePreset;
 
-    [Header("Other spawners")]
+    [Header("Options")]
 
     [SerializeField]
     private ShipSpawner joinFleetOf;
+
+    [SerializeField]
+    private string joinFaction;
 
     [SerializeField]
     private bool combatAI;
@@ -49,6 +52,10 @@ public class ShipSpawner : MonoBehaviour
     private void Start()
     {
         spawned = shipType.CreateShip(transform.position, transform.rotation);
+        if (transform.parent)
+        {
+            spawned.transform.SetParent(transform.parent, true);
+        }
 
         if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<DockableObject>())
         {
@@ -90,6 +97,11 @@ public class ShipSpawner : MonoBehaviour
             Universe.LocalPlayer = player;
         }
 
+        if (!string.IsNullOrEmpty(joinFaction) && spawned.Targetable)
+        {
+            spawned.Targetable.Faction = joinFaction.Trim();
+        }
+
         if (combatAI)
         {
             spawned.gameObject.AddComponent<CombatAI>();
@@ -99,6 +111,8 @@ public class ShipSpawner : MonoBehaviour
         {
             Instantiate(child, spawned.transform, false);
         }
+
+        spawned.name = name;
     }
 
     void LateUpdate()

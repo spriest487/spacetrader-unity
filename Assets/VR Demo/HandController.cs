@@ -170,8 +170,7 @@ public class HandController : MonoBehaviour
                 switch (Targetable.Relationship(Focus.Targetable, Hotspot.TouchingShip.Targetable))
                 {
                     case TargetRelationship.Friendly:
-                    case TargetRelationship.FleetMember:
-                        PendingOrder = AIOrder.Follow;
+                        PendingOrder = AIOrder.Move;
                         break;
                     default:
                         PendingOrder = AIOrder.Attack;
@@ -194,7 +193,7 @@ public class HandController : MonoBehaviour
 
             Debug.Assert(OrderLineColor(PendingOrder) != null, "must have an order with a valid color when dragging");
             moveLine.colorGradient = OrderLineColor(PendingOrder);
-            
+
             yield return null;
         }
 
@@ -208,7 +207,7 @@ public class HandController : MonoBehaviour
 
                 /* issuing order to anyone except fleet leader causes them to 
                  leave the fleet to do their own thing */
-                if (PendingOrder != HandControllerOrder.None)
+                if (PendingOrder != AIOrder.Wait)
                 {
                     var fleet = fleets.GetFleetOf(Focus);
                     if (fleet && fleet.Leader != Focus)
@@ -221,7 +220,7 @@ public class HandController : MonoBehaviour
 
                 switch (PendingOrder)
                 {
-                    case AIOrder.Follow:
+                    case AIOrder.Move:
                         if (!Hotspot.TouchingShip)
                         {
                             goto default;
@@ -257,7 +256,6 @@ public class HandController : MonoBehaviour
         switch (order)
         {
             case AIOrder.Attack: return attackLineGradient;
-            case AIOrder.Follow: return followLineGradient;
             case AIOrder.Move: return moveLineGradient;
             default: return null;
         }

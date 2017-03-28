@@ -60,6 +60,12 @@ public class Fleet : ScriptableObject
         followers = new List<Ship>(MaxSize);
     }
 
+    private void OnDestroy()
+    {
+        leader = null;
+        followers.Clear();
+    }
+
     public static Fleet Create(Ship leader)
     {
         var fleet = CreateInstance<Fleet>();

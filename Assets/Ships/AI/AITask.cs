@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Linq;
 
 public abstract class AITask : ScriptableObject
 {
@@ -55,10 +56,9 @@ public abstract class AITask : ScriptableObject
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void CheckRequiredConstraints()
     {
-        object[] requireAttrs = GetType().GetCustomAttributes(typeof(RequireComponent), true);
-        foreach (var attr in requireAttrs)
+        var requireAttrs = GetType().GetCustomAttributes(typeof(RequireComponent), true);
+        foreach (RequireComponent require in requireAttrs)
         {
-            var require = (RequireComponent)attr;
             var requiredComponents = new[]
             {
                 require.m_Type0,
@@ -66,16 +66,15 @@ public abstract class AITask : ScriptableObject
                 require.m_Type2
             };
 
-            foreach (var requiredComponent in requiredComponents)
-            {
-                if (requiredComponent != null)
-                {
-                    if (taskFollower.GetComponent(requiredComponent) == null)
-                    {
-                        throw new UnityException("missing required component " + requiredComponent + " for task type " + GetType());
-                    }
-                }
-            }
+            var missingComponents = requiredComponents
+                .Where(rc => rc != null)
+                .Where(rc => !taskFollower.GetComponent(rc))
+                .ToList();
+
+            Debug.AssertFormat(!missingComponents.Any(), 
+                "missing required components [{0}] for task type {1}", 
+                string.Join(", ", missingComponents.Select(c => c.Name).ToArray()), 
+                GetType());
         }
     }
 }
