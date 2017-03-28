@@ -58,6 +58,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     /// <param name="task"></param>
     public void AssignTask(AITask task)
     {
+        Debug.Assert(!tasks.Contains(task), "shouldn't assign same task twice");
+
         PrepareNewTask(task);
         tasks.AddLast(task);
     }
@@ -68,6 +70,8 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
     /// </summary>
     public void QueueTask(AITask task)
     {
+        Debug.Assert(!tasks.Contains(task), "shouldn't assign same task twice");
+
         PrepareNewTask(task);
         tasks.AddFirst(task);
     }
@@ -155,6 +159,10 @@ public class AITaskFollower : MonoBehaviour, ISerializationCallbackReceiver
 
             if (nextTask.Done)
             {
+                /* ship controls are stateful so make sure we reset them after
+                 finishing a task */
+                Ship.ResetControls();
+
                 nextTask.Status = AITask.TaskStatus.FINISHED;
                 nextTask.End();
                 Destroy(nextTask);
