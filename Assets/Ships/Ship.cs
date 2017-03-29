@@ -801,23 +801,26 @@ public partial class Ship : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        var fleet = Universe.FleetManager.GetFleetOf(this);
-        if (fleet)
+        if (Application.isPlaying)
         {
-            if (fleet.Leader == this)
+            var fleet = Universe.FleetManager.GetFleetOf(this);
+            if (fleet)
             {
-                foreach (var follower in fleet.Followers)
+                if (fleet.Leader == this)
                 {
-                    var formationPos = fleet.GetFormationPos(follower);
-                    Gizmos.color = Color.cyan;
-                    Gizmos.DrawLine(transform.position, formationPos);
-                    UnityEditor.Handles.Label(formationPos, "Formation Pos #" +fleet.Followers.IndexOf(follower));
+                    foreach (var follower in fleet.Followers)
+                    {
+                        var formationPos = fleet.GetFormationPos(follower);
+                        Gizmos.color = Color.cyan;
+                        Gizmos.DrawLine(transform.position, formationPos);
+                        UnityEditor.Handles.Label(formationPos, "Formation Pos #" + fleet.Followers.IndexOf(follower));
+                    }
                 }
-            }
-            else
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, fleet.Leader.transform.position);
+                else
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(transform.position, fleet.Leader.transform.position);
+                }
             }
         }
     }
