@@ -13,6 +13,7 @@ public class ShipSpawnerInspector : Editor
         {
             var prop = serializedObject.FindProperty("captain");
             prop.objectReferenceValue = CrewMember.CreateRandom();
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

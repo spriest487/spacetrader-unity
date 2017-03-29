@@ -125,6 +125,8 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 0}
   modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
   joinFleetOf: {fileID: 0}
   joinFaction: Red
   combatAI: 1
@@ -137,10 +139,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 22588147}
   m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
-  m_LocalPosition: {x: -25.97828, y: -41.227722, z: -31.913925}
+  m_LocalPosition: {x: 3.5, y: -0.2, z: 2.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1415832634}
+  m_Father: {fileID: 681834281}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
 --- !u!1 &84405210
@@ -176,7 +178,9 @@ MonoBehaviour:
   money: 1000
   passengers: []
   captain: {fileID: 0}
-  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  spawnOnStart: 1
+  keepAlive: 0
   joinFleetOf: {fileID: 215746186}
   joinFaction: Blue Team
   combatAI: 1
@@ -228,7 +232,9 @@ MonoBehaviour:
   money: 1000
   passengers: []
   captain: {fileID: 0}
-  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  spawnOnStart: 1
+  keepAlive: 0
   joinFleetOf: {fileID: 0}
   joinFaction: Blue Team
   combatAI: 1
@@ -349,6 +355,8 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 0}
   modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
   joinFleetOf: {fileID: 22588148}
   joinFaction: Red
   combatAI: 1
@@ -361,10 +369,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 463895270}
   m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
-  m_LocalPosition: {x: -33.26828, y: -44.227722, z: -22.433926}
+  m_LocalPosition: {x: -3.8, y: -3.2, z: 12.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1415832634}
+  m_Father: {fileID: 681834281}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
 --- !u!1 &484830754
@@ -466,8 +474,40 @@ Transform:
   - {fileID: 215746187}
   - {fileID: 938061410}
   - {fileID: 84405212}
+  - {fileID: 1116391072}
   m_Father: {fileID: 0}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &681834280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 681834281}
+  m_Layer: 0
+  m_Name: Wave One
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &681834281
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 681834280}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -194.4, y: 93.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 22588149}
+  - {fileID: 822639725}
+  - {fileID: 463895272}
+  m_Father: {fileID: 1415832634}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &695959891
 GameObject:
@@ -840,6 +880,8 @@ MonoBehaviour:
   passengers: []
   captain: {fileID: 0}
   modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
   joinFleetOf: {fileID: 22588148}
   joinFaction: Red
   combatAI: 1
@@ -852,10 +894,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 822639723}
   m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
-  m_LocalPosition: {x: -32.278282, y: -44.227722, z: -39.203926}
+  m_LocalPosition: {x: -2.8, y: -3.2, z: -4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1415832634}
+  m_Father: {fileID: 681834281}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
 --- !u!1 &938061408
@@ -891,7 +933,9 @@ MonoBehaviour:
   money: 1000
   passengers: []
   captain: {fileID: 0}
-  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  modulePreset: {fileID: 11400000, guid: ac52212cb1273a94587ca746669f24f1, type: 2}
+  spawnOnStart: 1
+  keepAlive: 0
   joinFleetOf: {fileID: 215746186}
   joinFaction: Blue Team
   combatAI: 1
@@ -1011,7 +1055,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1054309825}
   serializedVersion: 5
   lengthInSec: 100000
-  simulationSpeed: 1
+  speed: 1
   looping: 0
   prewarm: 0
   playOnAwake: 1
@@ -3654,6 +3698,34 @@ ParticleSystemRenderer:
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
+--- !u!1 &1116391071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1116391072}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1116391072
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1116391071}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 629770640}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1202420244
 GameObject:
   m_ObjectHideFlags: 0
@@ -3705,6 +3777,114 @@ MonoBehaviour:
   ceiling: {fileID: 282995595}
   vrCamera: {fileID: 1367197387}
   overheadCamera: {fileID: 484830758}
+--- !u!1 &1314607090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1314607091}
+  - component: {fileID: 1314607092}
+  m_Layer: 0
+  m_Name: Red Leader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1314607091
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1314607090}
+  m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
+  m_LocalPosition: {x: 0.87, y: 0.34, z: 0.73}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1517405849}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
+--- !u!114 &1314607092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1314607090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d28fdfdfa136d498eeda01cb6f362c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+  makeLocalPlayer: 0
+  dockedAt: 
+  money: 1000
+  passengers: []
+  captain: {fileID: 0}
+  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
+  joinFleetOf: {fileID: 0}
+  joinFaction: Red
+  combatAI: 1
+  additionalChildren:
+  - {fileID: 4804595352252864, guid: f48d6ce066f984e4f875f58adeab35f4, type: 2}
+--- !u!1 &1333242612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1333242614}
+  - component: {fileID: 1333242613}
+  m_Layer: 0
+  m_Name: Red Two
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1333242613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1333242612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d28fdfdfa136d498eeda01cb6f362c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+  makeLocalPlayer: 0
+  dockedAt: 
+  money: 1000
+  passengers: []
+  captain: {fileID: 0}
+  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
+  joinFleetOf: {fileID: 1314607092}
+  joinFaction: Red
+  combatAI: 1
+  additionalChildren:
+  - {fileID: 4804595352252864, guid: f48d6ce066f984e4f875f58adeab35f4, type: 2}
+--- !u!4 &1333242614
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1333242612}
+  m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
+  m_LocalPosition: {x: -6.13, y: -2.66, z: 10.73}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1517405849}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
 --- !u!1 &1367197386
 GameObject:
   m_ObjectHideFlags: 0
@@ -3784,6 +3964,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1415832634}
+  - component: {fileID: 1415832635}
   m_Layer: 0
   m_Name: Red Spawns
   m_TagString: Untagged
@@ -3798,15 +3979,66 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1415832633}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -56.62172, y: 142.72772, z: 14.413925}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 22588149}
-  - {fileID: 822639725}
-  - {fileID: 463895272}
+  - {fileID: 681834281}
+  - {fileID: 1517405849}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1415832635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1415832633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 264923e410240e64ca5a5eb4297c3086, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groups:
+  - spawners:
+    - {fileID: 22588148}
+    - {fileID: 822639724}
+    - {fileID: 463895271}
+  - spawners:
+    - {fileID: 1314607092}
+    - {fileID: 1706229345}
+    - {fileID: 1333242613}
+  groupDelay: 5
+--- !u!1 &1517405848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1517405849}
+  m_Layer: 0
+  m_Name: Wave Two
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1517405849
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1517405848}
+  m_LocalRotation: {x: -0, y: 0.9999778, z: -0, w: -0.0066647176}
+  m_LocalPosition: {x: 200.8, y: 85.4, z: -20}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1314607091}
+  - {fileID: 1706229344}
+  - {fileID: 1333242614}
+  m_Father: {fileID: 1415832634}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 180.76399, z: 0}
 --- !u!1 &1576131109
 GameObject:
   m_ObjectHideFlags: 0
@@ -4006,6 +4238,60 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 47ba2dedd9de07e4cb498fd11b12249d, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1706229343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1706229344}
+  - component: {fileID: 1706229345}
+  m_Layer: 0
+  m_Name: Red One
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1706229344
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1706229343}
+  m_LocalRotation: {x: -0, y: 0.68612045, z: -0, w: 0.727488}
+  m_LocalPosition: {x: -5.13, y: -2.66, z: -6.27}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1517405849}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 86.648, z: 0}
+--- !u!114 &1706229345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1706229343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d28fdfdfa136d498eeda01cb6f362c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipType: {fileID: 11400000, guid: 1e9d2b81085136246a5e9943fddedf4e, type: 2}
+  makeLocalPlayer: 0
+  dockedAt: 
+  money: 1000
+  passengers: []
+  captain: {fileID: 0}
+  modulePreset: {fileID: 11400000, guid: 5abaa9b36c1bd7b48ac4bd8828364a22, type: 2}
+  spawnOnStart: 0
+  keepAlive: 1
+  joinFleetOf: {fileID: 1314607092}
+  joinFaction: Red
+  combatAI: 1
+  additionalChildren:
+  - {fileID: 4804595352252864, guid: f48d6ce066f984e4f875f58adeab35f4, type: 2}
 --- !u!1 &1707152076
 GameObject:
   m_ObjectHideFlags: 0

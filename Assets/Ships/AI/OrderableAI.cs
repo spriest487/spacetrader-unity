@@ -6,7 +6,7 @@ public class OrderableAI : MonoBehaviour
     public AITaskFollower TaskFollower { get; private set; }
     public Ship Ship { get { return TaskFollower.Ship; } }
     
-    public Vector3 FocusPoint { get; private set; }
+    public Vector3? FocusPoint { get; private set; }
 
     [SerializeField]
     private AIOrder activeOrder = AIOrder.Wait;
@@ -23,10 +23,10 @@ public class OrderableAI : MonoBehaviour
 
     public void SetOrder(AIOrder order)
     {
-        SetOrder(order, Vector3.zero);
+        SetOrder(order, null);
     }
 
-    public void SetOrder(AIOrder order, Vector3 focusPoint)
+    public void SetOrder(AIOrder order, Vector3? focusPoint)
     {
         FocusPoint = focusPoint;
         activeOrder = order;
@@ -41,9 +41,9 @@ public class OrderableAI : MonoBehaviour
         {
             /* special case for idling - we shouldn't take any tasks in this state */
             Ship.ResetControls();
-            if (!Ship.IsCloseTo(FocusPoint))
+            if (FocusPoint.HasValue && !Ship.IsCloseTo(FocusPoint.Value))
             {
-                Ship.RotateToPoint(FocusPoint);
+                Ship.RotateToPoint(FocusPoint.Value);
             }
 
             if (!TaskFollower.Idle)
@@ -57,7 +57,14 @@ public class OrderableAI : MonoBehaviour
             switch (ActiveOrder)
             {
                 case AIOrder.Move:
-                    TaskFollower.AssignTask(NavigateTask.Create(FocusPoint));
+                    if (FocusPoint.HasValue)
+                    {
+                        TaskFollower.AssignTask(NavigateTask.Create(FocusPoint.Value));
+                    }
+                    else
+                    {
+                        SetOrder(AIOrder.Wait);
+                    }
                     break;
                 case AIOrder.Attack:
                     if (Ship.Target)

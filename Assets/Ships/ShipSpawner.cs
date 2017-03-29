@@ -36,34 +36,48 @@ public class ShipSpawner : MonoBehaviour
     [Header("Options")]
 
     [SerializeField]
+    private bool spawnOnStart = true;
+
+    [SerializeField]
+    private bool keepAlive = false;
+
+    [SerializeField]
     private ShipSpawner joinFleetOf;
 
     [SerializeField]
     private string joinFaction;
 
     [SerializeField]
-    private bool combatAI;
+    private bool combatAI = true;
 
     [SerializeField]
     private Transform[] additionalChildren;
         
-    private Ship spawned;
+    public Ship Spawned { get; private set; }
 
     private void Start()
     {
-        spawned = shipType.CreateShip(transform.position, transform.rotation);
+        if (spawnOnStart)
+        {
+            Spawn();
+        }
+    }
+
+    public void Spawn()
+    {
+        Spawned = shipType.CreateShip(transform.position, transform.rotation);
         if (transform.parent)
         {
-            spawned.transform.SetParent(transform.parent, true);
+            Spawned.transform.SetParent(transform.parent, true);
         }
 
-        if (!string.IsNullOrEmpty(dockedAt) && spawned.GetComponent<DockableObject>())
+        if (!string.IsNullOrEmpty(dockedAt) && Spawned.GetComponent<DockableObject>())
         {
             var dockedStation = GameObject.Find(dockedAt);
             if (dockedStation)
             {
                 dockedStation.GetComponent<SpaceStation>()
-                    .AddDockedShip(spawned.GetComponent<DockableObject>());
+                    .AddDockedShip(Spawned.GetComponent<DockableObject>());
             }
         }
 
@@ -73,17 +87,17 @@ public class ShipSpawner : MonoBehaviour
         passengers.Where(p => !!p)
             .Select(p => characters.NewCharacter(p))
             .ToList()
-            .ForEach(p => p.Assign(spawned, CrewAssignment.Passenger));
+            .ForEach(p => p.Assign(Spawned, CrewAssignment.Passenger));
 
         if (captain)
         {
-            characters.NewCharacter(captain).Assign(spawned, CrewAssignment.Captain);
+            characters.NewCharacter(captain).Assign(Spawned, CrewAssignment.Captain);
         }
 
         //modules
         if (modulePreset)
         {
-            modulePreset.Apply(spawned);
+            modulePreset.Apply(Spawned);
         }
 
         /* do this last, because the local player observes stuff with ui transitions
@@ -91,38 +105,41 @@ public class ShipSpawner : MonoBehaviour
         if (makeLocalPlayer)
         {
             Debug.Assert(!Universe.LocalPlayer, "local player should not already be spawned");
-            var player = PlayerShip.MakePlayer(spawned);
+            var player = PlayerShip.MakePlayer(Spawned);
             player.AddMoney(money);
 
             Universe.LocalPlayer = player;
         }
 
-        if (!string.IsNullOrEmpty(joinFaction) && spawned.Targetable)
+        if (!string.IsNullOrEmpty(joinFaction) && Spawned.Targetable)
         {
-            spawned.Targetable.Faction = joinFaction.Trim();
+            Spawned.Targetable.Faction = joinFaction.Trim();
         }
 
         if (combatAI)
         {
-            spawned.gameObject.AddComponent<CombatAI>();
+            Spawned.gameObject.AddComponent<CombatAI>();
         }
 
         foreach (var child in additionalChildren)
         {
-            Instantiate(child, spawned.transform, false);
+            Instantiate(child, Spawned.transform, false);
         }
 
-        spawned.name = name;
+        Spawned.name = name;
     }
 
     void LateUpdate()
     {
-        if (spawned && joinFleetOf && joinFleetOf.spawned)
+        if (Spawned && joinFleetOf && joinFleetOf.Spawned)
         {
-            Universe.FleetManager.AddToFleet(joinFleetOf.spawned, spawned);
+            Universe.FleetManager.AddToFleet(joinFleetOf.Spawned, Spawned);
         }
 
-        Destroy(gameObject);
+        if (!keepAlive)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnDrawGizmos()
