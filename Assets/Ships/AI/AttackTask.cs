@@ -83,7 +83,7 @@ public class AttackTask : AITask
                 yield return null;
             }
 
-            while (!Ship.IsCloseTo(newPos))
+            while (targetShip && !Ship.IsCloseTo(newPos))
             {
                 if (collided)
                 {
