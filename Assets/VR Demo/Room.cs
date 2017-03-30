@@ -37,7 +37,7 @@ public class Room : MonoBehaviour
         }
 
         //disable all hands initially until they move
-        hands = GetComponentsInChildren<HandController>();
+        hands = GetComponentsInChildren<HandController>(true);
         foreach (var hand in hands)
         {
             hand.gameObject.SetActive(false);
