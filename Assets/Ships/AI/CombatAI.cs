@@ -4,12 +4,21 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
+[RequireComponent(typeof(Scanner))]
 public class CombatAI : OrderableAI
 {
     struct PotentialTarget
     {
         public int Threat;
         public Targetable Target;
+    }
+    
+    public Scanner Scanner { get; private set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        Scanner = GetComponent<Scanner>();
     }
 
     private void OnRadioMessage(RadioMessage message)
@@ -55,64 +64,6 @@ public class CombatAI : OrderableAI
         Ship.SendRadioMessage(RadioMessageType.AcknowledgeOrder, order.SourceShip);
     }
 
-    private int CalculateThreat(Targetable target)
-    {
-        int threat = 1;
-
-        //invert threat for friendlies
-        if (Ship.Targetable
-            && Ship.Targetable.RelationshipTo(target) != TargetRelationship.Hostile)
-        {
-            threat = -threat;
-        }
-
-        const float COMFORT_ZONE = 20;
-
-        var dist2 = (transform.position - target.transform.position).sqrMagnitude;
-        if (dist2 < (COMFORT_ZONE * COMFORT_ZONE))
-        {
-            threat *= 2;
-        }
-
-        return threat;
-    }
-
-    private Targetable AcquireTarget()
-    {
-        //todo: use saved local ships list
-        var targetables = FindObjectsOfType<Targetable>();
-        if (targetables != null && targetables.Length > 0)
-        {
-            var potentialTargets = new List<PotentialTarget>(targetables.Length);
-
-            foreach (var targetable in targetables)
-            {
-                if (targetable.gameObject == gameObject)
-                {
-                    continue;
-                }
-
-                potentialTargets.Add(new PotentialTarget()
-                {
-                    Target = targetable,
-                    Threat = CalculateThreat(targetable)
-                });
-            }
-
-            potentialTargets.RemoveAll(t => t.Threat < 0);
-
-            if (potentialTargets.Count > 0)
-            {
-                //highest threat comes first
-                potentialTargets.Sort((t1, t2) => t2.Threat - t1.Threat);
-
-                return potentialTargets[0].Target;
-            }
-        }
-
-        return null;
-    }
-    
     private void OnTakeDamage(HitDamage damage)
     {
         var myFleet = Ship.GetFleet();
@@ -171,7 +122,8 @@ public class CombatAI : OrderableAI
             }
             else
             {
-                Ship.Target = AcquireTarget();
+                var highestThreat = Scanner.FindHighestThreat();
+                Ship.Target = highestThreat.HasValue? highestThreat.Value.Targetable : null;
             }
             
             if (Ship.Target)

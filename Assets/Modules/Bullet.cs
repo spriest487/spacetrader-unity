@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
 
     void Awake()
     {
-        rayMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast");
+        rayMask = ~LayerMask.GetMask("Bullets and Effects", "Ignore Raycast", "Skybox");
     }
     
     void FixedUpdate()

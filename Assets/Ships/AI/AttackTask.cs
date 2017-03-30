@@ -31,8 +31,8 @@ public class AttackTask : AITask
         {
             //keep focused on this target
             Ship.Target = targetShip.Targetable;
-
-            var repositionDistance = 40f + targetShip.CloseDistance + Ship.CloseDistance; //TODO
+            
+            var repositionDistance = Scanner.Range + targetShip.CloseDistance + Ship.CloseDistance; //TODO
             var closeDistance = repositionDistance / 2;
 
             //attack run
