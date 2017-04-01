@@ -22,9 +22,9 @@ public class OrderLines : MonoBehaviour
     private void SetLineTo(LineRenderer lineRenderer, Vector3 targetPos)
     {
         lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(lineRenderer.numPositions - 1, targetPos);
+        lineRenderer.SetPosition(lineRenderer.positionCount - 1, targetPos);
 
-        for (int pos = 1; pos < moveLine.numPositions - 1; ++pos)
+        for (int pos = 1; pos < moveLine.positionCount - 1; ++pos)
         {
             var middleVert = Vector3.Lerp(transform.position, targetPos, 1f / pos);
             lineRenderer.SetPosition(pos, middleVert);
