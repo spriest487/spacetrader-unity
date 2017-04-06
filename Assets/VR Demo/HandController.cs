@@ -170,7 +170,7 @@ public class HandController : MonoBehaviour
                 switch (Targetable.Relationship(Focus.Targetable, Hotspot.TouchingShip.Targetable))
                 {
                     case TargetRelationship.Friendly:
-                        PendingOrder = AIOrder.Move;
+                        PendingOrder = AIOrder.Wait;
                         break;
                     default:
                         PendingOrder = AIOrder.Attack;
@@ -197,51 +197,43 @@ public class HandController : MonoBehaviour
             yield return null;
         }
 
-        if (Focus)
+        OrderableAI ai;
+        if (Focus && (ai = Focus.GetComponent<OrderableAI>()))
         {
-            //dragged to empty space
-            var tasks = Focus.GetComponent<AITaskFollower>();
-            if (tasks)
+            var fleets = Universe.FleetManager;
+
+            /* issuing order to anyone except fleet leader causes them to 
+                leave the fleet to do their own thing */
+            if (PendingOrder != AIOrder.Wait)
             {
-                var fleets = Universe.FleetManager;
-
-                /* issuing order to anyone except fleet leader causes them to 
-                 leave the fleet to do their own thing */
-                if (PendingOrder != AIOrder.Wait)
+                var fleet = fleets.GetFleetOf(Focus);
+                if (fleet && fleet.Leader != Focus)
                 {
-                    var fleet = fleets.GetFleetOf(Focus);
-                    if (fleet && fleet.Leader != Focus)
+                    fleets.LeaveFleet(Focus);
+                }
+            }
+
+            switch (PendingOrder)
+            {
+                case AIOrder.Wait:
+                    if (!Hotspot.TouchingShip)
                     {
-                        fleets.LeaveFleet(Focus);
+                        goto default;
                     }
-                }
-                
-                tasks.ClearTasks();
-
-                switch (PendingOrder)
-                {
-                    case AIOrder.Move:
-                        if (!Hotspot.TouchingShip)
-                        {
-                            goto default;
-                        }
-                        /* join fleet of target ship */
-                        var joinedFleet = fleets.AddToFleet(Hotspot.TouchingShip, Focus);
-                        tasks.AssignTask(FlyInFormationTask.Create(joinedFleet));
-                        break;
-                    case AIOrder.Attack:
-                        if (!(Hotspot.TouchingShip && Hotspot.TouchingShip.Targetable))
-                        {
-                            goto default;
-                        }
-                        tasks.AssignTask(AttackTask.Create(Hotspot.TouchingShip.Targetable));
-                        break;
-                    default:
-                        tasks.AssignTask(NavigateTask.Create(Hotspot.transform.position));
-                        break;
-                }
-
-                IssueCombatAIOrder(Focus, PendingOrder);
+                    /* join fleet of target ship */
+                    fleets.AddToFleet(Hotspot.TouchingShip, Focus);
+                    break;
+                case AIOrder.Attack:
+                    if (!(Hotspot.TouchingShip && Hotspot.TouchingShip.Targetable))
+                    {
+                        goto default;
+                    }
+                    Focus.Target = Hotspot.TouchingShip.Targetable;
+                    ai.SetOrder(AIOrder.Attack);
+                    break;
+                default:
+                    ai.SetOrder(AIOrder.Move, Hotspot.transform.position);
+                    break;
             }
         }
 
@@ -258,25 +250,6 @@ public class HandController : MonoBehaviour
             case AIOrder.Attack: return attackLineGradient;
             case AIOrder.Move: return moveLineGradient;
             default: return null;
-        }
-    }
-
-    private void IssueCombatAIOrder(Ship ship, AIOrder aiOrder)
-    {
-        var fleet = Universe.FleetManager.GetFleetOf(ship);
-        if (fleet && fleet.Leader == ship)
-        {
-            if (aiOrder != AIOrder.Wait)
-            {
-                foreach (var follower in fleet.Followers)
-                {
-                    var combatAI = follower.GetComponent<CombatAI>();
-                    if (combatAI)
-                    {
-                        combatAI.SetOrder(aiOrder);
-                    }
-                }
-            }
         }
     }
 }
